@@ -1,0 +1,26 @@
+/* Notification styles */
+.notification {
+    position: fixed;
+    top: 80px;
+    right: -400px; /* Start offscreen */
+    background-color: var(--darker-bg-color);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: right 0.5s ease; /* Slide-in effect */
+    z-index: 1000;
+    }
+
+/* For the notification when it's visible */
+.notification.show {
+    right: 20px; 
+}
+
+#notification-message{
+    padding: 10px;
+    margin: 0;
+    border: 1px solid;
+    color: white;
+    border-radius: 5px;
+}

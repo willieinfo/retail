@@ -1,0 +1,138 @@
+
+.report-section {
+    display: none; /* Initially hide all sections */
+}
+.active {
+    display: flex; 
+}
+
+
+#SalesRankStore, #ProductFile {
+    width: 96%; 
+    height: 90vh; 
+    
+    /* Center the div */
+    position: absolute; 
+    /* position: fixed; */
+    top: calc(50% + 28px);
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+
+    flex-direction: column;
+    background-color: white;
+    background-image: linear-gradient(to bottom, #ffff, rgb(112,112,112)  ); 
+    z-index: 1;
+}
+
+.ReportHead, .ReportBody {
+    width: 100%; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+.ReportHead {
+    /* height: 30px; */
+    height: auto;
+    background-color: var(--main-bg-color);
+    color: white;
+    justify-content:space-between; 
+    padding: 0px 10px 0px 10px;
+}
+.ReportFooter {
+    height: auto;
+    background-color: var(--main-bg-color);
+    justify-content:space-between; 
+    padding: 0px 10px 0px 10px;
+}
+
+
+/* Table */
+.ReportBody {
+    height: auto; 
+    width: 100%;  
+    position: relative;
+    --rowHeight: 20px;
+
+    overflow-y: auto;
+}
+
+table {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    border-collapse: collapse;
+    width: 100%;  
+    max-height: 90%;  
+    max-width: 1500px;
+    min-width: 600px;
+    background-color: rgb(245, 245, 245);
+    justify-content: center;
+    align-items: center;
+    /* table-layout: fixed;  */
+}
+
+thead {
+    width: 100%;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+}
+
+/* Row and Cell Styling */
+th {
+    text-align: center !important; 
+    vertical-align: middle !important; 
+    padding: 4px; 
+    background-color: var(--second-bg-color);
+    color: white;
+    height: auto;
+
+    white-space: normal; 
+    word-wrap: break-word; 
+    max-width: 250px; 
+}
+
+td {
+    vertical-align: middle;
+    height: var(--rowHeight) !important;  
+    line-height: var(--rowHeight); 
+    padding: 0px 10px 0px 10px;
+    border-right: 2px solid white;  
+
+    font-size: small;
+}
+td:last-child {
+    border-right: none;  /* Remove right border on the last column */
+}
+
+.colEditItem {
+    display: none; 
+    color: blue;
+    cursor: pointer;
+    font-size: 14px;
+}
+.colNoWrap {
+    width: fit-content;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.closeRepo, #closeList {
+    color: white;
+    background-color: var(--main-bg-color);
+    cursor: pointer;
+}
+
+tr  {
+    height: var(--rowHeight) !important; 
+    padding: 0;
+    cursor: pointer;
+}
+tr:nth-child(even) {
+    background-color: rgb(230,230,230);
+}
+tr:hover {
+    color: black;
+    background-color: rgb(164,209,255);
+}
+tr:hover .colEditItem {
+    display: inline-block; /* Show icons when row is hovered */
+}
