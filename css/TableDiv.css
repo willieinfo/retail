@@ -3,57 +3,62 @@
     display: none; /* Initially hide all sections */
 }
 .active {
-    display: flex; 
+    /* display: flex;  */
+    display: grid;
 }
 
 
-#SalesRankStore, #ProductFile {
+#SalesRankStore,
+#SalesRankBrand, 
+#ProductFile,
+#LocationFile {
     width: 96%; 
     height: 90vh; 
-    
-    /* Center the div */
+
     position: absolute; 
-    /* position: fixed; */
+    /* Center the div */
     top: calc(50% + 28px);
     left: 50%; 
     transform: translate(-50%, -50%); 
 
     flex-direction: column;
     background-color: white;
-    background-image: linear-gradient(to bottom, #ffff, rgb(112,112,112)  ); 
+    background-image: linear-gradient(to bottom, #ffff, var(--main-bg-color)  ); 
     z-index: 1;
+
+    /* display: grid; */
+    /* The following styles attempts to make the footer stay at the bottom */
+    min-height: 90dvh;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: minmax(0, 1fr);    
 }
 
-.ReportHead, .ReportBody {
-    width: 100%; 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-}
+
 .ReportHead {
-    /* height: 30px; */
     height: auto;
     background-color: var(--main-bg-color);
     color: white;
-    justify-content:space-between; 
+    justify-content: space-between;
     padding: 0px 10px 0px 10px;
+    display: flex; /* Align header content */
 }
+
+.ReportBody {
+    --rowHeight: 26px;
+    height: auto;
+    width: 100%;
+    overflow-y: auto;
+    display: block; /* Remove flex to avoid centering */
+}
+
 .ReportFooter {
     height: auto;
+    display: flex;
+    flex-direction: row;
     background-color: var(--main-bg-color);
-    justify-content:space-between; 
+    justify-content: space-between;
+    align-content: center;
     padding: 0px 10px 0px 10px;
-}
-
-
-/* Table */
-.ReportBody {
-    height: auto; 
-    width: 100%;  
-    position: relative;
-    --rowHeight: 20px;
-
-    overflow-y: auto;
 }
 
 table {
@@ -61,13 +66,10 @@ table {
     margin-bottom: 5px;
     border-collapse: collapse;
     width: 100%;  
-    max-height: 90%;  
     max-width: 1500px;
     min-width: 600px;
     background-color: rgb(245, 245, 245);
-    justify-content: center;
-    align-items: center;
-    /* table-layout: fixed;  */
+    overflow-y: auto;
 }
 
 thead {
@@ -106,16 +108,22 @@ td:last-child {
 
 .colEditItem {
     display: none; 
-    color: blue;
     cursor: pointer;
     font-size: 14px;
+}
+.colEditItem:hover {
+    color: red;
+    font-size: 16px;
 }
 .colNoWrap {
     width: fit-content;
     white-space: nowrap;
     overflow: hidden;
 }
-.closeRepo, #closeList {
+.closeRepo1,
+.closeRepo2, 
+#closeList,
+#closeLoca {
     color: white;
     background-color: var(--main-bg-color);
     cursor: pointer;
@@ -135,4 +143,19 @@ tr:hover {
 }
 tr:hover .colEditItem {
     display: inline-block; /* Show icons when row is hovered */
+}
+
+/* Selected row color */
+.selected {
+    background-color: #f0f0f0;  
+    font-weight: bold;          
+    color: #333;                
+}
+
+#itemListCounter, 
+#saleRank1Counter,#saleRank2Counter {
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    padding: 5px;
 }

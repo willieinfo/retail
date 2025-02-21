@@ -9,7 +9,8 @@
 
     height: fit-content;
     max-height: 80%;
-    width: 800px;
+    width: 80%;
+    max-width: 800px;
 
     position: absolute;
     top: 50%;
@@ -51,19 +52,31 @@ label {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 4px;
 }
+
+#chkDiv {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+}
+
+#chkDiv input[type="checkbox"] {
+    margin-right: 2px; /* Reduce the space between checkbox and label */
+    width: 16px; /* Optional: adjust checkbox size */
+    height: 16px; /* Optional: adjust checkbox size */
+}
+
 .textDiv {
     display: flex;
     margin: 0px;
     padding: 0px;
-    /* background-color: beige; */
 }
 .subTextDiv {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    margin: 0px;
+    width: 100%;
+    margin: 0px 8px;
     padding: 0px;
     /* align-items: center; */
     /* padding: 10px; */
@@ -80,17 +93,17 @@ label {
     text-align: center;
 }
 input, select {
-    width: 96%;
+    width: 100%;
     height: auto;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    padding: 4px;  
+    padding: 10px;  
+    display: inline-block;
 }
-/* #Descript {
-    background-color: red;
-    width: 100%;
-
-} */
+input[type="number"] {
+    text-align: right;
+    padding-right: 10px;  
+}
 
 #cancelBtn:hover {
     background-color: red;
@@ -110,7 +123,9 @@ input, select {
     padding: 0;
 
 }
-
+#inputDates input {
+    font-size: 16px;
+}
 textarea {
     width: 80%;  
     max-width: 80%; 
