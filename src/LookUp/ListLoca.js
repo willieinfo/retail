@@ -17,53 +17,17 @@ async function ListLoca(cLocation, cLocaName) {
         globalData = await response.json(); // Store full data array globally
         listCounter.innerHTML=`${globalData.length} Records`
 
-        const reportBody = document.getElementById('ListLoca');
-        reportBody.innerHTML = ''; // Clear previous content
-
-        // Generate table rows
-        const listTable = `
-            <div id="tableDiv">
-            <table id="ListLocaTable">
-                <thead id="Look_Up_Head">
-                    <tr>
-                        <th>Id</th>
-                        <th>Code</th>
-                        <th>Location Name</th>
-                        <th>Group</th>
-                        <th>Type</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="ListLocaBody">
-                    ${globalData.map((item, index) => `
-                        <tr id="trLocaList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
-                            <td>${item.Location || 'N/A'}</td>
-                            <td>${item.LocaCode || 'N/A'}</td>
-                            <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
-                            <td>${item.Vicinity || 'N/A'}</td>
-                            <td>${item.SellArea ? 'Selling Area' : 'Warehouse'}</td>
-                            <td class="action-icons">
-                                <span class="spanDelItem colEditItem" data-index="${index}">
-                                    <i class="fa fa-trash"></i>
-                                </span>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            </div>
-        `;
-
-
-        reportBody.innerHTML = listTable;
+        updateTable() //Reused at addLocation()
 
         document.getElementById('ListLocaBody').addEventListener('click', (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
             if (delBtn) {
                 const index = parseInt(delBtn.getAttribute('data-index')); // Get index
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    console.log(`Delete clicked for index: ${globalData[index].LocaName}`);
-                    deleteLocation(globalData[index].Location)
+                    const confirmed = confirm("Are you sure you want to delete this record?");
+                    if (confirmed) {
+                        deleteLocation(globalData[index].Location)
+                    }
                 }
                 // Prevent the row click event (ItemForm) from being triggered when the delete button is clicked
                 event.stopPropagation(); // This stops the event from propagating to the parent (row click handler)
@@ -286,8 +250,8 @@ async function LocaForm(index, editMode) {
         
         } else {
             // Add new record
-            addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled,cSuffixId)
-                        
+            addLocation(cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled, cSuffixId)
+                            
         }
         document.getElementById('item-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
@@ -358,7 +322,7 @@ async function editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSell
     }
 }
 
-async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled,cSuffixId) {
+async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled) {
     try {
 
         lSellArea = document.getElementById("SellArea").checked ? '1' : '0';
@@ -375,8 +339,7 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
                 cLocaCode: cLocaCode,
                 cVicinity: cVicinity,
                 lSellArea: lSellArea,
-                lDisabled: lDisabled,
-                cSuffixId: cSuffixId
+                lDisabled: lDisabled
             })
         });
 
@@ -386,8 +349,24 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
 
         const updatedItem = await response.json();
         if (updatedItem) {
-            // updateTableRow(index, cLocation);
             showNotification('Location record added successful!')
+            globalData.push(updatedItem);
+            updateTable();            
+            // Scroll to the last row after updating the table
+            setTimeout(() => {
+                const tableBody = document.getElementById('ListLocaBody'); 
+                if (tableBody) {
+                    const lastRow = tableBody.lastElementChild; // Get the last row
+                    if (lastRow) {
+                        lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        // 🔹 Simulate a hover effect
+                        lastRow.classList.add('hover-effect'); 
+                        // 🔹 Remove hover effect after 2 seconds
+                        setTimeout(() => lastRow.classList.remove('hover-effect'), 2000);                        
+                    }
+                }
+            }, 100); // Small delay to ensure table updates first
+
         }
 
         
@@ -411,6 +390,46 @@ async function deleteLocation(cLocation) {
     } catch (error) {
         console.error('Delete Location error:', error);
     }
+}
+
+function updateTable() {
+    const reportBody = document.getElementById('ListLoca');
+    reportBody.innerHTML = ''; // Clear previous content
+
+    const listTable = `
+        <div id="tableDiv">
+        <table id="ListLocaTable">
+            <thead id="Look_Up_Head">
+                <tr>
+                    <th>Id</th>
+                    <th>Code</th>
+                    <th>Location Name</th>
+                    <th>Group</th>
+                    <th>Type</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="ListLocaBody">
+                ${globalData.map((item, index) => `
+                    <tr id="trLocaList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
+                        <td>${item.Location || 'N/A'}</td>
+                        <td>${item.LocaCode || 'N/A'}</td>
+                        <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                        <td>${item.Vicinity || 'N/A'}</td>
+                        <td>${item.SellArea ? 'Selling Area' : 'Warehouse'}</td>
+                        <td class="action-icons">
+                            <span class="spanDelItem colEditItem" data-index="${index}">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        </div>
+    `;
+
+    reportBody.innerHTML = listTable;
 }
 
 

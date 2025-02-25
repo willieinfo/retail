@@ -5,12 +5,12 @@ const listLoca = async (req, res) => {
     const cLocaName = req.query.LocaName;  
    
     let cSql = `SELECT 
-      LOCATION.Location,
       LOCATION.LocaName,
       LOCATION.LocaCode,
       LOCATION.Vicinity,
       LOCATION.SellArea,
-      LOCATION.Disabled
+      LOCATION.Disabled,
+      LOCATION.Location
       FROM LOCATION
       WHERE 1=1 `;
   
@@ -23,7 +23,7 @@ const listLoca = async (req, res) => {
         cSql += " AND LOCATION.LocaName LIKE @cLocaName";
         params.cLocaName = `%${cLocaName}%`;
       }
-      cSql += ` ORDER BY 2`;
+      cSql += ` ORDER BY 6`;
   
     try {
       const result = await queryDatabase(cSql, params);
@@ -65,9 +65,9 @@ const listLoca = async (req, res) => {
   
   
   const addLocation = async (req, res) => {
-    const { cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled, cSuffixId } = req.body;
+    const { cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled } = req.body;
   
-    if (!cLocation || !cLocaName || !cLocaCode || !cVicinity || !lSellArea || !lDisabled || cSuffixId === undefined) {
+    if (!cLocation || !cLocaName || !cLocaCode || !cVicinity || !lSellArea || !lDisabled) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
   
@@ -86,7 +86,8 @@ const listLoca = async (req, res) => {
           DECLARE @Location VARCHAR(4);  -- Changed from CHAR(3) to VARCHAR(4) to allow suffix addition
 
           -- Ensure zero-padding for numbers less than 100
-          SET @Location = RIGHT('000' + CAST(@AutIncId AS VARCHAR(3)), 3) + RTRIM(@cSuffixId);
+          -- SET @Location = RIGHT('000' + CAST(@AutIncId AS VARCHAR(3)), 3) + RTRIM(@cSuffixId);
+          SET @Location = RIGHT('0000' + CAST(@AutIncId AS VARCHAR(4)), 4)
 
           -- Update the Location field
           UPDATE LOCATION
@@ -94,7 +95,14 @@ const listLoca = async (req, res) => {
           WHERE AutIncId = @AutIncId;
 
           -- Return the full record of the inserted location
-          SELECT * FROM LOCATION WHERE AutIncId = @AutIncId;
+          SELECT
+          LOCATION.LocaName,
+          LOCATION.LocaCode,
+          LOCATION.Vicinity,
+          LOCATION.SellArea,
+          LOCATION.Disabled,
+          LOCATION.Location
+          FROM LOCATION WHERE AutIncId = @AutIncId;
     `;
 
     // Note : If the field has a width of 12 and needs a suffix of 2 chars 
@@ -105,14 +113,11 @@ const listLoca = async (req, res) => {
     // SET @Location = RIGHT(REPLICATE('0', 10) + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
     
     
-    const params = {cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled, cSuffixId };
-    console.log(params)
+    const params = {cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled };
+    // console.log(params)
     try {
       const result = await queryDatabase(cSql, params);
-      res.json({
-        message: 'Location added successfully',
-        record: result[0] // The first record in the result set will be the newly inserted location
-      });
+      res.json(result);  
     } catch (err) {
       console.error('Insert LOCATION error:', err);
       res.status(500).json({ error: 'Error inserting LOCATION' });

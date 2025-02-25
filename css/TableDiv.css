@@ -158,3 +158,8 @@ tr:hover .colEditItem {
     font-style: italic;
     padding: 5px;
 }
+
+.hover-effect {
+    background-color: rgb(164,209,255) !important;
+    transition: background-color 0.5s ease-in-out;
+}
