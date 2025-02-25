@@ -1,20 +1,12 @@
+:root {
+    --main-bg-color:rgb(0,64,128);
+    --second-bg-color: rgb(91, 147, 193); 
+    --darker-bg-color: rgb(0,0,139); 
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
-    --main-bg-color:rgb(0,64,128);
-    --second-bg-color: rgb(91, 147, 193); 
-    --darker-bg-color: rgb(0,0,139); 
-
-    --main-bg-color:rgb(255, 99, 71);
-    --second-bg-color: rgb(255, 69, 0 );
-    --darker-bg-color: rgb(255, 0, 0);
-
-    --main-bg-color:rgb(0, 64, 64);
-    --second-bg-color: rgb(34, 139, 34 );
-    --darker-bg-color: rgb(0, 100, 0);
-
 }
 
 html, body {
@@ -46,7 +38,7 @@ html, body {
     background-color: var(--main-bg-color);
     list-style: none;
     padding: 6px;
-    height: 30px;
+    height: 40px;
 }
 
 .menu li {
@@ -66,12 +58,14 @@ html, body {
     top: 100%;
     left: 0;
     list-style: none;
-    padding: 0.5em;
+    /* padding: 0.5em; */
+    padding: 0;
     z-index: 1000;
 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px); 
     border: 1px solid rgba(255, 255, 255, 0.2); 
+
     background-color: var(--main-bg-color); 
     opacity: .8;
 
@@ -80,15 +74,16 @@ html, body {
 .menu .dropdown li {
     margin: 0.5em 0;
     white-space: nowrap;
-    padding: 10px;
+    padding: 6px;
     margin: 0;
     color: white;
  
 }
 
 .menu .dropdown li:hover {
-    background-color: #555;
-    color: white;
+    color:white;
+    background-color: black;
+
 }
 
 /* Sidebar Menu */
@@ -101,11 +96,12 @@ html, body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 300px;;
+    width: 250px;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     list-style: none;
     background-image: linear-gradient(to right, rgba(169, 169, 169, 0.447), var(--main-bg-color)); 
+    overflow-y: auto;
     z-index: 2000;
 }
 
@@ -122,12 +118,12 @@ html, body {
 }
 
 .sidebar .submenu li:hover {
-    color:black;
-    background-color: whitesmoke;
+    color:white;
+    background-color: black;
 }
 
 .sidebar .submenu li {
-   padding: 10px;
+   padding: 6px;
    margin: 0;
 }
 
@@ -174,7 +170,10 @@ html, body {
     background-image: linear-gradient(to right, rgba(169, 169, 169, 0.447), var(--main-bg-color)); 
 
 }
-
+.menuLine {
+    padding: 3px;
+    margin: 0;
+}
 /* Responsive Design */
 @media (max-width: 1020px) {
     .menu {

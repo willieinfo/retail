@@ -1,5 +1,5 @@
-import { showReport, showNotification } from './FunctLib.js';
-import { FiltrRec } from "./FiltrRec.js"
+import { showReport, showNotification } from '../FunctLib.js';
+import { FiltrRec } from "../FiltrRec.js"
 
 const formatter = new Intl.NumberFormat('en-US', {
     style: 'decimal',

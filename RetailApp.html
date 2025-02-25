@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./css/TableDiv.css">
     <link rel="stylesheet" href="./css/GenStyle.css">
     <link rel="stylesheet" href="./css/InputDiv.css">
+    <link rel="stylesheet" href="./css/Settings.css">
 </head>
 <body>
     <img src="./images/RetailShop3.jpg" alt="Retail Shop" id="background-image" />
@@ -97,12 +98,40 @@
         </div>
     </div>
 
+    <!-- Settings -->
+    <div id="ThemeColor" class="report-section">
+        <div id="colorsDiv">
+            <p>Choose Theme Color</p>
+            <div class="grpColorDivs">
+                <div id="blackDiv"></div>
+                <div id="blueDiv"></div>
+                <div id="greenDiv"></div>
+                <div id="violetDiv"></div>
+            </div>
+            <div class="grpColorDivs">
+                <div id="brownDiv"></div>
+                <div id="maroonDiv"></div>
+                <div id="redDiv"></div>
+                <div id="tomatoDiv"></div>
+            </div>
+            <div id="btnDiv">
+                <button type="submit" id="saveBtn">Save</button>
+                <button type="button" id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
     <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/MainMenu.js"></script>
-    <script type="module" src="./src/SaleRepo.js"></script>
     <script type="module" src="./src/FiltrRec.js"></script>
+
+    <script type="module" src="./src/Sales/SaleRepo.js"></script>
+
     <script type="module" src="./src/LookUp/ListItem.js"></script>
     <script type="module" src="./src/LookUp/ListLoca.js"></script>
+
+    <script type="module" src="./src/Settings/Settings.js"></script>
 
 </body>
 </html>

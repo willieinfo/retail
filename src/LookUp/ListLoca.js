@@ -1,4 +1,3 @@
-// import { editLocation, addLocation } from "../../BackEnd/Controllers/lookupController.js";
 import { showReport, showNotification } from "../FunctLib.js";
 
 let globalData = []; // Define a global array

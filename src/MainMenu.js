@@ -1,4 +1,5 @@
 import { formatDate } from "./FunctLib.js";
+import { setUserColor } from "../src/Settings/Settings.js";
 
 // Background Image
 const img = document.getElementById('background-image');
@@ -42,11 +43,18 @@ const menuItems= `
 <li class="lookup">Lookup Tables
     <ul class="dropdown submenu">
         <li class="Products">Products</li>
+        <hr class="menuLine">
         <li class="Location">Location</li>
         <li>Supplier</li>
         <li>Customer</li>
     </ul>
-</li>`;
+</li>
+<li class="settings">Settings
+    <ul class="dropdown submenu">
+        <li class="ThemeColor">Theme Color</li>
+    </ul>
+</li>
+`;
 
 document.getElementById("menuNavBar").innerHTML = menuItems;
 document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar">✖</div>`+menuItems
@@ -77,3 +85,13 @@ const todaysDate = new Date();
 const cDateToday=formatDate(todaysDate)
 const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
+
+async function applyColorsAndShowContent() {
+    // Apply user color preferences
+    setUserColor();
+}
+
+// Run the function once the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    applyColorsAndShowContent();
+});
