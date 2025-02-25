@@ -15,137 +15,27 @@
 </head>
 <body>
     <img src="./images/RetailShop3.jpg" alt="Retail Shop" id="background-image" />
+    <!-- MainMenu -->
     <div id="headerDiv">
         <div id="headerCaption">
-            <span style="font-weight: bold;">Fashion Walk</span>
+            <span style="font-weight: bold;">Fashion Retail App</span>
             <span id="spanToday"></span>
         </div>
-
-        <ul id="menuNavBar" class="menu">
-            <li><i class="fa fa-money"></i> Sales
-                <ul class="dropdown">
-                    <li class="salesRankingByLocation">Sales Ranking by Location</li>
-                    <li class="salesRankingByBrand">Sales Ranking by Brand</li>
-                    <li>Daily Sales Sumary</li>
-                </ul>
-            </li>
-            <li><i class="fa fa-cart"></i> Purchases
-                <ul class="dropdown">
-                    <li>By SKU</li>
-                    <li>By Category</li>
-                    <li>By Supplier</li>
-                </ul>
-            </li>
-            <li>Transfers
-                <ul class="dropdown">
-                    <li>Stock Transfer by SKU</li>
-                    <li>Stock Transfer by Category</li>
-                </ul>
-            </li>
-            <li><i class="fa fa-item"></i> Inventory
-                <ul class="dropdown">
-                    <li>Stock Ending</li>
-                    <li>Stock Position</li>
-                </ul>
-            </li>
-            <li>Lookup Tables
-                <ul class="dropdown">
-                    <li class="Products">Products</li>
-                    <li class="Location">Location</li>
-                    <li>Supplier</li>
-                    <li>Customer</li>
-                </ul>
-            </li>
-        </ul>
+        <ul id="menuNavBar" class="menu"></ul>
     </div>
 
     <div class="hamburger">☰</div>
-    <div id="menuSideBar" class="sidebar">
-        <!-- <div class="close-sidebar">✖</div>
-        <li class="sales"><i class="fa fa-money"></i> Sales
-            <ul class="submenu">
-                <li class="salesRankingByLocation">Sales Ranking by Location</li>
-                <li class="salesRankingByBrand">Sales Ranking by Brand</li>
-                <li>Daily Sales Sumary</li>
-            </ul>
-        </li>
-        <li class="purchases">Purchases
-            <ul class="submenu">
-                <li>By SKU</li>
-                <li>By Category</li>
-                <li>By Supplier</li>
-            </ul>
-        </li>
-        <li class="transfers">Transfers
-            <ul class="submenu">
-                <li>Stock Transfer by SKU</li>
-                <li>Stock Transfer by Category</li>
-            </ul>
-        </li>
-        <li class="inventory">Inventory
-            <ul class="submenu">
-                <li>Stock Ending</li>
-                <li>Stock Position</li>
-            </ul>
-        </li>
-        <li class="lookup">Lookup Tables
-            <ul class="submenu">
-                <li class="Products">Products</li>
-                <li class="Location">Location</li>
-                <li>Supplier</li>
-                <li>Customer</li>
-            </ul>
-        </li> -->
-    </div>
-    <script>
-        const menuItems= `<li class="sales"><i class="fa fa-money"></i> Sales
-                <ul class="submenu">
-                    <li class="salesRankingByLocation">Sales Ranking by Location</li>
-                    <li class="salesRankingByBrand">Sales Ranking by Brand</li>
-                    <li>Daily Sales Sumary</li>
-                </ul>
-            </li>
-            <li class="purchases">Purchases
-                <ul class="submenu">
-                    <li>By SKU</li>
-                    <li>By Category</li>
-                    <li>By Supplier</li>
-                </ul>
-            </li>
-            <li class="transfers">Transfers
-                <ul class="submenu">
-                    <li>Stock Transfer by SKU</li>
-                    <li>Stock Transfer by Category</li>
-                </ul>
-            </li>
-            <li class="inventory">Inventory
-                <ul class="submenu">
-                    <li>Stock Ending</li>
-                    <li>Stock Position</li>
-                </ul>
-            </li>
-            <li class="lookup">Lookup Tables
-                <ul class="submenu">
-                    <li class="Products">Products</li>
-                    <li class="Location">Location</li>
-                    <li>Supplier</li>
-                    <li>Customer</li>
-                </ul>
-            </li>
-        `
-
-        // document.querySelector(".menu").innerHTML=menuItems
-        // document.getElementById("menuNavBar").innerHTML=menuItems
-        document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar">✖</div>`+menuItems
-    </script>
+    <div id="menuSideBar" class="sidebar"></div>
 
     <div id="notification" class="notification">
         <p id="notification-message"></p>
     </div>
+
     <div id="loadingIndicator" style="display:none;">
         <i class="fa fa-spinner fa-spin"></i> Loading data... Please wait
     </div>
         
+    <!-- Sales -->
     <div id="SalesRankStore" class="report-section">
         <div class="ReportHead">
             <span>Sales Ranking Report by Location</span>
@@ -175,6 +65,7 @@
         </div>
     </div>
 
+    <!-- Lookup -->
     <div id="ProductFile" class="report-section">
         <div class="ReportHead">
             <span>Product File</span>
