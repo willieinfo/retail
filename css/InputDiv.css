@@ -1,0 +1,146 @@
+#item-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;  
+    align-items: center;         
+
+    padding: 0;
+    margin: 0;
+
+    height: fit-content;
+    max-height: 80%;
+    width: 80%;
+    max-width: 800px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the form on the page */
+    
+    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    font-size: 14px;
+    border: 1px solid;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+    color: black;
+    background-color: rgba(245,245,245,0.9);
+        /* background-color: '#fff'; */
+    z-index: 1000;
+    overflow: auto;
+}
+
+label {
+    margin: 5px;
+    padding-left: 5px;
+    white-space: nowrap;
+}
+#inputSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    padding: 0px;
+    margin: 0;
+    width: 98%;
+}
+#inputSection label {
+    width: 150px;
+    margin: 0px;
+    align-items: center;
+
+}
+#btnDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+}
+
+#chkDiv {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+}
+
+#chkDiv input[type="checkbox"] {
+    margin-right: 2px; /* Reduce the space between checkbox and label */
+    width: 16px; /* Optional: adjust checkbox size */
+    height: 16px; /* Optional: adjust checkbox size */
+}
+
+.textDiv {
+    display: flex;
+    margin: 0px;
+    padding: 0px;
+}
+.subTextDiv {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0px 8px;
+    padding: 0px;
+    /* align-items: center; */
+    /* padding: 10px; */
+}
+
+#saveBtn, #cancelBtn {
+    height: 30px;
+    width: 140px;
+    margin: 10px;
+    background-color: var(--main-bg-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+input, select {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    padding: 10px;  
+    display: inline-block;
+}
+input[type="number"] {
+    text-align: right;
+    padding-right: 10px;  
+}
+
+#cancelBtn:hover {
+    background-color: red;
+}
+#saveBtn:hover {
+    background-color: var(--second-bg-color);
+}
+#titleBar {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
+    height: 30px;
+    background-color: var(--main-bg-color);
+    color: white;
+    margin: 0;
+    padding: 0;
+
+}
+#inputDates input {
+    font-size: 16px;
+}
+textarea {
+    width: 80%;  
+    max-width: 80%; 
+    box-sizing: border-box; 
+    height: 120px;
+    resize: none; 
+}
+
+.invalid {
+    border: 2px solid red;  
+    background-color: #ffcccc; 
+}
+
+@media (max-width: 600px) {
+    #item-form {
+        width:90%
+    }
+}
