@@ -68,7 +68,6 @@ html, body {
 
     background-color: var(--main-bg-color); 
     opacity: .8;
-
 }
 
 .menu .dropdown li {
@@ -77,12 +76,13 @@ html, body {
     padding: 6px;
     margin: 0;
     color: white;
+    min-width: 150px;
  
 }
 
 .menu .dropdown li:hover {
     color:white;
-    background-color: black;
+    background-color: #333;
 
 }
 

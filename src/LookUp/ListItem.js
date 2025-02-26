@@ -16,7 +16,7 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
     document.getElementById('loadingIndicator').style.display = 'flex';
 
     try {
-        const url = new URL('http://localhost:3000/product/item');
+        const url = new URL('http://localhost:3000/product/listItem');
         const params = new URLSearchParams();
         if (cUsersCde) params.append('UsersCde', cUsersCde);
         if (cOtherCde) params.append('OtherCde', cOtherCde);
@@ -35,47 +35,7 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
 
         // console.log(globalData[3])
 
-        const reportBody = document.getElementById('ListItem');
-        reportBody.innerHTML = ''; // Clear previous content
-
-        // Generate table rows
-        const listTable = `
-            <div id="tableDiv">
-            <table id="ListItemTable">
-                <thead id="Look_Up_Head">
-                    <tr>
-                        <th>Description</th>
-                        <th>Stock No</th>
-                        <th>Brand</th>
-                        <th>Category</th>
-                        <th>Item Price</th>
-                        <th>Cost</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="ListItemBody">
-                    ${globalData.map((item, index) => `
-                        <tr id="trItemList" data-index="${index}">
-                            <td class="colNoWrap">${item.Descript.trim().substring(0, 50) || 'N/A'}</td>
-                            <td>${item.UsersCde || 'N/A'}</td>
-                            <td>${item.BrandNme || 'N/A'}</td>
-                            <td class="colNoWrap">${item.DeptName.trim() || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                            <td class="action-icons">
-                                <span class="spanDelItem colEditItem" data-index="${index}">
-                                    <i class="fa fa-trash"></i>
-                                </span>
-                            </td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            </div>
-        `;
-
-
-        reportBody.innerHTML = listTable;
+        updateTable()   //Render / Display ItemList Table
 
         // document.getElementById('ListItemBody').addEventListener('click', (event) => {
         //     const editBtn = event.target.closest('.spanEditItem'); // Find the clicked edit button
@@ -263,6 +223,20 @@ async function ItemForm(index, editMode) {
                     <input type="number" id="LandCost" name="LandCost">
                 </div>
             </div>
+            <div class="textDiv">
+                <div id="chkDiv">
+                    <input type="checkbox" id="Outright" >
+                    <label for="Outright">Outright</label>
+                </div>
+                <div id="chkDiv">
+                    <input type="checkbox" id="Services" >
+                    <label for="Services">NCV</label>
+                </div>
+                <div id="chkDiv">
+                    <input type="checkbox" id="Disabled" >
+                    <label for="Disabled">Disabled</label>
+                </div>
+            </div>
 
             <div id="btnDiv">
                 <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
@@ -303,6 +277,9 @@ async function ItemForm(index, editMode) {
         document.getElementById('ItemPrce').value = itemData.ItemPrce;
         document.getElementById('ItemCost').value = itemData.ItemCost;
         document.getElementById('LandCost').value = itemData.LandCost;
+        document.getElementById('Outright').checked = itemData.Outright===1 ? true : false;
+        document.getElementById('Disabled').checked = itemData.Disabled ? true : false;
+        document.getElementById('Services').checked = itemData.Services ? true : false;
 
         
         // Loop and to find correct option on each select select element
@@ -356,7 +333,12 @@ async function ItemForm(index, editMode) {
         document.getElementById('ItemPrce').value = 0.00;
         document.getElementById('ItemCost').value = 0.00;
         document.getElementById('LandCost').value = 0.00;
-    }
+        document.getElementById('Outright').checked = true ;
+        document.getElementById('Disabled').checked = false;
+        document.getElementById('Services').checked = false;
+
+    }        
+
 
     // Event listener for Cancel button to close the modal
     document.getElementById('cancelBtn').addEventListener('click', () => {
@@ -368,16 +350,20 @@ async function ItemForm(index, editMode) {
     document.getElementById('saveBtn').addEventListener('click', (e) => {
         e.preventDefault();
 
-        const cItemCode=itemData.ItemCode
+        const cItemCode= editMode ? itemData.ItemCode : 'NEW_ITEM';
         const cUsersCde=document.getElementById('UsersCde').value;
         const cOtherCde=document.getElementById('OtherCde').value;
         const cDescript=document.getElementById('Descript').value;
         const cBrandNum=document.getElementById('BrandNum').value;
         const cItemType=document.getElementById('ItemType').value;
         const cItemDept=document.getElementById('ItemDept').value;
+        const cCategNum=document.getElementById('CategNum').value;
         const nItemPrce=document.getElementById('ItemPrce').value;
         const nItemCost=document.getElementById('ItemCost').value;
         const nLandCost=document.getElementById('LandCost').value;
+        const nOutright=document.getElementById('Outright').checked ? 1 : 0 
+        const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
+        const lServices=document.getElementById('Services').checked ? 1 : 0 
         
 
         if (!cUsersCde || !cOtherCde) {
@@ -392,15 +378,23 @@ async function ItemForm(index, editMode) {
             return;
         }
 
-        if (itemData) {
+        if (editMode) {
             // Edit existing record
             editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
-                cBrandNum,cItemType,cItemDept,
-                nItemPrce,nItemCost,nLandCost
+                cBrandNum,cItemType,cItemDept,cCategNum,
+                nItemPrce,nItemCost,nLandCost,
+                nOutright,lDisabled,lServices
             )
         
         } else {
             // Add new record
+            const cSuffixId='E'
+            addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
+                cBrandNum,cItemType,cItemDept,cCategNum,
+                nItemPrce,nItemCost,nLandCost,
+                nOutright,lDisabled,lServices,cSuffixId
+            )
+            
                         
         }
         document.getElementById('item-form').remove(); // Remove the form from the DOM
@@ -411,7 +405,7 @@ async function ItemForm(index, editMode) {
     
     //Field Validation
     document.getElementById('UsersCde').addEventListener('blur', async function() {
-        if (index) return  //edit mode
+        if (editMode) return  //edit mode
         const cUsersCde = document.getElementById('UsersCde').value;
         
         const url = new URL('http://localhost:3000/product/checkUsersCde');
@@ -433,7 +427,7 @@ async function ItemForm(index, editMode) {
     });
 
     document.getElementById('OtherCde').addEventListener('blur', async function() {
-        if (index) return  //edit mode
+        if (editMode) return  //edit mode
         const cOtherCde = document.getElementById('OtherCde').value;
     
         const url = new URL('http://localhost:3000/product/checkOtherCde');
@@ -457,9 +451,14 @@ async function ItemForm(index, editMode) {
 
 
 async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,
-    nItemPrce,nItemCost,nLandCost) {
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices) {
     try {
+        nOutright = document.getElementById("Outright").checked ? '1' : '2';
+        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+        lServices = document.getElementById("Services").checked ? '1' : '0';
+
         const response = await fetch('http://localhost:3000/product/editItemList', {
             method: 'PUT',  // Use PUT method
             headers: {
@@ -473,9 +472,13 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
                 cBrandNum: cBrandNum,
                 cItemType: cItemType,
                 cItemDept: cItemDept, 
+                cCategNum: cCategNum, 
                 nItemPrce: nItemPrce,
                 nItemCost: nItemCost,
-                nLandCost: nLandCost
+                nLandCost: nLandCost,
+                nOutright: nOutright,
+                lDisabled: lDisabled,
+                lServices: lServices
             })
         });
 
@@ -488,11 +491,117 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
             updateTableRow(index, cItemCode);
             showNotification('Item record update successful!')
         }
+        
+    } catch (error) {
+        console.error('Update ItemList error:', error);
+    }
+}
+
+async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices,cSuffixId) {
+    try {
+        nOutright = document.getElementById("Outright").checked ? '1' : '2';
+        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+        lServices = document.getElementById("Services").checked ? '1' : '0';
+
+        const response = await fetch('http://localhost:3000/product/addItemList', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cItemCode: cItemCode, 
+                cUsersCde: cUsersCde,
+                cOtherCde: cOtherCde,
+                cDescript: cDescript,
+                cBrandNum: cBrandNum,
+                cItemType: cItemType,
+                cItemDept: cItemDept, 
+                cCategNum: cCategNum, 
+                nItemPrce: nItemPrce,
+                nItemCost: nItemCost,
+                nLandCost: nLandCost,
+                nOutright: nOutright,
+                lDisabled: lDisabled,
+                lServices: lServices,
+                cSuffixId: cSuffixId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+        if (updatedItem) {
+            showNotification('Product record added successful!')
+            globalData.push(updatedItem);
+            updateTable();            
+            // Scroll to the last row after updating the table
+            setTimeout(() => {
+                const tableBody = document.getElementById('ListLocaBody'); 
+                if (tableBody) {
+                    const lastRow = tableBody.lastElementChild; // Get the last row
+                    if (lastRow) {
+                        lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        // 🔹 Simulate a hover effect
+                        lastRow.classList.add('hover-effect'); 
+                        // 🔹 Remove hover effect after 2 seconds
+                        setTimeout(() => lastRow.classList.remove('hover-effect'), 2000);                        
+                    }
+                }
+            }, 100); // Small delay to ensure table updates first
+        }
 
         
     } catch (error) {
         console.error('Update ItemList error:', error);
     }
+}
+
+function updateTable() {
+    const reportBody = document.getElementById('ListItem');
+    reportBody.innerHTML = ''; // Clear previous content
+
+    // Generate table rows
+    const listTable = `
+        <div id="tableDiv">
+        <table id="ListItemTable">
+            <thead id="Look_Up_Head">
+                <tr>
+                    <th>Description</th>
+                    <th>Stock No</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Item Price</th>
+                    <th>Cost</th>
+                    <th style="width: 25px"></th>
+                </tr>
+            </thead>
+            <tbody id="ListItemBody">
+                ${globalData.map((item, index) => `
+                    <tr id="trItemList" data-index="${index}">
+                        <td class="colNoWrap">${item.Descript.trim().substring(0, 50) || 'N/A'}</td>
+                        <td>${item.UsersCde || 'N/A'}</td>
+                        <td>${item.BrandNme || 'N/A'}</td>
+                        <td class="colNoWrap">${item.DeptName.trim() || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                        <td class="action-icons">
+                            <span class="spanDelItem colEditItem" data-index="${index}">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        </div>
+    `;
+
+    reportBody.innerHTML = listTable;
 }
 
 // async function deleteItemList(cItemCode) {
@@ -533,7 +642,6 @@ document.getElementById('filterList').addEventListener('click', async () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
-
 
             ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum, 
                 cItemDept, cItemType, cCategNum);

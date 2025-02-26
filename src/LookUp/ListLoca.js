@@ -2,7 +2,7 @@ import { showReport, showNotification } from "../FunctLib.js";
 
 let globalData = []; // Define a global array
 async function ListLoca(cLocation, cLocaName) {
-    const listCounter=document.getElementById('locationCounter')
+    const listCounter=document.getElementById('locaListCounter')
     
     try {
         const url = new URL('http://localhost:3000/lookup/location');
@@ -162,12 +162,12 @@ async function LocaForm(index, editMode) {
             </div>
             <div class="textDiv">
                 <div id="chkDiv">
-                    <label for="SellArea">Selling Area</label>
                     <input type="checkbox" id="SellArea" >
+                    <label for="SellArea">Selling Area</label>
                 </div>
                 <div id="chkDiv">
-                    <label for="Disabled">Disabled</label>
                     <input type="checkbox" id="Disabled" >
+                    <label for="Disabled">Disabled</label>
                 </div>
             </div>
             <div id="btnDiv">
@@ -229,7 +229,6 @@ async function LocaForm(index, editMode) {
         const cVicinity=document.getElementById('Vicinity').value;
         const lSellArea=document.getElementById('SellArea').checked ? 1 : 0 // 1 if checked, 0 if unchecked
         const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
-        const cSuffixId='W'
 
         if (!cLocaName || !cVicinity) {
             e.preventDefault();
@@ -249,7 +248,7 @@ async function LocaForm(index, editMode) {
         
         } else {
             // Add new record
-            addLocation(cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled, cSuffixId)
+            addLocation(cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled)
                             
         }
         document.getElementById('item-form').remove(); // Remove the form from the DOM

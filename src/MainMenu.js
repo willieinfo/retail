@@ -16,6 +16,8 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-money"></i> Sales
     <ul class="dropdown submenu">
+        <li class="SalesInvoice">Sales Invoice</li>
+        <hr class="menuLine">
         <li class="salesRankingByLocation">Sales Ranking by Location</li>
         <li class="salesRankingByBrand">Sales Ranking by Brand</li>
         <li>Daily Sales Summary</li>
@@ -23,6 +25,8 @@ const menuItems= `
 </li>
 <li class="purchases">Purchases
     <ul class="dropdown submenu">
+        <li>Purchases</li>
+        <hr class="menuLine">
         <li>By SKU</li>
         <li>By Category</li>
         <li>By Supplier</li>
@@ -30,19 +34,34 @@ const menuItems= `
 </li>
 <li class="transfers">Transfers
     <ul class="dropdown submenu">
+        <li>Stock Transfer</li>
+        <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
         <li>Stock Transfer by Category</li>
+    </ul>
+</li>
+<li class="adjustment">Adjustment
+    <ul class="dropdown submenu">
+        <li>Stock Adjustment</li>
+        <hr class="menuLine">
+        <li>Adjustments by SKU</li>
+        <li>Adjustments by Category</li>
     </ul>
 </li>
 <li class="inventory">Inventory
     <ul class="dropdown submenu">
         <li>Stock Ending</li>
         <li>Stock Position</li>
+        <li>Inventory Variance</li>
     </ul>
 </li>
 <li class="lookup">Lookup Tables
     <ul class="dropdown submenu">
         <li class="Products">Products</li>
+        <li class="Brands">Brands</li>
+        <li class="Category">Category</li>
+        <li class="Department">Department</li>
+        <li class="Class">Class</li>
         <hr class="menuLine">
         <li class="Location">Location</li>
         <li>Supplier</li>

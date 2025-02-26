@@ -20,17 +20,18 @@ const listItem = async (req, res) => {
     ITEMLIST.ItemCost, 
     ITEMLIST.LandCost, 
     ITEMDEPT.Descript AS DeptName, 
-    SUPPLIER.SuppCode,
     ITEMLIST.ItemDept, 
     ITEMLIST.ItemType, 
     ITEMLIST.BrandNum, 
     ITEMLIST.SuppNum_, 
     ITEMLIST.CategNum, 
+    ITEMLIST.Disabled, 
+    ITEMLIST.Services, 
+    ITEMLIST.Outright, 
     BRAND___.BrandNme
     FROM ITEMLIST
     INNER JOIN ITEMDEPT ON ITEMLIST.ItemDept = ITEMDEPT.ItemDept
     INNER JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-    INNER JOIN SUPPLIER ON ITEMLIST.SuppNum_ = SUPPLIER.SuppNum_
     WHERE 1=1`;
 
   // Add conditions based on query parameters
@@ -234,18 +235,115 @@ const checkOtherCde = async (req, res) => {
 
 }
 
-
-const editItemList = async (req, res) => {
+const addItemList = async (req, res) => {
   const { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,
-    nItemPrce,nItemCost,nLandCost } = req.body;  // Extract from body
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices,cSuffixId } = req.body;  // Extract from body
 
   if (!cItemCode || !cUsersCde || !cOtherCde || !cDescript
-    ||!cBrandNum || !cItemType || !cItemDept 
-    ||!nItemPrce || !nItemCost || !nLandCost  
+    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum
+    ||!nItemPrce || !nItemCost || !nLandCost 
+    ||!nOutright ||!lDisabled || !lServices || cSuffixId===undefined
   ) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
+
+  const dDateCost= new Date()
+
+  const cSql = `
+        -- Insert the new location and get the generated AutIncId
+        INSERT INTO ITEMLIST
+          ( ItemCode,UsersCde,OtherCde,Descript,
+          BrandNum,ItemType,ItemDept,CategNum,
+          ItemPrce,ItemCost,LandCost,
+          Outright,Disabled,Services,DateCost )
+        VALUES
+          ( @cItemCode,@cUsersCde,@cOtherCde,@cDescript,
+          @cBrandNum,@cItemType,@cItemDept,@cCategNum,
+          @nItemPrce,@nItemCost,@nLandCost,
+          @nOutright,@lDisabled,@lServices,@dDateCost )
+;
+
+        -- Get the last inserted AutIncId
+        DECLARE @AutIncId INT;
+        SET @AutIncId = SCOPE_IDENTITY();
+
+        -- Dynamically pad AutIncId to a length of 10 digits and append cSuffixId
+        DECLARE @ItemCode VARCHAR(11);  -- Changed from CHAR(10) to VARCHAR(11) to allow suffix addition
+
+        -- Ensure zero-padding for numbers less than 100
+        SET @ItemCode = RIGHT(REPLICATE('0', 10) + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
+
+        -- Update the Location field
+        UPDATE ITEMLIST
+        SET ItemCode = @ItemCode
+        WHERE AutIncId = @AutIncId;
+
+        -- Return the full record of the inserted itemcode
+        SELECT ITEMLIST.Descript, 
+            ITEMLIST.UsersCde, 
+            ITEMLIST.OtherCde, 
+            ITEMLIST.ItemCode, 
+            ITEMLIST.ItemPrce, 
+            ITEMLIST.ItemCost, 
+            ITEMLIST.LandCost, 
+            ITEMDEPT.Descript AS DeptName, 
+            ITEMLIST.ItemDept, 
+            ITEMLIST.ItemType, 
+            ITEMLIST.BrandNum, 
+            ITEMLIST.SuppNum_, 
+            ITEMLIST.CategNum, 
+            ITEMLIST.Outright, 
+            ITEMLIST.Disabled, 
+            ITEMLIST.Services, 
+            BRAND___.BrandNme
+            FROM ITEMLIST,BRAND___,ITEMDEPT
+            WHERE ITEMLIST.BrandNum=BRAND___.BrandNum
+            AND ITEMLIST.ItemDept=ITEMDEPT.ItemDept
+            AND ITEMLIST.AutIncId = @AutIncId;
+        `;
+
+  // Note : If the field has a width of 12 and needs a suffix of 2 chars 
+  // -- Declare @ItemCode with correct width
+  // DECLARE @ItemCode VARCHAR(11);  -- Adjusted for total width of 11
+  
+  // -- Zero-pad AutIncId to 10 characters
+  // SET @ItemCode = RIGHT(REPLICATE('0', 10) + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
+  
+  
+  const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices,cSuffixId,dDateCost }
+
+    // console.log(params)
+  try {
+    const result = await queryDatabase(cSql, params);
+    res.json(result);  
+  } catch (err) {
+    console.error('Insert ITEMLIST error:', err);
+    res.status(500).json({ error: 'Error inserting ITEMLIST' });
+  }
+};
+
+
+
+const editItemList = async (req, res) => {
+  const { cItemCode,cUsersCde,cOtherCde,cDescript,
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices } = req.body;  // Extract from body
+
+  if (!cItemCode || !cUsersCde || !cOtherCde || !cDescript
+    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum
+    ||!nItemPrce || !nItemCost || !nLandCost 
+    ||!nOutright || !lDisabled || !lServices
+  ) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  // nOutright= nOutright==='1' ? 1 : 0
 
   const cSql = `UPDATE ITEMLIST 
     SET UsersCde=@cUsersCde,
@@ -254,18 +352,23 @@ const editItemList = async (req, res) => {
         BrandNum=@cBrandNum,
         ItemType=@cItemType,
         ItemDept=@cItemDept,
+        CategNum=@cCategNum,
         ItemPrce=@nItemPrce,
         ItemCost=@nItemCost,
-        LandCost=@nLandCost
+        LandCost=@nLandCost,
+        Outright=@nOutright,
+        Disabled=@lDisabled,
+        Services=@lServices
     WHERE ItemCode=@cItemCode`;
 
   const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,
-    nItemPrce,nItemCost,nLandCost };
+    cBrandNum,cItemType,cItemDept,cCategNum,
+    nItemPrce,nItemCost,nLandCost,
+    nOutright,lDisabled,lServices };
 
+// console.log(params)
   try {
     const result = await queryDatabase(cSql, params);
-    // res.json({ message: 'Update successful', rowsAffected: result });
     res.json(result);  
 
   } catch (err) {
@@ -304,17 +407,18 @@ const getItemReco = async (req, res) => {
     ITEMLIST.ItemCost, 
     ITEMLIST.LandCost, 
     ITEMDEPT.Descript AS DeptName, 
-    SUPPLIER.SuppCode,
     ITEMLIST.ItemDept, 
     ITEMLIST.ItemType, 
     ITEMLIST.BrandNum, 
     ITEMLIST.SuppNum_, 
     ITEMLIST.CategNum, 
+    ITEMLIST.Outright, 
+    ITEMLIST.Disabled, 
+    ITEMLIST.Services, 
     BRAND___.BrandNme
-    FROM ITEMLIST,BRAND___,ITEMDEPT,SUPPLIER
+    FROM ITEMLIST,BRAND___,ITEMDEPT
     WHERE ITEMLIST.BrandNum=BRAND___.BrandNum
     AND ITEMLIST.ItemDept=ITEMDEPT.ItemDept
-    AND ITEMLIST.SuppNum_=SUPPLIER.SuppNum_
     AND ITEMLIST.ItemCode=@cItemCode
     ORDER BY ITEMLIST.UsersCde`
     ;
@@ -340,8 +444,9 @@ module.exports = {
   listCate,
   checkUsersCde, 
   checkOtherCde,
+  getItemReco,
+  addItemList,
   editItemList,
-  deleteItemList,
-  getItemReco
+  deleteItemList
 };
 

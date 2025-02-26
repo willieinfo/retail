@@ -27,44 +27,47 @@ export function FiltrRec(cModules_) {
                         <select id="Location"></select>
                     </div>
                 </div>
-                <div class="textDiv">
-                    <div class="subTextDiv">
-                        <label for="UsersCde">Stock No</label>
-                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
-                    </div>
-                    <div class="subTextDiv">
-                        <label for="OtherCde">Bar Code</label>
-                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
-                    </div>
-                </div>
 
-                <div id="inputDescript" class="textDiv">
-                    <div class="subTextDiv" style="width:100%;">
-                        <label for="Descript">Item Description</label>
-                        <input type="text" id="Descript" name="Descript" spellcheck="false">
+                <div class="subTextDiv" id="inputDetails">
+                    <div class="textDiv">
+                        <div class="subTextDiv">
+                            <label for="UsersCde">Stock No</label>
+                            <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
+                        </div>
+                        <div class="subTextDiv">
+                            <label for="OtherCde">Bar Code</label>
+                            <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
+                        </div>
                     </div>
-                </div>
-                <div class="textDiv">
-                    <div class="subTextDiv">
-                        <label for="BrandNum">Brand</label>
-                        <select id="BrandNum"></select>
-                    </div>
-                    <div class="subTextDiv">
-                        <label for="CategNum">Category</label>
-                        <select id="CategNum"></select>
-                    </div>
-                </div>
-                <div class="textDiv">
-                    <div class="subTextDiv">
-                        <label for="ItemDept">Department</label>
-                        <select id="ItemDept"></select>
-                    </div>
-                    <div class="subTextDiv">
-                        <label for="ItemType">Class</label>
-                        <select id="ItemType"></select>
-                    </div>
-                </div>
 
+                    <div id="inputDescript" class="textDiv">
+                        <div class="subTextDiv" style="width:100%;">
+                            <label for="Descript">Item Description</label>
+                            <input type="text" id="Descript" name="Descript" spellcheck="false">
+                        </div>
+                    </div>
+                    <div class="textDiv">
+                        <div class="subTextDiv">
+                            <label for="BrandNum">Brand</label>
+                            <select id="BrandNum"></select>
+                        </div>
+                        <div class="subTextDiv">
+                            <label for="CategNum">Category</label>
+                            <select id="CategNum"></select>
+                        </div>
+                    </div>
+                    <div class="textDiv">
+                        <div class="subTextDiv">
+                            <label for="ItemDept">Department</label>
+                            <select id="ItemDept"></select>
+                        </div>
+                        <div class="subTextDiv">
+                            <label for="ItemType">Class</label>
+                            <select id="ItemType"></select>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="btnDiv">
                     <button type="submit" id="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
                     <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
@@ -104,6 +107,10 @@ export function FiltrRec(cModules_) {
             document.getElementById('ProductFile').appendChild(overlay);
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
+        } else if (cModules_ === 'SalesLst') {
+            document.getElementById('SalesLst').appendChild(filterForm);
+            document.getElementById('SalesLst').appendChild(overlay);
+            document.getElementById('inputDetails').style.display = 'none';
         } else if (cModules_ === 'SaleRnk1') {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
@@ -122,17 +129,19 @@ export function FiltrRec(cModules_) {
             const currentDate = new Date();
             const dDateFrom = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); 
             const dDate__To = currentDate; 
+            const cLocation=document.getElementById('Location')
 
             const formattedDateFrom = dDateFrom.toISOString().split('T')[0];
             const formattedDateTo = dDate__To.toISOString().split('T')[0];
 
-            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo]));
+            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo, cLocation]));
 
-            filterData = [formattedDateFrom, formattedDateTo];
+            filterData = [formattedDateFrom, formattedDateTo, cLocation];
         }
 
         document.getElementById('DateFrom').value = filterData[0];
         document.getElementById('Date__To').value = filterData[1];
+        document.getElementById('Location').value = filterData[2];
 
         // Wait for populate functions to finish
         await populateLocation('', '');
@@ -154,7 +163,8 @@ export function FiltrRec(cModules_) {
 
             const dDateFrom = document.getElementById('DateFrom').value;
             const dDate__To = document.getElementById('Date__To').value;
-            const cLocation = document.getElementById('Location').value;
+            const cLocation = document.getElementById('Location').value.trim();
+
             const cUsersCde = document.getElementById('UsersCde').value.trim();
             const cOtherCde = document.getElementById('OtherCde').value.trim();
             const cDescript = document.getElementById('Descript').value.trim();

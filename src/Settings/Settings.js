@@ -12,13 +12,13 @@ let previousTheme = {
 // Event listener for Cancel button
 document.getElementById('cancelBtn').addEventListener('click', () => {
     // Revert to the previous theme
-    document.documentElement.style.setProperty('--main-bg-color', previousTheme.mainBgColor);
-    document.documentElement.style.setProperty('--second-bg-color', previousTheme.secondBgColor);
-    document.documentElement.style.setProperty('--darker-bg-color', previousTheme.darkerBgColor);
+    // document.documentElement.style.setProperty('--main-bg-color', previousTheme.mainBgColor);
+    // document.documentElement.style.setProperty('--second-bg-color', previousTheme.secondBgColor);
+    // document.documentElement.style.setProperty('--darker-bg-color', previousTheme.darkerBgColor);
 
     themeColorDiv.classList.remove('active');
 
-    console.log("Theme reverted to previous theme");
+    // console.log("Theme reverted to previous theme");
 });
 
 // Event listener for the save button

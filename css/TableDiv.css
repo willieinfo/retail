@@ -8,6 +8,7 @@
 }
 
 
+#SalesLst,
 #SalesRankStore,
 #SalesRankBrand, 
 #ProductFile,
@@ -121,6 +122,7 @@ td:last-child {
 }
 .closeRepo1,
 .closeRepo2, 
+#closeSales,
 #closeList,
 #closeLoca {
     color: white;
@@ -151,6 +153,8 @@ tr:hover .colEditItem {
     color: #333;                
 }
 
+#salesLstCounter, 
+#locaListCounter, 
 #itemListCounter, 
 #saleRank1Counter,#saleRank2Counter {
     color: white;
