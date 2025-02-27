@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { listItem, listBrnd, listType, listDept, listCate, 
+const { listItem, listBrnd, listType, listDept, listCate,
     checkUsersCde, checkOtherCde, editItemList, deleteItemList, getItemReco, addItemList
 } = require('../Controllers/productController');
 

@@ -1,10 +1,8 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "Backend/mainApp.js",
+  "main": "mainApp.js",
   "scripts": {
-    "start": "node Backend/mainApp.js",
-    "dev": "nodemon Backend/mainApp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Willie Estrada",
@@ -15,8 +13,5 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mssql": "^11.0.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
   }
 }

@@ -1,5 +1,5 @@
 import { showReport, showNotification } from '../FunctLib.js';
-import { populateBrandNum, populateItemDept, populateItemType, populateCategNum } from "../FunctLib.js";
+import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec } from "../FiltrRec.js"
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -205,6 +205,10 @@ async function ItemForm(index, editMode) {
                     <label for="ItemType">Class</label>
                     <select id="ItemType" required></select>
                 </div>
+                <div class="subTextDiv">
+                    <label for="SuppNum_">Supplier</label>
+                    <select id="SuppNum_" required></select>
+                </div>
             </div>
 
             <div class="textDiv">
@@ -267,6 +271,7 @@ async function ItemForm(index, editMode) {
     await populateItemDept('','');
     await populateItemType('','');
     await populateCategNum('','');
+    await populateSuppNum_('','');
 
 
     if (editMode) {
@@ -324,6 +329,17 @@ async function ItemForm(index, editMode) {
             }
         }
 
+        
+        const suppNum_Select = document.getElementById('SuppNum_');
+        const suppNum_Value = itemData.SuppNum_; 
+        const options5 = suppNum_Select.options;
+        for (let i = 0; i < options5.length; i++) {
+            if (options5[i].value == suppNum_Value) {
+                options5[i].selected = true;
+                break; 
+            }
+        }
+
 
     } else {
         // If adding new, populate with default empty values
@@ -358,6 +374,7 @@ async function ItemForm(index, editMode) {
         const cItemType=document.getElementById('ItemType').value;
         const cItemDept=document.getElementById('ItemDept').value;
         const cCategNum=document.getElementById('CategNum').value;
+        const cSuppNum_=document.getElementById('SuppNum_').value;
         const nItemPrce=document.getElementById('ItemPrce').value;
         const nItemCost=document.getElementById('ItemCost').value;
         const nLandCost=document.getElementById('LandCost').value;
@@ -381,7 +398,7 @@ async function ItemForm(index, editMode) {
         if (editMode) {
             // Edit existing record
             editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
-                cBrandNum,cItemType,cItemDept,cCategNum,
+                cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
                 nItemPrce,nItemCost,nLandCost,
                 nOutright,lDisabled,lServices
             )
@@ -390,7 +407,7 @@ async function ItemForm(index, editMode) {
             // Add new record
             const cSuffixId='E'
             addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
-                cBrandNum,cItemType,cItemDept,cCategNum,
+                cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
                 nItemPrce,nItemCost,nLandCost,
                 nOutright,lDisabled,lServices,cSuffixId
             )
@@ -451,7 +468,7 @@ async function ItemForm(index, editMode) {
 
 
 async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices) {
     try {
@@ -473,6 +490,7 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
                 cItemType: cItemType,
                 cItemDept: cItemDept, 
                 cCategNum: cCategNum, 
+                cSuppNum_: cSuppNum_,
                 nItemPrce: nItemPrce,
                 nItemCost: nItemCost,
                 nLandCost: nLandCost,
@@ -498,7 +516,7 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
 }
 
 async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices,cSuffixId) {
     try {
@@ -520,6 +538,7 @@ async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
                 cItemType: cItemType,
                 cItemDept: cItemDept, 
                 cCategNum: cCategNum, 
+                cSuppNum_: cSuppNum_,
                 nItemPrce: nItemPrce,
                 nItemCost: nItemCost,
                 nLandCost: nLandCost,

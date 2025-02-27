@@ -315,6 +315,41 @@ export async function populateLocation(cLocation, cLocaName) {
     }
 }
 
+export async function populateSuppNum_(cSuppNum_, cSuppName) {
+    const suppnum_Select = document.getElementById('SuppNum_');
+    suppnum_Select.innerHTML = '';
+
+    const emptyOption = document.createElement('option');
+    emptyOption.value = ''; 
+    emptyOption.textContent = 'Select a Supplier'; // You can set custom text here
+    suppnum_Select.appendChild(emptyOption);
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/lookup/supplier');
+        const params = new URLSearchParams();
+        if (cSuppNum_) params.append('SuppNum_', cSuppNum_);
+        if (cSuppName) params.append('SuppName', cSuppName);
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const listSupp = await response.json();
+        listSupp.forEach(data => {
+            if (data.Disabled===0) {return}
+            const option = document.createElement('option');
+            option.value = data.SuppNum_;
+            option.textContent = data.SuppName;
+            suppnum_Select.appendChild(option);
+            });
+
+    } catch (error) {
+        console.error('Fetch Supplier error:', error);
+    }
+}
+
 export async function validateField(fieldId, url, alertMessage) {
     const field = document.getElementById(fieldId);
     field.addEventListener('blur', async function () {

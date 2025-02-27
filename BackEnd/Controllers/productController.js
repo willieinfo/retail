@@ -203,6 +203,7 @@ const listCate = async (req, res) => {
   }
 }
 
+
 const checkUsersCde = async (req, res) => {
   const cUsersCde = req.query.UsersCde;  
  
@@ -237,12 +238,12 @@ const checkOtherCde = async (req, res) => {
 
 const addItemList = async (req, res) => {
   const { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices,cSuffixId } = req.body;  // Extract from body
 
   if (!cItemCode || !cUsersCde || !cOtherCde || !cDescript
-    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum
+    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum || !cSuppNum_
     ||!nItemPrce || !nItemCost || !nLandCost 
     ||!nOutright ||!lDisabled || !lServices || cSuffixId===undefined
   ) {
@@ -255,12 +256,12 @@ const addItemList = async (req, res) => {
         -- Insert the new location and get the generated AutIncId
         INSERT INTO ITEMLIST
           ( ItemCode,UsersCde,OtherCde,Descript,
-          BrandNum,ItemType,ItemDept,CategNum,
+          BrandNum,ItemType,ItemDept,CategNum,SuppNum_,
           ItemPrce,ItemCost,LandCost,
           Outright,Disabled,Services,DateCost )
         VALUES
           ( @cItemCode,@cUsersCde,@cOtherCde,@cDescript,
-          @cBrandNum,@cItemType,@cItemDept,@cCategNum,
+          @cBrandNum,@cItemType,@cItemDept,@cCategNum,@cSuppNum_,
           @nItemPrce,@nItemCost,@nLandCost,
           @nOutright,@lDisabled,@lServices,@dDateCost )
 ;
@@ -313,7 +314,7 @@ const addItemList = async (req, res) => {
   
   
   const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices,cSuffixId,dDateCost }
 
@@ -331,12 +332,12 @@ const addItemList = async (req, res) => {
 
 const editItemList = async (req, res) => {
   const { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices } = req.body;  // Extract from body
 
   if (!cItemCode || !cUsersCde || !cOtherCde || !cDescript
-    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum
+    ||!cBrandNum || !cItemType || !cItemDept || !cCategNum || !cSuppNum_
     ||!nItemPrce || !nItemCost || !nLandCost 
     ||!nOutright || !lDisabled || !lServices
   ) {
@@ -353,6 +354,7 @@ const editItemList = async (req, res) => {
         ItemType=@cItemType,
         ItemDept=@cItemDept,
         CategNum=@cCategNum,
+        SuppNum_=@cSuppNum_,
         ItemPrce=@nItemPrce,
         ItemCost=@nItemCost,
         LandCost=@nLandCost,
@@ -362,7 +364,7 @@ const editItemList = async (req, res) => {
     WHERE ItemCode=@cItemCode`;
 
   const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
-    cBrandNum,cItemType,cItemDept,cCategNum,
+    cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices };
 

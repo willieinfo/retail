@@ -42,14 +42,18 @@
             <button id="closeSales">✖</button>
         </div>
         <div id="salesInvoice" class="ReportBody"></div>
-        <div class="ReportFooter" style="justify-content: flex-end;">
+        <div class="ReportFooter">
+            <button id="addSalesRec"><i class="fa fa-add"></i> Add</button>
             <div>
                 <span id="salesLstCounter"></span>
-                <button id="printList"><i class="fa fa-print"></i> Excel</button>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
     </div>
+    <div id="SaleForm" class="report-section">
+    </div>
+
     <div id="SalesRankStore" class="report-section">
         <div class="ReportHead">
             <span>Sales Ranking Report by Location</span>
@@ -59,7 +63,7 @@
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div>
                 <span id="saleRank1Counter"></span>
-                <button id="printList"><i class="fa fa-print"></i> Excel</button>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank1"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -73,7 +77,7 @@
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div>
                 <span id="saleRank2Counter"></span>
-                <button id="printList"><i class="fa fa-print"></i> Excel</button>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank2"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -87,10 +91,10 @@
         </div>
         <div id="ListItem" class="ReportBody"></div>
         <div class="ReportFooter">
-            <button id="addItem"><i class="fa fa-plus"></i> Add</button>
+            <button id="addItem"><i class="fa fa-add"></i> Add</button>
             <div>
                 <span id="itemListCounter"></span>
-                <button id="printList"><i class="fa fa-print"></i> Excel</button>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -103,10 +107,11 @@
         </div>
         <div id="ListLoca" class="ReportBody"></div>
         <div class="ReportFooter">
-            <button id="addLoca"><i class="fa fa-plus"></i> Add</button>
+            <button id="addLoca"><i class="fa fa-add"></i> Add</button>
             <div>
                 <span id="locaListCounter"></span>
-                <button id="printList"><i class="fa fa-print"></i> Excel</button>
+                <button id="printList"><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
             </div>
         </div>
     </div>

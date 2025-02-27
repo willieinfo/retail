@@ -129,19 +129,18 @@ export function FiltrRec(cModules_) {
             const currentDate = new Date();
             const dDateFrom = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); 
             const dDate__To = currentDate; 
-            const cLocation=document.getElementById('Location')
 
             const formattedDateFrom = dDateFrom.toISOString().split('T')[0];
             const formattedDateTo = dDate__To.toISOString().split('T')[0];
 
-            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo, cLocation]));
+            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo]));
 
-            filterData = [formattedDateFrom, formattedDateTo, cLocation];
+            filterData = [formattedDateFrom, formattedDateTo];
         }
 
         document.getElementById('DateFrom').value = filterData[0];
         document.getElementById('Date__To').value = filterData[1];
-        document.getElementById('Location').value = filterData[2];
+        
 
         // Wait for populate functions to finish
         await populateLocation('', '');
@@ -150,6 +149,17 @@ export function FiltrRec(cModules_) {
         await populateItemDept('', '');
         await populateItemType('', '');
 
+        const locationSelect = document.getElementById('Location');
+        const locationValue = filterData[2].trim(); // The value that should be selected
+        // Check if the select element has options, then set the selected option
+        const options = locationSelect.options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value.trim() == locationValue) {
+                options[i].selected = true;
+                locationSelect.selectedIndex = i; // Set selectedIndex
+                break; // Exit loop once the option is selected
+            }
+        }
 
         // Cancel button logic
         document.getElementById('cancelBtn').addEventListener('click', () => {

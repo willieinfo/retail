@@ -166,8 +166,41 @@ const listLoca = async (req, res) => {
     }
 };
 
+const listSupp = async (req, res) => {
+  const cSuppNum_ = req.query.SuppNum_;  
+  const cSuppName = req.query.SuppName;  
+ 
+  // Build SQL query with parameters
+  let cSql = `SELECT 
+    SUPPLIER.SuppName,
+    SUPPLIER.SuppNum_,
+    SUPPLIER.Disabled
+    FROM SUPPLIER
+    WHERE 1=1`;
+
+    const params = {};
+    if (cSuppNum_) {
+      cSql += " AND SUPPLIER.SuppNum_ LIKE @cSuppNum_";
+      params.cSuppNum_ = `%${cSuppNum_}%`;  
+    }
+    if (cSuppName) {
+      cSql += " AND SUPPLIER.SuppName LIKE @cSuppName";
+      params.cSuppName = `%${cSuppName}%`;  
+    }
+    cSql += ` ORDER BY 1`;
+  
+  try {
+    const result = await queryDatabase(cSql, params);
+    res.json(result);  
+  } catch (err) {
+    console.error('ListSupp query error:', err);
+    res.status(500).send('Error fetching Supplier');
+  }
+}
+
   module.exports = { 
     listLoca,
+    listSupp,
     addLocation,
     editLocation,
     deleteLocation

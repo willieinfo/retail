@@ -14,7 +14,7 @@ img.style.zIndex = "-1";
 
 // MainMenu
 const menuItems= `
-<li class="sales"><i class="fa fa-money"></i> Sales
+<li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
         <li class="SalesInvoice">Sales Invoice</li>
         <hr class="menuLine">
@@ -23,7 +23,7 @@ const menuItems= `
         <li>Daily Sales Summary</li>
     </ul>
 </li>
-<li class="purchases">Purchases
+<li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
         <li>Purchases</li>
         <hr class="menuLine">
@@ -32,7 +32,7 @@ const menuItems= `
         <li>By Supplier</li>
     </ul>
 </li>
-<li class="transfers">Transfers
+<li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
         <li>Stock Transfer</li>
         <hr class="menuLine">
@@ -40,7 +40,7 @@ const menuItems= `
         <li>Stock Transfer by Category</li>
     </ul>
 </li>
-<li class="adjustment">Adjustment
+<li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
     <ul class="dropdown submenu">
         <li>Stock Adjustment</li>
         <hr class="menuLine">
@@ -48,14 +48,14 @@ const menuItems= `
         <li>Adjustments by Category</li>
     </ul>
 </li>
-<li class="inventory">Inventory
+<li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
         <li>Stock Ending</li>
         <li>Stock Position</li>
         <li>Inventory Variance</li>
     </ul>
 </li>
-<li class="lookup">Lookup Tables
+<li class="lookup"><i class="fa fa-table"></i> Lookup Tables
     <ul class="dropdown submenu">
         <li class="Products">Products</li>
         <li class="Brands">Brands</li>
@@ -66,9 +66,10 @@ const menuItems= `
         <li class="Location">Location</li>
         <li>Supplier</li>
         <li>Customer</li>
+        <li>System Users</li>
     </ul>
 </li>
-<li class="settings">Settings
+<li class="settings"><i class="fa fa-tools"></i> Settings
     <ul class="dropdown submenu">
         <li class="ThemeColor">Theme Color</li>
     </ul>
