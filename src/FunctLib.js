@@ -20,6 +20,15 @@ export function formatDate(dateString) {
     return `${month}/${day}/${year}`; // Return in MM/DD/YYYY format
 };
 
+export function yyyymmdd(dateString) {
+    const date = new Date(dateString);
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month and pad with 0
+    const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with 0
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+};
+
+
 export function showNotification(cMessage) {
     const notification = document.getElementById("notification");
     const notificationMessage = document.getElementById("notification-message");

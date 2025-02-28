@@ -36,12 +36,13 @@
     </div>
         
     <!-- Sales -->
+    <!-- SalesRec -->
     <div id="SalesLst" class="report-section">
         <div class="ReportHead">
-            <span>Sales Invoice List</span>
-            <button id="closeSales">✖</button>
+            <span><i class="fa fa-dollar-sign"></i> Sales Invoice List</span>
+            <button id="closeSalesRec">✖</button>
         </div>
-        <div id="salesInvoice" class="ReportBody"></div>
+        <div id="salesRecList" class="ReportBody"></div>
         <div class="ReportFooter">
             <button id="addSalesRec"><i class="fa fa-add"></i> Add</button>
             <div>
@@ -51,7 +52,26 @@
             </div>
         </div>
     </div>
+    <!-- SalesDtl -->
     <div id="SaleForm" class="report-section">
+        <div class="ReportHead">
+            <span>Sales Invoice Form</span>
+            <button id="closeSalesDtl">✖</button>
+        </div>
+        <!-- <div id="itemsTableDiv"> -->
+        <div id="salesInvoice" class="ReportBody"></div>
+        <!-- </div> -->
+        <div id="btnDiv">
+            <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+        </div>
+        <div class="ReportFooter">
+            <button id="addSalesDtl"><i class="fa fa-add"></i> Add</button>
+            <div>
+                <span id="salesDtlCounter"></span>
+                <button id="printList"><i class="fa fa-print"></i> Print</button>
+            </div>
+        </div>
     </div>
 
     <div id="SalesRankStore" class="report-section">

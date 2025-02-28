@@ -1,4 +1,4 @@
-import { showReport, formatDate, showNotification } from '../FunctLib.js';
+import { showReport, formatDate, yyyymmdd, populateLocation, showNotification } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -8,6 +8,7 @@ const formatter = new Intl.NumberFormat('en-US', {
   });    
 
 let globalData = []; // Define a global array
+let itemsDtl = []; 
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -15,7 +16,7 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/sales/SalesLst');
+        const url = new URL('http://localhost:3000/sales/SalesRecLst');
         const params = new URLSearchParams();
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
@@ -40,7 +41,7 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 }
 
 function updateTable() {
-    const reportBody = document.getElementById('salesInvoice');
+    const reportBody = document.getElementById('salesRecList');
     reportBody.innerHTML = ''; // Clear previous content
 
     const listTable = `
@@ -99,101 +100,161 @@ function updateTable() {
             }
         }
     });
-
-    
 }
 
-function SaleForm(index,editMode) {
-    if (document.getElementById('sale-form')) {
-        console.log("sale-form exists");
-        // return; // If it already exists, do nothing
-    }
-    
+async function SaleForm(index,editMode) {
+    const reportBody = document.getElementById('salesInvoice');
+    reportBody.innerHTML =''
+
+    const salesDtlCounter=document.getElementById('salesDtlCounter')
     const itemData = globalData[index];
 
-    // Create the form element
-    const saleForm = document.createElement('form');
-    saleForm.id = "sale-form";
-    saleForm.style.display = "none";  // Start with it hidden
-
-    saleForm.innerHTML = `
-        <div id="titleBar">Sales Form</div>
-        <div id="inputSection">
-            <br>        
-                <div id="salesRecord" class="textDiv">
-                    <div>
-                        <label for="Location">Location</label>
-                        <select id="Location"></select>
-                    </div>
-                    <div>
-                        <label for="ReferDoc">Ref. No</label>
-                        <input type="text" id="ReferDoc" name="ReferDoc" spellcheck="false">
-                    </div>
-                    <div>
-                        <label for="Date____">Date:</label>
-                        <input type="date" id="Date____">
-                    </div>
+    reportBody.innerHTML = `
+        <div id="invoiceForm">
+            <div id="inputFields" class="textDiv">
+                <div>
+                    <label for="Location">Location</label>
+                    <select id="Location"></select>
                 </div>
-
-                <div id="btnDiv">
-                <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <div>
+                    <label for="ReferDoc">Ref. No</label>
+                    <input type="text" id="ReferDoc" spellcheck="false">
+                </div>
+                <div>
+                    <label for="DateFrom">Date:</label>
+                    <input type="date" id="DateFrom">
+                </div>
+                <div>
+                    <label for="CustName">Customer</label>
+                    <input type="text" id="CustName" spellcheck="false">
+                </div>
+                <div>
+                    <label for="Remarks_">Remarks</label>
+                    <input type="text" id="Remarks_" spellcheck="false">
+                </div>
             </div>
         </div>
+        <div id="itemsTableDiv">
+            <br>
+            <table id="ListItemTable">
+                <thead id="ListItemHead">
+                    <tr>
+                        <th>Qty</th>
+                        <th>Stock No.</th>
+                        <th>Bar Code</th>
+                        <th>Item Description</th>
+                        <th>Gross</th>
+                        <th>Discount</th>
+                        <th>Net</th>
+                    </tr>
+                </thead>
+                 <tbody id="ListItemBody"></tbody>
+            </table>
+        </div>  
+
 
     `
-    const overlay = document.createElement('div');
-    overlay.id = 'modal-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
-    overlay.style.zIndex = 999; 
+    document.getElementById('SalesLst').classList.remove('active')
+    showReport('SaleForm')
 
-    // Append the form to the container with id 'Inventory'
-    document.getElementById('SalesLst').appendChild(saleForm);
-    document.getElementById('SalesLst').appendChild(overlay);
-
-    // Show the form by changing its display style
-    saleForm.style.display='flex'
-    // showReport('SaleForm')
+    await populateLocation('', '');
 
     if (editMode) {
+        document.getElementById('loadingIndicator').style.display = 'flex';
+
+        const cCtrlNum_=itemData.CtrlNum_
+        document.getElementById('ReferDoc').value=itemData.ReferDoc
+        document.getElementById('DateFrom').value=yyyymmdd(itemData.DateFrom)
+        document.getElementById('Remarks_').value=itemData.Remarks_
 
 
+        const locationSelect = document.getElementById('Location');
+        const locationValue = itemData.Location.trim(); // The value that should be selected
+        // Check if the select element has options, then set the selected option
+        const options = locationSelect.options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value.trim() == locationValue) {
+                options[i].selected = true;
+                locationSelect.selectedIndex = i; // Set selectedIndex
+                break; 
+            }
+        }
+
+        try {
+            // Build query parameters
+            const url = new URL('http://localhost:3000/sales/SalesDtlLst');
+            const params = new URLSearchParams();
+            if (cCtrlNum_) params.append('CtrlNum_', cCtrlNum_);
+    
+            // Send request with query parameters
+            const response = await fetch(`${url}?${params.toString()}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            itemsDtl = await response.json(); // Store full data array globally
+            salesDtlCounter.innerHTML=`${itemsDtl.length} Records`
+
+            updateItemTable();
+
+    
+        } catch (error) {
+            console.error('Fetch error:', error);
+        } finally {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
     } else {
-        // If adding new, populate with default empty values
+
     }
     document.getElementById('cancelBtn').addEventListener('click', () => {
-        document.getElementById('sale-form').remove(); // Remove the form from the DOM
-        document.getElementById('modal-overlay').remove();  // Remove overlay
+        showReport('SalesLst')  //Show SalesRec List
     });
 
     document.getElementById('saveBtn').addEventListener('click', (e) => {
         e.preventDefault();
 
-        document.getElementById('sale-form').remove(); 
-        document.getElementById('modal-overlay').remove();  
+        showReport('SalesLst')
     })
 }
 
 
+function updateItemTable() {
+    const ListItemBody=document.getElementById('ListItemBody')
+    const listTable = `
+            ${itemsDtl.map((item, index) => `
+                <tr id="trLocaList" data-index="${index}" >
+                    <td>${item.Quantity.toFixed(0) || 'N/A'}</td>
+                    <td>${item.UsersCde || 'N/A'}</td>
+                    <td>${item.OtherCde || 'N/A'}</td>
+                    <td class="colNoWrap">${item.Descript || 'N/A'}</td>
+                    <td>${formatter.format(item.Quantity*item.ItemPrce) || 'N/A'}</td>
+                    <td>${(item.Quantity*item.ItemPrce)-(item.Quantity*item.Amount__) || 'N/A'}</td>
+                    <td>${formatter.format(item.Quantity*item.Amount__) || 'N/A'}</td>
+                </tr>
+            `).join('')}
+        `;
 
+    ListItemBody.innerHTML = listTable; // Update the tbody with new rows
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
     const salesLstFileDiv = document.getElementById('SalesLst');
-    const closeList = document.getElementById('closeSales');
+    const saleFormFileDiv = document.getElementById('SaleForm');
+    const closeSalesRec = document.getElementById('closeSalesRec');
+    const closeSalesDtl = document.getElementById('closeSalesDtl');
     const addSalesRec = document.getElementById('addSalesRec');
 
     addSalesRec.addEventListener('click', () => {
         SaleForm();
     });
 
-    closeList.addEventListener('click', () => {
+    closeSalesRec.addEventListener('click', () => {
         salesLstFileDiv.classList.remove('active');
+    });
+    closeSalesDtl.addEventListener('click', () => {
+        saleFormFileDiv.classList.remove('active');
+        showReport('SalesLst')
     });
 
         // Add event listener to each element with the necessary arguments
@@ -221,7 +282,7 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
             // const cItemType = filterData[8];
             // const cItemDept = filterData[9];
 
-            SalesLst(dDateFrom,dDate__To,cLocation)
+            SalesLst(dDateFrom,dDate__To,cLocation) //Calling Main SalesRec List
         });
     } catch (error) {
         console.error("Error processing the filter:", error);

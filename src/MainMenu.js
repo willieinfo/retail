@@ -25,7 +25,8 @@ const menuItems= `
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
-        <li>Purchases</li>
+        <li>Purchase Order</li>
+        <li>Receiving Report</li>
         <hr class="menuLine">
         <li>By SKU</li>
         <li>By Category</li>
@@ -35,6 +36,7 @@ const menuItems= `
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
         <li>Stock Transfer</li>
+        <li>Merchandise Pull Out</li>
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
         <li>Stock Transfer by Category</li>
@@ -50,6 +52,8 @@ const menuItems= `
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
+        <li>Physical Count</li>
+        <hr class="menuLine">
         <li>Stock Ending</li>
         <li>Stock Position</li>
         <li>Inventory Variance</li>
@@ -72,8 +76,16 @@ const menuItems= `
 <li class="settings"><i class="fa fa-tools"></i> Settings
     <ul class="dropdown submenu">
         <li class="ThemeColor">Theme Color</li>
+        <li class="WallPaper">Wall Paper</li>
     </ul>
 </li>
+<li class="exit"><i class="fa fa-close"></i> Exit
+    <ul class="dropdown submenu">
+        <li class="LogOut">Log-Out</li>
+        <li class="About">About</li>
+    </ul>
+</li>
+
 `;
 
 document.getElementById("menuNavBar").innerHTML = menuItems;

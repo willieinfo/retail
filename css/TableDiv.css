@@ -9,6 +9,7 @@
 
 
 #SalesLst,
+#SaleForm,
 #SalesRankStore,
 #SalesRankBrand, 
 #ProductFile,
@@ -18,7 +19,7 @@
 
     position: absolute; 
     /* Center the div */
-    top: calc(50% + 34px);
+    top: calc(50% + 40px);
     left: 50%; 
     transform: translate(-50%, -50%); 
 
@@ -34,6 +35,12 @@
     grid-template-columns: minmax(0, 1fr);    
 }
 
+#itemsTableDiv {
+    width: 80%; 
+    overflow: auto;
+    background-color: aquamarine;
+    position: relative;
+}
 
 .ReportHead {
     height: auto;
@@ -80,6 +87,7 @@ thead {
     z-index: 1;
 }
 
+
 /* Row and Cell Styling */
 th {
     text-align: center !important; 
@@ -122,7 +130,8 @@ td:last-child {
 }
 .closeRepo1,
 .closeRepo2, 
-#closeSales,
+#closeSalesRec,
+#closeSalesDtl,
 #closeList,
 #closeLoca {
     color: white;
@@ -153,6 +162,7 @@ tr:hover .colEditItem {
     color: #333;                
 }
 
+#salesDtlCounter, 
 #salesLstCounter, 
 #locaListCounter, 
 #itemListCounter, 
@@ -167,3 +177,10 @@ tr:hover .colEditItem {
     background-color: rgb(164,209,255) !important;
     transition: background-color 0.5s ease-in-out;
 }
+
+/* .itemsTable {
+    height: 50%;
+    width: 80%;
+    overflow-y: auto;
+    display: block; 
+} */
