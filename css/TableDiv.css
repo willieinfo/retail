@@ -34,12 +34,16 @@
     grid-template-rows: auto 1fr auto;
     grid-template-columns: minmax(0, 1fr);    
 }
-
+/* #SaleForm {
+    overflow: -moz-hidden-unscrollable;
+} */
 #itemsTableDiv {
-    width: 80%; 
-    overflow: auto;
-    background-color: aquamarine;
+    display: flex;
+    width: 100%; 
     position: relative;
+    max-height: 78%;
+    padding: 0px 10px;
+    overflow: auto;
 }
 
 .ReportHead {
@@ -69,6 +73,18 @@
     padding: 0px 10px 0px 10px;
 }
 
+.ReportFooter button {
+    min-width: 70px;
+}
+#addSection {
+    display: flex;
+    align-items: center;
+}
+#ScanCode {
+    height: 32px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
 table {
     margin-top: 0px;
     margin-bottom: 5px;
@@ -77,7 +93,7 @@ table {
     max-width: 1500px;
     min-width: 600px;
     background-color: rgb(245, 245, 245);
-    overflow-y: auto;
+    overflow: auto;
 }
 
 thead {

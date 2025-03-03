@@ -135,7 +135,6 @@ async function SaleForm(index,editMode) {
             </div>
         </div>
         <div id="itemsTableDiv">
-            <br>
             <table id="ListItemTable">
                 <thead id="ListItemHead">
                     <tr>
@@ -148,7 +147,7 @@ async function SaleForm(index,editMode) {
                         <th>Net</th>
                     </tr>
                 </thead>
-                 <tbody id="ListItemBody"></tbody>
+                <tbody id="ListItemBody"></tbody>
             </table>
         </div>  
 
@@ -219,22 +218,48 @@ async function SaleForm(index,editMode) {
 
 
 function updateItemTable() {
-    const ListItemBody=document.getElementById('ListItemBody')
-    const listTable = `
-            ${itemsDtl.map((item, index) => `
-                <tr id="trLocaList" data-index="${index}" >
-                    <td>${item.Quantity.toFixed(0) || 'N/A'}</td>
-                    <td>${item.UsersCde || 'N/A'}</td>
-                    <td>${item.OtherCde || 'N/A'}</td>
-                    <td class="colNoWrap">${item.Descript || 'N/A'}</td>
-                    <td>${formatter.format(item.Quantity*item.ItemPrce) || 'N/A'}</td>
-                    <td>${(item.Quantity*item.ItemPrce)-(item.Quantity*item.Amount__) || 'N/A'}</td>
-                    <td>${formatter.format(item.Quantity*item.Amount__) || 'N/A'}</td>
-                </tr>
-            `).join('')}
-        `;
+    let nTotalQty = 0;
+    let nTotalPrc = 0;
+    let nTotalDsc = 0;
+    let nTotalAmt = 0;
 
-    ListItemBody.innerHTML = listTable; // Update the tbody with new rows
+    const ListItemBody=document.getElementById('ListItemBody')
+    // Map through itemsDtl and build rows while accumulating totals
+    const listTable = itemsDtl.map((item, index) => {
+        // Accumulate totals inside the map
+        nTotalQty += item.Quantity || 0;
+        nTotalPrc += item.Quantity * item.ItemPrce || 0;
+        nTotalDsc += (item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__) || 0;
+        nTotalAmt += item.Quantity * item.Amount__ || 0;
+        return `
+            <tr id="trLocaList" data-index="${index}">
+                <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
+                <td>${item.UsersCde || 'N/A'}</td>
+                <td>${item.OtherCde || 'N/A'}</td>
+                <td class="colNoWrap">${item.Descript || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
+            </tr>
+        `;
+    }).join(''); // Join all rows into a single string
+
+     const listFooter=`
+                <tr></tr>
+                <tfooter id="ListItemFoot">
+                    <tr style="font-weight: bold">
+                        <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Totals: </td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                    </tr>
+                </tfooter>
+`
+
+    ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -244,9 +269,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSalesRec = document.getElementById('closeSalesRec');
     const closeSalesDtl = document.getElementById('closeSalesDtl');
     const addSalesRec = document.getElementById('addSalesRec');
+    const addSalesDtl = document.getElementById('addSalesDtl');
 
     addSalesRec.addEventListener('click', () => {
         SaleForm();
+    });
+    addSalesDtl.addEventListener('click', () => {
+        SalesDtl();
     });
 
     closeSalesRec.addEventListener('click', () => {
@@ -289,4 +318,83 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
     }
 });
 
+function SalesDtl() {
+    const itemsDtlForm = document.createElement('form');
+    itemsDtlForm.id = "items-form";
+    itemsDtlForm.style.display = "none";  // Start with it hidden
 
+    itemsDtlForm.innerHTML = `
+        <div id="titleBar">Sales Detail Form</div>
+        <div id="inputSection">
+            <br>
+            <div class="subTextDiv" id="inputDetails">
+                <div class="textDiv">
+                    <div class="subTextDiv">
+                        <label for="UsersCde">Stock No</label>
+                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="OtherCde">Bar Code</label>
+                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
+                    </div>
+                </div>
+
+                <div id="inputDescript" class="textDiv">
+                    <div class="subTextDiv" style="width:100%;">
+                        <label for="Descript">Item Description</label>
+                        <input type="text" id="Descript" name="Descript" spellcheck="false">
+                    </div>
+                </div>
+                <div class="textDiv">
+                    <div class="subTextDiv">
+                        <label for="ItemPrce">Item Price</label>
+                        <input type="number" id="ItemPrce" name="ItemPrce">
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="DiscRate">Less %</label>
+                        <input type="number" id="DiscRate" name="DiscRate">
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="Amount__">Net Amount</label>
+                        <input type="number" id="Amount__" name="Amount__">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="btnDiv">
+                <button type="submit" id="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
+                <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+            </div>
+        </div>
+    `;
+
+    // Create the overlay background for the modal
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    // overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
+    overlay.style.zIndex = 999; 
+
+    // Form styling to center it
+    itemsDtlForm.style.position = 'absolute';
+    itemsDtlForm.style.top = '50%';
+    itemsDtlForm.style.left = '50%';
+    itemsDtlForm.style.transform = 'translate(-50%, -50%)'; // Center the form
+    itemsDtlForm.style.backgroundColor = 'whitesmoke';
+    itemsDtlForm.style.padding = '10px';
+    itemsDtlForm.style.borderRadius = '8px';
+    itemsDtlForm.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+    itemsDtlForm.style.zIndex = 1000; // Ensure the form is above the overlay
+    itemsDtlForm.style.display = 'flex';
+    itemsDtlForm.style.flexDirection = 'column';
+    itemsDtlForm.style.width = '80%';
+    itemsDtlForm.style.maxWidth = '800px';
+
+    document.getElementById('SaleForm').appendChild(items-Form);
+    document.getElementById('SaleForm').appendChild(overlay);
+    itemsDtlForm.style.display = 'flex'
+}
