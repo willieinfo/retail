@@ -3,17 +3,10 @@
     display: none; /* Initially hide all sections */
 }
 .active {
-    /* display: flex;  */
     display: grid;
 }
 
-
-#SalesLst,
-#SaleForm,
-#SalesRankStore,
-#SalesRankBrand, 
-#ProductFile,
-#LocationFile {
+.containerDiv {
     width: 96%; 
     height: 90vh; 
 
@@ -34,10 +27,11 @@
     grid-template-rows: auto 1fr auto;
     grid-template-columns: minmax(0, 1fr);    
 }
-/* #SaleForm {
-    overflow: -moz-hidden-unscrollable;
-} */
-#itemsTableDiv {
+#SaleForm { 
+    overflow: hidden;
+} 
+
+.itemsTableDiv {
     display: flex;
     width: 100%; 
     position: relative;
@@ -94,6 +88,8 @@ table {
     min-width: 600px;
     background-color: rgb(245, 245, 245);
     overflow: auto;
+    /* max-height: 78%; */
+
 }
 
 thead {
@@ -144,12 +140,8 @@ td:last-child {
     white-space: nowrap;
     overflow: hidden;
 }
-.closeRepo1,
-.closeRepo2, 
-#closeSalesRec,
-#closeSalesDtl,
-#closeList,
-#closeLoca {
+
+.closeForm {
     color: white;
     background-color: var(--main-bg-color);
     cursor: pointer;
@@ -178,11 +170,7 @@ tr:hover .colEditItem {
     color: #333;                
 }
 
-#salesDtlCounter, 
-#salesLstCounter, 
-#locaListCounter, 
-#itemListCounter, 
-#saleRank1Counter,#saleRank2Counter {
+.recCounter {
     color: white;
     font-family: 'Times New Roman', Times, serif;
     font-style: italic;

@@ -243,8 +243,8 @@ async function ItemForm(index, editMode) {
             </div>
 
             <div id="btnDiv">
-                <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="submit" id="saveItemListBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+                <button type="button" id="cancelItemListBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>
         </div>
     `;
@@ -357,13 +357,13 @@ async function ItemForm(index, editMode) {
 
 
     // Event listener for Cancel button to close the modal
-    document.getElementById('cancelBtn').addEventListener('click', () => {
+    document.getElementById('cancelItemListBtn').addEventListener('click', () => {
         document.getElementById('item-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
 
     // Event listener for Save button to edit or add data and close the modal
-    document.getElementById('saveBtn').addEventListener('click', (e) => {
+    document.getElementById('saveItemListBtn').addEventListener('click', (e) => {
         e.preventDefault();
 
         const cItemCode= editMode ? itemData.ItemCode : 'NEW_ITEM';

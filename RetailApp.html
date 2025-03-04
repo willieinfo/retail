@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="./css/Settings.css">
 </head>
 <body>
-    <img src="./images/RetailShop3.jpg" alt="Retail Shop" id="background-image" />
+    <img alt="Retail Shop" id="background-image" />
     <!-- MainMenu -->
     <div id="headerDiv">
         <div id="headerCaption">
@@ -37,33 +37,33 @@
         
     <!-- Sales -->
     <!-- SalesRec -->
-    <div id="SalesLst" class="report-section">
+    <div id="SalesLst" class="report-section containerDiv">
         <div class="ReportHead">
             <span><i class="fa fa-dollar-sign"></i> Sales Invoice List</span>
-            <button id="closeSalesRec">✖</button>
+            <button id="closeSalesRec" class="closeForm">✖</button>
         </div>
         <div id="salesRecList" class="ReportBody"></div>
         <div class="ReportFooter">
             <button id="addSalesRec"><i class="fa fa-add"></i> Add</button>
             <div>
-                <span id="salesLstCounter"></span>
+                <span id="salesLstCounter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
     </div>
     <!-- SalesDtl -->
-    <div id="SaleForm" class="report-section">
+    <div id="SaleForm" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Sales Invoice Form</span>
-            <button id="closeSalesDtl">✖</button>
+            <button id="closeSalesDtl" class="closeForm">✖</button>
         </div>
-        <!-- <div id="itemsTableDiv"> -->
+        <!-- <div class="itemsTableDiv"> -->
         <div id="salesInvoice" class="ReportBody"></div>
         <!-- </div> -->
         <div id="btnDiv">
-            <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
-            <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+            <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
         </div>
         <div class="ReportFooter">
             <div id="addSection">
@@ -71,35 +71,35 @@
                 <input type="text" id="ScanCode" placeholder="Type Code to add" spellcheck="false">
             </div>
             <div>
-                <span id="salesDtlCounter"></span>
+                <span id="salesDtlCounter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-print"></i> Print</button>
             </div>
         </div>
     </div>
 
-    <div id="SalesRankStore" class="report-section">
+    <div id="SalesRankStore" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Sales Ranking Report by Location</span>
-            <button class="closeRepo1">✖</button>
+            <button id="closeRepo1" class="closeForm">✖</button>
         </div>
         <div id="salesRankStore" class="ReportBody"></div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div>
-                <span id="saleRank1Counter"></span>
+                <span id="saleRank1Counter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank1"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
     </div>
-    <div id="SalesRankBrand" class="report-section">
+    <div id="SalesRankBrand" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Sales Ranking Report by Brand</span>
-            <button class="closeRepo2">✖</button>
+            <button id="closeRepo2" class="closeForm">✖</button>
         </div>
         <div id="salesRankBrand" class="ReportBody"></div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div>
-                <span id="saleRank2Counter"></span>
+                <span id="saleRank2Counter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank2"><i class="fa fa-filter"></i> Filter List</button>
             </div>
@@ -107,32 +107,32 @@
     </div>
 
     <!-- Lookup -->
-    <div id="ProductFile" class="report-section">
+    <div id="ProductFile" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Product File</span>
-            <button id="closeList">✖</button>
+            <button id="closeList" class="closeForm">✖</button>
         </div>
         <div id="ListItem" class="ReportBody"></div>
         <div class="ReportFooter">
             <button id="addItem"><i class="fa fa-add"></i> Add</button>
             <div>
-                <span id="itemListCounter"></span>
+                <span id="itemListCounter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
     </div>
 
-    <div id="LocationFile" class="report-section">
+    <div id="LocationFile" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Location File</span>
-            <button id="closeLoca">✖</button>
+            <button id="closeLoca" class="closeForm">✖</button>
         </div>
         <div id="ListLoca" class="ReportBody"></div>
         <div class="ReportFooter">
             <button id="addLoca"><i class="fa fa-add"></i> Add</button>
             <div>
-                <span id="locaListCounter"></span>
+                <span id="locaListCounter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-file-pdf"></i> PDF</button>
                 <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
             </div>
@@ -144,24 +144,23 @@
         <div id="colorsDiv">
             <p>Choose Theme Color</p>
             <div class="grpColorDivs">
-                <div id="blackDiv"></div>
-                <div id="blueDiv"></div>
-                <div id="greenDiv"></div>
-                <div id="violetDiv"></div>
+                <div id="blackDiv" class="circleClr"></div>
+                <div id="blueDiv" class="circleClr"></div>
+                <div id="greenDiv" class="circleClr"></div>
+                <div id="violetDiv" class="circleClr"></div>
             </div>
             <div class="grpColorDivs">
-                <div id="brownDiv"></div>
-                <div id="maroonDiv"></div>
-                <div id="redDiv"></div>
-                <div id="tomatoDiv"></div>
+                <div id="brownDiv" class="circleClr"></div>
+                <div id="maroonDiv" class="circleClr"></div>
+                <div id="redDiv" class="circleClr"></div>
+                <div id="tomatoDiv" class="circleClr"></div>
             </div>
             <div id="btnDiv">
-                <button type="submit" id="saveBtn">Save</button>
-                <button type="button" id="cancelBtn">Cancel</button>
+                <button type="submit" id="saveClrBtn" class="saveBtn">Save</button>
+                <button type="button" id="cancelClrBtn" class="cancelBtn">Cancel</button>
             </div>
         </div>
     </div>
-
 
     <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/MainMenu.js"></script>
@@ -174,6 +173,7 @@
     <script type="module" src="./src/LookUp/ListLoca.js"></script>
 
     <script type="module" src="./src/Settings/Settings.js"></script>
+    <script type="module" src="./src/Settings/WallPapr.js"></script>
 
 </body>
 </html>

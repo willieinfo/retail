@@ -115,7 +115,7 @@ label {
     /* padding: 10px; */
 }
 
-#saveBtn, #cancelBtn {
+.saveBtn, .cancelBtn {
     height: 30px;
     width: 140px;
     margin: 0px 10px;
@@ -139,10 +139,10 @@ input[type="number"] {
     padding-right: 10px;  
 }
 
-#cancelBtn:hover {
+.cancelBtn:hover {
     background-color: red;
 }
-#saveBtn:hover {
+.saveBtn:hover {
     background-color: var(--second-bg-color);
 }
 #titleBar {

@@ -42,8 +42,7 @@
     margin: 20px;
 }
 
-#blackDiv,#blueDiv, #greenDiv, #violetDiv,
-#brownDiv,#maroonDiv, #redDiv, #tomatoDiv {
+.circleClr {    
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -53,19 +52,8 @@
     transition: transform 0.3s ease;
 }
 
-/* Color divs */
-#blackDiv { background-color: rgb(0,0,0); }
-#blueDiv { background-color: rgb(0, 64, 128); }
-#greenDiv { background-color: rgb(0, 64, 64); }
-#violetDiv { background-color: rgb(64,0,128); }
-#brownDiv { background-color: rgb(113,56,0); }
-#maroonDiv { background-color: rgb(128, 0, 64); }
-#redDiv { background-color: rgb(179,0,0); }
-#tomatoDiv { background-color: rgb(255, 99, 71); }
-
 /* Hover effect for color divs */
-#blackDiv:hover,#blueDiv:hover, #greenDiv:hover, #violetDiv:hover,
-#brownDiv:hover,#maroonDiv:hover, #redDiv:hover, #tomatoDiv:hover {
+.circleClr:hover {
     transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
@@ -79,4 +67,13 @@
 
 }
 
+/* Color divs */
+#blackDiv { background-color: rgb(0,0,0); }
+#blueDiv { background-color: rgb(0, 64, 128); }
+#greenDiv { background-color: rgb(0, 64, 64); }
+#violetDiv { background-color: rgb(64,0,128); }
+#brownDiv { background-color: rgb(113,56,0); }
+#maroonDiv { background-color: rgb(128, 0, 64); }
+#redDiv { background-color: rgb(179,0,0); }
+#tomatoDiv { background-color: rgb(255, 99, 71); }
 

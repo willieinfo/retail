@@ -1,4 +1,4 @@
-import { showReport, formatDate, yyyymmdd, populateLocation, showNotification } from '../FunctLib.js';
+import { showReport, formatDate, populateLocation, showNotification } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -69,7 +69,7 @@ function updateTable() {
                         <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                         <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
-                        <td>${item.Remarks_ || 'N/A'}</td>
+                        <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
                         <td>${item.Encoder_ || 'N/A'}</td>
                         <td>${formatDate(item.Log_Date) || 'N/A'}</td>
                     </tr>
@@ -94,7 +94,7 @@ function updateTable() {
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    console.log(`Row clicked for index: ${index}`);
+                    // console.log(`Row clicked for index: ${index}`);
                     SaleForm(index, true); // Pass only the index to your form
                 }
             }
@@ -114,7 +114,7 @@ async function SaleForm(index,editMode) {
             <div id="inputFields" class="textDiv">
                 <div>
                     <label for="Location">Location</label>
-                    <select id="Location"></select>
+                    <select id="SaleLoca"></select>
                 </div>
                 <div>
                     <label for="ReferDoc">Ref. No</label>
@@ -134,7 +134,7 @@ async function SaleForm(index,editMode) {
                 </div>
             </div>
         </div>
-        <div id="itemsTableDiv">
+        <div class="itemsTableDiv">
             <table id="ListItemTable">
                 <thead id="ListItemHead">
                     <tr>
@@ -156,18 +156,18 @@ async function SaleForm(index,editMode) {
     document.getElementById('SalesLst').classList.remove('active')
     showReport('SaleForm')
 
-    await populateLocation('', '');
+    await populateLocation('', '', 'SaleLoca');
 
     if (editMode) {
         document.getElementById('loadingIndicator').style.display = 'flex';
 
         const cCtrlNum_=itemData.CtrlNum_
         document.getElementById('ReferDoc').value=itemData.ReferDoc
-        document.getElementById('DateFrom').value=yyyymmdd(itemData.DateFrom)
+        document.getElementById('DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
         document.getElementById('Remarks_').value=itemData.Remarks_
 
 
-        const locationSelect = document.getElementById('Location');
+        const locationSelect = document.getElementById('SaleLoca');
         const locationValue = itemData.Location.trim(); // The value that should be selected
         // Check if the select element has options, then set the selected option
         const options = locationSelect.options;
@@ -203,15 +203,19 @@ async function SaleForm(index,editMode) {
             document.getElementById('loadingIndicator').style.display = 'none';
         }
     } else {
+        const dNew_Date= new Date()
+        document.getElementById('DateFrom').value=formatDate(dNew_Date,'YYYY-MM-DD')
 
     }
-    document.getElementById('cancelBtn').addEventListener('click', () => {
+
+    document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
+        
         showReport('SalesLst')  //Show SalesRec List
     });
 
-    document.getElementById('saveBtn').addEventListener('click', (e) => {
+    document.getElementById('saveSalesDtlBtn').addEventListener('click', (e) => {
         e.preventDefault();
-
+        console.log('Clicked called from Header')
         showReport('SalesLst')
     })
 }
@@ -260,6 +264,27 @@ function updateItemTable() {
 `
 
     ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
+    document.getElementById('ListItemBody').addEventListener('click', (event) => {
+        const row = event.target.closest('tr'); // Find the clicked row
+        if (row) {
+            if (!event.target.closest('.spanDelItem')) {
+                // Remove 'selected' class from all rows
+                const rows = document.querySelectorAll('#ListItemTable tbody tr');
+                rows.forEach(r => r.classList.remove('selected'));
+    
+                // Add 'selected' class to the clicked row
+                row.classList.add('selected');
+    
+                // Optionally, call your edit function if needed
+                const index = parseInt(row.getAttribute('data-index'));
+                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                    // console.log(`Row clicked for index: ${index}`);
+                    SalesDtl(index, true); // Pass only the index to your form
+                }
+            }
+        }
+    });
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -268,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saleFormFileDiv = document.getElementById('SaleForm');
     const closeSalesRec = document.getElementById('closeSalesRec');
     const closeSalesDtl = document.getElementById('closeSalesDtl');
-    const addSalesRec = document.getElementById('addSalesRec');
+    const addSalesRec = document.getElementById('addSalesRec'); //Footer Add button
     const addSalesDtl = document.getElementById('addSalesDtl');
 
     addSalesRec.addEventListener('click', () => {
@@ -318,10 +343,12 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
     }
 });
 
-function SalesDtl() {
+function SalesDtl(index,editMode) {
     const itemsDtlForm = document.createElement('form');
     itemsDtlForm.id = "items-form";
     itemsDtlForm.style.display = "none";  // Start with it hidden
+
+    const itemData = itemsDtl[index];
 
     itemsDtlForm.innerHTML = `
         <div id="titleBar">Sales Detail Form</div>
@@ -362,8 +389,8 @@ function SalesDtl() {
             </div>
             
             <div id="btnDiv">
-                <button type="submit" id="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
-                <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+                <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>
         </div>
     `;
@@ -376,7 +403,7 @@ function SalesDtl() {
     overlay.style.left = 0;
     overlay.style.width = '100%';
     overlay.style.height = '100%';
-    // overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
     overlay.style.zIndex = 999; 
 
     // Form styling to center it
@@ -394,7 +421,25 @@ function SalesDtl() {
     itemsDtlForm.style.width = '80%';
     itemsDtlForm.style.maxWidth = '800px';
 
-    document.getElementById('SaleForm').appendChild(items-Form);
+    document.getElementById('SaleForm').appendChild(itemsDtlForm);
     document.getElementById('SaleForm').appendChild(overlay);
     itemsDtlForm.style.display = 'flex'
+
+
+    if (editMode) {
+        document.getElementById('UsersCde').value=itemData.UsersCde
+        document.getElementById('OtherCde').value=itemData.OtherCde
+        document.getElementById('Descript').value=itemData.Descript
+        document.getElementById('ItemPrce').value=itemData.ItemPrce
+        document.getElementById('DiscRate').value=itemData.DiscRate
+        document.getElementById('Amount__').value=itemData.Amount__
+    }
+
+    document.getElementById('saveSalesDtlBtn').addEventListener('click', () => {
+        console.log('Clicked called from SalesDtl')
+        itemsDtlForm.style.display = 'none'
+    })
+    document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
+        itemsDtlForm.style.display = 'none'
+    })
 }

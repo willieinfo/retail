@@ -56,7 +56,11 @@ async function ListLoca(cLocation, cLocaName) {
         
         
     } catch (error) {
-        console.error('Fetch error:', error);
+        if (error.message === 'Failed to fetch') {
+            alert('Connection to the server is not established. Please check your connection and try again later.');
+        } else {
+            alert('An error occurred while fetching data. Please try again later.');
+        }
     } 
 
 }
@@ -171,8 +175,8 @@ async function LocaForm(index, editMode) {
                 </div>
             </div>
             <div id="btnDiv">
-                <button type="submit" id="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="submit" id="saveLocationBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+                <button type="button" id="cancelLocationBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>
         </div>
     `;
@@ -215,13 +219,13 @@ async function LocaForm(index, editMode) {
     }
 
     // Event listener for Cancel button to close the modal
-    document.getElementById('cancelBtn').addEventListener('click', () => {
+    document.getElementById('cancelLocationBtn').addEventListener('click', () => {
         document.getElementById('item-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
 
     // Event listener for Save button to edit or add data and close the modal
-    document.getElementById('saveBtn').addEventListener('click', (e) => {
+    document.getElementById('saveLocationBtn').addEventListener('click', (e) => {
         e.preventDefault();
         const cLocation= editMode ? itemData.Location : '0WPE'
         const cLocaName=document.getElementById('LocaName').value;

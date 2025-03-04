@@ -98,7 +98,7 @@ const SalesDtlLst = async (req, res) => {
   cSql += ` ORDER BY 1 `;
 
   // Log SQL query and parameters for debugging
-  console.log('Parameters:', params);
+  // console.log('Parameters:', params);
 
   try {
     // Execute query

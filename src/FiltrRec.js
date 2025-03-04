@@ -69,8 +69,8 @@ export function FiltrRec(cModules_) {
                 </div>
                 
                 <div id="btnDiv">
-                    <button type="submit" id="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
-                    <button type="button" id="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                    <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
+                    <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
                 </div>
             </div>
         `;
@@ -162,13 +162,13 @@ export function FiltrRec(cModules_) {
         }
 
         // Cancel button logic
-        document.getElementById('cancelBtn').addEventListener('click', () => {
+        document.getElementById('cancelFilterBtn').addEventListener('click', () => {
             document.getElementById('filter-form').remove(); 
             document.getElementById('modal-overlay').remove();
         });
 
         // Save button logic
-        document.getElementById('saveBtn').addEventListener('click', (e) => {
+        document.getElementById('saveFilterBtn').addEventListener('click', (e) => {
             e.preventDefault();
 
             const dDateFrom = document.getElementById('DateFrom').value;

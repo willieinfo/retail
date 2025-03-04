@@ -10,19 +10,14 @@ let previousTheme = {
 };
 
 // Event listener for Cancel button
-document.getElementById('cancelBtn').addEventListener('click', () => {
-    // Revert to the previous theme
-    // document.documentElement.style.setProperty('--main-bg-color', previousTheme.mainBgColor);
-    // document.documentElement.style.setProperty('--second-bg-color', previousTheme.secondBgColor);
-    // document.documentElement.style.setProperty('--darker-bg-color', previousTheme.darkerBgColor);
+document.getElementById('cancelClrBtn').addEventListener('click', () => {
 
     themeColorDiv.classList.remove('active');
 
-    // console.log("Theme reverted to previous theme");
 });
 
 // Event listener for the save button
-document.getElementById('saveBtn').addEventListener('click', async () => {
+document.getElementById('saveClrBtn').addEventListener('click', async () => {
     // Capture the current theme colors
     const currentTheme = {
         mainBgColor: getComputedStyle(document.documentElement).getPropertyValue('--main-bg-color').trim(),

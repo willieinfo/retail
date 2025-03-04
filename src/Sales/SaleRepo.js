@@ -147,7 +147,7 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 document.addEventListener('DOMContentLoaded', () => {
     const salesRankLocationElements = document.querySelectorAll('.salesRankingByLocation');
     const rankRepoDiv = document.getElementById('SalesRankStore');
-    const closeRepo = document.querySelector('.closeRepo1');
+    const closeRepo = document.getElementById('closeRepo1');
     
     closeRepo.addEventListener('click', () => {
         rankRepoDiv.classList.remove('active');
@@ -298,7 +298,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 document.addEventListener('DOMContentLoaded', () => {
     const salesRankLocationElements = document.querySelectorAll('.salesRankingByBrand');
     const rankRepoDiv = document.getElementById('SalesRankBrand');
-    const closeRepo = document.querySelector('.closeRepo2');
+    const closeRepo = document.getElementById('closeRepo2');
     
     closeRepo.addEventListener('click', () => {
         rankRepoDiv.classList.remove('active');

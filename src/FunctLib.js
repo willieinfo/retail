@@ -12,20 +12,13 @@ export function showReport(reportType) {
     selectedSection.classList.add('active');
 }
 
-export function formatDate(dateString) {
+export function formatDate(dateString, cDateFormat='MM/DD/YYYY') {
     const date = new Date(dateString);
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month and pad with 0
     const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with 0
     const year = date.getFullYear();
-    return `${month}/${day}/${year}`; // Return in MM/DD/YYYY format
-};
-
-export function yyyymmdd(dateString) {
-    const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get month and pad with 0
-    const day = String(date.getDate()).padStart(2, '0'); // Get day and pad with 0
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+    if (cDateFormat==='MM/DD/YYYY') return `${month}/${day}/${year}`; 
+    if (cDateFormat==='YYYY-MM-DD') return `${year}-${month}-${day}`;
 };
 
 
@@ -289,8 +282,8 @@ export async function populateItemType(cItemType, cDescript) {
     }
 }
 
-export async function populateLocation(cLocation, cLocaName) {
-    const locationSelect = document.getElementById('Location');
+export async function populateLocation(cLocation, cLocaName, cLocat_Id='Location') {
+    const locationSelect = document.getElementById(cLocat_Id);
     locationSelect.innerHTML = '';
 
     const emptyOption = document.createElement('option');
