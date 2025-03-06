@@ -1,4 +1,4 @@
-import { showReport, formatDate, populateLocation, showNotification } from '../FunctLib.js';
+import { showReport, formatDate, populateLocation, showNotification, get24HrTime } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -423,8 +423,12 @@ function SalesDtl(index,editMode) {
                 </div>
                 <div class="textDiv">
                     <div class="subTextDiv">
+                        <label for="Quantity">Quantity</label>
+                        <input type="number" id="Quantity" name="Quantity">
+                    </div>
+                    <div class="subTextDiv">
                         <label for="ItemPrce">Item Price</label>
-                        <input type="number" id="ItemPrce" name="ItemPrce" spellcheck="false">
+                        <input type="number" id="ItemPrce" name="ItemPrce">
                     </div>
                     <div class="subTextDiv">
                         <label for="DiscRate">Less %</label>
@@ -479,6 +483,7 @@ function SalesDtl(index,editMode) {
         document.getElementById('UsersCde').value=itemData.UsersCde
         document.getElementById('OtherCde').value=itemData.OtherCde
         document.getElementById('Descript').value=itemData.Descript
+        document.getElementById('Quantity').value=itemData.Quantity
         document.getElementById('ItemPrce').value=itemData.ItemPrce
         document.getElementById('DiscRate').value=itemData.DiscRate
         document.getElementById('Amount__').value=itemData.Amount__
@@ -486,6 +491,7 @@ function SalesDtl(index,editMode) {
         document.getElementById('UsersCde').value=''
         document.getElementById('OtherCde').value=''
         document.getElementById('Descript').value=''
+        document.getElementById('Quantity').value=0
         document.getElementById('ItemPrce').value=0.00
         document.getElementById('DiscRate').value=0.00
         document.getElementById('Amount__').value=0.00
@@ -505,6 +511,44 @@ function SalesDtl(index,editMode) {
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
     })
+}
+
+async function addSalesDtl() {
+
+    const nQuantity=document.getElementById('Quantity').value
+    const nItemPrce=document.getElementById('ItemPrce').value
+    const nDiscRate=document.getElementById('DiscRate').value
+    const nAmount__=document.getElementById('Amount__').value
+
+    const cCtrlNum_=itemData.CtrlNum_
+    const dDate____=itemData.DateFrom
+    const cTimeSale=get24HrTime()
+    try {
+        const response = await fetch('http://localhost:3000/sales/addSalesDetail', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cCtrlNum_: cCtrlNum_,
+                cRecordId: cRecordId,
+                cItemCode: cItemCode,
+                nQuantity: nQuantity,
+                nItemPrce: nItemPrce,
+                nDiscRate: nDiscRate,
+                nAmount__: nAmount__,
+                nLandCost: nLandCost,
+                dDate____: dDate____,
+                cTimeSale: cTimeSale
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -531,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showReport('SalesLst')
     });
 
-        // Add event listener to each element with the necessary arguments
+    // Add event listener to each element with the necessary arguments
     liSalesLstMenu.forEach(element => {
         element.addEventListener('click', () => {
             showReport('SalesLst')

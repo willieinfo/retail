@@ -376,3 +376,19 @@ export async function validateField(fieldId, url, alertMessage) {
     });
 }
 
+export function get24HrTime() {
+    const now = new Date();
+
+    // Extract hours, minutes, and seconds
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    // Pad hours, minutes, and seconds with leading zeros if needed
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    // Return the time in hh:mm:ss format
+    return `${hours}:${minutes}:${seconds}`;
+}
