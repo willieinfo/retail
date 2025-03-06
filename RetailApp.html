@@ -61,15 +61,19 @@
         <!-- <div class="itemsTableDiv"> -->
         <div id="salesInvoice" class="ReportBody"></div>
         <!-- </div> -->
-        <div id="btnDiv">
-            <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
-            <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+        <div class="btnDiv">
+            <button type="submit" id="saveSalesRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelSalesRecBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
         </div>
         <div class="ReportFooter">
             <div id="addSection">
                 <button id="addSalesDtl"><i class="fa fa-add"></i> Add</button>
                 <input type="text" id="ScanCode" placeholder="Type Code to add" spellcheck="false">
             </div>
+            <!-- <div>
+                <button><i class="fa fa-add"></i> Upload</button>
+                <button><i class="fa fa-locate"></i> Search</button>
+            </div> -->
             <div>
                 <span id="salesDtlCounter" class="recCounter"></span>
                 <button id="printList"><i class="fa fa-print"></i> Print</button>
@@ -155,7 +159,7 @@
                 <div id="redDiv" class="circleClr"></div>
                 <div id="tomatoDiv" class="circleClr"></div>
             </div>
-            <div id="btnDiv">
+            <div class="btnDiv">
                 <button type="submit" id="saveClrBtn" class="saveBtn">Save</button>
                 <button type="button" id="cancelClrBtn" class="cancelBtn">Cancel</button>
             </div>

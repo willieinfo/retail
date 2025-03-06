@@ -31,8 +31,8 @@ const baseURL = window.location.origin;
 // Remove the base URL from the full image URL
 const relativePath = '.'+imageSrc.src.replace(baseURL, '');
 
-console.log(relativePath); // Logs the relative path like "./images/RetailShop1.JPG"
-console.log(wallpaper.indexOf(relativePath)); // Logs the index of the relative path in the wallpaper array
+// console.log(relativePath); // Logs the relative path like "./images/RetailShop1.JPG"
+// console.log(wallpaper.indexOf(relativePath)); // Logs the index of the relative path in the wallpaper array
 
 let index = wallpaper.indexOf(relativePath)
 function changeWallPaper() {

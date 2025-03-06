@@ -146,7 +146,7 @@ async function LocaForm(index, editMode) {
 
     itemForm.innerHTML = `
         <div id="titleBar">Location Form</div>
-        <div id="inputSection">
+        <div class="inputSection">
             <br>        
             <div class="textDiv">
                 <div class="subTextDiv">
@@ -174,7 +174,7 @@ async function LocaForm(index, editMode) {
                     <label for="Disabled">Disabled</label>
                 </div>
             </div>
-            <div id="btnDiv">
+            <div class="btnDiv">
                 <button type="submit" id="saveLocationBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
                 <button type="button" id="cancelLocationBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>

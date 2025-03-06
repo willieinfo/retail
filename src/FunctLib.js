@@ -282,7 +282,7 @@ export async function populateItemType(cItemType, cDescript) {
     }
 }
 
-export async function populateLocation(cLocation, cLocaName, cLocat_Id='Location') {
+export async function populateLocation(cLocation, cLocaName, cSellArea='', cLocat_Id='Location') {
     const locationSelect = document.getElementById(cLocat_Id);
     locationSelect.innerHTML = '';
 
@@ -306,6 +306,8 @@ export async function populateLocation(cLocation, cLocaName, cLocat_Id='Location
         const listLoca = await response.json();
         listLoca.forEach(data => {
             if (data.Disabled===0) {return}
+            if (cSellArea==='SellArea' && !data.SellArea) {return}
+                
             const option = document.createElement('option');
             option.value = data.Location;
             option.textContent = data.LocaName;

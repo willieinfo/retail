@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { SalesRankStore, SalesRankBrand } = require('../Controllers/salesController');
-const { SalesRecLst, SalesDtlLst, } = require('../Controllers/salesInput');
+const { SalesRecLst, SalesDtlLst, addSalesHeader } = require('../Controllers/salesInput');
 
 // router.get('/sales', getSales);  // Route to get sales
 // router.post('/sales', createSale);  // Route to create a sale
@@ -13,5 +13,7 @@ router.get('/SalesDtlLst', SalesDtlLst)
 
 router.get('/SalesRankStore', SalesRankStore)
 router.get('/SalesRankBrand', SalesRankBrand)
+
+router.post('/addSalesHeader', addSalesHeader)
 
 module.exports = router;

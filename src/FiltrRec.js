@@ -68,7 +68,7 @@ export function FiltrRec(cModules_) {
                     </div>
                 </div>
                 
-                <div id="btnDiv">
+                <div class="btnDiv">
                     <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
                     <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
                 </div>
@@ -111,14 +111,17 @@ export function FiltrRec(cModules_) {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
+            await populateLocation('', '', 'SellArea');
         } else if (cModules_ === 'SaleRnk1') {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
+            await populateLocation('', '', 'SellArea');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
+            await populateLocation('', '', 'SellArea');
         }
 
         // Show the form by changing its display style
@@ -143,7 +146,6 @@ export function FiltrRec(cModules_) {
         
 
         // Wait for populate functions to finish
-        await populateLocation('', '');
         await populateBrandNum('', '');
         await populateCategNum('', '');
         await populateItemDept('', '');

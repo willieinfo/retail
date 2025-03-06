@@ -166,7 +166,7 @@ async function ItemForm(index, editMode) {
 
     itemForm.innerHTML = `
         <div id="titleBar">Item Form</div>
-        <div id="inputSection">
+        <div class="inputSection">
             <br>
             <div class="textDiv">
                 <div class="subTextDiv">
@@ -242,7 +242,7 @@ async function ItemForm(index, editMode) {
                 </div>
             </div>
 
-            <div id="btnDiv">
+            <div class="btnDiv">
                 <button type="submit" id="saveItemListBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
                 <button type="button" id="cancelItemListBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>

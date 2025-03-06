@@ -118,7 +118,7 @@ async function SaleForm(index,editMode) {
                 </div>
                 <div>
                     <label for="ReferDoc">Ref. No</label>
-                    <input type="text" id="ReferDoc" spellcheck="false">
+                    <input type="text" id="ReferDoc" spellcheck="false" readonly>
                 </div>
                 <div>
                     <label for="DateFrom">Date:</label>
@@ -150,13 +150,11 @@ async function SaleForm(index,editMode) {
                 <tbody id="ListItemBody"></tbody>
             </table>
         </div>  
-
-
     `
     document.getElementById('SalesLst').classList.remove('active')
     showReport('SaleForm')
 
-    await populateLocation('', '', 'SaleLoca');
+    await populateLocation('', '','SellArea', 'SaleLoca');
 
     if (editMode) {
         document.getElementById('loadingIndicator').style.display = 'flex';
@@ -203,23 +201,105 @@ async function SaleForm(index,editMode) {
             document.getElementById('loadingIndicator').style.display = 'none';
         }
     } else {
+        // Triggered from +Add button Footer
         const dNew_Date= new Date()
         document.getElementById('DateFrom').value=formatDate(dNew_Date,'YYYY-MM-DD')
-
-    }
-
-    document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
+        document.getElementById('ReferDoc').value='New Record'
+        document.getElementById('Remarks_').value=''
+        itemsDtl = []; 
+        updateItemTable();
         
-        showReport('SalesLst')  //Show SalesRec List
-    });
-
-    document.getElementById('saveSalesDtlBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log('Clicked called from Header')
-        showReport('SalesLst')
-    })
+    }
 }
 
+document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
+    
+    const salesDtlCounter=document.getElementById('salesDtlCounter').innerText
+    const cLocation=document.getElementById('SaleLoca').value
+    const cRemarks_=document.getElementById('Remarks_').value
+    const dDateFrom=document.getElementById('DateFrom').value
+
+
+    if (!cLocation) {
+        document.getElementById('SaleLoca').focus();
+        document.getElementById('SaleLoca').classList.add('invalid');  // Add a class to highlight
+        return ;
+    }
+
+    if (salesDtlCounter) {
+        alert('In edit mode')
+    } else {
+        const cCtrlNum_='NEW_CTRLID'
+        const cEncoder_='Willie'
+        const cSuffixId='E'
+        const dLog_Date=new Date()
+        const nNoOfItem=0
+        
+        if (addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
+            dLog_Date, nNoOfItem, cSuffixId)) {
+            showReport('SalesLst')  //Show back SalesRec List
+        }
+    }
+});
+
+
+document.getElementById('cancelSalesRecBtn').addEventListener('click', () => {
+    showReport('SalesLst')  
+});
+
+async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
+    dLog_Date, nNoOfItem, cSuffixId) {
+
+    try {
+        const response = await fetch('http://localhost:3000/sales/addSalesHeader', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cCtrlNum_: cCtrlNum_,
+                cLocation: cLocation, 
+                dDateFrom: dDateFrom,
+                cRemarks_: cRemarks_,
+                cEncoder_: cEncoder_,
+                dLog_Date: dLog_Date,
+                nNoOfItem: nNoOfItem,
+                cSuffixId: cSuffixId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+        if (updatedItem) {
+            
+            showNotification('SalesRec record added successfully!')
+            globalData.push(updatedItem);
+            updateTable();         
+
+            // Scroll to the last row after updating the table
+            setTimeout(() => {
+                const tableBody = document.getElementById('ListSalesBody'); 
+                if (tableBody) {
+                    const lastRow = tableBody.lastElementChild; // Get the last row
+                    if (lastRow) {
+                        lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        // 🔹 Simulate a hover effect
+                        lastRow.classList.add('hover-effect'); 
+                        // 🔹 Remove hover effect after 2 seconds
+                        setTimeout(() => lastRow.classList.remove('hover-effect'), 2000);                        
+                    }
+                }
+            }, 100); // Small delay to ensure table updates first
+        }
+
+        
+    } catch (error) {
+        console.error('Update SalesRec error:', error);
+    }
+}
 
 function updateItemTable() {
     let nTotalQty = 0;
@@ -238,8 +318,8 @@ function updateItemTable() {
         return `
             <tr id="trLocaList" data-index="${index}">
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
-                <td>${item.UsersCde || 'N/A'}</td>
-                <td>${item.OtherCde || 'N/A'}</td>
+                <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+                <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.Descript || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
@@ -248,7 +328,7 @@ function updateItemTable() {
         `;
     }).join(''); // Join all rows into a single string
 
-     const listFooter=`
+    const listFooter=`
                 <tr></tr>
                 <tfooter id="ListItemFoot">
                     <tr style="font-weight: bold">
@@ -287,37 +367,6 @@ function updateItemTable() {
 
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
-    const salesLstFileDiv = document.getElementById('SalesLst');
-    const saleFormFileDiv = document.getElementById('SaleForm');
-    const closeSalesRec = document.getElementById('closeSalesRec');
-    const closeSalesDtl = document.getElementById('closeSalesDtl');
-    const addSalesRec = document.getElementById('addSalesRec'); //Footer Add button
-    const addSalesDtl = document.getElementById('addSalesDtl');
-
-    addSalesRec.addEventListener('click', () => {
-        SaleForm();
-    });
-    addSalesDtl.addEventListener('click', () => {
-        SalesDtl();
-    });
-
-    closeSalesRec.addEventListener('click', () => {
-        salesLstFileDiv.classList.remove('active');
-    });
-    closeSalesDtl.addEventListener('click', () => {
-        saleFormFileDiv.classList.remove('active');
-        showReport('SalesLst')
-    });
-
-        // Add event listener to each element with the necessary arguments
-    liSalesLstMenu.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('SalesLst')
-        });
-    });
-});
 
 document.getElementById('salesFilter').addEventListener('click', async () => {
     try {
@@ -352,7 +401,7 @@ function SalesDtl(index,editMode) {
 
     itemsDtlForm.innerHTML = `
         <div id="titleBar">Sales Detail Form</div>
-        <div id="inputSection">
+        <div class="inputSection">
             <br>
             <div class="subTextDiv" id="inputDetails">
                 <div class="textDiv">
@@ -375,7 +424,7 @@ function SalesDtl(index,editMode) {
                 <div class="textDiv">
                     <div class="subTextDiv">
                         <label for="ItemPrce">Item Price</label>
-                        <input type="number" id="ItemPrce" name="ItemPrce">
+                        <input type="number" id="ItemPrce" name="ItemPrce" spellcheck="false">
                     </div>
                     <div class="subTextDiv">
                         <label for="DiscRate">Less %</label>
@@ -388,7 +437,7 @@ function SalesDtl(index,editMode) {
                 </div>
             </div>
             
-            <div id="btnDiv">
+            <div class="btnDiv">
                 <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
                 <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
             </div>
@@ -433,13 +482,64 @@ function SalesDtl(index,editMode) {
         document.getElementById('ItemPrce').value=itemData.ItemPrce
         document.getElementById('DiscRate').value=itemData.DiscRate
         document.getElementById('Amount__').value=itemData.Amount__
+    } else {
+        document.getElementById('UsersCde').value=''
+        document.getElementById('OtherCde').value=''
+        document.getElementById('Descript').value=''
+        document.getElementById('ItemPrce').value=0.00
+        document.getElementById('DiscRate').value=0.00
+        document.getElementById('Amount__').value=0.00
+
     }
 
-    document.getElementById('saveSalesDtlBtn').addEventListener('click', () => {
-        console.log('Clicked called from SalesDtl')
-        itemsDtlForm.style.display = 'none'
+    document.getElementById('saveSalesDtlBtn').addEventListener('click', (e) => {
+        e.preventDefault()
+        alert('Save Clicked called from SalesDtl')
+        document.getElementById('items-form').remove()
+        document.getElementById('modal-overlay').remove();
+
     })
+
     document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
-        itemsDtlForm.style.display = 'none'
+        console.log('Cancel Clicked called from SalesDtl')
+        document.getElementById('items-form').remove()
+        document.getElementById('modal-overlay').remove();
     })
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
+    const salesLstFileDiv = document.getElementById('SalesLst');
+    const saleFormFileDiv = document.getElementById('SaleForm');
+    const closeSalesRec = document.getElementById('closeSalesRec');
+    const closeSalesDtl = document.getElementById('closeSalesDtl');
+    const addSalesRec = document.getElementById('addSalesRec'); //Footer Add button
+    const addSalesDtl = document.getElementById('addSalesDtl');
+
+    addSalesRec.addEventListener('click', () => {
+        SaleForm();
+    });
+    addSalesDtl.addEventListener('click', () => {
+        SalesDtl();
+    });
+
+    closeSalesRec.addEventListener('click', () => {
+        salesLstFileDiv.classList.remove('active');
+    });
+    closeSalesDtl.addEventListener('click', () => {
+        saleFormFileDiv.classList.remove('active');
+        showReport('SalesLst')
+    });
+
+        // Add event listener to each element with the necessary arguments
+    liSalesLstMenu.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesLst')
+        });
+    });
+
+});
+
+
+
+
