@@ -207,7 +207,7 @@ const listCate = async (req, res) => {
 const checkUsersCde = async (req, res) => {
   const cUsersCde = req.query.UsersCde;  
  
-  let cSql = `SELECT UsersCde FROM ITEMLIST WHERE UsersCde=@cUsersCde`
+  let cSql = `SELECT UsersCde, Descript FROM ITEMLIST WHERE UsersCde=@cUsersCde`
   const params = {};
   params.cUsersCde = `${cUsersCde}`;  
   try {
@@ -223,7 +223,7 @@ const checkUsersCde = async (req, res) => {
 const checkOtherCde = async (req, res) => {
   const cOtherCde = req.query.OtherCde;  
  
-  let cSql = `SELECT OtherCde FROM ITEMLIST WHERE OtherCde=@cOtherCde`
+  let cSql = `SELECT OtherCde, Descript FROM ITEMLIST WHERE OtherCde=@cOtherCde`
   const params = {};
   params.cOtherCde = `${cOtherCde}`;  
   try {
@@ -386,16 +386,46 @@ const deleteItemList = async (req, res) => {
       return res.status(400).json({ error: 'Missing ItemCode' });
   }
 
-  const cSql = `DELETE FROM ITEMLIST WHERE ItemCode=@cItemCode`;
-  const params = { cItemCode };
+  let cSql = `
+    SELECT TOP 1 ItemCode FROM SALESDTL WHERE ItemCode=@cItemCode
+    UNION ALL 
+    SELECT TOP 1 ItemCode FROM COUNTDTL WHERE ItemCode=@cItemCode
+    UNION ALL 
+    SELECT TOP 1 ItemCode FROM PURCHDTL WHERE ItemCode=@cItemCode
+    UNION ALL 
+    SELECT TOP 1 ItemCode FROM ITEMADJU WHERE ItemCode=@cItemCode
+    UNION ALL 
+    SELECT TOP 1 ItemCode FROM STOCKDTL WHERE ItemCode=@cItemCode
+    UNION ALL 
+    SELECT TOP 1 ItemCode FROM PUORDDTL WHERE ItemCode=@cItemCode
+`;  
+const params = { cItemCode };
 
-  try {
-      const result = await queryDatabase(cSql, params);
-      res.json({ message: 'Delete successful', rowsAffected: result });
-  } catch (err) {
-      console.error('Delete ITEMLIST error:', err);
-      res.status(500).json({ error: 'Error deleting ITEMLIST' });
+try {
+  const result = await queryDatabase(cSql, params);
+
+  // If any row is found, ItemCode cannot be deleted
+  if (result && result.length > 0) {
+    return res.status(400).json({
+      message: 'Delete cannot be performed. The ItemCode is referenced in transactions.'
+    });
   }
+
+    cSql = `DELETE FROM ITEMLIST WHERE ItemCode=@cItemCode`;
+  
+    try {
+        const result = await queryDatabase(cSql, params);
+        res.json({ message: 'Delete successful', rowsAffected: result });
+    } catch (err) {
+        console.error('Delete ITEMLIST error:', err);
+        res.status(500).json({ error: 'Error deleting ITEMLIST' });
+    }
+
+  } catch (err) {
+    console.error('Error checking ItemCode usage:', err);
+    return res.status(500).json({ error: 'Error checking ItemCode usage' });
+  }
+
 };
 
 const getItemReco = async (req, res) => {

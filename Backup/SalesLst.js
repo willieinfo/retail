@@ -146,15 +146,6 @@ async function SaleForm(index,editMode) {
             </table>
         </div>  
     `    
-    // <div style="display: flex; width: 20%; background-color: blue; overflow: hidden;">
-    //     <div style="position: fixed; display: flex; flex-wrap: wrap; padding: 10px; background-color: red; ">
-    //         <button>Button 1</button>
-    //         <button>Button 1</button>
-    //         <button>Button 1</button>
-    //         <button>Button 1</button>
-    //     </div>
-    // </div>
-
     document.getElementById('SalesLst').classList.remove('active')
     showReport('SaleForm')
 
@@ -333,17 +324,17 @@ function updateItemTable() {
     }).join(''); // Join all rows into a single string
 
     const listFooter=`
-            <tfoot id="ListItemFoot">
-                <tr style="font-weight: bold;">
-                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: right">Totals: </td>
-                    <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
-                    <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
-                    <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                </tr>
-            </tfoot>
+                <tfoot id="ListItemFoot">
+                    <tr style="font-weight: bold;">
+                        <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Totals: </td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                    </tr>
+                </tfoot>
 `
 
     ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
@@ -518,8 +509,6 @@ function SalesDtl(index,editMode) {
 
 async function addSalesDtl() {
 
-    document.getElementById('loadingIndicator').style.display = 'flex';
-
     const nQuantity=document.getElementById('Quantity').value
     const nItemPrce=document.getElementById('ItemPrce').value
     const nDiscRate=document.getElementById('DiscRate').value
@@ -553,8 +542,6 @@ async function addSalesDtl() {
         }
     } catch (error) {
         console.error("Error processing the filter:", error);
-    } finally {
-        document.getElementById('loadingIndicator').style.display = 'none';
     }
 }
 

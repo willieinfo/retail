@@ -1,12 +1,5 @@
-import { showReport, showNotification } from '../FunctLib.js';
+import { showReport, showNotification, formatter } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
-
-const formatter = new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });    
-
 
 async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {

@@ -1,12 +1,6 @@
-import { showReport, showNotification } from '../FunctLib.js';
+import { showReport, showNotification, formatter, validateField, checkEmptyValue } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec } from "../FiltrRec.js"
-
-const formatter = new Intl.NumberFormat('en-US', {
-    style: 'decimal',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });    
 
 
 let globalData = []; // Define a global array
@@ -48,17 +42,27 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         //     }
         // });
 
-        document.getElementById('ListItemBody').addEventListener('click', (event) => {
+        document.getElementById('ListItemBody').addEventListener('click',async (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
             if (delBtn) {
                 const index = parseInt(delBtn.getAttribute('data-index')); // Get index
+                const row = event.target.closest('tr');
+
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
                     console.log(`Delete clicked for index: ${index}`);
+                    const confirmed=confirm(`Do you want to delete ${globalData[index].Descript.trim()}?`)
+                    if (confirmed) {
+                        const deleted_=await deleteItemList(globalData[index].ItemCode)
+                        if (deleted_) {
+                            row.classList.add('strikethrough');
+                        }
+                    }
                 }
                 // Prevent the row click event (ItemForm) from being triggered when the delete button is clicked
                 event.stopPropagation(); // This stops the event from propagating to the parent (row click handler)
             }
         });
+
         
         document.getElementById('ListItemBody').addEventListener('click', (event) => {
             const row = event.target.closest('tr'); // Find the clicked row
@@ -363,7 +367,7 @@ async function ItemForm(index, editMode) {
     });
 
     // Event listener for Save button to edit or add data and close the modal
-    document.getElementById('saveItemListBtn').addEventListener('click', (e) => {
+    document.getElementById('saveItemListBtn').addEventListener('click', async (e) => {
         e.preventDefault();
 
         const cItemCode= editMode ? itemData.ItemCode : 'NEW_ITEM';
@@ -395,6 +399,22 @@ async function ItemForm(index, editMode) {
             return;
         }
 
+        
+        // Check for Empty Values
+        const Descript = document.getElementById('Descript');
+        const BrandNum = document.getElementById('BrandNum');
+        const ItemType = document.getElementById('ItemType');
+        const ItemDept = document.getElementById('ItemDept');
+        const CategNum = document.getElementById('CategNum');
+        const SuppNum_ = document.getElementById('SuppNum_');
+        const ItemPrce = document.getElementById('ItemPrce');
+        const LandCost = document.getElementById('LandCost');
+
+        if (!checkEmptyValue(Descript, BrandNum, CategNum, ItemDept, ItemType, SuppNum_, ItemPrce, LandCost)) {
+            return;  // If any field is empty, stop here and do not proceed
+        }        
+       
+      
         if (editMode) {
             // Edit existing record
             editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
@@ -404,66 +424,34 @@ async function ItemForm(index, editMode) {
             )
         
         } else {
-            // Add new record
+            //Await the validateField function to ensure it finishes before proceeding
+            const isUsersCdeValid = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
+                'Stock No. already exists.', false);
+            if (!isUsersCdeValid) {
+                // If validation fails, set focus and return early
+                document.getElementById('UsersCde').focus();
+                return;
+            }
+
+            const isOtherCdeValid = await validateField('OtherCde', 'http://localhost:3000/product/checkOtherCde',
+                'Bar Code already exists.', false);
+            if (!isOtherCdeValid) {
+                // If validation fails, set focus and return early
+                document.getElementById('OtherCde').focus();
+                return;
+            }
+    
             const cSuffixId='E'
             addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
                 cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
                 nItemPrce,nItemCost,nLandCost,
                 nOutright,lDisabled,lServices,cSuffixId
             )
-            
                         
         }
         document.getElementById('item-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
-
-    
-    
-    //Field Validation
-    document.getElementById('UsersCde').addEventListener('blur', async function() {
-        if (editMode) return  //edit mode
-        const cUsersCde = document.getElementById('UsersCde').value;
-        
-        const url = new URL('http://localhost:3000/product/checkUsersCde');
-        const params = new URLSearchParams();
-        if (cUsersCde) params.append('UsersCde', cUsersCde);
-    
-        // Send request with query parameters
-        try {
-            const response = await fetch(`${url}?${params.toString()}`);
-            const data = await response.json();
-    
-            // Check if the result has any data (which means the UsersCde exists)
-            if (data.length > 0) {
-                alert('This Stock No (UsersCde) already exists.');
-            }
-        } catch (error) {
-            console.error('Error during fetch:', error);
-        }
-    });
-
-    document.getElementById('OtherCde').addEventListener('blur', async function() {
-        if (editMode) return  //edit mode
-        const cOtherCde = document.getElementById('OtherCde').value;
-    
-        const url = new URL('http://localhost:3000/product/checkOtherCde');
-        const params = new URLSearchParams();
-        if (cOtherCde) params.append('OtherCde', cOtherCde);
-    
-        // Send request with query parameters
-        try {
-            const response = await fetch(`${url}?${params.toString()}`);
-            const data = await response.json();
-            if (data.length > 0) {
-                alert('This Bar Code No (OtherCde) already exists.');
-            }
-        } catch (error) {
-            console.error('Error during fetch:', error);
-        }
-    });
-    
-
 }
 
 
@@ -621,6 +609,39 @@ function updateTable() {
     `;
 
     reportBody.innerHTML = listTable;
+}
+
+async function deleteItemList(cItemCode) {
+    try {
+        const response = await fetch('http://localhost:3000/product/deleteItemList', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cItemCode: cItemCode })  // Send ItemCode in JSON body
+        });
+
+        if (!response.ok) {
+            // throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorResponse = await response.json();
+            if (response.status === 400) {
+                alert(`Failed to delete: ${errorResponse.message || 'Invalid data'}`);
+            } else {
+                alert('An unexpected error occurred while deleting.');
+            }            
+            return false;
+
+        }
+
+        const result = await response.json();
+        console.log('Deleted Rows Affected:', result.rowsAffected);
+        alert('Item record deleted successfully');
+        return true;
+
+    } catch (error) {
+        console.error('Delete ItemList error:', error);
+        return false;
+    }
 }
 
 // async function deleteItemList(cItemCode) {

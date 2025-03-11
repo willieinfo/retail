@@ -39,6 +39,16 @@
     padding: 0px 10px;
     overflow: auto;
 }
+/* .ListItemTable {
+    display:table-header-group;
+    flex-direction: column;
+    width: 100%; 
+
+    position: static;
+    max-height: 78%;
+    padding: 0px 10px;
+    overflow: auto;
+} */
 
 .ReportHead {
     height: auto;
@@ -98,8 +108,6 @@ thead {
     top: 0px;
     z-index: 1;
 }
-
-
 /* Row and Cell Styling */
 th {
     text-align: center !important; 
@@ -145,6 +153,11 @@ td:last-child {
     color: white;
     background-color: var(--main-bg-color);
     cursor: pointer;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+.closeForm:hover {
+    background-color: red;
 }
 
 tr  {
@@ -161,6 +174,9 @@ tr:hover {
 }
 tr:hover .colEditItem {
     display: inline-block; /* Show icons when row is hovered */
+}
+.strikethrough {
+    text-decoration: line-through;
 }
 
 /* Selected row color */
@@ -188,3 +204,23 @@ tr:hover .colEditItem {
     overflow-y: auto;
     display: block; 
 } */
+
+td.action-icons {
+    width: 40px; /* Or any other appropriate size */
+    text-align: center; /* Centers the trash icon */
+}
+/* Ensures the trash icon takes up space without shifting the layout */
+td.action-icons {
+    position: relative;
+}
+
+td.action-icons i {
+    visibility: hidden; /* Icon is hidden initially */
+    opacity: 0;
+    transition: opacity 0.3s ease; /* Smooth transition */
+}
+
+tr:hover td.action-icons i {
+    visibility: visible; /* Icon becomes visible on row hover */
+    opacity: 1;
+}

@@ -353,28 +353,41 @@ export async function populateSuppNum_(cSuppNum_, cSuppName) {
         console.error('Fetch Supplier error:', error);
     }
 }
+export async function validateField(fieldId, url, alertMessage, editmode=false) {
+    const fieldValue = document.getElementById(fieldId).value;
+    const params = new URLSearchParams();
+    if (fieldValue) params.append(fieldId, fieldValue);
 
-export async function validateField(fieldId, url, alertMessage) {
-    const field = document.getElementById(fieldId);
-    field.addEventListener('blur', async function () {
-        const fieldValue = field.value;
-        const params = new URLSearchParams();
-        if (fieldValue) params.append(fieldId, fieldValue);
+    try {
+        const response = await fetch(`${url}?${params.toString()}`);
+        const data = await response.json();
 
-        // Send request with query parameters
-        try {
-            const response = await fetch(`${url}?${params.toString()}`);
-            const data = await response.json();
-
-            // Check if the result has any data (which means the code exists)
-            if (data.length > 0) {
-                alert(alertMessage);
-            }
-        } catch (error) {
-            console.error('Error during fetch:', error);
+        if (data.length > 0 && !editmode) {
+            alert(alertMessage);
+            return false; // Return false when validation fails (field exists)
         }
-    });
+
+        return true; // Return true when validation passes (field does not exist)
+    } catch (error) {
+        console.error('Error during fetch:', error);
+        return false; // Optionally handle fetch error as failure (validation fails)
+    }
 }
+
+export function checkEmptyValue(...fields) {
+    // Loop through each field to check if it's empty or invalid
+    for (let field of fields) {
+        // Check if the field is empty, contains only spaces, or is zero for numeric fields
+        if (!field.value.trim() || (field.type === "number" && (isNaN(field.value) || field.value === "0"))) {
+            document.getElementById(field.id).focus();
+            let labelElement = document.querySelector(`label[for="${field.id}"]`);
+            alert(labelElement.textContent + ' is empty.');  // Alert to notify user
+            return false;  // Return false to stop further processing
+        }
+    }
+    return true;  // Return true if no empty or invalid fields are found
+}
+
 
 export function get24HrTime() {
     const now = new Date();
@@ -392,3 +405,15 @@ export function get24HrTime() {
     // Return the time in hh:mm:ss format
     return `${hours}:${minutes}:${seconds}`;
 }
+
+// formatter.js
+export const formatter = new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  
+export function formatNumber(value) {
+    return formatter.format(value);
+}
+  

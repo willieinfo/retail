@@ -124,46 +124,56 @@ const listLoca = async (req, res) => {
     }
   };
   
-  // const deleteLocation = async (req, res) => {
-  //   const { cLocation } = req.body;  
-  
-  //   if (!cLocation ) {
-  //     return res.status(400).json({ error: 'Missing required parameters' });
-  //   }
-  
-  //   const cSql = `DELETE FROM LOCAION
-  //     WHERE Location=@cLocation`;
-  
-  //   const params = { cLocation };
-  
-  //   try {
-  //     const result = await queryDatabase(cSql, params);
-  //     // res.json({ message: 'Update successful', rowsAffected: result });
-  //     res.json(result);  
-  
-  //   } catch (err) {
-  //     console.error('Delete LOCATION error:', err);
-  //     res.status(500).json({ error: 'Error deleting LOCATION' });
-  //   }
-  // };
 
-  const deleteLocation = async (req, res) => {
-    const { id } = req.params;  // Read id from URL params
 
-    if (!id) {
-        return res.status(400).json({ error: 'Missing required parameter: id' });
+const deleteLocation = async (req, res) => {
+  const { id } = req.params;  // Read id from URL params
+
+  if (!id) {
+    return res.status(400).json({ error: 'Missing required parameter: id' });
+  }
+
+  // Check if location is used in any transactions
+  let cSql = `
+    SELECT TOP 1 Location FROM SALESREC WHERE Location=@id
+    UNION ALL 
+    SELECT TOP 1 Location FROM COUNTREC WHERE Location=@id
+    UNION ALL 
+    SELECT TOP 1 Location FROM PURCHREC WHERE Location=@id
+    UNION ALL 
+    SELECT TOP 1 Location FROM ADJUSREC WHERE Location=@id
+    UNION ALL 
+    SELECT TOP 1 WhseFrom FROM STOCKREC WHERE WhseFrom=@id
+    UNION ALL 
+    SELECT TOP 1 WhseTo__ FROM STOCKREC WHERE WhseTo__=@id
+  `;
+  const params = { id };
+
+  try {
+    const result = await queryDatabase(cSql, params);
+
+    // If any row is found, location cannot be deleted
+    if (result && result.length > 0) {
+      return res.status(409).json({
+        message: 'Delete cannot be performed. The location is referenced in transactions.'
+      });
     }
 
-    const cSql = `DELETE FROM LOCATION WHERE Location=@id`;
-    const params = { id };
+    // Proceed with the deletion if no references were found
+    cSql = `DELETE FROM LOCATION WHERE Location=@id`;
 
     try {
-        const result = await queryDatabase(cSql, params);
-        res.json({ message: 'Delete successful', rowsAffected: result });
+      const deleteResult = await queryDatabase(cSql, params);
+      return res.json({ message: 'Location deleted successfully', rowsAffected: deleteResult });
     } catch (err) {
-        console.error('Delete LOCATION error:', err);
-        res.status(500).json({ error: 'Error deleting LOCATION' });
+      console.error('Delete LOCATION error:', err);
+      return res.status(500).json({ error: 'Error deleting location' });
     }
+
+  } catch (err) {
+    console.error('Error checking location usage:', err);
+    return res.status(500).json({ error: 'Error checking location usage' });
+  }
 };
 
 const listSupp = async (req, res) => {

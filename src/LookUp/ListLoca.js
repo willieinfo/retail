@@ -18,14 +18,19 @@ async function ListLoca(cLocation, cLocaName) {
 
         updateTable() //Reused at addLocation()
 
-        document.getElementById('ListLocaBody').addEventListener('click', (event) => {
+        document.getElementById('ListLocaBody').addEventListener('click', async (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
+            const row = event.target.closest('tr');
             if (delBtn) {
                 const index = parseInt(delBtn.getAttribute('data-index')); // Get index
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    const confirmed = confirm("Are you sure you want to delete this record?");
+                    const confirmed = confirm(`Do you want to delete ${globalData[index].LocaName.trim()}?`)
                     if (confirmed) {
-                        deleteLocation(globalData[index].Location)
+                        const deleted_=await deleteLocation(globalData[index].Location)
+                        console.log('deleted_ ',deleted_)
+                        if (deleted_) {
+                            row.classList.add('strikethrough');
+                        }
                     }
                 }
                 // Prevent the row click event (ItemForm) from being triggered when the delete button is clicked
@@ -377,6 +382,7 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
     }
 }
 
+
 async function deleteLocation(cLocation) {
     try {
         const response = await fetch(`http://localhost:3000/lookup/deleteLocation/${encodeURIComponent(cLocation)}`, {
@@ -384,13 +390,23 @@ async function deleteLocation(cLocation) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorResponse = await response.json();
+            if (response.status === 409) {
+                alert(`Failed to delete: ${errorResponse.message || 'Invalid data'}`);
+            } else {
+                alert('An unexpected error occurred while deleting.');
+            }            
+            return false;
         }
 
         const result = await response.json();
         console.log('Deleted Rows Affected:', result.rowsAffected);
+        alert('Location deleted successfully');
+        return true;
     } catch (error) {
         console.error('Delete Location error:', error);
+        alert('An error occurred while trying to delete the location.');
+        return false;
     }
 }
 
