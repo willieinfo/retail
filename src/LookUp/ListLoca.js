@@ -263,32 +263,6 @@ async function LocaForm(index, editMode) {
         document.getElementById('item-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
-
-    
-    
-    //Field Validation
-    // document.getElementById('LocaName').addEventListener('blur', async function() {
-    //     if (index) return  //edit mode
-    //     const cLocaName = document.getElementById('LocaName').value;
-        
-    //     const url = new URL('http://localhost:3000/lookup/checkLocaName');
-    //     const params = new URLSearchParams();
-    //     if (cLocaName) params.append('LocaName', LocaName);
-    
-    //     // Send request with query parameters
-    //     try {
-    //         const response = await fetch(`${url}?${params.toString()}`);
-    //         const data = await response.json();
-    
-    //         // Check if the result has any data (which means the UsersCde exists)
-    //         if (data.length > 0) {
-    //             alert('This Location already exists.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error during fetch:', error);
-    //     }
-    // });
-
 }
 
 async function editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled) {

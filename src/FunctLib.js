@@ -362,9 +362,17 @@ export async function validateField(fieldId, url, alertMessage, editmode=false) 
         const response = await fetch(`${url}?${params.toString()}`);
         const data = await response.json();
 
+        // Just check to see if record exist
+        // addItemList-> prevents duplicate
         if (data.length > 0 && !editmode) {
             alert(alertMessage);
             return false; // Return false when validation fails (field exists)
+        }
+
+        // Just check to see if record exist, then return recordset
+        // addSalesDetail-> get ItemCode
+        if (data.length > 0 && editmode) {
+            return data; 
         }
 
         return true; // Return true when validation passes (field does not exist)

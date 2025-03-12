@@ -1,5 +1,53 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
+const updateSalesTotals = async (req, res) => {
+  const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;
+  
+  console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
+
+  if (!cCtrlNum_ || !nTotalQty || !nTotalPrc || !nTotalAmt || !nNoOfItem) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+  }
+  
+  const cSql = `
+    UPDATE SALESREC SET
+      Amount__=@nTotalAmt,
+      Discount=@nTotalAmt,
+      TotalQty=@nTotalQty,
+      NoOfItem=@nNoOfItem
+    WHERE CtrlNum_=@cCtrlNum_
+
+
+    -- Return the full record
+    SELECT
+      SALESREC.CtrlNum_,
+      SALESREC.Amount__,
+      SALESREC.Discount,
+      SALESREC.TotalQty,
+      SALESREC.NoOfItem
+    FROM SALESREC
+    WHERE SALESREC.CtrlNum_=@cCtrlNum_
+  `;
+
+  const params = { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem };
+  console.log(params)
+  try {
+    const result = await queryDatabase(cSql, params);
+    console.log(params)
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ error: 'No records found' });
+    } else {
+      res.json(result);
+    }
+    
+  } catch (err) {
+    console.error('Update SALESREC Totals error:', err);
+    res.status(500).json({ error: 'Error updating SALESREC' });
+  }
+
+}
+
 const addSalesHeader = async (req, res) => {
   const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
     dLog_Date, nNoOfItem, cSuffixId } = req.body;
@@ -80,7 +128,7 @@ const addSalesHeader = async (req, res) => {
     dLog_Date, nNoOfItem, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
-    console.log(params)
+    // console.log(params)
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'No records found' });
@@ -99,8 +147,6 @@ const addSalesHeader = async (req, res) => {
 // FROM SALESREC
 // WHERE LTRIM(RTRIM(Location)) = LTRIM(RTRIM(@cLocation))
 // ORDER BY AutIncId DESC;
-
-
 
 const SalesRecLst = async (req, res) => {
   const cLocation = req.query.Location;
@@ -199,4 +245,75 @@ const SalesDtlLst = async (req, res) => {
   }
 };
 
-module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader };
+const addSalesDetail = async (req, res) => {
+  const {cCtrlNum_, cItemCode, dDate____, cTimeSale, 
+    nQuantity, nItemPrce, nDiscRate, nAmount__,nLandCost } = req.body;
+
+  if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity ) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  const cSql = `
+    INSERT INTO SALESDTL
+      (CtrlNum_, ItemCode, Date____, TimeSale, 
+    Quantity, ItemPrce, DiscRate, Amount__, LandCost)
+    VALUES
+      (@cCtrlNum_, @cItemCode, @dDate____, @cTimeSale, 
+    @nQuantity, @nItemPrce, @nDiscRate, @nAmount__, @nLandCost);
+
+    -- Get the last inserted RecordId
+    DECLARE @RecordId INT;
+    SET @RecordId = SCOPE_IDENTITY();
+
+    -- Get the last inserted AutIncId
+    -- DECLARE @AutIncId INT;
+    -- SET @AutIncId = SCOPE_IDENTITY();
+
+    -- Dynamically generate the next RecordId based on AutIncId and cSuffixId
+    -- DECLARE @RecordId VARCHAR(12);
+    -- SET @RecordId = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
+
+    -- Update the RecordId field with the new value
+    -- UPDATE SALESDTL
+    -- SET RecordId = @RecordId
+    -- WHERE AutIncId = @AutIncId;
+
+    -- Return the full record
+    SELECT 
+        SALESDTL.RecordId,
+        SALESDTL.CtrlNum_,
+        SALESDTL.ItemCode,
+        ITEMLIST.UsersCde,
+        ITEMLIST.OtherCde,
+        ITEMLIST.Descript,
+        SALESDTL.Quantity,
+        SALESDTL.ItemPrce,
+        SALESDTL.DiscRate,
+        SALESDTL.Amount__,
+        SALESDTL.LandCost
+        FROM SALESDTL, ITEMLIST
+        WHERE SALESDTL.ItemCode = ITEMLIST.ItemCode
+        AND SALESDTL.RecordId = @RecordId
+  `;
+
+  const params = { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
+    nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+  // console.log(params)
+
+  try {
+    const result = await queryDatabase(cSql, params);
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ error: 'No records found' });
+    } else {
+      res.json(result);
+    }
+    
+  } catch (err) {
+      console.error('Insert SALESDTL error:', err);
+      res.status(500).json({ error: 'Error inserting SALESREC' });
+  }
+
+}
+
+module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, addSalesDetail, updateSalesTotals };

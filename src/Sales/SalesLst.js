@@ -1,9 +1,11 @@
-import { showReport, formatDate, populateLocation, showNotification, get24HrTime, formatter } from '../FunctLib.js';
+import { showReport, formatDate, populateLocation, showNotification, get24HrTime, 
+    formatter, checkEmptyValue, validateField } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 
 let globalData = []; // Define a global array
 let itemsDtl = []; 
+let currentRec = [];
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -103,6 +105,7 @@ async function SaleForm(index,editMode) {
 
     const salesDtlCounter=document.getElementById('salesDtlCounter')
     const itemData = globalData[index];
+    currentRec = globalData[index];
 
     reportBody.innerHTML = `
         <div id="invoiceForm">
@@ -421,7 +424,7 @@ function SalesDtl(index,editMode) {
                 <div id="inputDescript" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
                         <label for="Descript">Item Description</label>
-                        <input type="text" id="Descript" name="Descript" spellcheck="false">
+                        <input type="text" id="Descript" name="Descript" readonly>
                     </div>
                 </div>
                 <div class="textDiv">
@@ -490,20 +493,65 @@ function SalesDtl(index,editMode) {
         document.getElementById('ItemPrce').value=itemData.ItemPrce
         document.getElementById('DiscRate').value=itemData.DiscRate
         document.getElementById('Amount__').value=itemData.Amount__
+        document.getElementById('Quantity').focus()
     } else {
         document.getElementById('UsersCde').value=''
         document.getElementById('OtherCde').value=''
         document.getElementById('Descript').value=''
-        document.getElementById('Quantity').value=0
+        document.getElementById('Quantity').value=1
         document.getElementById('ItemPrce').value=0.00
         document.getElementById('DiscRate').value=0.00
         document.getElementById('Amount__').value=0.00
+        document.getElementById('UsersCde').focus()
 
     }
+    const UsersCde=document.getElementById('UsersCde')
+    const OtherCde=document.getElementById('OtherCde')
 
-    document.getElementById('saveSalesDtlBtn').addEventListener('click', (e) => {
+    const Quantity=document.getElementById('Quantity')
+    const ItemPrce=document.getElementById('ItemPrce')
+    const Amount__=document.getElementById('Amount__')
+    
+    let cItemCode=null
+    let nLandCost=0
+    document.getElementById('UsersCde').addEventListener('blur', async (e) => {
         e.preventDefault()
-        alert('Save Clicked called from SalesDtl')
+        
+        if (!UsersCde.value) {
+            UsersCde.focus();
+            return;
+        }
+        const dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
+            '', true)
+
+        if (dataItemList) {
+            // if (dataItemList.length > 0) {
+            // } else {
+            // }
+            document.getElementById('OtherCde').value=dataItemList[0].OtherCde
+            document.getElementById('Descript').value=dataItemList[0].Descript
+            document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce
+            document.getElementById('Amount__').value=dataItemList[0].ItemPrce
+            document.getElementById('OtherCde').readonly=true
+            nLandCost=dataItemList[0].LandCost
+            cItemCode=dataItemList[0].ItemCode
+        }
+    })
+
+    document.getElementById('saveSalesDtlBtn').addEventListener('click', async (e) => {
+        e.preventDefault()
+    
+        if (!checkEmptyValue(UsersCde,OtherCde,Quantity,ItemPrce,Amount__)) {
+            return;  // If any field is empty, stop here and do not proceed
+        }
+    
+        if (editMode) {
+
+        } else {
+            const cCtrlNum_=currentRec.CtrlNum_
+            const dDate____=currentRec.DateFrom
+            addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost)
+        }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
 
@@ -516,18 +564,17 @@ function SalesDtl(index,editMode) {
     })
 }
 
-async function addSalesDtl() {
-
+async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
     const nQuantity=document.getElementById('Quantity').value
     const nItemPrce=document.getElementById('ItemPrce').value
     const nDiscRate=document.getElementById('DiscRate').value
     const nAmount__=document.getElementById('Amount__').value
-
-    const cCtrlNum_=itemData.CtrlNum_
-    const dDate____=itemData.DateFrom
     const cTimeSale=get24HrTime()
+
+    // console.log([cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
+
     try {
         const response = await fetch('http://localhost:3000/sales/addSalesDetail', {
             method: 'POST',  
@@ -536,27 +583,73 @@ async function addSalesDtl() {
             },
             body: JSON.stringify({
                 cCtrlNum_: cCtrlNum_,
-                cRecordId: cRecordId,
                 cItemCode: cItemCode,
+                dDate____: dDate____,
+                cTimeSale: cTimeSale,
                 nQuantity: nQuantity,
                 nItemPrce: nItemPrce,
                 nDiscRate: nDiscRate,
                 nAmount__: nAmount__,
-                nLandCost: nLandCost,
-                dDate____: dDate____,
-                cTimeSale: cTimeSale
+                nLandCost: nLandCost
             })
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const updatedItem = await response.json();
+        console.log('updatedItem ',updatedItem)
+        if (updatedItem) {
+            itemsDtl.push(updatedItem);
+            updateItemTable()
+
+            const res = await fetch('http://localhost:3000/sales/updateSalesTotals', {
+                method: 'PUT',  
+                headers: {
+                    'Content-Type': 'application/json'  // Specify JSON format
+                },
+                body: JSON.stringify({
+                    cCtrlNum_: updatedItem.CtrlNum_,
+                    nQuantity: calcTotalQty(),
+                    nTotalPrc: calcTotalPrc(),
+                    nAmount__: calcTotalAmt(),
+                    nNoOfItem: calcTotalCnt()
+                })
+            });
+    
+            const editTotals = await res.json()
+            console.log('editTotals',editTotals)
+            console.log('CtrlNum_',updatedItem.CtrlNum_)
+            console.log('calcTotalQty',calcTotalQty())
+            console.log('calcTotalPrc',calcTotalPrc())
+            console.log('calcTotalAmt',calcTotalAmt())
+            console.log('calcTotalCnt',calcTotalCnt())
+
+            function calcTotalQty() {
+                return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
+            }
+            function calcTotalPrc() {
+                return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
+            }
+            function calcTotalAmt() {
+                return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
+            }            
+            function calcTotalCnt() {
+                return itemsDtl.length
+            }            
+            showNotification('Sales Item record added successfully!')
+        }
+
     } catch (error) {
-        console.error("Error processing the filter:", error);
+        console.error("Error processing addSalesDetail:", error);
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
 }
+
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');

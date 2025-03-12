@@ -207,12 +207,17 @@ const listCate = async (req, res) => {
 const checkUsersCde = async (req, res) => {
   const cUsersCde = req.query.UsersCde;  
  
-  let cSql = `SELECT UsersCde, Descript FROM ITEMLIST WHERE UsersCde=@cUsersCde`
+  let cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
+    ItemPrce, LandCost FROM ITEMLIST WHERE UsersCde=@cUsersCde`
   const params = {};
   params.cUsersCde = `${cUsersCde}`;  
   try {
     const result = await queryDatabase(cSql, params);
-    res.json(result);  
+    if (result && result.length > 0) {
+      res.json(result); // Return the result as JSON
+    } else {
+        res.json([]); // Return an empty array if no result
+    }    
   } catch (err) {
     console.error('Validation query error:', err);
     res.status(500).send('Error fetching UsersCde');
@@ -223,12 +228,17 @@ const checkUsersCde = async (req, res) => {
 const checkOtherCde = async (req, res) => {
   const cOtherCde = req.query.OtherCde;  
  
-  let cSql = `SELECT OtherCde, Descript FROM ITEMLIST WHERE OtherCde=@cOtherCde`
+  let cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
+    ItemPrce, LandCost FROM ITEMLIST WHERE OtherCde=@cOtherCde`
   const params = {};
   params.cOtherCde = `${cOtherCde}`;  
   try {
     const result = await queryDatabase(cSql, params);
-    res.json(result);  
+    if (result && result.length > 0) {
+      res.json(result); // Return the result as JSON
+    } else {
+        res.json([]); // Return an empty array if no result
+    }    
   } catch (err) {
     console.error('Validation query error:', err);
     res.status(500).send('Error fetching OtherCde');

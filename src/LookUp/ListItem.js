@@ -644,28 +644,6 @@ async function deleteItemList(cItemCode) {
     }
 }
 
-// async function deleteItemList(cItemCode) {
-//     try {
-//         const response = await fetch('http://localhost:3000/product/deleteItemList', {
-//             method: 'DELETE',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ cItemCode: cItemCode })  // Send ItemCode in JSON body
-//         });
-
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! Status: ${response.status}`);
-//         }
-
-//         const result = await response.json();
-//         console.log('Deleted Rows Affected:', result.rowsAffected);
-//     } catch (error) {
-//         console.error('Delete ItemList error:', error);
-//     }
-// }
-
-
 document.getElementById('filterList').addEventListener('click', async () => {
     try {
         FiltrRec('ListItem').then(() => {
