@@ -3,8 +3,7 @@ const { queryDatabase } = require('../DBConnect/dbConnect');
 const updateSalesTotals = async (req, res) => {
   const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;
   
-  console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
-
+  // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
   if (!cCtrlNum_ || !nTotalQty || !nTotalPrc || !nTotalAmt || !nNoOfItem) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
@@ -17,23 +16,34 @@ const updateSalesTotals = async (req, res) => {
       NoOfItem=@nNoOfItem
     WHERE CtrlNum_=@cCtrlNum_
 
+    -- SCOPE_IDENTITY() has no function here
+    -- This is just to return the full recordset
+    DECLARE @AutIncId INT;
+    SET @AutIncId = SCOPE_IDENTITY();
 
     -- Return the full record
     SELECT
       SALESREC.CtrlNum_,
-      SALESREC.Amount__,
-      SALESREC.Discount,
+      SALESREC.ReferDoc,
+      SALESREC.DateFrom,
+      LOCATION.LocaName,
       SALESREC.TotalQty,
-      SALESREC.NoOfItem
-    FROM SALESREC
-    WHERE SALESREC.CtrlNum_=@cCtrlNum_
+      SALESREC.Amount__,
+      SALESREC.NoOfItem,
+      SALESREC.Remarks_,
+      SALESREC.Encoder_,
+      SALESREC.Location,
+      SALESREC.Log_Date
+    FROM SALESREC, LOCATION
+    WHERE SALESREC.Location = LOCATION.Location
+    AND SALESREC.CtrlNum_=@cCtrlNum_
   `;
 
   const params = { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem };
-  console.log(params)
+  
   try {
     const result = await queryDatabase(cSql, params);
-    console.log(params)
+    // console.log(params)
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'No records found' });
@@ -112,6 +122,7 @@ const addSalesHeader = async (req, res) => {
       SALESREC.ReferDoc,
       SALESREC.DateFrom,
       LOCATION.LocaName,
+      SALESREC.TotalQty,
       SALESREC.Amount__,
       SALESREC.NoOfItem,
       SALESREC.Remarks_,
@@ -158,6 +169,7 @@ const SalesRecLst = async (req, res) => {
       SALESREC.ReferDoc,
       SALESREC.DateFrom,
       LOCATION.LocaName,
+      SALESREC.TotalQty,
       SALESREC.Amount__,
       SALESREC.NoOfItem,
       SALESREC.Remarks_,
@@ -313,7 +325,66 @@ const addSalesDetail = async (req, res) => {
       console.error('Insert SALESDTL error:', err);
       res.status(500).json({ error: 'Error inserting SALESREC' });
   }
+}
+
+const editSalesDetail = async (req, res) => {
+  const {cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
+  
+  // console.log(cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__,nLandCost);
+
+  if ( !cRecordId || !cItemCode || !nQuantity ) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  const cSql = `
+    UPDATE SALESDTL SET
+      ItemCode=@cItemCode, 
+      Quantity=@nQuantity, 
+      ItemPrce=@nItemPrce, 
+      DiscRate=@nDiscRate, 
+      Amount__=@nAmount__, 
+      LandCost=@nLandCost
+    WHERE RecordId=@cRecordId
+  
+    DECLARE @RecordId INT;
+    SET @RecordId = SCOPE_IDENTITY();
+
+    -- Return the full record
+    SELECT 
+        SALESDTL.RecordId,
+        SALESDTL.CtrlNum_,
+        SALESDTL.ItemCode,
+        ITEMLIST.UsersCde,
+        ITEMLIST.OtherCde,
+        ITEMLIST.Descript,
+        SALESDTL.Quantity,
+        SALESDTL.ItemPrce,
+        SALESDTL.DiscRate,
+        SALESDTL.Amount__,
+        SALESDTL.LandCost
+        FROM SALESDTL, ITEMLIST
+        WHERE SALESDTL.ItemCode = ITEMLIST.ItemCode
+        AND SALESDTL.RecordId = @cRecordId
+  `;
+
+  const params = { cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+  // console.log(params)
+
+  try {
+    const result = await queryDatabase(cSql, params);
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ error: 'No records found' });
+    } else {
+      res.json(result);
+    }
+    
+  } catch (err) {
+      console.error('Update SALESDTL error:', err);
+      res.status(500).json({ error: 'Error updating SALESDTL' });
+  }
 
 }
 
-module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, addSalesDetail, updateSalesTotals };
+module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, 
+  addSalesDetail, editSalesDetail, updateSalesTotals };

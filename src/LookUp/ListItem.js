@@ -248,7 +248,7 @@ async function ItemForm(index, editMode) {
 
             <div class="btnDiv">
                 <button type="submit" id="saveItemListBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelItemListBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="button" id="cancelItemListBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
     `;

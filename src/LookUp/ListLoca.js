@@ -181,7 +181,7 @@ async function LocaForm(index, editMode) {
             </div>
             <div class="btnDiv">
                 <button type="submit" id="saveLocationBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelLocationBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="button" id="cancelLocationBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
     `;

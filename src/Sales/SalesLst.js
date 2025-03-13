@@ -1,11 +1,11 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, 
-    formatter, checkEmptyValue, validateField } from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, validateField } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
-
 
 let globalData = []; // Define a global array
 let itemsDtl = []; 
 let currentRec = [];
+let currentIndex = 0
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -50,6 +50,7 @@ function updateTable() {
                     <th>Ref. Doc</th>
                     <th>Date</th>
                     <th>Location</th>
+                    <th>Qty.</th>
                     <th>Amount</th>
                     <th>Items</th>
                     <th>Remarks</th>
@@ -64,6 +65,7 @@ function updateTable() {
                         <td>${item.ReferDoc || 'N/A'}</td>
                         <td>${formatDate(item.DateFrom) || 'N/A'}</td>
                         <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                        <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                         <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
                         <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
@@ -80,20 +82,19 @@ function updateTable() {
     document.getElementById('ListSalesBody').addEventListener('click', (event) => {
         const row = event.target.closest('tr'); // Find the clicked row
         if (row) {
-            if (!event.target.closest('.spanDelItem')) {
-                // Remove 'selected' class from all rows
-                const rows = document.querySelectorAll('#ListSalesTable tbody tr');
-                rows.forEach(r => r.classList.remove('selected'));
-    
-                // Add 'selected' class to the clicked row
-                row.classList.add('selected');
-    
-                // Optionally, call your edit function if needed
-                const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    // console.log(`Row clicked for index: ${index}`);
-                    SaleForm(index, true); // Pass only the index to your form
-                }
+            // Remove 'selected' class from all rows
+            const rows = document.querySelectorAll('#ListSalesTable tbody tr');
+            rows.forEach(r => r.classList.remove('selected'));
+
+            // Add 'selected' class to the clicked row
+            row.classList.add('selected');
+
+            // Optionally, call your edit function if needed
+            const index = parseInt(row.getAttribute('data-index'));
+            currentIndex = index
+            if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                // console.log(`Row clicked for index: ${index}`);
+                SaleForm(index, true); // Pass only the index to your form
             }
         }
     });
@@ -143,6 +144,7 @@ async function SaleForm(index,editMode) {
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="ListItemBody"></tbody>
@@ -331,6 +333,11 @@ function updateItemTable() {
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
+                <td class="action-icons">
+                    <span class="spanDelItem colEditItem" data-index="${index}">
+                        <i class="fa fa-trash"></i>
+                    </span>
+                </td>
             </tr>
         `;
     }).join(''); // Join all rows into a single string
@@ -413,11 +420,12 @@ function SalesDtl(index,editMode) {
                 <div class="textDiv">
                     <div class="subTextDiv">
                         <label for="UsersCde">Stock No</label>
-                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
+                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
+                            placeholder="Type Stock No. or Bar Code here to search">
                     </div>
                     <div class="subTextDiv">
                         <label for="OtherCde">Bar Code</label>
-                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
+                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false" readonly>
                     </div>
                 </div>
 
@@ -433,7 +441,7 @@ function SalesDtl(index,editMode) {
                         <input type="number" id="Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="ItemPrce">Item Price</label>
+                        <label for="ItemPrce">Unit Item Price</label>
                         <input type="number" id="ItemPrce" name="ItemPrce">
                     </div>
                     <div class="subTextDiv">
@@ -449,7 +457,7 @@ function SalesDtl(index,editMode) {
             
             <div class="btnDiv">
                 <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
     `;
@@ -505,14 +513,23 @@ function SalesDtl(index,editMode) {
         document.getElementById('UsersCde').focus()
 
     }
+    document.getElementById('Amount__').readonly = true;
+    document.getElementById('OtherCde').readonly = true;
+    document.getElementById('Descript').readonly = true;
+    document.getElementById('Amount__').setAttribute('tabindex', '-1');
+    document.getElementById('OtherCde').setAttribute('tabindex', '-1');
+    document.getElementById('Descript').setAttribute('tabindex', '-1');
+
+    // Get the id's of the elements for checkEmptyValue() function before saving
     const UsersCde=document.getElementById('UsersCde')
-    const OtherCde=document.getElementById('OtherCde')
 
     const Quantity=document.getElementById('Quantity')
     const ItemPrce=document.getElementById('ItemPrce')
     const Amount__=document.getElementById('Amount__')
+    const DiscRate=document.getElementById('DiscRate')
     
-    let cItemCode=null
+    // values wil be determined as user enters UsersCde and validateField()
+    let cItemCode=null  
     let nLandCost=0
     document.getElementById('UsersCde').addEventListener('blur', async (e) => {
         e.preventDefault()
@@ -528,33 +545,63 @@ function SalesDtl(index,editMode) {
             // if (dataItemList.length > 0) {
             // } else {
             // }
-            document.getElementById('OtherCde').value=dataItemList[0].OtherCde
-            document.getElementById('Descript').value=dataItemList[0].Descript
-            document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce
-            document.getElementById('Amount__').value=dataItemList[0].ItemPrce
-            document.getElementById('OtherCde').readonly=true
-            nLandCost=dataItemList[0].LandCost
-            cItemCode=dataItemList[0].ItemCode
+            document.getElementById('UsersCde').value=dataItemList[0].UsersCde;
+            document.getElementById('OtherCde').value=dataItemList[0].OtherCde;
+            document.getElementById('Descript').value=dataItemList[0].Descript;
+
+            if (!editMode) {
+                document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce;
+                document.getElementById('Amount__').value=dataItemList[0].ItemPrce;
+            }
+
+            nLandCost=dataItemList[0].LandCost;
+            cItemCode=dataItemList[0].ItemCode;
         }
+    })
+
+    document.getElementById('DiscRate').addEventListener('blur', async (e) => {
+        e.preventDefault()
+        if (ItemPrce.value===0) {
+            ItemPrce.focus()
+            return
+        }
+        const nNetValue=ItemPrce.value
+        Amount__.value=nNetValue-(nNetValue*DiscRate.value/100)*Quantity.value
     })
 
     document.getElementById('saveSalesDtlBtn').addEventListener('click', async (e) => {
         e.preventDefault()
     
-        if (!checkEmptyValue(UsersCde,OtherCde,Quantity,ItemPrce,Amount__)) {
+        if (!checkEmptyValue(UsersCde,Quantity,ItemPrce,Amount__)) {
             return;  // If any field is empty, stop here and do not proceed
         }
-    
         if (editMode) {
+            cItemCode = cItemCode == null ? itemData.ItemCode : cItemCode;
+            nLandCost = nLandCost == null ? itemData.LandCost : nLandCost;
+        }
+        if (cItemCode==null) {
+            document.getElementById('modal-overlay').style.display='none';
+            MessageBox('Invalid record.\n Stock No. is not found.', 'Ok,Close', 'Alert Message')
+                .then((buttonIndex) => {
+                if (buttonIndex === 0) {  // If 'Ok' is clicked
+                    UsersCde.focus()
+                } else if (buttonIndex === 1) {
+                    document.getElementById('modal-overlay').remove();
+                    document.getElementById('items-form').remove();  // Close the form
+                }
+            })
+            return;        
+        }
 
+        const cCtrlNum_=currentRec.CtrlNum_
+        if (editMode) {
+                editSalesDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
         } else {
-            const cCtrlNum_=currentRec.CtrlNum_
             const dDate____=currentRec.DateFrom
             addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost)
         }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
-
     })
 
     document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
@@ -562,6 +609,54 @@ function SalesDtl(index,editMode) {
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
     })
+}
+
+async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
+    document.getElementById('loadingIndicator').style.display = 'flex';
+
+    const nQuantity=document.getElementById('Quantity').value
+    const nItemPrce=document.getElementById('ItemPrce').value
+    const nDiscRate=document.getElementById('DiscRate').value
+    const nAmount__=document.getElementById('Amount__').value
+
+    console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
+
+    try {
+        const response = await fetch('http://localhost:3000/sales/editSalesDetail', {
+            method: 'PUT',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cRecordId: cRecordId,
+                cItemCode: cItemCode,
+                nQuantity: nQuantity,
+                nItemPrce: nItemPrce,
+                nDiscRate: nDiscRate,
+                nAmount__: nAmount__,
+                nLandCost: nLandCost
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+
+        if (updatedItem) {
+            itemsDtl[index]=updatedItem;
+            updateItemTable()
+            showNotification('Sales Item record updated successfully!')
+            // console.log(updatedItem)
+            updateSalesTotals(cCtrlNum_) // Update SALESREC Header
+        }
+
+    } catch (error) {
+        console.error("Error processing editSalesDetail:", error);
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
 }
 
 async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
@@ -599,46 +694,13 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
         }
 
         const updatedItem = await response.json();
-        console.log('updatedItem ',updatedItem)
+
         if (updatedItem) {
             itemsDtl.push(updatedItem);
             updateItemTable()
-
-            const res = await fetch('http://localhost:3000/sales/updateSalesTotals', {
-                method: 'PUT',  
-                headers: {
-                    'Content-Type': 'application/json'  // Specify JSON format
-                },
-                body: JSON.stringify({
-                    cCtrlNum_: updatedItem.CtrlNum_,
-                    nQuantity: calcTotalQty(),
-                    nTotalPrc: calcTotalPrc(),
-                    nAmount__: calcTotalAmt(),
-                    nNoOfItem: calcTotalCnt()
-                })
-            });
-    
-            const editTotals = await res.json()
-            console.log('editTotals',editTotals)
-            console.log('CtrlNum_',updatedItem.CtrlNum_)
-            console.log('calcTotalQty',calcTotalQty())
-            console.log('calcTotalPrc',calcTotalPrc())
-            console.log('calcTotalAmt',calcTotalAmt())
-            console.log('calcTotalCnt',calcTotalCnt())
-
-            function calcTotalQty() {
-                return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
-            }
-            function calcTotalPrc() {
-                return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
-            }
-            function calcTotalAmt() {
-                return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
-            }            
-            function calcTotalCnt() {
-                return itemsDtl.length
-            }            
             showNotification('Sales Item record added successfully!')
+
+            updateSalesTotals(updatedItem.CtrlNum_) // Update SALESREC Header
         }
 
     } catch (error) {
@@ -648,7 +710,51 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
     }
 }
 
+async function updateSalesTotals(cCtrlNum_) {
+    const headerTotals=[
+        calcTotalQty(),
+        calcTotalPrc(),
+        calcTotalAmt(),
+        calcTotalCnt()
+    ]
+    // console.log('CtrlNum_',cCtrlNum_)
+    // console.log('calcTotalQty',headerTotals[0])
+    // console.log('calcTotalPrc',headerTotals[1])
+    // console.log('calcTotalAmt',headerTotals[2])
+    // console.log('calcTotalCnt',headerTotals[3])
 
+    const res = await fetch('http://localhost:3000/sales/updateSalesTotals', {
+        method: 'PUT',  
+        headers: {
+            'Content-Type': 'application/json'  // Specify JSON format
+        },
+        body: JSON.stringify({
+            cCtrlNum_: cCtrlNum_,
+            nTotalQty: headerTotals[0],
+            nTotalPrc: headerTotals[1],
+            nTotalAmt: headerTotals[2],
+            nNoOfItem: headerTotals[3]
+        })
+    });
+
+    const editTotals = await res.json()
+    globalData[currentIndex] = editTotals
+    updateTable()
+
+    function calcTotalQty() {
+        return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
+    }
+    function calcTotalPrc() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
+    }
+    function calcTotalAmt() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
+    }            
+    function calcTotalCnt() {
+        return itemsDtl.length
+    }            
+
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {

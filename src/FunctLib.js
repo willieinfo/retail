@@ -36,7 +36,7 @@ export function showNotification(cMessage) {
     }, 3000); // 3000ms = 3 seconds
 }
 
-export function MessageBox(message, buttons, alertMessage='Alert Message', backColor='lightgrey') {
+export function MessageBox(message, buttons, alertMessage='Alert Message', backColor='lightgrey', placeTop=false) {
     return new Promise((resolve) => {
         // Disable background scrolling
         document.body.style.overflow = 'hidden';        
@@ -48,16 +48,16 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
         overlay.style.left = '0';
         overlay.style.width = '100%';
         overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        overlay.style.backgroundColor = placeTop ? '' : 'rgba(0, 0, 0, 0.1)';
         overlay.style.zIndex = '1000';
 
         // Create modal
         const modal = document.createElement('div');
         modal.style.position = 'absolute';
-        modal.style.top = '50%';
+        modal.style.top =  placeTop ? '0' : '50%';
         modal.style.left = '50%';
         modal.style.maxWidth = '600px';
-        modal.style.transform = 'translate(-50%, -50%)';
+        modal.style.transform = placeTop ? 'translate(-50%)' : 'translate(-50%, -50%)';
         modal.style.backgroundColor = backColor;
         modal.style.padding = '0';
         modal.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
@@ -72,8 +72,8 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
         titleBar.style.alignItems = 'center'; 
         titleBar.style.width="auto" ;
         titleBar.style.height="30px" ;
-        titleBar.style.backgroundColor = "darkblue" ;
         titleBar.style.color = "white" ;
+        titleBar.style.backgroundColor = 'var(--main-bg-color)' ;
         titleBar.style.margin="0" ;
         titleBar.style.padding="0" ;
         titleBar.style.borderTopLeftRadius = '5px';
@@ -82,6 +82,7 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
 
         const titleMsg = document.createElement('label');
         titleMsg.innerText=alertMessage;
+        titleMsg.style.color= "white";
         titleBar.appendChild(titleMsg);
 
         // Create Modal Body
@@ -119,7 +120,7 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
             button.style.display = 'inline-flex';
             button.style.alignItems = 'center'; // align vertically
             button.style.justifyContent= "center";
-            button.style.backgroundColor = "darkblue" ;
+            button.style.backgroundColor = "var(--main-bg-color)" ;
             button.style.color = "white" ;
             button.style.cursor = "pointer";
 
@@ -375,7 +376,7 @@ export async function validateField(fieldId, url, alertMessage, editmode=false) 
             return data; 
         }
 
-        return true; // Return true when validation passes (field does not exist)
+        return false; // Return false (field does not exist)
     } catch (error) {
         console.error('Error during fetch:', error);
         return false; // Optionally handle fetch error as failure (validation fails)

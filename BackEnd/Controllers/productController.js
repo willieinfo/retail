@@ -203,26 +203,39 @@ const listCate = async (req, res) => {
   }
 }
 
-
 const checkUsersCde = async (req, res) => {
   const cUsersCde = req.query.UsersCde;  
- 
+
   let cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
-    ItemPrce, LandCost FROM ITEMLIST WHERE UsersCde=@cUsersCde`
-  const params = {};
-  params.cUsersCde = `${cUsersCde}`;  
+    ItemPrce, LandCost FROM ITEMLIST WHERE UsersCde=@cUsersCde`;
+  const params = { cUsersCde: `${cUsersCde}` };  
+
+  let result = '';
   try {
-    const result = await queryDatabase(cSql, params);
+    // First query to check for UsersCde
+    result = await queryDatabase(cSql, params);
+
     if (result && result.length > 0) {
-      res.json(result); // Return the result as JSON
+      // Return results if UsersCde is found
+      res.json(result);
     } else {
-        res.json([]); // Return an empty array if no result
-    }    
+      // No results found, try searching with OtherCde
+      cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
+              ItemPrce, LandCost FROM ITEMLIST WHERE OtherCde=@cUsersCde`;
+      result = await queryDatabase(cSql, params);
+      
+      if (result && result.length > 0) {
+        // Return results if OtherCde is found
+        res.json(result);
+      } else {
+        // If neither UsersCde nor OtherCde has a result, return an empty array
+        res.json([]);
+      }
+    }
   } catch (err) {
     console.error('Validation query error:', err);
     res.status(500).send('Error fetching UsersCde');
   }
-
 }
 
 const checkOtherCde = async (req, res) => {

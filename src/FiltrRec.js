@@ -70,7 +70,7 @@ export function FiltrRec(cModules_) {
                 
                 <div class="btnDiv">
                     <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
-                    <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                    <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
                 </div>
             </div>
         `;
