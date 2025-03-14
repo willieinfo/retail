@@ -1,4 +1,4 @@
-import { showReport, showNotification } from "../FunctLib.js";
+import { showReport, showNotification, highlightRow } from "../FunctLib.js";
 
 let globalData = []; // Define a global array
 async function ListLoca(cLocation, cLocaName) {
@@ -42,12 +42,13 @@ async function ListLoca(cLocation, cLocaName) {
             const row = event.target.closest('tr'); // Find the clicked row
             if (row) {
                 if (!event.target.closest('.spanDelItem')) {
-                    // Remove 'selected' class from all rows
-                    const rows = document.querySelectorAll('#ListLocaTable tbody tr');
-                    rows.forEach(r => r.classList.remove('selected'));
-        
-                    // Add 'selected' class to the clicked row
-                    row.classList.add('selected');
+                    // // Remove 'selected' class from all rows
+                    // const rows = document.querySelectorAll('#ListLocaTable tbody tr');
+                    // rows.forEach(r => r.classList.remove('selected'));
+                    // // Add 'selected' class to the clicked row
+                    // row.classList.add('selected');
+
+                    highlightRow(row, '#ListLocaTable');
         
                     // Optionally, call your edit function if needed
                     const index = parseInt(row.getAttribute('data-index'));
@@ -343,7 +344,7 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
                         // 🔹 Simulate a hover effect
                         lastRow.classList.add('hover-effect'); 
                         // 🔹 Remove hover effect after 2 seconds
-                        setTimeout(() => lastRow.classList.remove('hover-effect'), 2000);                        
+                        setTimeout(() => lastRow.classList.remove('hover-effect'), 2000);       
                     }
                 }
             }, 100); // Small delay to ensure table updates first

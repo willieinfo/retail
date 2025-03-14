@@ -142,7 +142,7 @@ input, select {
     display: inline-block;
 }
 input[type="number"] {
-    text-align: right;
+    text-align: center;
     padding-right: 10px;  
 }
 input::-webkit-outer-spin-button,

@@ -33,6 +33,7 @@ const updateSalesTotals = async (req, res) => {
       SALESREC.Remarks_,
       SALESREC.Encoder_,
       SALESREC.Location,
+      SALESREC.Printed_,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -40,7 +41,6 @@ const updateSalesTotals = async (req, res) => {
   `;
 
   const params = { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem };
-  
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -128,6 +128,7 @@ const addSalesHeader = async (req, res) => {
       SALESREC.Remarks_,
       SALESREC.Encoder_,
       SALESREC.Location,
+      SALESREC.Printed_,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -175,6 +176,7 @@ const SalesRecLst = async (req, res) => {
       SALESREC.Remarks_,
       SALESREC.Encoder_,
       SALESREC.Location,
+      SALESREC.Printed_,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -386,5 +388,26 @@ const editSalesDetail = async (req, res) => {
 
 }
 
+const deleteSalesDetail = async (req, res) => {
+  const { id } = req.params;  // Read id from URL params
+
+  if (!id) {
+    return res.status(400).json({ error: 'Missing required parameter: id' });
+  }
+
+  cSql = `DELETE FROM SALESDTL WHERE RecordId=@id`;
+  const params = { id };
+
+  try {
+    const deleteResult = await queryDatabase(cSql, params);
+    return res.json({ message: 'SalesDtl deleted successfully', rowsAffected: deleteResult });
+  } catch (err) {
+    console.error('Delete SALESDTL error:', err);
+    return res.status(500).json({ error: 'Error deleting SalesDtl' });
+  }
+
+};
+
+
 module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, 
-  addSalesDetail, editSalesDetail, updateSalesTotals };
+  addSalesDetail, editSalesDetail, updateSalesTotals, deleteSalesDetail };

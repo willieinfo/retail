@@ -1,5 +1,5 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, 
-    MessageBox, formatter, checkEmptyValue, validateField } from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 let globalData = []; // Define a global array
@@ -83,12 +83,12 @@ function updateTable() {
         const row = event.target.closest('tr'); // Find the clicked row
         if (row) {
             // Remove 'selected' class from all rows
-            const rows = document.querySelectorAll('#ListSalesTable tbody tr');
-            rows.forEach(r => r.classList.remove('selected'));
-
+            // const rows = document.querySelectorAll('#ListSalesTable tbody tr');
+            // rows.forEach(r => r.classList.remove('selected'));
             // Add 'selected' class to the clicked row
-            row.classList.add('selected');
+            // row.classList.add('selected');
 
+            highlightRow(row, '#ListSalesTable');
             // Optionally, call your edit function if needed
             const index = parseInt(row.getAttribute('data-index'));
             currentIndex = index
@@ -98,6 +98,7 @@ function updateTable() {
             }
         }
     });
+
 }
 
 async function SaleForm(index,editMode) {
@@ -141,6 +142,7 @@ async function SaleForm(index,editMode) {
                         <th>Stock No.</th>
                         <th>Bar Code</th>
                         <th>Item Description</th>
+                        <th>Unit Price</th>
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
@@ -310,7 +312,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
     }
 }
 
-function updateItemTable() {
+function updateItemTable(refreshOnly=false) {
     let nTotalQty = 0;
     let nTotalPrc = 0;
     let nTotalDsc = 0;
@@ -322,14 +324,15 @@ function updateItemTable() {
         // Accumulate totals inside the map
         nTotalQty += item.Quantity || 0;
         nTotalPrc += item.Quantity * item.ItemPrce || 0;
-        nTotalDsc += (item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__) || 0;
+        nTotalDsc += (item.Quantity * (item.ItemPrce - item.Amount__)) || 0;
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
             <tr id="trLocaList" data-index="${index}">
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
-                <td class="colNoWrap">${item.Descript || 'N/A'}</td>
+                <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
@@ -348,6 +351,7 @@ function updateItemTable() {
                     <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <td style="text-align: right">Totals: </td>
                     <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                     <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
@@ -357,27 +361,51 @@ function updateItemTable() {
 `
 
     ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
-    document.getElementById('ListItemBody').addEventListener('click', (event) => {
-        const row = event.target.closest('tr'); // Find the clicked row
-        if (row) {
-            if (!event.target.closest('.spanDelItem')) {
-                // Remove 'selected' class from all rows
-                const rows = document.querySelectorAll('#ListItemTable tbody tr');
-                rows.forEach(r => r.classList.remove('selected'));
-    
-                // Add 'selected' class to the clicked row
-                row.classList.add('selected');
+
+    document.getElementById('ListItemBody').addEventListener('click', async (event) => {
+        const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
+        if (delBtn) {
+            const row = event.target.closest('tr');
+            const index = parseInt(delBtn.getAttribute('data-index')); // Get index
+
+            // check if SALESREC transaction is already Printed_
+            if (globalData[currentIndex].Printed_) {
+                alert('This transaction has been printed already.')
+                return
+            }
+
+            if (!isNaN(index) && index >= 0 && index < itemsDtl.length) {
+                const confirmed = confirm(`Do you want to delete ${itemsDtl[index].Descript.trim()}?`)
+                if (confirmed) {
+                    const deleted_ = await deleteSalesDtl(itemsDtl[index].RecordId,globalData[currentIndex].CtrlNum_,index)
+                    if (deleted_) {
+                        // Remove the row from the DOM
+                        row.remove(); // This will remove the <tr> element from the table
+                    }
+                }
+            }
+            event.stopPropagation(); // This stops the event from propagating to the parent (row click handler)
+        } else {
+            // If not a delete button, handle the row click
+            const row = event.target.closest('tr');
+            if (row) {
+                // const rows = document.querySelectorAll('.ListItemTable tbody tr');
+                // rows.forEach(r => r.classList.remove('selected'));
+                // // Add 'selected' class to the clicked row
+                // row.classList.add('selected');
+
+                highlightRow(row, '.ListItemTable');
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    // console.log(`Row clicked for index: ${index}`);
+                    if (refreshOnly) return;
                     SalesDtl(index, true); // Pass only the index to your form
                 }
             }
         }
     });
-
+    
 }
 
 
@@ -411,7 +439,6 @@ function SalesDtl(index,editMode) {
     itemsDtlForm.style.display = "none";  // Start with it hidden
 
     const itemData = itemsDtl[index];
-
     itemsDtlForm.innerHTML = `
         <div id="titleBar">Sales Detail Form</div>
         <div class="inputSection">
@@ -494,6 +521,7 @@ function SalesDtl(index,editMode) {
 
 
     if (editMode) {
+        console.log('This is edit mode')
         document.getElementById('UsersCde').value=itemData.UsersCde
         document.getElementById('OtherCde').value=itemData.OtherCde
         document.getElementById('Descript').value=itemData.Descript
@@ -566,7 +594,7 @@ function SalesDtl(index,editMode) {
             return
         }
         const nNetValue=ItemPrce.value
-        Amount__.value=nNetValue-(nNetValue*DiscRate.value/100)*Quantity.value
+        Amount__.value=nNetValue-(nNetValue*DiscRate.value/100)
     })
 
     document.getElementById('saveSalesDtlBtn').addEventListener('click', async (e) => {
@@ -605,7 +633,6 @@ function SalesDtl(index,editMode) {
     })
 
     document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
-        console.log('Cancel Clicked called from SalesDtl')
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
     })
@@ -646,7 +673,7 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 
         if (updatedItem) {
             itemsDtl[index]=updatedItem;
-            updateItemTable()
+            updateItemTable(true)
             showNotification('Sales Item record updated successfully!')
             // console.log(updatedItem)
             updateSalesTotals(cCtrlNum_) // Update SALESREC Header
@@ -697,10 +724,30 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
 
         if (updatedItem) {
             itemsDtl.push(updatedItem);
-            updateItemTable()
+            updateItemTable(true)
             showNotification('Sales Item record added successfully!')
 
             updateSalesTotals(updatedItem.CtrlNum_) // Update SALESREC Header
+
+            setTimeout(() => {
+                const tableBody = document.getElementById('ListItemBody'); 
+                if (tableBody) {
+                    const rows = tableBody.getElementsByTagName('tr'); // Get all <tr> in tbody
+                    if (rows.length > 0) {
+                        const lastRow = rows[rows.length - 2]; // Get the last <tr> inside tbody
+                        if (lastRow) {
+                            lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                            // 🔹 Simulate a hover effect
+                            lastRow.classList.add('hover-effect'); 
+                            // 🔹 Remove hover effect after 2 seconds
+                            setTimeout(() => lastRow.classList.remove('hover-effect'), 2000); 
+                            lastRow.classList.add('selected');                       
+                        }
+                    }
+                }
+            }, 100); // Small delay to ensure table updates first
+            
+
         }
 
     } catch (error) {
@@ -717,12 +764,6 @@ async function updateSalesTotals(cCtrlNum_) {
         calcTotalAmt(),
         calcTotalCnt()
     ]
-    // console.log('CtrlNum_',cCtrlNum_)
-    // console.log('calcTotalQty',headerTotals[0])
-    // console.log('calcTotalPrc',headerTotals[1])
-    // console.log('calcTotalAmt',headerTotals[2])
-    // console.log('calcTotalCnt',headerTotals[3])
-
     const res = await fetch('http://localhost:3000/sales/updateSalesTotals', {
         method: 'PUT',  
         headers: {
@@ -740,7 +781,7 @@ async function updateSalesTotals(cCtrlNum_) {
     const editTotals = await res.json()
     globalData[currentIndex] = editTotals
     updateTable()
-
+    
     function calcTotalQty() {
         return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
     }
@@ -790,6 +831,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
+    console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
+    const salesDtlCounter=document.getElementById('salesDtlCounter')
+    try {
+        const response = await fetch(`http://localhost:3000/sales/deleteSalesDetail/${encodeURIComponent(cRecordId)}`, {
+            method: 'DELETE'
+        });
 
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            if (response.status === 400) {
+                alert(`Failed to delete: ${errorResponse.message || 'Invalid data'}`);
+            } else {
+                alert('An unexpected error occurred while deleting.');
+            }            
+            return false;
+        }
+
+        const result = await response.json();
+        console.log('Deleted Rows Affected:', result.rowsAffected);
+        showNotification('SalesDtl deleted successfully');
+        // Remove the item from the itemsDtl array
+        itemsDtl.splice(index, 1);
+        updateItemTable(true)
+        salesDtlCounter.innerHTML=`${itemsDtl.length} Records`
+        updateSalesTotals(cCtrlNum_) // Update SALESREC Header        
+        return true;
+    } catch (error) {
+        console.error('Delete SalesDtl error:', error);
+        alert('An error occurred while trying to delete the record.');
+        return false;
+    }
+}
 
 

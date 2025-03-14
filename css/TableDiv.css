@@ -190,7 +190,7 @@ tr:hover .colEditItem {
 
 /* Selected row color */
 .selected {
-    background-color: #f0f0f0;  
+    background-color: color-mix(in srgb, var(--main-bg-color) 60%, white);
     font-weight: bold;          
     color: #333;                
 }

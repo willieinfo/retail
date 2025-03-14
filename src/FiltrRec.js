@@ -1,4 +1,5 @@
-import { populateBrandNum, populateItemDept, populateItemType, populateCategNum, populateLocation } from "./FunctLib.js";
+import { populateBrandNum, populateItemDept, populateItemType, 
+    populateCategNum, populateLocation, checkEmptyValue } from "./FunctLib.js";
 
 export function FiltrRec(cModules_) {
     return new Promise(async (resolve) => {
@@ -173,6 +174,14 @@ export function FiltrRec(cModules_) {
         document.getElementById('saveFilterBtn').addEventListener('click', (e) => {
             e.preventDefault();
 
+            // Check for empty values for filter to prevent voluminous data
+            if (cModules_==='ListItem') {
+                const BrandNum = document.getElementById('BrandNum')
+                if (!checkEmptyValue(BrandNum)) {
+                    return;  
+                }
+            }
+    
             const dDateFrom = document.getElementById('DateFrom').value;
             const dDate__To = document.getElementById('Date__To').value;
             const cLocation = document.getElementById('Location').value.trim();

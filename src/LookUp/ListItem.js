@@ -1,4 +1,4 @@
-import { showReport, showNotification, formatter, validateField, checkEmptyValue } from '../FunctLib.js';
+import { showReport, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec } from "../FiltrRec.js"
 
@@ -69,17 +69,18 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
             if (row) {
                 // Avoid selecting the row if the delete button is clicked
                 if (!event.target.closest('.spanDelItem')) {
-                    // Remove 'selected' class from all rows
-                    const rows = document.querySelectorAll('#ListItemTable tbody tr');
-                    rows.forEach(r => r.classList.remove('selected'));
-        
-                    // Add 'selected' class to the clicked row
-                    row.classList.add('selected');
-        
+                    // // Remove 'selected' class from all rows
+                    // const rows = document.querySelectorAll('#ListItemTable tbody tr');
+                    // rows.forEach(r => r.classList.remove('selected'));
+                    // // Add 'selected' class to the clicked row
+                    // row.classList.add('selected');
+
+                    highlightRow(row, '#ListItemTable');
+                    
                     // Optionally, call your edit function if needed
                     const index = parseInt(row.getAttribute('data-index'));
                     if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                        console.log(`Row clicked for index: ${index}`);
+                        // console.log(`Row clicked for index: ${index}`);
                         ItemForm(index, true); // Pass only the index to your form
                     }
                 }

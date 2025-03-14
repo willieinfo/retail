@@ -397,7 +397,6 @@ export function checkEmptyValue(...fields) {
     return true;  // Return true if no empty or invalid fields are found
 }
 
-
 export function get24HrTime() {
     const now = new Date();
 
@@ -425,4 +424,19 @@ export const formatter = new Intl.NumberFormat('en-US', {
 export function formatNumber(value) {
     return formatter.format(value);
 }
-  
+
+export function highlightRow(targetRow, tableSelector) {
+    if (!targetRow || !tableSelector) return;
+
+    // Remove highlight from all rows in the specified table
+    document.querySelectorAll(`${tableSelector} tbody tr`).forEach(row => {
+        row.style.backgroundColor = ''; 
+        row.style.color = '';
+        row.style.fontWeight = ''
+    });
+
+    // Highlight the clicked row
+    targetRow.style.backgroundColor = 'color-mix(in srgb, var(--second-bg-color) 60%, white)';
+    targetRow.style.color = 'black';
+    targetRow.style.fontWeight = 'bold';
+}
