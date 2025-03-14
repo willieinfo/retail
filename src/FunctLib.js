@@ -436,7 +436,7 @@ export function highlightRow(targetRow, tableSelector) {
     });
 
     // Highlight the clicked row
-    targetRow.style.backgroundColor = 'color-mix(in srgb, var(--second-bg-color) 60%, white)';
+    targetRow.style.backgroundColor = 'color-mix(in srgb, var(--second-bg-color) 30%, white)';
     targetRow.style.color = 'black';
     targetRow.style.fontWeight = 'bold';
 }
