@@ -58,9 +58,67 @@ const updateSalesTotals = async (req, res) => {
 
 }
 
+const editSalesHeader = async (req, res) => {
+  const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName } = req.body;
+
+  if (!cLocation || !dDateFrom || !cCtrlNum_) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  const cSql = `
+    UPDATE SALESREC SET
+      Location=@cLocation,
+      DateFrom=@dDateFrom,
+      Remarks_=@cRemarks_,
+      CustName=@cCustName
+    WHERE CtrlNum_=@cCtrlNum_
+
+    -- SCOPE_IDENTITY() has no function here
+    -- This is just to return the full recordset
+    DECLARE @AutIncId INT;
+    SET @AutIncId = SCOPE_IDENTITY();
+    
+    -- Return the full record
+    SELECT
+      SALESREC.CtrlNum_,
+      SALESREC.ReferDoc,
+      SALESREC.DateFrom,
+      LOCATION.LocaName,
+      SALESREC.TotalQty,
+      SALESREC.Amount__,
+      SALESREC.NoOfItem,
+      SALESREC.Remarks_,
+      SALESREC.Encoder_,
+      SALESREC.Location,
+      SALESREC.Printed_,
+      SALESREC.CustName,
+      SALESREC.Log_Date
+    FROM SALESREC, LOCATION
+    WHERE SALESREC.Location = LOCATION.Location
+    AND SALESREC.CtrlNum_=@cCtrlNum_
+  `;
+
+  const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName };
+  try {
+    const result = await queryDatabase(cSql, params);
+    // console.log(params)
+
+    if (!result || result.length === 0) {
+      res.status(404).json({ error: 'No records found' });
+    } else {
+      res.json(result);
+    }
+    
+  } catch (err) {
+    console.error('Update SALESREC error:', err);
+    res.status(500).json({ error: 'Error updating SALESREC' });
+  }
+}
+
+
 const addSalesHeader = async (req, res) => {
   const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
-    dLog_Date, nNoOfItem, cSuffixId } = req.body;
+    dLog_Date, nNoOfItem, cCustName, cSuffixId } = req.body;
 
   if (!cLocation || !dDateFrom || !cEncoder_) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -70,10 +128,10 @@ const addSalesHeader = async (req, res) => {
     -- Insert the new record into SALESREC and get the generated AutIncId
     INSERT INTO SALESREC
       (CtrlNum_, Location, DateFrom, DateTo__, Remarks_, Encoder_, 
-      Log_Date, NoOfItem)
+      Log_Date, NoOfItem, CustName)
     VALUES
       (@cCtrlNum_, @cLocation, @dDateFrom, @dDateFrom, @cRemarks_, 
-      @cEncoder_, @dLog_Date, @nNoOfItem);
+      @cEncoder_, @dLog_Date, @nNoOfItem, @cCustName);
 
     -- Get the last inserted AutIncId
     DECLARE @AutIncId INT;
@@ -129,6 +187,7 @@ const addSalesHeader = async (req, res) => {
       SALESREC.Encoder_,
       SALESREC.Location,
       SALESREC.Printed_,
+      SALESREC.CustName,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -137,7 +196,7 @@ const addSalesHeader = async (req, res) => {
   `;
 
   const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
-    dLog_Date, nNoOfItem, cSuffixId };
+    dLog_Date, nNoOfItem, cCustName, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -177,6 +236,7 @@ const SalesRecLst = async (req, res) => {
       SALESREC.Encoder_,
       SALESREC.Location,
       SALESREC.Printed_,
+      SALESREC.CustName,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -259,75 +319,91 @@ const SalesDtlLst = async (req, res) => {
   }
 };
 
-const addSalesDetail = async (req, res) => {
-  const {cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-    nQuantity, nItemPrce, nDiscRate, nAmount__,nLandCost } = req.body;
 
-  if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity ) {
-    return res.status(400).json({ error: 'Missing required parameters' });
+const addSalesDetail = async (req, res) => {
+  const { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
+      nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
+
+  if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity) {
+      return res.status(400).json({ error: 'Missing required parameters' });
   }
 
-  const cSql = `
-    INSERT INTO SALESDTL
-      (CtrlNum_, ItemCode, Date____, TimeSale, 
-    Quantity, ItemPrce, DiscRate, Amount__, LandCost)
-    VALUES
-      (@cCtrlNum_, @cItemCode, @dDate____, @cTimeSale, 
-    @nQuantity, @nItemPrce, @nDiscRate, @nAmount__, @nLandCost);
-
-    -- Get the last inserted RecordId
-    DECLARE @RecordId INT;
-    SET @RecordId = SCOPE_IDENTITY();
-
-    -- Get the last inserted AutIncId
-    -- DECLARE @AutIncId INT;
-    -- SET @AutIncId = SCOPE_IDENTITY();
-
-    -- Dynamically generate the next RecordId based on AutIncId and cSuffixId
-    -- DECLARE @RecordId VARCHAR(12);
-    -- SET @RecordId = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
-
-    -- Update the RecordId field with the new value
-    -- UPDATE SALESDTL
-    -- SET RecordId = @RecordId
-    -- WHERE AutIncId = @AutIncId;
-
-    -- Return the full record
-    SELECT 
-        SALESDTL.RecordId,
-        SALESDTL.CtrlNum_,
-        SALESDTL.ItemCode,
-        ITEMLIST.UsersCde,
-        ITEMLIST.OtherCde,
-        ITEMLIST.Descript,
-        SALESDTL.Quantity,
-        SALESDTL.ItemPrce,
-        SALESDTL.DiscRate,
-        SALESDTL.Amount__,
-        SALESDTL.LandCost
-        FROM SALESDTL, ITEMLIST
-        WHERE SALESDTL.ItemCode = ITEMLIST.ItemCode
-        AND SALESDTL.RecordId = @RecordId
+  // Check the actual data type of RecordId
+  const checkTypeSql = `
+      SELECT DATA_TYPE 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_NAME = 'SALESDTL' AND COLUMN_NAME = 'RecordId';
   `;
 
-  const params = { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-    nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
-  // console.log(params)
-
   try {
-    const result = await queryDatabase(cSql, params);
+      const typeResult = await queryDatabase(checkTypeSql);
+      const dataType = typeResult[0]?.DATA_TYPE;
 
-    if (!result || result.length === 0) {
-      res.status(404).json({ error: 'No records found' });
-    } else {
-      res.json(result);
-    }
-    
+      const sqlInsert = `
+          INSERT INTO SALESDTL
+            (CtrlNum_, ItemCode, Date____, TimeSale, 
+            Quantity, ItemPrce, DiscRate, Amount__, LandCost)
+          VALUES
+            (@cCtrlNum_, @cItemCode, @dDate____, @cTimeSale, 
+            @nQuantity, @nItemPrce, @nDiscRate, @nAmount__, @nLandCost);
+      `;
+
+      let sqlRecordId = '';
+      if (dataType === 'int' || dataType === 'bigint' || dataType === 'smallint') {
+          sqlRecordId = `
+              DECLARE @RecordId INT;
+              SET @RecordId = SCOPE_IDENTITY();
+          `;
+      } else {
+          sqlRecordId = `
+              DECLARE @AutIncId INT;
+              SET @AutIncId = SCOPE_IDENTITY();
+
+              DECLARE @RecordId VARCHAR(12);
+              SET @RecordId = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
+
+              UPDATE SALESDTL
+              SET RecordId = @RecordId
+              WHERE AutIncId = @AutIncId;
+          `;
+      }
+
+      const fullRecordSet = `
+          SELECT 
+              SALESDTL.RecordId,
+              SALESDTL.CtrlNum_,
+              SALESDTL.ItemCode,
+              ITEMLIST.UsersCde,
+              ITEMLIST.OtherCde,
+              ITEMLIST.Descript,
+              SALESDTL.Quantity,
+              SALESDTL.ItemPrce,
+              SALESDTL.DiscRate,
+              SALESDTL.Amount__,
+              SALESDTL.LandCost
+          FROM SALESDTL
+          JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
+          WHERE SALESDTL.RecordId = @RecordId;
+      `;
+
+      const cSql = sqlInsert + sqlRecordId + fullRecordSet;
+
+      const params = { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
+        nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+
+      const result = await queryDatabase(cSql, params);
+
+      if (!result || result.length === 0) {
+          return res.status(404).json({ error: 'No records found' });
+      } else {
+          return res.json(result);
+      }
+      
   } catch (err) {
       console.error('Insert SALESDTL error:', err);
-      res.status(500).json({ error: 'Error inserting SALESREC' });
+      return res.status(500).json({ error: 'Error inserting SALESDTL' });
   }
-}
+};
 
 const editSalesDetail = async (req, res) => {
   const {cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
@@ -409,5 +485,5 @@ const deleteSalesDetail = async (req, res) => {
 };
 
 
-module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, 
+module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader, 
   addSalesDetail, editSalesDetail, updateSalesTotals, deleteSalesDetail };

@@ -2,10 +2,11 @@ import { showReport, formatDate, populateLocation, showNotification, get24HrTime
     MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
-let globalData = []; // Define a global array
-let itemsDtl = []; 
-let currentRec = [];
-let currentIndex = 0
+let globalData = [];    // Define a global array
+let itemsDtl = [];      // RecordSet of SALESDTL
+let currentRec = [];    // Current selected SALESREC record
+let currentIndex = 0    // Index of the selected SALESREC record
+
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -174,6 +175,7 @@ async function SaleForm(index,editMode) {
         document.getElementById('ReferDoc').value=itemData.ReferDoc
         document.getElementById('DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
         document.getElementById('Remarks_').value=itemData.Remarks_
+        document.getElementById('CustName').value=itemData.CustName
 
 
         const locationSelect = document.getElementById('SaleLoca');
@@ -229,6 +231,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     const cLocation=document.getElementById('SaleLoca').value
     const cRemarks_=document.getElementById('Remarks_').value
     const dDateFrom=document.getElementById('DateFrom').value
+    const cCustName=document.getElementById('CustName').value
 
 
     if (!cLocation) {
@@ -238,7 +241,8 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     }
 
     if (salesDtlCounter) {
-        alert('In edit mode')
+        editSalesRec(currentRec.CtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+
     } else {
         const cCtrlNum_='NEW_CTRLID'
         const cEncoder_='Willie'
@@ -247,7 +251,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
         const nNoOfItem=0
         
         if (addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
-            dLog_Date, nNoOfItem, cSuffixId)) {
+            dLog_Date, nNoOfItem, cCustName, cSuffixId)) {
             showReport('SalesLst')  //Show back SalesRec List
         }
     }
@@ -258,8 +262,43 @@ document.getElementById('cancelSalesRecBtn').addEventListener('click', () => {
     showReport('SalesLst')  
 });
 
+async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName) {
+    // console.log(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+    try {
+        const response = await fetch('http://localhost:3000/sales/editSalesHeader', {
+            method: 'PUT',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cCtrlNum_: cCtrlNum_,
+                cLocation: cLocation, 
+                dDateFrom: dDateFrom,
+                cRemarks_: cRemarks_,
+                cCustName: cCustName
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+        if (updatedItem) {
+            showNotification('SalesRec record edited successfully!')
+            globalData[currentRec]=updatedItem;
+            updateTable();         
+        }
+
+        
+    } catch (error) {
+        console.error('Update SalesRec error:', error);
+    }
+}
+
+
 async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cSuffixId) {
+    dLog_Date, nNoOfItem, cCustName, cSuffixId) {
 
     try {
         const response = await fetch('http://localhost:3000/sales/addSalesHeader', {
@@ -275,6 +314,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
                 cEncoder_: cEncoder_,
                 dLog_Date: dLog_Date,
                 nNoOfItem: nNoOfItem,
+                cCustName: cCustName,
                 cSuffixId: cSuffixId
             })
         });
@@ -291,10 +331,12 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
             updateTable();         
 
             // Scroll to the last row after updating the table
+            const tableBody = document.getElementById('ListSalesBody'); 
+            const lastRow = tableBody.lastElementChild; // Get the last row
             setTimeout(() => {
-                const tableBody = document.getElementById('ListSalesBody'); 
+                // const tableBody = document.getElementById('ListSalesBody'); 
                 if (tableBody) {
-                    const lastRow = tableBody.lastElementChild; // Get the last row
+                    // const lastRow = tableBody.lastElementChild; // Get the last row
                     if (lastRow) {
                         lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
                         // 🔹 Simulate a hover effect
@@ -304,6 +346,9 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
                     }
                 }
             }, 100); // Small delay to ensure table updates first
+
+            highlightRow(lastRow, 'ListSalesBody');
+
         }
 
         
@@ -746,7 +791,7 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
                     }
                 }
             }, 100); // Small delay to ensure table updates first
-            
+            highlightRow(lastRow, 'ListItemBody')
 
         }
 
@@ -808,6 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addSalesDtl = document.getElementById('addSalesDtl');
 
     addSalesRec.addEventListener('click', () => {
+        document.getElementById('salesDtlCounter').innerText=''
         SaleForm();
     });
     addSalesDtl.addEventListener('click', () => {
