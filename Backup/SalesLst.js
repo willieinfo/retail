@@ -1,9 +1,12 @@
-import { showReport, formatDate, populateLocation, showNotification, get24HrTime, formatter } from '../FunctLib.js';
+import { showReport, formatDate, populateLocation, showNotification, get24HrTime, 
+    MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
+let globalData = [];    // Define a global array
+let itemsDtl = [];      // RecordSet of SALESDTL
+let currentRec = [];    // Current selected SALESREC record
+let currentIndex = 0    // Index of the selected SALESREC record
 
-let globalData = []; // Define a global array
-let itemsDtl = []; 
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -48,6 +51,7 @@ function updateTable() {
                     <th>Ref. Doc</th>
                     <th>Date</th>
                     <th>Location</th>
+                    <th>Qty.</th>
                     <th>Amount</th>
                     <th>Items</th>
                     <th>Remarks</th>
@@ -62,6 +66,7 @@ function updateTable() {
                         <td>${item.ReferDoc || 'N/A'}</td>
                         <td>${formatDate(item.DateFrom) || 'N/A'}</td>
                         <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                        <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                         <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
                         <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
@@ -78,23 +83,23 @@ function updateTable() {
     document.getElementById('ListSalesBody').addEventListener('click', (event) => {
         const row = event.target.closest('tr'); // Find the clicked row
         if (row) {
-            if (!event.target.closest('.spanDelItem')) {
-                // Remove 'selected' class from all rows
-                const rows = document.querySelectorAll('#ListSalesTable tbody tr');
-                rows.forEach(r => r.classList.remove('selected'));
-    
-                // Add 'selected' class to the clicked row
-                row.classList.add('selected');
-    
-                // Optionally, call your edit function if needed
-                const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    // console.log(`Row clicked for index: ${index}`);
-                    SaleForm(index, true); // Pass only the index to your form
-                }
+            // Remove 'selected' class from all rows
+            // const rows = document.querySelectorAll('#ListSalesTable tbody tr');
+            // rows.forEach(r => r.classList.remove('selected'));
+            // Add 'selected' class to the clicked row
+            // row.classList.add('selected');
+
+            highlightRow(row, '#ListSalesTable');
+            // Optionally, call your edit function if needed
+            const index = parseInt(row.getAttribute('data-index'));
+            currentIndex = index
+            if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                // console.log(`Row clicked for index: ${index}`);
+                SaleForm(index, true); // Pass only the index to your form
             }
         }
     });
+
 }
 
 async function SaleForm(index,editMode) {
@@ -103,6 +108,7 @@ async function SaleForm(index,editMode) {
 
     const salesDtlCounter=document.getElementById('salesDtlCounter')
     const itemData = globalData[index];
+    currentRec = globalData[index];
 
     reportBody.innerHTML = `
         <div id="invoiceForm">
@@ -137,15 +143,26 @@ async function SaleForm(index,editMode) {
                         <th>Stock No.</th>
                         <th>Bar Code</th>
                         <th>Item Description</th>
+                        <th>Unit Price</th>
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="ListItemBody"></tbody>
             </table>
         </div>  
     `    
+    // <div style="display: flex; width: 20%; background-color: blue; overflow: hidden;">
+    //     <div style="position: fixed; display: flex; flex-wrap: wrap; padding: 10px; background-color: red; ">
+    //         <button>Button 1</button>
+    //         <button>Button 1</button>
+    //         <button>Button 1</button>
+    //         <button>Button 1</button>
+    //     </div>
+    // </div>
+
     document.getElementById('SalesLst').classList.remove('active')
     showReport('SaleForm')
 
@@ -158,6 +175,7 @@ async function SaleForm(index,editMode) {
         document.getElementById('ReferDoc').value=itemData.ReferDoc
         document.getElementById('DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
         document.getElementById('Remarks_').value=itemData.Remarks_
+        document.getElementById('CustName').value=itemData.CustName
 
 
         const locationSelect = document.getElementById('SaleLoca');
@@ -213,6 +231,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     const cLocation=document.getElementById('SaleLoca').value
     const cRemarks_=document.getElementById('Remarks_').value
     const dDateFrom=document.getElementById('DateFrom').value
+    const cCustName=document.getElementById('CustName').value
 
 
     if (!cLocation) {
@@ -222,7 +241,8 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     }
 
     if (salesDtlCounter) {
-        alert('In edit mode')
+        editSalesRec(currentRec.CtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+
     } else {
         const cCtrlNum_='NEW_CTRLID'
         const cEncoder_='Willie'
@@ -231,7 +251,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
         const nNoOfItem=0
         
         if (addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
-            dLog_Date, nNoOfItem, cSuffixId)) {
+            dLog_Date, nNoOfItem, cCustName, cSuffixId)) {
             showReport('SalesLst')  //Show back SalesRec List
         }
     }
@@ -242,8 +262,43 @@ document.getElementById('cancelSalesRecBtn').addEventListener('click', () => {
     showReport('SalesLst')  
 });
 
+async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName) {
+    // console.log(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+    try {
+        const response = await fetch('http://localhost:3000/sales/editSalesHeader', {
+            method: 'PUT',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cCtrlNum_: cCtrlNum_,
+                cLocation: cLocation, 
+                dDateFrom: dDateFrom,
+                cRemarks_: cRemarks_,
+                cCustName: cCustName
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+        if (updatedItem) {
+            showNotification('SalesRec record edited successfully!')
+            globalData[currentRec]=updatedItem;
+            updateTable();         
+        }
+
+        
+    } catch (error) {
+        console.error('Update SalesRec error:', error);
+    }
+}
+
+
 async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cSuffixId) {
+    dLog_Date, nNoOfItem, cCustName, cSuffixId) {
 
     try {
         const response = await fetch('http://localhost:3000/sales/addSalesHeader', {
@@ -259,6 +314,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
                 cEncoder_: cEncoder_,
                 dLog_Date: dLog_Date,
                 nNoOfItem: nNoOfItem,
+                cCustName: cCustName,
                 cSuffixId: cSuffixId
             })
         });
@@ -275,10 +331,12 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
             updateTable();         
 
             // Scroll to the last row after updating the table
+            const tableBody = document.getElementById('ListSalesBody'); 
+            const lastRow = tableBody.lastElementChild; // Get the last row
             setTimeout(() => {
-                const tableBody = document.getElementById('ListSalesBody'); 
+                // const tableBody = document.getElementById('ListSalesBody'); 
                 if (tableBody) {
-                    const lastRow = tableBody.lastElementChild; // Get the last row
+                    // const lastRow = tableBody.lastElementChild; // Get the last row
                     if (lastRow) {
                         lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
                         // 🔹 Simulate a hover effect
@@ -288,6 +346,9 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
                     }
                 }
             }, 100); // Small delay to ensure table updates first
+
+            highlightRow(lastRow, 'ListSalesBody');
+
         }
 
         
@@ -296,7 +357,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
     }
 }
 
-function updateItemTable() {
+function updateItemTable(refreshOnly=false) {
     let nTotalQty = 0;
     let nTotalPrc = 0;
     let nTotalDsc = 0;
@@ -308,57 +369,88 @@ function updateItemTable() {
         // Accumulate totals inside the map
         nTotalQty += item.Quantity || 0;
         nTotalPrc += item.Quantity * item.ItemPrce || 0;
-        nTotalDsc += (item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__) || 0;
+        nTotalDsc += (item.Quantity * (item.ItemPrce - item.Amount__)) || 0;
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
             <tr id="trLocaList" data-index="${index}">
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
-                <td class="colNoWrap">${item.Descript || 'N/A'}</td>
+                <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
+                <td class="action-icons">
+                    <span class="spanDelItem colEditItem" data-index="${index}">
+                        <i class="fa fa-trash"></i>
+                    </span>
+                </td>
             </tr>
         `;
     }).join(''); // Join all rows into a single string
 
     const listFooter=`
-                <tfoot id="ListItemFoot">
-                    <tr style="font-weight: bold;">
-                        <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
-                        <td></td>
-                        <td></td>
-                        <td style="text-align: right">Totals: </td>
-                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                    </tr>
-                </tfoot>
+            <tfoot id="ListItemFoot">
+                <tr style="font-weight: bold;">
+                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right">Totals: </td>
+                    <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                    <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                    <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                </tr>
+            </tfoot>
 `
 
     ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
-    document.getElementById('ListItemBody').addEventListener('click', (event) => {
-        const row = event.target.closest('tr'); // Find the clicked row
-        if (row) {
-            if (!event.target.closest('.spanDelItem')) {
-                // Remove 'selected' class from all rows
-                const rows = document.querySelectorAll('#ListItemTable tbody tr');
-                rows.forEach(r => r.classList.remove('selected'));
-    
-                // Add 'selected' class to the clicked row
-                row.classList.add('selected');
+
+    document.getElementById('ListItemBody').addEventListener('click', async (event) => {
+        const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
+        if (delBtn) {
+            const row = event.target.closest('tr');
+            const index = parseInt(delBtn.getAttribute('data-index')); // Get index
+
+            // check if SALESREC transaction is already Printed_
+            if (globalData[currentIndex].Printed_) {
+                alert('This transaction has been printed already.')
+                return
+            }
+
+            if (!isNaN(index) && index >= 0 && index < itemsDtl.length) {
+                const confirmed = confirm(`Do you want to delete ${itemsDtl[index].Descript.trim()}?`)
+                if (confirmed) {
+                    const deleted_ = await deleteSalesDtl(itemsDtl[index].RecordId,globalData[currentIndex].CtrlNum_,index)
+                    if (deleted_) {
+                        // Remove the row from the DOM
+                        row.remove(); // This will remove the <tr> element from the table
+                    }
+                }
+            }
+            event.stopPropagation(); // This stops the event from propagating to the parent (row click handler)
+        } else {
+            // If not a delete button, handle the row click
+            const row = event.target.closest('tr');
+            if (row) {
+                // const rows = document.querySelectorAll('.ListItemTable tbody tr');
+                // rows.forEach(r => r.classList.remove('selected'));
+                // // Add 'selected' class to the clicked row
+                // row.classList.add('selected');
+
+                highlightRow(row, '.ListItemTable');
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
                 if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                    // console.log(`Row clicked for index: ${index}`);
+                    if (refreshOnly) return;
                     SalesDtl(index, true); // Pass only the index to your form
                 }
             }
         }
     });
-
+    
 }
 
 
@@ -392,7 +484,6 @@ function SalesDtl(index,editMode) {
     itemsDtlForm.style.display = "none";  // Start with it hidden
 
     const itemData = itemsDtl[index];
-
     itemsDtlForm.innerHTML = `
         <div id="titleBar">Sales Detail Form</div>
         <div class="inputSection">
@@ -401,18 +492,19 @@ function SalesDtl(index,editMode) {
                 <div class="textDiv">
                     <div class="subTextDiv">
                         <label for="UsersCde">Stock No</label>
-                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
+                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
+                            placeholder="Type Stock No. or Bar Code here to search">
                     </div>
                     <div class="subTextDiv">
                         <label for="OtherCde">Bar Code</label>
-                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
+                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false" readonly>
                     </div>
                 </div>
 
                 <div id="inputDescript" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
                         <label for="Descript">Item Description</label>
-                        <input type="text" id="Descript" name="Descript" spellcheck="false">
+                        <input type="text" id="Descript" name="Descript" readonly>
                     </div>
                 </div>
                 <div class="textDiv">
@@ -421,7 +513,7 @@ function SalesDtl(index,editMode) {
                         <input type="number" id="Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="ItemPrce">Item Price</label>
+                        <label for="ItemPrce">Unit Item Price</label>
                         <input type="number" id="ItemPrce" name="ItemPrce">
                     </div>
                     <div class="subTextDiv">
@@ -437,7 +529,7 @@ function SalesDtl(index,editMode) {
             
             <div class="btnDiv">
                 <button type="submit" id="saveSalesDtlBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
-                <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Cancel</button>
+                <button type="button" id="cancelSalesDtlBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
     `;
@@ -474,6 +566,7 @@ function SalesDtl(index,editMode) {
 
 
     if (editMode) {
+        console.log('This is edit mode')
         document.getElementById('UsersCde').value=itemData.UsersCde
         document.getElementById('OtherCde').value=itemData.OtherCde
         document.getElementById('Descript').value=itemData.Descript
@@ -481,42 +574,174 @@ function SalesDtl(index,editMode) {
         document.getElementById('ItemPrce').value=itemData.ItemPrce
         document.getElementById('DiscRate').value=itemData.DiscRate
         document.getElementById('Amount__').value=itemData.Amount__
+        document.getElementById('Quantity').focus()
     } else {
         document.getElementById('UsersCde').value=''
         document.getElementById('OtherCde').value=''
         document.getElementById('Descript').value=''
-        document.getElementById('Quantity').value=0
+        document.getElementById('Quantity').value=1
         document.getElementById('ItemPrce').value=0.00
         document.getElementById('DiscRate').value=0.00
         document.getElementById('Amount__').value=0.00
+        document.getElementById('UsersCde').focus()
 
     }
+    document.getElementById('Amount__').readonly = true;
+    document.getElementById('OtherCde').readonly = true;
+    document.getElementById('Descript').readonly = true;
+    document.getElementById('Amount__').setAttribute('tabindex', '-1');
+    document.getElementById('OtherCde').setAttribute('tabindex', '-1');
+    document.getElementById('Descript').setAttribute('tabindex', '-1');
 
-    document.getElementById('saveSalesDtlBtn').addEventListener('click', (e) => {
+    // Get the id's of the elements for checkEmptyValue() function before saving
+    const UsersCde=document.getElementById('UsersCde')
+
+    const Quantity=document.getElementById('Quantity')
+    const ItemPrce=document.getElementById('ItemPrce')
+    const Amount__=document.getElementById('Amount__')
+    const DiscRate=document.getElementById('DiscRate')
+    
+    // values wil be determined as user enters UsersCde and validateField()
+    let cItemCode=null  
+    let nLandCost=0
+    document.getElementById('UsersCde').addEventListener('blur', async (e) => {
         e.preventDefault()
-        alert('Save Clicked called from SalesDtl')
+        
+        if (!UsersCde.value) {
+            UsersCde.focus();
+            return;
+        }
+        const dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
+            '', true)
+
+        if (dataItemList) {
+            // if (dataItemList.length > 0) {
+            // } else {
+            // }
+            document.getElementById('UsersCde').value=dataItemList[0].UsersCde;
+            document.getElementById('OtherCde').value=dataItemList[0].OtherCde;
+            document.getElementById('Descript').value=dataItemList[0].Descript;
+
+            if (!editMode) {
+                document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce;
+                document.getElementById('Amount__').value=dataItemList[0].ItemPrce;
+            }
+
+            nLandCost=dataItemList[0].LandCost;
+            cItemCode=dataItemList[0].ItemCode;
+        }
+    })
+
+    document.getElementById('DiscRate').addEventListener('blur', async (e) => {
+        e.preventDefault()
+        if (ItemPrce.value===0) {
+            ItemPrce.focus()
+            return
+        }
+        const nNetValue=ItemPrce.value
+        Amount__.value=nNetValue-(nNetValue*DiscRate.value/100)
+    })
+
+    document.getElementById('saveSalesDtlBtn').addEventListener('click', async (e) => {
+        e.preventDefault()
+    
+        if (!checkEmptyValue(UsersCde,Quantity,ItemPrce,Amount__)) {
+            return;  // If any field is empty, stop here and do not proceed
+        }
+        if (editMode) {
+            cItemCode = cItemCode == null ? itemData.ItemCode : cItemCode;
+            nLandCost = nLandCost == null ? itemData.LandCost : nLandCost;
+        }
+        if (cItemCode==null) {
+            document.getElementById('modal-overlay').style.display='none';
+            MessageBox('Invalid record.\n Stock No. is not found.', 'Ok,Close', 'Alert Message')
+                .then((buttonIndex) => {
+                if (buttonIndex === 0) {  // If 'Ok' is clicked
+                    UsersCde.focus()
+                } else if (buttonIndex === 1) {
+                    document.getElementById('modal-overlay').remove();
+                    document.getElementById('items-form').remove();  // Close the form
+                }
+            })
+            return;        
+        }
+
+        const cCtrlNum_=currentRec.CtrlNum_
+        if (editMode) {
+                editSalesDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
+        } else {
+            const dDate____=currentRec.DateFrom
+            addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost)
+        }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
-
     })
 
     document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
-        console.log('Cancel Clicked called from SalesDtl')
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
     })
 }
 
-async function addSalesDtl() {
+async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
+    document.getElementById('loadingIndicator').style.display = 'flex';
 
     const nQuantity=document.getElementById('Quantity').value
     const nItemPrce=document.getElementById('ItemPrce').value
     const nDiscRate=document.getElementById('DiscRate').value
     const nAmount__=document.getElementById('Amount__').value
 
-    const cCtrlNum_=itemData.CtrlNum_
-    const dDate____=itemData.DateFrom
+    console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
+
+    try {
+        const response = await fetch('http://localhost:3000/sales/editSalesDetail', {
+            method: 'PUT',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                cRecordId: cRecordId,
+                cItemCode: cItemCode,
+                nQuantity: nQuantity,
+                nItemPrce: nItemPrce,
+                nDiscRate: nDiscRate,
+                nAmount__: nAmount__,
+                nLandCost: nLandCost
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const updatedItem = await response.json();
+
+        if (updatedItem) {
+            itemsDtl[index]=updatedItem;
+            updateItemTable(true)
+            showNotification('Sales Item record updated successfully!')
+            // console.log(updatedItem)
+            updateSalesTotals(cCtrlNum_) // Update SALESREC Header
+        }
+
+    } catch (error) {
+        console.error("Error processing editSalesDetail:", error);
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
+}
+
+async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
+    document.getElementById('loadingIndicator').style.display = 'flex';
+
+    const nQuantity=document.getElementById('Quantity').value
+    const nItemPrce=document.getElementById('ItemPrce').value
+    const nDiscRate=document.getElementById('DiscRate').value
+    const nAmount__=document.getElementById('Amount__').value
     const cTimeSale=get24HrTime()
+
+    // console.log([cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
+
     try {
         const response = await fetch('http://localhost:3000/sales/addSalesDetail', {
             method: 'POST',  
@@ -525,25 +750,98 @@ async function addSalesDtl() {
             },
             body: JSON.stringify({
                 cCtrlNum_: cCtrlNum_,
-                cRecordId: cRecordId,
                 cItemCode: cItemCode,
+                dDate____: dDate____,
+                cTimeSale: cTimeSale,
                 nQuantity: nQuantity,
                 nItemPrce: nItemPrce,
                 nDiscRate: nDiscRate,
                 nAmount__: nAmount__,
-                nLandCost: nLandCost,
-                dDate____: dDate____,
-                cTimeSale: cTimeSale
+                nLandCost: nLandCost
             })
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const updatedItem = await response.json();
+
+        if (updatedItem) {
+            itemsDtl.push(updatedItem);
+            updateItemTable(true)
+            showNotification('Sales Item record added successfully!')
+
+            updateSalesTotals(updatedItem.CtrlNum_) // Update SALESREC Header
+
+            setTimeout(() => {
+                const tableBody = document.getElementById('ListItemBody'); 
+                if (tableBody) {
+                    const rows = tableBody.getElementsByTagName('tr'); // Get all <tr> in tbody
+                    if (rows.length > 0) {
+                        const lastRow = rows[rows.length - 2]; // Get the last <tr> inside tbody
+                        if (lastRow) {
+                            lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                            // 🔹 Simulate a hover effect
+                            lastRow.classList.add('hover-effect'); 
+                            // 🔹 Remove hover effect after 2 seconds
+                            setTimeout(() => lastRow.classList.remove('hover-effect'), 2000); 
+                            lastRow.classList.add('selected');                       
+                        }
+                    }
+                }
+            }, 100); // Small delay to ensure table updates first
+            highlightRow(lastRow, 'ListItemBody')
+
+        }
+
     } catch (error) {
-        console.error("Error processing the filter:", error);
+        console.error("Error processing addSalesDetail:", error);
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
     }
 }
+
+async function updateSalesTotals(cCtrlNum_) {
+    const headerTotals=[
+        calcTotalQty(),
+        calcTotalPrc(),
+        calcTotalAmt(),
+        calcTotalCnt()
+    ]
+    const res = await fetch('http://localhost:3000/sales/updateSalesTotals', {
+        method: 'PUT',  
+        headers: {
+            'Content-Type': 'application/json'  // Specify JSON format
+        },
+        body: JSON.stringify({
+            cCtrlNum_: cCtrlNum_,
+            nTotalQty: headerTotals[0],
+            nTotalPrc: headerTotals[1],
+            nTotalAmt: headerTotals[2],
+            nNoOfItem: headerTotals[3]
+        })
+    });
+
+    const editTotals = await res.json()
+    globalData[currentIndex] = editTotals
+    updateTable()
+    
+    function calcTotalQty() {
+        return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
+    }
+    function calcTotalPrc() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
+    }
+    function calcTotalAmt() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
+    }            
+    function calcTotalCnt() {
+        return itemsDtl.length
+    }            
+
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
@@ -555,6 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addSalesDtl = document.getElementById('addSalesDtl');
 
     addSalesRec.addEventListener('click', () => {
+        document.getElementById('salesDtlCounter').innerText=''
         SaleForm();
     });
     addSalesDtl.addEventListener('click', () => {
@@ -578,6 +877,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
+    console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
+    const salesDtlCounter=document.getElementById('salesDtlCounter')
+    try {
+        const response = await fetch(`http://localhost:3000/sales/deleteSalesDetail/${encodeURIComponent(cRecordId)}`, {
+            method: 'DELETE'
+        });
 
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            if (response.status === 400) {
+                alert(`Failed to delete: ${errorResponse.message || 'Invalid data'}`);
+            } else {
+                alert('An unexpected error occurred while deleting.');
+            }            
+            return false;
+        }
+
+        const result = await response.json();
+        console.log('Deleted Rows Affected:', result.rowsAffected);
+        showNotification('SalesDtl deleted successfully');
+        // Remove the item from the itemsDtl array
+        itemsDtl.splice(index, 1);
+        updateItemTable(true)
+        salesDtlCounter.innerHTML=`${itemsDtl.length} Records`
+        updateSalesTotals(cCtrlNum_) // Update SALESREC Header        
+        return true;
+    } catch (error) {
+        console.error('Delete SalesDtl error:', error);
+        alert('An error occurred while trying to delete the record.');
+        return false;
+    }
+}
 
 
