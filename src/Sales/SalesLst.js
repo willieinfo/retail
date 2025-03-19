@@ -455,106 +455,7 @@ function updateItemTable(refreshOnly=false) {
 }
 
 
-document.getElementById('printSalesInvoice').addEventListener('click', async () => {
-    const printInvoice= confirm('Print Sales Invoice?');
-    if (printInvoice===false) return
-    
-    // Collect the header data
-    const headerData = [
-        `Location: ${currentRec.LocaName}`,
-        `Ref. No.: ${currentRec.ReferDoc}`,
-        `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
-        `Customer: ${currentRec.CustName}`,
-        `Remarks: ${currentRec.Remarks_}`
-    ];
 
-    // Initialize jsPDF
-    const { jsPDF } = window.jspdf;
-    // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
-    const doc = new jsPDF({ unit: 'mm', format: 'letter', orientation: 'portrait' }); 
-    
-    const pageMargin = 10; // Page margin (left, top, right, bottom)
-    const lineHeight = 8; // Line height for content
-    const itemLineHeight = 6; // Line height for items
-    const startY = 20; // Start Y position for the content
-    
-    let currentY = startY;
-
-    // Add the header to the PDF
-    doc.setFontSize(12);
-    headerData.forEach((line, index) => {
-        doc.text(line, pageMargin, currentY);
-        currentY += lineHeight;
-    });
-
-    // Add the table header(s)
-    showTableHeader()
-    currentY += lineHeight;
-
-    // Add the items to the table
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    itemsDtl.forEach(item => {
-        if (currentY + itemLineHeight > doc.internal.pageSize.height - pageMargin) {
-            // If we reach the bottom of the page, add a new page
-            doc.addPage();
-            currentY = startY;
-            
-            showTableHeader()
-            currentY += lineHeight;
-        }
-
-        doc.text(item.Quantity.toFixed(0), pageMargin, currentY);
-        doc.text(item.UsersCde, pageMargin + 20, currentY);
-        doc.text(item.OtherCde, pageMargin + 40, currentY);
-        doc.text(item.Descript.substring(0, 30), pageMargin + 80, currentY); // Limiting item description to 30 chars
-        doc.text(formatter.format(item.ItemPrce), pageMargin + 140, currentY, { align: 'right' });
-        doc.text(formatter.format(item.Quantity * item.ItemPrce), pageMargin + 160, currentY, { align: 'right' });
-        doc.text(formatter.format(item.Quantity * (item.ItemPrce - item.Amount__)), pageMargin + 180, currentY, { align: 'right' });
-        doc.text(formatter.format(item.Quantity * item.Amount__), pageMargin + 200, currentY, { align: 'right' });
-
-        currentY += itemLineHeight;
-    });
-
-    // Add totals at the bottom of the page
-    const totals = {
-        totalQty: itemsDtl.reduce((sum, item) => sum + item.Quantity, 0),
-        totalPrice: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.ItemPrce, 0),
-        totalDiscount: itemsDtl.reduce((sum, item) => sum + item.Quantity * (item.ItemPrce - item.Amount__), 0),
-        totalAmount: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.Amount__, 0)
-    };
-
-    doc.setFontSize(10);
-    doc.text(`Totals:`, pageMargin, currentY);
-    doc.text(totals.totalQty.toFixed(0), pageMargin + 30, currentY);
-    doc.text(formatter.format(totals.totalPrice), pageMargin + 150, currentY, { align: 'right' });
-    doc.text(formatter.format(totals.totalDiscount), pageMargin + 180, currentY, { align: 'right' });
-    doc.text(formatter.format(totals.totalAmount), pageMargin + 240, currentY, { align: 'right' });
-
-    // Save or print the document
-    doc.save('sales_invoice.pdf');
-
-    function showTableHeader() {
-        // Add the table headers
-        const tableHeaders = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
-        currentY += lineHeight; // Extra space before the table
-        doc.setFontSize(8);
-        doc.setFont("helvetica", "bold");
-        // tableHeaders.forEach((header, index) => {
-        //     doc.text(header, pageMargin + (index * 30), currentY); // Adjust x position for each column
-        // });
-
-        doc.text(tableHeaders[0], pageMargin , currentY, { align: 'center' });
-        doc.text(tableHeaders[1], pageMargin + 20, currentY, { align: 'center' });
-        doc.text(tableHeaders[2], pageMargin + 40, currentY, { align: 'center' });
-        doc.text(tableHeaders[3], pageMargin + 80, currentY, { align: 'center' });
-        doc.text(tableHeaders[4], pageMargin + 140, currentY, { align: 'center' });
-        doc.text(tableHeaders[5], pageMargin + 160, currentY, { align: 'center' });
-        doc.text(tableHeaders[6], pageMargin + 180, currentY, { align: 'center' });
-        doc.text(tableHeaders[7], pageMargin + 200, currentY, { align: 'center' });
-
-    }
-});
 
 document.getElementById('salesFilter').addEventListener('click', async () => {
     try {
@@ -1013,4 +914,222 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
     }
 }
 
+
+document.getElementById('printSalesInvoice').addEventListener('click', async () => {
+
+    // const printInvoice= confirm('Print Sales Invoice?');
+    // if (printInvoice===false) return
+    
+    // Collect the header data
+    const headerData = [
+        `Location: ${currentRec.LocaName}`,
+        `Ref. No.: ${currentRec.ReferDoc}`,
+        `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
+        `Customer: ${currentRec.CustName}`,
+        `Remarks: ${currentRec.Remarks_}`
+    ];
+
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
+    const doc = new jsPDF({ unit: 'mm', format: 'letter', orientation: 'portrait' }); 
+    
+    const pageMargin = 10; // Page margin (left, top, right, bottom)
+    const lineHeight = 6; // Line height for content - ideal 8
+    const itemLineHeight = 4; // Line height for items
+    const startY = 20; // Start Y position for the content
+    const reportFont='Helvetica'
+
+    let currentY = startY;
+    let pageNum = 1
+
+    // const logoBase64 = "InfoPlus.png/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."; 
+    // doc.addImage(logoBase64, 'PNG', 10, 10, 20, 20);
+
+    const img = new Image();
+    img.src = "InfoPlus.png"; // Path to your local image
+    img.onload = function () {
+        // Add the image once it's loaded
+        doc.addImage(img, 'PNG', 10, 10, 20, 20);
+    }
+
+    // Add the header to the PDF
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    const title = "FASHION RETAIL APP";
+    const titleWidth = doc.getTextWidth(title);
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const titleX = (pageWidth - titleWidth) / 2;  // Center the text
+
+    // Draw the background rectangle (Gray color)
+    doc.setFillColor(200, 200, 200); // RGB for gray
+    doc.rect(titleX - 2, currentY - 5, titleWidth + 4, lineHeight + 2, 'F');
+    
+    // Draw the centered text
+    doc.setTextColor(0, 0, 0); // Reset to black
+    doc.text(title, titleX, currentY);
+
+    currentY += lineHeight;
+    doc.setTextColor(0,0,255);
+    headerData.forEach((line, index) => {
+        doc.text(line, pageMargin, currentY);
+        currentY += lineHeight;
+    });
+
+    doc.setTextColor(0,0,0);
+    createLine()
+
+    doc.setFontSize(8);
+    doc.setFont(reportFont, "normal");
+
+    const colWidths = [10, 20, 26, 60, 20, 20, 20, 20]; // Adjust widths as needed
+    const rowHeight = 6; // Row height
+    let currentX = 10;
+    showTableHeader()
+    
+    itemsDtl.forEach(item => {
+        if (currentY + itemLineHeight > doc.internal.pageSize.height - pageMargin) {
+
+            doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+            showPageNum()
+
+            // If we reach the bottom of the page, add a new page
+            doc.addPage();
+            currentY = startY;  // Reset 
+
+            pageNum++
+            showPageNum()
+
+            doc.setFont(reportFont, "bold");
+            showTableHeader()
+            doc.setFont(reportFont, "normal");
+
+        }
+
+        let itemRow = [
+            item.Quantity.toFixed(0),
+            item.UsersCde,
+            item.OtherCde,
+            item.Descript.substring(0, 30),
+            formatter.format(item.ItemPrce),
+            formatter.format(item.Quantity * item.ItemPrce),
+            formatter.format(item.Quantity * (item.ItemPrce - item.Amount__)),
+            formatter.format(item.Quantity * item.Amount__)
+        ];
+    
+        currentX = 10; // Reset X for each row
+        itemRow.forEach((text, i) => {
+            // doc.text(text, currentX + 2, currentY + 4); // Add text inside
+            let textX = currentX + 2; // Default left alignment
+            if ([0, 4, 5, 6, 7].includes(i)) { // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
+                textX = currentX + colWidths[i] - 2; // Adjust to the right within the column
+                doc.text(text, textX, currentY + 4, { align: 'right' });
+            } else {
+                doc.text(text, textX, currentY + 4, { align: 'left' });
+            }
+            doc.line(currentX, currentY, currentX, currentY + rowHeight); 
+            currentX += colWidths[i];
+        });
+    
+        doc.line(currentX, currentY, currentX, currentY + rowHeight);
+        currentY += rowHeight; // Move to the next row
+    });
+
+    // BOTTOM PAGE
+    doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+
+    // Add totals at the bottom of the page
+    const totals = {
+        totalQty: itemsDtl.reduce((sum, item) => sum + item.Quantity, 0),
+        totalPrice: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.ItemPrce, 0),
+        totalDiscount: itemsDtl.reduce((sum, item) => sum + item.Quantity * (item.ItemPrce - item.Amount__), 0),
+        totalAmount: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.Amount__, 0)
+    };
+
+    doc.setFontSize(8);
+    doc.setFont(reportFont, "bold");
+
+    // Align totals dynamically
+    let totalX = 10; // Start at left margin
+
+    colWidths.forEach((width, i) => {
+        if ([0, 5, 6, 7].includes(i)) { // Only sum columns: Qty, Gross, Discount, Net
+            let textValue;
+            if (i === 0) {
+                textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
+            } else {
+                const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
+                textValue = formatter.format(totalValues[i - 5]); // Correct index mapping
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.text(textValue, totalX + 2, currentY + rowHeight, { align: 'right' });
+        }
+        totalX += width ; // Move to next column
+    });
+
+    // colWidths.forEach((width, i) => {
+    //     if ([0, 5, 6, 7].includes(i)) { // Only sum columns: Qty, Gross, Discount, Net
+    //         let textValue;
+    //         if (i === 0) {
+    //             textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
+    //         } else {
+    //             const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
+    //             textValue = formatter.format(totalValues[i - 5]); // Correct index mapping
+    //         }
+    
+    //         doc.setFont("helvetica", "bold");
+    
+    //         // Calculate right-aligned X position inside the column
+    //         let textX = currentX + width - doc.getTextWidth(textValue) - 2; 
+    
+    //         doc.text(textValue, textX, currentY + rowHeight);
+    //     }
+    //     currentX += width; // Move to next column
+    // });
+
+    // Draw a final line to separate totals
+    doc.line(pageMargin, currentY + rowHeight + 2, totalX, currentY + rowHeight + 2); 
+
+    showPageNum()
+
+    // Save or print the document
+    // doc.save('Sales Invoice.pdf');
+
+    // document.querySelector('.pdfReport').src = doc.output('datauristring');
+    doc.output('dataurlnewwindow','Sales Invoice.pdf');
+
+
+    function showTableHeader() {
+        const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
+
+        currentX = 10; // **Reset
+
+        // Draw the header row
+        const totalWidth = colWidths.reduce((sum, width) => sum + width, 0);
+        doc.setFillColor(200, 200, 200); // Gray background for headers
+        doc.rect(10, currentY, totalWidth, rowHeight, "F"); // Full header width
+        
+        columns.forEach((header, i) => {
+            doc.rect(currentX, currentY, colWidths[i], rowHeight); // **Draw full grid for header**
+            doc.text(header, currentX + 2, currentY + 4);
+            currentX += colWidths[i];
+        });
+        currentY += rowHeight;
+    }
+
+    function createLine() {
+        currentY += lineHeight;
+        doc.setDrawColor(0);  // Black line
+        doc.line(pageMargin-2, currentY-3, doc.internal.pageSize.width - pageMargin, currentY-3); 
+        // currentY += lineHeight;
+    }
+
+    function showPageNum() {
+        doc.setFont(reportFont, "normal");
+        currentY += lineHeight;
+        doc.text('Page: '+String(pageNum), pageMargin, pageHeight-5)
+    }
+});
 
