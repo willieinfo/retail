@@ -9,6 +9,9 @@ You can use Node.js! First, install the http-server package globally with npm in
 Then, navigate to your project folder and run http-server -p 5500. 
 You can access it at http://127.0.0.1:5500. 
 
+Link Rubix Cube
+https://www.facebook.com/share/r/15wQ5GEfg7/
+
 Repository
 https://github.com/willieinfo/rtrg
 https://github.com/willieinfo/iamnice

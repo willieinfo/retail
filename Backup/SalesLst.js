@@ -150,7 +150,7 @@ async function SaleForm(index,editMode) {
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="ListItemBody"></tbody>
+                <tbody id="ListSaleItem"></tbody>
             </table>
         </div>  
     `    
@@ -205,7 +205,7 @@ async function SaleForm(index,editMode) {
             itemsDtl = await response.json(); // Store full data array globally
             salesDtlCounter.innerHTML=`${itemsDtl.length} Records`
 
-            updateItemTable();
+            updateItemTable();  // Render items using <tr>
 
     
         } catch (error) {
@@ -286,7 +286,8 @@ async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustNam
         const updatedItem = await response.json();
         if (updatedItem) {
             showNotification('SalesRec record edited successfully!')
-            globalData[currentRec]=updatedItem;
+            globalData[currentIndex]=updatedItem;
+            // console.log(globalData[currentIndex])
             updateTable();         
         }
 
@@ -363,7 +364,7 @@ function updateItemTable(refreshOnly=false) {
     let nTotalDsc = 0;
     let nTotalAmt = 0;
 
-    const ListItemBody=document.getElementById('ListItemBody')
+    const ListSaleItem=document.getElementById('ListSaleItem')
     // Map through itemsDtl and build rows while accumulating totals
     const listTable = itemsDtl.map((item, index) => {
         // Accumulate totals inside the map
@@ -372,7 +373,7 @@ function updateItemTable(refreshOnly=false) {
         nTotalDsc += (item.Quantity * (item.ItemPrce - item.Amount__)) || 0;
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
-            <tr id="trLocaList" data-index="${index}">
+            <tr data-index="${index}" style="${item.Quantity < 0 ? 'color: red;' : ''}">
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
@@ -405,9 +406,9 @@ function updateItemTable(refreshOnly=false) {
             </tfoot>
 `
 
-    ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
+    ListSaleItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
 
-    document.getElementById('ListItemBody').addEventListener('click', async (event) => {
+    document.getElementById('ListSaleItem').addEventListener('click', async (event) => {
         const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
         if (delBtn) {
             const row = event.target.closest('tr');
@@ -452,6 +453,8 @@ function updateItemTable(refreshOnly=false) {
     });
     
 }
+
+
 
 
 document.getElementById('salesFilter').addEventListener('click', async () => {
@@ -775,7 +778,7 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
             updateSalesTotals(updatedItem.CtrlNum_) // Update SALESREC Header
 
             setTimeout(() => {
-                const tableBody = document.getElementById('ListItemBody'); 
+                const tableBody = document.getElementById('ListSaleItem'); 
                 if (tableBody) {
                     const rows = tableBody.getElementsByTagName('tr'); // Get all <tr> in tbody
                     if (rows.length > 0) {
@@ -791,7 +794,7 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
                     }
                 }
             }, 100); // Small delay to ensure table updates first
-            highlightRow(lastRow, 'ListItemBody')
+            highlightRow(lastRow, 'ListSaleItem')
 
         }
 
@@ -911,4 +914,212 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
     }
 }
 
+
+document.getElementById('printSalesInvoice').addEventListener('click', async () => {
+
+    // const printInvoice= confirm('Print Sales Invoice?');
+    // if (printInvoice===false) return
+    
+    // Collect the header data
+    const headerData = [
+        `Location: ${currentRec.LocaName}`,
+        `Ref. No.: ${currentRec.ReferDoc}`,
+        `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
+        `Customer: ${currentRec.CustName}`,
+        `Remarks: ${currentRec.Remarks_}`
+    ];
+
+    // Initialize jsPDF
+    const { jsPDF } = window.jspdf;
+    // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
+    const doc = new jsPDF({ unit: 'mm', format: 'letter', orientation: 'portrait' }); 
+    
+    const pageMargin = 10; // Page margin (left, top, right, bottom)
+    const lineHeight = 5; // Line height for content - ideal 8
+    const startY = 20; // Start Y position for the content
+    const reportFont='Helvetica'
+
+    let currentY = startY;
+    let pageNum = 1
+
+    // const logoBase64 = "InfoPlus.png/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."; 
+    // doc.addImage(logoBase64, 'PNG', 10, 10, 20, 20);
+
+    const img = new Image();
+    img.src = "InfoPlus.png"; // Path to your local image
+    img.onload = function () {
+        // Add the image once it's loaded
+        doc.addImage(img, 'PNG', 10, 10, 20, 20);
+    }
+
+    // Add the header to the PDF
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    const title = "FASHION RETAIL APP";
+    const titleWidth = doc.getTextWidth(title);
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const titleX = (pageWidth - titleWidth) / 2;  // Center the text
+
+    // Draw the background rectangle (Gray color)
+    doc.setFillColor(200, 200, 200); // RGB for gray
+    doc.rect(titleX - 2, currentY - 5, titleWidth + 4, lineHeight + 2, 'F');
+    
+    // Draw the centered text
+    doc.setTextColor(0, 0, 0); // Reset to black
+    doc.text(title, titleX, currentY);
+
+    currentY += lineHeight;
+    // doc.setTextColor(0,0,255);
+    headerData.forEach((line, index) => {
+        doc.text(line, pageMargin, currentY);
+        currentY += lineHeight;
+    });
+
+    doc.setTextColor(0,0,0);
+    createLine()
+
+    doc.setFontSize(8);
+    doc.setFont(reportFont, "normal");
+
+    const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
+    const itemLineHeight = 5; // Line height for items
+    const rowHeight = 6; // Row height - Header height
+    let currentX = pageMargin; // 10
+    showTableHeader()
+    
+    itemsDtl.forEach(item => {
+        if (currentY + itemLineHeight > doc.internal.pageSize.height - pageMargin) {
+
+            doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+            showPageNum()
+
+            // If we reach the bottom of the page, add a new page
+            doc.addPage();
+            currentY = startY;  // Reset 
+
+            pageNum++
+            showPageNum()
+
+            doc.setFont(reportFont, "bold");
+            showTableHeader()
+            doc.setFont(reportFont, "normal");
+
+        }
+
+        let itemRow = [
+            item.Quantity.toFixed(0),
+            item.UsersCde,
+            item.OtherCde,
+            item.Descript.substring(0, 30),
+            formatter.format(item.ItemPrce),
+            formatter.format(item.Quantity * item.ItemPrce),
+            formatter.format(item.Quantity * (item.ItemPrce - item.Amount__)),
+            formatter.format(item.Quantity * item.Amount__)
+        ];
+    
+        currentX = pageMargin; // Reset X for each row
+        itemRow.forEach((text, i) => {
+            itemRow[0] < 0 ? doc.setTextColor(255,0,0) : doc.setTextColor(0,0,0)
+            // Add text inside
+            let textX = currentX + 2; // Default left alignment
+            if ([0, 4, 5, 6, 7].includes(i)) { // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
+                textX = currentX + colWidths[i] - 2; // Adjust to the right within the column
+                doc.text(text, textX, currentY + 4, { align: 'right' });
+            } else {
+                doc.text(text, textX, currentY + 4, { align: 'left' });
+            }
+            
+            doc.line(currentX, currentY, currentX, currentY + itemLineHeight); 
+            currentX += colWidths[i];
+        });
+    
+        doc.line(currentX, currentY, currentX, currentY + itemLineHeight);
+        currentY += itemLineHeight; // Move to the next row
+    });
+    doc.setTextColor(0,0,0)
+    // BOTTOM PAGE
+    doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+
+    // Add totals at the bottom of the page
+    const totals = {
+        totalQty: itemsDtl.reduce((sum, item) => sum + item.Quantity, 0),
+        totalPrice: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.ItemPrce, 0),
+        totalDiscount: itemsDtl.reduce((sum, item) => sum + item.Quantity * (item.ItemPrce - item.Amount__), 0),
+        totalAmount: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.Amount__, 0)
+    };
+
+    doc.setFontSize(8);
+    doc.setFont(reportFont, "bold");
+
+
+    // Align totals dynamically
+    let totalX = pageMargin; // Start at left margin
+    let columnTotal = 0
+    colWidths.forEach((width, i) => {
+        let textValue = '';
+        if (i === 0) {
+            // Total Quantity (aligned right)
+            textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
+            doc.text(textValue, totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
+        } else if (i === 4) {
+            // No total for Unit Price (column 4), so skip
+            totalX += width; // Skip column 4 and move X to the next column
+            columnTotal = totalX
+            return;        
+        } else if ([5, 6, 7].includes(i)) {
+            // Columns 5, 6, 7 should have totals and be aligned right
+            const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
+            textValue = formatter.format(totalValues[i - 5]); // Adjusted for correct index mapping
+            doc.text(textValue, totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
+        }
+
+        totalX += width; // Move to the next column
+    });
+
+    doc.text('Totals:', columnTotal , currentY + itemLineHeight, { align: 'right' });
+
+    // Draw a final line to separate totals
+    doc.line(pageMargin, currentY + itemLineHeight + 2, totalX, currentY + itemLineHeight + 2); 
+
+    showPageNum()
+
+    // Save or print the document
+    // doc.save('Sales Invoice.pdf');
+
+    // document.querySelector('.pdfReport').src = doc.output('datauristring');
+
+    doc.output('dataurlnewwindow','Sales Invoice.pdf');
+
+
+    function showTableHeader() {
+        const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
+
+        currentX = 10; // **Reset
+
+        // Draw the header row
+        const totalWidth = colWidths.reduce((sum, width) => sum + width, 0);
+        doc.setFillColor(200, 200, 200); // Gray background for headers
+        doc.rect(pageMargin, currentY, totalWidth, rowHeight, "F"); // Full header width
+        
+        columns.forEach((header, i) => {
+            doc.rect(currentX, currentY, colWidths[i], rowHeight); // **Draw full grid for header**
+            doc.text(header, currentX + 2, currentY + 4);
+            currentX += colWidths[i];
+        });
+        currentY += rowHeight;
+    }
+
+    function createLine() {
+        currentY += lineHeight;
+        doc.setDrawColor(0);  // Black line
+        doc.line(pageMargin-2, currentY-3, doc.internal.pageSize.width - pageMargin, currentY-3); 
+    }
+
+    function showPageNum() {
+        doc.setFont(reportFont, "normal");
+        currentY += lineHeight;
+        doc.text('Page: '+String(pageNum), pageMargin, pageHeight-5)
+    }
+});
 

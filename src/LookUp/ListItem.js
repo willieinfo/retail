@@ -590,7 +590,7 @@ function updateTable() {
             </thead>
             <tbody id="ListItemBody">
                 ${globalData.map((item, index) => `
-                    <tr id="trItemList" data-index="${index}">
+                    <tr id="trItemList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
                         <td class="colNoWrap">${item.Descript.trim().substring(0, 50) || 'N/A'}</td>
                         <td>${item.UsersCde || 'N/A'}</td>
                         <td>${item.BrandNme || 'N/A'}</td>

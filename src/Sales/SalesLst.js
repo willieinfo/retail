@@ -112,7 +112,7 @@ async function SaleForm(index,editMode) {
 
     reportBody.innerHTML = `
         <div id="invoiceForm">
-            <div id="inputFields" class="textDiv">
+            <div id="inputSale1" class="textDiv">
                 <div>
                     <label for="Location">Location</label>
                     <select id="SaleLoca"></select>
@@ -125,6 +125,8 @@ async function SaleForm(index,editMode) {
                     <label for="DateFrom">Date:</label>
                     <input type="date" id="DateFrom">
                 </div>
+            </div>
+            <div id="inputSale2" class="textDiv">
                 <div>
                     <label for="CustName">Customer</label>
                     <input type="text" id="CustName" spellcheck="false">
@@ -132,6 +134,10 @@ async function SaleForm(index,editMode) {
                 <div>
                     <label for="Remarks_">Remarks</label>
                     <input type="text" id="Remarks_" spellcheck="false">
+                </div>
+                <div id="chkDiv">
+                    <input type="checkbox" id="Disabled" >
+                    <label for="Disabled">Disabled</label>
                 </div>
             </div>
         </div>
@@ -150,7 +156,7 @@ async function SaleForm(index,editMode) {
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="ListItemBody"></tbody>
+                <tbody id="ListSaleItem"></tbody>
             </table>
         </div>  
     `    
@@ -176,6 +182,7 @@ async function SaleForm(index,editMode) {
         document.getElementById('DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
         document.getElementById('Remarks_').value=itemData.Remarks_
         document.getElementById('CustName').value=itemData.CustName
+        document.getElementById('Disabled').checked=itemData.Disabled ? true : false
 
 
         const locationSelect = document.getElementById('SaleLoca');
@@ -232,7 +239,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     const cRemarks_=document.getElementById('Remarks_').value
     const dDateFrom=document.getElementById('DateFrom').value
     const cCustName=document.getElementById('CustName').value
-
+    const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
 
     if (!cLocation) {
         document.getElementById('SaleLoca').focus();
@@ -241,7 +248,8 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     }
 
     if (salesDtlCounter) {
-        editSalesRec(currentRec.CtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+
+        editSalesRec(currentRec.CtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled)
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
@@ -262,8 +270,10 @@ document.getElementById('cancelSalesRecBtn').addEventListener('click', () => {
     showReport('SalesLst')  
 });
 
-async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName) {
+async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled) {
     // console.log(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
+    lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+
     try {
         const response = await fetch('http://localhost:3000/sales/editSalesHeader', {
             method: 'PUT',  
@@ -275,7 +285,8 @@ async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustNam
                 cLocation: cLocation, 
                 dDateFrom: dDateFrom,
                 cRemarks_: cRemarks_,
-                cCustName: cCustName
+                cCustName: cCustName,
+                lDisabled: lDisabled
             })
         });
         
@@ -364,7 +375,7 @@ function updateItemTable(refreshOnly=false) {
     let nTotalDsc = 0;
     let nTotalAmt = 0;
 
-    const ListItemBody=document.getElementById('ListItemBody')
+    const ListSaleItem=document.getElementById('ListSaleItem')
     // Map through itemsDtl and build rows while accumulating totals
     const listTable = itemsDtl.map((item, index) => {
         // Accumulate totals inside the map
@@ -373,7 +384,7 @@ function updateItemTable(refreshOnly=false) {
         nTotalDsc += (item.Quantity * (item.ItemPrce - item.Amount__)) || 0;
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
-            <tr id="trLocaList" data-index="${index}">
+            <tr data-index="${index}" style="${item.Quantity < 0 ? 'color: red;' : ''}">
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
@@ -406,9 +417,9 @@ function updateItemTable(refreshOnly=false) {
             </tfoot>
 `
 
-    ListItemBody.innerHTML = listTable+listFooter; // Update the tbody with new rows
+    ListSaleItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
 
-    document.getElementById('ListItemBody').addEventListener('click', async (event) => {
+    document.getElementById('ListSaleItem').addEventListener('click', async (event) => {
         const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
         if (delBtn) {
             const row = event.target.closest('tr');
@@ -778,7 +789,7 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
             updateSalesTotals(updatedItem.CtrlNum_) // Update SALESREC Header
 
             setTimeout(() => {
-                const tableBody = document.getElementById('ListItemBody'); 
+                const tableBody = document.getElementById('ListSaleItem'); 
                 if (tableBody) {
                     const rows = tableBody.getElementsByTagName('tr'); // Get all <tr> in tbody
                     if (rows.length > 0) {
@@ -794,7 +805,7 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
                     }
                 }
             }, 100); // Small delay to ensure table updates first
-            highlightRow(lastRow, 'ListItemBody')
+            highlightRow(lastRow, 'ListSaleItem')
 
         }
 
@@ -922,11 +933,11 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     
     // Collect the header data
     const headerData = [
-        `Location: ${currentRec.LocaName}`,
         `Ref. No.: ${currentRec.ReferDoc}`,
+        `Location: ${currentRec.LocaName.trim()}`,
         `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
-        `Customer: ${currentRec.CustName}`,
-        `Remarks: ${currentRec.Remarks_}`
+        `Customer: ${currentRec.CustName.trim()}`,
+        `Remarks: ${currentRec.Remarks_.trim()}`
     ];
 
     // Initialize jsPDF
@@ -936,12 +947,10 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     
     const pageMargin = 10; // Page margin (left, top, right, bottom)
     const lineHeight = 6; // Line height for content - ideal 8
-    const itemLineHeight = 4; // Line height for items
     const startY = 20; // Start Y position for the content
     const reportFont='Helvetica'
 
     let currentY = startY;
-    let pageNum = 1
 
     // const logoBase64 = "InfoPlus.png/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."; 
     // doc.addImage(logoBase64, 'PNG', 10, 10, 20, 20);
@@ -956,40 +965,35 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     // Add the header to the PDF
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    const title = "FASHION RETAIL APP";
-    const titleWidth = doc.getTextWidth(title);
+    doc.setLineWidth(0.2); // line thickness
+
+    const pageHeight = doc.internal.pageSize.height; // approx posi for pageNum
+    let pageNum = 1
+
+    // Center a text
     const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    const titleX = (pageWidth - titleWidth) / 2;  // Center the text
+    const cCompName = 'FASHION RACK DESIGNER OUTLET INC.';
+    const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
 
-    // Draw the background rectangle (Gray color)
-    doc.setFillColor(200, 200, 200); // RGB for gray
-    doc.rect(titleX - 2, currentY - 5, titleWidth + 4, lineHeight + 2, 'F');
-    
-    // Draw the centered text
-    doc.setTextColor(0, 0, 0); // Reset to black
-    doc.text(title, titleX, currentY);
-
+    doc.setFont(reportFont, "bold");
+    doc.text(cCompName, (pageWidth - doc.getTextWidth(cCompName)) / 2, currentY);
     currentY += lineHeight;
-    doc.setTextColor(0,0,255);
-    headerData.forEach((line, index) => {
-        doc.text(line, pageMargin, currentY);
-        currentY += lineHeight;
-    });
+    doc.text(cAddress_, (pageWidth - doc.getTextWidth(cAddress_)) / 2, currentY);
+    //https://www.facebook.com/share/r/15wQ5GEfg7/
 
-    doc.setTextColor(0,0,0);
-    createLine()
+    // Document Header
+    showDocHeader()
 
+    // Render Table Header and Details
     doc.setFontSize(8);
-    doc.setFont(reportFont, "normal");
-
-    const colWidths = [10, 20, 26, 60, 20, 20, 20, 20]; // Adjust widths as needed
-    const rowHeight = 6; // Row height
-    let currentX = 10;
+    const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
+    const itemLineHeight = 5; // Line height for items
+    const rowHeight = 6; // Row height - Header height
+    let currentX = pageMargin; // 10
     showTableHeader()
     
     itemsDtl.forEach(item => {
-        if (currentY + itemLineHeight > doc.internal.pageSize.height - pageMargin) {
+        if (currentY + itemLineHeight > pageHeight - 20 - pageMargin) {
 
             doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
             showPageNum()
@@ -997,6 +1001,8 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
             // If we reach the bottom of the page, add a new page
             doc.addPage();
             currentY = startY;  // Reset 
+
+            showDocHeader()
 
             pageNum++
             showPageNum()
@@ -1018,9 +1024,10 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
             formatter.format(item.Quantity * item.Amount__)
         ];
     
-        currentX = 10; // Reset X for each row
+        currentX = pageMargin; // Reset X for each row
         itemRow.forEach((text, i) => {
-            // doc.text(text, currentX + 2, currentY + 4); // Add text inside
+            itemRow[0] < 0 ? doc.setTextColor(255,0,0) : doc.setTextColor(0,0,0)
+            // Add text inside
             let textX = currentX + 2; // Default left alignment
             if ([0, 4, 5, 6, 7].includes(i)) { // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
                 textX = currentX + colWidths[i] - 2; // Adjust to the right within the column
@@ -1028,13 +1035,16 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
             } else {
                 doc.text(text, textX, currentY + 4, { align: 'left' });
             }
-            doc.line(currentX, currentY, currentX, currentY + rowHeight); 
+            
+            doc.line(currentX, currentY, currentX, currentY + itemLineHeight); 
             currentX += colWidths[i];
         });
     
-        doc.line(currentX, currentY, currentX, currentY + rowHeight);
-        currentY += rowHeight; // Move to the next row
+        doc.line(currentX, currentY, currentX, currentY + itemLineHeight);
+        currentY += itemLineHeight; // Move to the next row
     });
+    doc.setTextColor(0,0,0)
+
 
     // BOTTOM PAGE
     doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
@@ -1051,46 +1061,45 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     doc.setFont(reportFont, "bold");
 
     // Align totals dynamically
-    let totalX = 10; // Start at left margin
-
+    let totalX = pageMargin; // Start at left margin
+    let columnTotal = 0
     colWidths.forEach((width, i) => {
-        if ([0, 5, 6, 7].includes(i)) { // Only sum columns: Qty, Gross, Discount, Net
-            let textValue;
-            if (i === 0) {
-                textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
-            } else {
-                const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
-                textValue = formatter.format(totalValues[i - 5]); // Correct index mapping
-            }
-
-            doc.setFont("helvetica", "bold");
-            doc.text(textValue, totalX + 2, currentY + rowHeight, { align: 'right' });
+        let textValue = '';
+        if (i === 0) {
+            // Total Quantity (aligned right)
+            textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
+            doc.text(textValue, totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
+        } else if (i === 4) {
+            // No total for Unit Price (column 4), so skip
+            totalX += width; // Skip column 4 and move X to the next column
+            columnTotal = totalX
+            return;        
+        } else if ([5, 6, 7].includes(i)) {
+            // Columns 5, 6, 7 should have totals and be aligned right
+            const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
+            textValue = formatter.format(totalValues[i - 5]); // Adjusted for correct index mapping
+            doc.text(textValue, totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
         }
-        totalX += width ; // Move to next column
+
+        totalX += width; // Move to the next column
     });
 
-    // colWidths.forEach((width, i) => {
-    //     if ([0, 5, 6, 7].includes(i)) { // Only sum columns: Qty, Gross, Discount, Net
-    //         let textValue;
-    //         if (i === 0) {
-    //             textValue = totals.totalQty.toFixed(0); // Total Quantity (no formatting)
-    //         } else {
-    //             const totalValues = [totals.totalPrice, totals.totalDiscount, totals.totalAmount];
-    //             textValue = formatter.format(totalValues[i - 5]); // Correct index mapping
-    //         }
-    
-    //         doc.setFont("helvetica", "bold");
-    
-    //         // Calculate right-aligned X position inside the column
-    //         let textX = currentX + width - doc.getTextWidth(textValue) - 2; 
-    
-    //         doc.text(textValue, textX, currentY + rowHeight);
-    //     }
-    //     currentX += width; // Move to next column
-    // });
+    doc.text('Totals:', columnTotal , currentY + itemLineHeight, { align: 'right' });
 
     // Draw a final line to separate totals
-    doc.line(pageMargin, currentY + rowHeight + 2, totalX, currentY + rowHeight + 2); 
+    doc.line(pageMargin, currentY + itemLineHeight + 2, totalX, currentY + itemLineHeight + 2); 
+
+    doc.setFont('Courier', "normal");
+    doc.text('Encoded By:', pageMargin, pageHeight - 18);
+    doc.text('Checked By:', pageMargin + 40, pageHeight - 18);
+    doc.text('__________________ ', pageMargin, pageHeight - 10);
+    doc.text('__________________ ', pageMargin + 40, pageHeight - 10);
+
+    const cDate_Now = formatDate(new Date(), 'MM/DD/YYYY')
+    doc.text('RunDate:', pageWidth-pageMargin-40, pageHeight - 18);
+    doc.text(cDate_Now, pageWidth-pageMargin - doc.getTextWidth(cDate_Now)-6, pageHeight - 18);
+    doc.text('RunTime:', pageWidth-pageMargin-40, pageHeight - 14);
+    doc.text(get24HrTime(), pageWidth-pageMargin - doc.getTextWidth('RunTime:')-6 , pageHeight - 14);
 
     showPageNum()
 
@@ -1098,6 +1107,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     // doc.save('Sales Invoice.pdf');
 
     // document.querySelector('.pdfReport').src = doc.output('datauristring');
+
     doc.output('dataurlnewwindow','Sales Invoice.pdf');
 
 
@@ -1109,7 +1119,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         // Draw the header row
         const totalWidth = colWidths.reduce((sum, width) => sum + width, 0);
         doc.setFillColor(200, 200, 200); // Gray background for headers
-        doc.rect(10, currentY, totalWidth, rowHeight, "F"); // Full header width
+        doc.rect(pageMargin, currentY, totalWidth, rowHeight, "F"); // Full header width
         
         columns.forEach((header, i) => {
             doc.rect(currentX, currentY, colWidths[i], rowHeight); // **Draw full grid for header**
@@ -1122,14 +1132,138 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     function createLine() {
         currentY += lineHeight;
         doc.setDrawColor(0);  // Black line
-        doc.line(pageMargin-2, currentY-3, doc.internal.pageSize.width - pageMargin, currentY-3); 
-        // currentY += lineHeight;
+        doc.line(pageMargin, currentY-3, doc.internal.pageSize.width - pageMargin, currentY-3); 
     }
 
     function showPageNum() {
-        doc.setFont(reportFont, "normal");
+        doc.setFont('Courier', "normal");
         currentY += lineHeight;
         doc.text('Page: '+String(pageNum), pageMargin, pageHeight-5)
     }
+
+    function showDocHeader() {
+        const centerPosi = (pageWidth / 2) + 10;
+        const boxWidth = centerPosi - pageMargin;
+        const padding = 0; // Padding inside the box for content
+        const headerHeight = lineHeight + 4; // Adjusted height for the header box
+    
+        currentY += lineHeight - 4;
+    
+        // Draw the background rectangle (Gray color) for cModule_
+        doc.setFillColor(200, 200, 200); // RGB for gray
+        doc.rect(pageMargin, currentY - padding, boxWidth - 10, headerHeight + padding, 'F');
+    
+        // Title (cModule__) - centered and shaded
+        doc.setFont(reportFont, "normal");
+        const cModule__ = "SALES HEADER";
+        doc.setTextColor(0, 0, 0); // Reset to black
+        doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
+        doc.text(headerData[0], centerPosi, currentY + (headerHeight / 2));
+
+        // Draw a line just after the SALES HEADER and Ref. No. row to separate the header
+        doc.line(pageMargin, currentY - lineHeight, pageWidth - pageMargin, currentY - lineHeight); 
+        // Add a vertical line dividing the columns
+        const dividerX = centerPosi - 10; // X position for the center dividing line
+        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+    
+        currentY += headerHeight; // Move to the next line after the header row
+    
+        // Draw the first line of data
+        doc.setFont(reportFont, "normal");
+        doc.text(headerData[1], pageMargin + padding, currentY); // Location
+        doc.text(headerData[2], centerPosi, currentY); // OR Date
+        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+    
+        currentY += lineHeight;
+        doc.text(headerData[3], pageMargin + padding, currentY); // Customer
+        doc.text(headerData[4], centerPosi, currentY); // Remarks
+        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+    
+        currentY += lineHeight - 4;
+    
+        // Draw the bottom line for the header (thinner line)
+        doc.setLineWidth(0.2);
+        doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
+    
+    }
+    
+        function showDocHeader2() {
+            const centerPosi = (pageWidth / 2) + 10;
+            const boxWidth = centerPosi - pageMargin;
+            const padding = 0; // Padding inside the box for content
+            const headerHeight = lineHeight + 4; // Adjusted height for the header box
+        
+            // createLine();
+            doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
+            currentY += lineHeight - 4;
+        
+            // Draw the background rectangle (Gray color) for cModule_
+            doc.setFillColor(200, 200, 200); // RGB for gray
+            doc.rect(pageMargin, currentY - padding, boxWidth - 10, headerHeight + padding, 'F');
+        
+            // Title (cModule__) - centered and shaded
+            doc.setFont(reportFont, "normal");
+            const cModule__ = "SALES HEADER";
+            doc.setTextColor(0, 0, 0); // Reset to black
+            doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
+        
+            // Draw the Ref. No. (headerData[0]) on the same row as SALES HEADER
+            doc.text(headerData[0], centerPosi, currentY + (headerHeight / 2));
+        
+            currentY += headerHeight; // Move to the next line after the header row
+        
+            // Add a vertical line dividing the columns
+            const dividerX = centerPosi - 10; // X position for the center dividing line
+            doc.setLineWidth(0.2); // Thin the line
+            doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+        
+            // Draw the first line of data
+            doc.setFont(reportFont, "normal");
+            doc.text(headerData[1], pageMargin + padding, currentY); // Location
+            doc.text(headerData[2], centerPosi, currentY); // OR Date
+        
+            currentY += lineHeight;
+            doc.text(headerData[3], pageMargin + padding, currentY); // Customer
+            doc.text(headerData[4], centerPosi, currentY); // Remarks
+        
+            currentY += lineHeight - 4;
+        
+            // Draw the bottom line for the header (thinner line)
+            doc.setLineWidth(0.2);
+            doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
+        }
+
+
+    // function showDocHeader() {
+    //     const centerPosi = (pageWidth / 2)+10;  
+    //     const boxWidth= centerPosi-pageMargin;
+    
+    //     createLine();
+    //     currentY += lineHeight -2;
+
+    //     // Draw the background rectangle (Gray color) for cModule_
+    //     doc.setFillColor(200, 200, 200); // RGB for gray
+    //     doc.rect(pageMargin, currentY - 5, boxWidth-10, lineHeight + 2, 'F');
+    
+    //     doc.setFont(reportFont, "normal");
+    //     const cModule__ = "SALES RECORD";
+    //     doc.setTextColor(0, 0, 0); // Reset to black
+    //     //doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY);
+    //     doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
+    
+    //     doc.text(headerData[0], centerPosi, currentY)   //Ref. No
+    
+    //     currentY += lineHeight;
+    //     doc.text(headerData[1], pageMargin, currentY)
+    //     doc.text(headerData[2], centerPosi, currentY)
+    
+    //     currentY += lineHeight;
+    //     doc.text(headerData[3], pageMargin, currentY)
+    //     doc.text(headerData[4], centerPosi, currentY)
+
+    //     // createLine();
+    //     currentY += lineHeight - 4;
+        
+    // }
 });
 

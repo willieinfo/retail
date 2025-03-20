@@ -34,6 +34,8 @@ const updateSalesTotals = async (req, res) => {
       SALESREC.Encoder_,
       SALESREC.Location,
       SALESREC.Printed_,
+      SALESREC.CustName,
+      SALESREC.Disabled,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -59,7 +61,7 @@ const updateSalesTotals = async (req, res) => {
 }
 
 const editSalesHeader = async (req, res) => {
-  const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName } = req.body;
+  const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled } = req.body;
 
   if (!cLocation || !dDateFrom || !cCtrlNum_) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -70,7 +72,8 @@ const editSalesHeader = async (req, res) => {
       Location=@cLocation,
       DateFrom=@dDateFrom,
       Remarks_=@cRemarks_,
-      CustName=@cCustName
+      CustName=@cCustName,
+      Disabled=@lDisabled
     WHERE CtrlNum_=@cCtrlNum_
 
     -- SCOPE_IDENTITY() has no function here
@@ -92,13 +95,14 @@ const editSalesHeader = async (req, res) => {
       SALESREC.Location,
       SALESREC.Printed_,
       SALESREC.CustName,
+      SALESREC.Disabled,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
     AND SALESREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName };
+  const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -188,6 +192,7 @@ const addSalesHeader = async (req, res) => {
       SALESREC.Location,
       SALESREC.Printed_,
       SALESREC.CustName,
+      SALESREC.Disabled,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
@@ -237,6 +242,7 @@ const SalesRecLst = async (req, res) => {
       SALESREC.Location,
       SALESREC.Printed_,
       SALESREC.CustName,
+      SALESREC.Disabled,
       SALESREC.Log_Date
     FROM SALESREC, LOCATION
     WHERE SALESREC.Location = LOCATION.Location
