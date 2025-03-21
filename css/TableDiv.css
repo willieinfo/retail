@@ -163,6 +163,8 @@ td:last-child {
     background-color: var(--main-bg-color);
     cursor: pointer;
     padding-left: 6px;
+    padding-right: 6px;
+
 }
 .closeForm:hover {
     background-color: red;

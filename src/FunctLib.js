@@ -397,21 +397,28 @@ export function checkEmptyValue(...fields) {
     return true;  // Return true if no empty or invalid fields are found
 }
 
-export function get24HrTime() {
+export function get24HrTime(timeFormat='24') {
     const now = new Date();
 
     // Extract hours, minutes, and seconds
     let hours = now.getHours();
     let minutes = now.getMinutes();
     let seconds = now.getSeconds();
-
-    // Pad hours, minutes, and seconds with leading zeros if needed
-    hours = hours < 10 ? '0' + hours : hours;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     seconds = seconds < 10 ? '0' + seconds : seconds;
 
-    // Return the time in hh:mm:ss format
-    return `${hours}:${minutes}:${seconds}`;
+    if (timeFormat === '24') {
+        // Return time in 24-hour format
+        hours = hours < 10 ? '0' + hours : hours;
+        return `${hours}:${minutes}:${seconds}`;
+    } else {
+        // Convert to 12-hour format with AM/PM
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12; // Convert hour to 12-hour format
+        hours = hours ? hours : 12; // Convert hour 0 to 12 for midnight
+        return `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+
 }
 
 // formatter.js

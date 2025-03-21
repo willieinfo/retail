@@ -928,18 +928,6 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
 
 document.getElementById('printSalesInvoice').addEventListener('click', async () => {
 
-    // const printInvoice= confirm('Print Sales Invoice?');
-    // if (printInvoice===false) return
-    
-    // Collect the header data
-    const headerData = [
-        `Ref. No.: ${currentRec.ReferDoc}`,
-        `Location: ${currentRec.LocaName.trim()}`,
-        `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
-        `Customer: ${currentRec.CustName.trim()}`,
-        `Remarks: ${currentRec.Remarks_.trim()}`
-    ];
-
     // Initialize jsPDF
     const { jsPDF } = window.jspdf;
     // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
@@ -948,52 +936,53 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     const pageMargin = 10; // Page margin (left, top, right, bottom)
     const lineHeight = 6; // Line height for content - ideal 8
     const startY = 20; // Start Y position for the content
+    const pageWidth = doc.internal.pageSize.width;
+
     const reportFont='Helvetica'
 
     let currentY = startY;
 
-    // const logoBase64 = "InfoPlus.png/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."; 
-    // doc.addImage(logoBase64, 'PNG', 10, 10, 20, 20);
-
-    const img = new Image();
-    img.src = "InfoPlus.png"; // Path to your local image
-    img.onload = function () {
-        // Add the image once it's loaded
-        doc.addImage(img, 'PNG', 10, 10, 20, 20);
-    }
-
-    // Add the header to the PDF
-    doc.setFontSize(10);
+    
     doc.setFont("helvetica", "normal");
     doc.setLineWidth(0.2); // line thickness
 
-    const pageHeight = doc.internal.pageSize.height; // approx posi for pageNum
+    const pageHeight = doc.internal.pageSize.height; // approx position for pageNum
     let pageNum = 1
+    // printLogo()
 
-    // Center a text
-    const pageWidth = doc.internal.pageSize.width;
-    const cCompName = 'FASHION RACK DESIGNER OUTLET INC.';
-    const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
-
-    doc.setFont(reportFont, "bold");
-    doc.text(cCompName, (pageWidth - doc.getTextWidth(cCompName)) / 2, currentY);
-    currentY += lineHeight;
-    doc.text(cAddress_, (pageWidth - doc.getTextWidth(cAddress_)) / 2, currentY);
-    //https://www.facebook.com/share/r/15wQ5GEfg7/
-
-    // Document Header
-    showDocHeader()
 
     // Render Table Header and Details
     doc.setFontSize(8);
     const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
     const itemLineHeight = 5; // Line height for items
-    const rowHeight = 6; // Row height - Header height
+    const tableHeaderHeight = 6; // Row height - Header height
+    let bottomMargin = 20; // Preferred bottom margin
+    
+    // Total column widths based on colWidths array
+    const totalColWidth = colWidths.reduce((sum, width) => sum + width, pageMargin);
+
+    // Document Header
+    showDocHeader(true)
+
     let currentX = pageMargin; // 10
     showTableHeader()
     
+    // Calc totalNoOfPages here
+    // Total height available for content
+    const contentHeightPerPage = pageHeight - (pageMargin*2) - bottomMargin; 
+    // Calculate the number of rows that fit on a page
+    const rowsPerPage = Math.floor(contentHeightPerPage / itemLineHeight);
+    // Calculate total number of rows using itemsDtl.length
+    // const totalRows = itemsDtl.length ;
+    // Calculate total number of pages
+    // const totalNoOfPages = Math.ceil(totalRows / rowsPerPage);    
+    const totalNoOfPages = doc.internal.getNumberOfPages()
+
     itemsDtl.forEach(item => {
-        if (currentY + itemLineHeight > pageHeight - 20 - pageMargin) {
+        bottomMargin = currentY + itemLineHeight >= rowsPerPage - (pageMargin*2) ? 10 : 20
+        // bottomMargin = pageNum === totalNoOfPages ? 10 : 20
+
+        if (currentY + itemLineHeight > pageHeight - bottomMargin - pageMargin) {
 
             doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
             showPageNum()
@@ -1029,25 +1018,30 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
             itemRow[0] < 0 ? doc.setTextColor(255,0,0) : doc.setTextColor(0,0,0)
             // Add text inside
             let textX = currentX + 2; // Default left alignment
-            if ([0, 4, 5, 6, 7].includes(i)) { // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
+            // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
+            if ([0, 4, 5, 6, 7].includes(i)) { 
                 textX = currentX + colWidths[i] - 2; // Adjust to the right within the column
                 doc.text(text, textX, currentY + 4, { align: 'right' });
             } else {
                 doc.text(text, textX, currentY + 4, { align: 'left' });
             }
-            
-            doc.line(currentX, currentY, currentX, currentY + itemLineHeight); 
+            // Draw vertical lines only inside the grid
+            if (i !== 0) {
+                doc.setLineDash([1, 2]); 
+                doc.line(currentX, currentY, currentX, currentY + itemLineHeight); 
+                doc.setLineDash([]); 
+            }
             currentX += colWidths[i];
         });
     
-        doc.line(currentX, currentY, currentX, currentY + itemLineHeight);
         currentY += itemLineHeight; // Move to the next row
     });
     doc.setTextColor(0,0,0)
 
 
     // BOTTOM PAGE
-    doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+    // Horizontal bottom line for last row on page
+    doc.line(pageMargin, currentY, currentX, currentY); 
 
     // Add totals at the bottom of the page
     const totals = {
@@ -1060,7 +1054,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     doc.setFontSize(8);
     doc.setFont(reportFont, "bold");
 
-    // Align totals dynamically
+    // Align TOTALS dynamically
     let totalX = pageMargin; // Start at left margin
     let columnTotal = 0
     colWidths.forEach((width, i) => {
@@ -1097,9 +1091,9 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
     const cDate_Now = formatDate(new Date(), 'MM/DD/YYYY')
     doc.text('RunDate:', pageWidth-pageMargin-40, pageHeight - 18);
-    doc.text(cDate_Now, pageWidth-pageMargin - doc.getTextWidth(cDate_Now)-6, pageHeight - 18);
+    doc.text(cDate_Now, pageWidth-pageMargin - doc.getTextWidth('RunDate: MM/DD/YYYY') + 8, pageHeight - 18);
     doc.text('RunTime:', pageWidth-pageMargin-40, pageHeight - 14);
-    doc.text(get24HrTime(), pageWidth-pageMargin - doc.getTextWidth('RunTime:')-6 , pageHeight - 14);
+    doc.text(get24HrTime('12'), pageWidth-pageMargin - doc.getTextWidth('RunTime: 12:00:00 AM') + 10 , pageHeight - 14);
 
     showPageNum()
 
@@ -1114,156 +1108,137 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     function showTableHeader() {
         const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
 
-        currentX = 10; // **Reset
+        currentX = pageMargin; // **Reset
 
         // Draw the header row
-        const totalWidth = colWidths.reduce((sum, width) => sum + width, 0);
         doc.setFillColor(200, 200, 200); // Gray background for headers
-        doc.rect(pageMargin, currentY, totalWidth, rowHeight, "F"); // Full header width
+        // Full header width
+        doc.rect(pageMargin, currentY, totalColWidth - pageMargin, tableHeaderHeight, "F"); 
         
         columns.forEach((header, i) => {
-            doc.rect(currentX, currentY, colWidths[i], rowHeight); // **Draw full grid for header**
+            // **Draw full grid for header**
+            doc.rect(currentX, currentY, colWidths[i], tableHeaderHeight); 
             doc.text(header, currentX + 2, currentY + 4);
             currentX += colWidths[i];
         });
-        currentY += rowHeight;
-    }
+        currentY += tableHeaderHeight;
 
-    function createLine() {
-        currentY += lineHeight;
-        doc.setDrawColor(0);  // Black line
-        doc.line(pageMargin, currentY-3, doc.internal.pageSize.width - pageMargin, currentY-3); 
     }
 
     function showPageNum() {
         doc.setFont('Courier', "normal");
         currentY += lineHeight;
-        doc.text('Page: '+String(pageNum), pageMargin, pageHeight-5)
+        doc.text(`Page: ${pageNum} of ${totalNoOfPages}`, pageMargin, pageHeight-7)
+        // doc.text(`Page: ${pageNum}`, pageMargin, pageHeight-6)
     }
 
-    function showDocHeader() {
-        const centerPosi = (pageWidth / 2) + 10;
+    function showDocHeader(firstPage=false) {
+        const headerData = [
+            `Ref. No.: ${currentRec.ReferDoc}`,
+            `Location: ${currentRec.LocaName.trim()}`,
+            `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
+            `Customer: ${currentRec.CustName.trim()}`,
+            `Remarks: ${currentRec.Remarks_.trim()}`
+        ];
+
+        doc.setFontSize(10);
+        const cCompName = 'FASHION RACK DESIGNER OUTLET INC.';
+        const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
+    
+        doc.setFont(reportFont, "bold");
+        doc.text(cCompName, (pageWidth - doc.getTextWidth(cCompName)) / 2, currentY);
+        // doc.text(cCompName, 30, currentY);
+        currentY += lineHeight;
+        doc.text(cAddress_, (pageWidth - doc.getTextWidth(cAddress_)) / 2, currentY);
+        // doc.text(cAddress_, 30, currentY);
+    
+        const centerPosi = (pageWidth / 2) + pageMargin //-20;
         const boxWidth = centerPosi - pageMargin;
-        const padding = 0; // Padding inside the box for content
+        const padding = 16
         const headerHeight = lineHeight + 4; // Adjusted height for the header box
     
-        currentY += lineHeight - 4;
-    
+        currentY += lineHeight -2 ;
         // Draw the background rectangle (Gray color) for cModule_
         doc.setFillColor(200, 200, 200); // RGB for gray
-        doc.rect(pageMargin, currentY - padding, boxWidth - 10, headerHeight + padding, 'F');
-    
-        // Title (cModule__) - centered and shaded
+        doc.rect(pageMargin, currentY , boxWidth - pageMargin, headerHeight - 2, 'F');
+
+        doc.setFont(reportFont, "bold");
+        doc.setFontSize(10);
+        doc.line(pageMargin, currentY, totalColWidth, currentY); 
+        const cModule__ = "SALES RECORD";
+        doc.text(cModule__, (boxWidth + pageMargin - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
         doc.setFont(reportFont, "normal");
-        const cModule__ = "SALES HEADER";
-        doc.setTextColor(0, 0, 0); // Reset to black
-        doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
-        doc.text(headerData[0], centerPosi, currentY + (headerHeight / 2));
+        doc.setFontSize(8);
+        doc.text(headerData[0], centerPosi + padding, currentY + (headerHeight / 2)); // Ref No.
+
+        doc.setLineDash([1, 2]); 
+
+        // Add a vertical line dividing the columns
+        const dividerX = centerPosi - pageMargin; // X position for the center dividing line
+        doc.line(dividerX, currentY , dividerX, currentY ); // 1st vert line for SALES HEADER
 
         // Draw a line just after the SALES HEADER and Ref. No. row to separate the header
-        doc.line(pageMargin, currentY - lineHeight, pageWidth - pageMargin, currentY - lineHeight); 
-        // Add a vertical line dividing the columns
-        const dividerX = centerPosi - 10; // X position for the center dividing line
-        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+        currentY += lineHeight
+        doc.setLineDash([]); 
+        doc.line(pageMargin, currentY + 2, totalColWidth, currentY +2); 
+        doc.setLineDash([1, 2]); 
+        doc.line(dividerX, currentY - lineHeight , dividerX, currentY + lineHeight ); // 2nd vert line
     
-        currentY += headerHeight; // Move to the next line after the header row
-    
-        // Draw the first line of data
+        currentY += lineHeight
         doc.setFont(reportFont, "normal");
-        doc.text(headerData[1], pageMargin + padding, currentY); // Location
-        doc.text(headerData[2], centerPosi, currentY); // OR Date
-        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
+        doc.text(headerData[1], pageMargin + 2, currentY); // Location
+        doc.text(headerData[2], centerPosi + padding, currentY); // OR Date
+        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 3nd vert line
     
         currentY += lineHeight;
-        doc.text(headerData[3], pageMargin + padding, currentY); // Customer
-        doc.text(headerData[4], centerPosi, currentY); // Remarks
-        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
-    
-        currentY += lineHeight - 4;
-    
-        // Draw the bottom line for the header (thinner line)
-        doc.setLineWidth(0.2);
-        doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
-    
-    }
-    
-        function showDocHeader2() {
-            const centerPosi = (pageWidth / 2) + 10;
-            const boxWidth = centerPosi - pageMargin;
-            const padding = 0; // Padding inside the box for content
-            const headerHeight = lineHeight + 4; // Adjusted height for the header box
-        
-            // createLine();
-            doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
-            currentY += lineHeight - 4;
-        
-            // Draw the background rectangle (Gray color) for cModule_
-            doc.setFillColor(200, 200, 200); // RGB for gray
-            doc.rect(pageMargin, currentY - padding, boxWidth - 10, headerHeight + padding, 'F');
-        
-            // Title (cModule__) - centered and shaded
-            doc.setFont(reportFont, "normal");
-            const cModule__ = "SALES HEADER";
-            doc.setTextColor(0, 0, 0); // Reset to black
-            doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
-        
-            // Draw the Ref. No. (headerData[0]) on the same row as SALES HEADER
-            doc.text(headerData[0], centerPosi, currentY + (headerHeight / 2));
-        
-            currentY += headerHeight; // Move to the next line after the header row
-        
-            // Add a vertical line dividing the columns
-            const dividerX = centerPosi - 10; // X position for the center dividing line
-            doc.setLineWidth(0.2); // Thin the line
-            doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight);
-        
-            // Draw the first line of data
-            doc.setFont(reportFont, "normal");
-            doc.text(headerData[1], pageMargin + padding, currentY); // Location
-            doc.text(headerData[2], centerPosi, currentY); // OR Date
-        
-            currentY += lineHeight;
-            doc.text(headerData[3], pageMargin + padding, currentY); // Customer
-            doc.text(headerData[4], centerPosi, currentY); // Remarks
-        
-            currentY += lineHeight - 4;
-        
-            // Draw the bottom line for the header (thinner line)
-            doc.setLineWidth(0.2);
-            doc.line(pageMargin, currentY, pageWidth - pageMargin, currentY);
+        doc.text(headerData[3], pageMargin + 2, currentY); // Customer
+        doc.text(headerData[4], centerPosi + padding, currentY); // Remarks
+        doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 4th vert line
+        doc.setLineDash([]); 
+
+        if (firstPage) {
+            currentY += lineHeight - 2;
         }
 
+    }
 
-    // function showDocHeader() {
-    //     const centerPosi = (pageWidth / 2)+10;  
-    //     const boxWidth= centerPosi-pageMargin;
-    
-    //     createLine();
-    //     currentY += lineHeight -2;
+    function printLogo() {
+        if ( pageNum !==1 ) return
+        const img = new Image();
+        // img.src = 'InfoPlus.png'; // Image in the root folder
+        img.src = 'InfoPlus.bmp'; // Image in the root folder
 
-    //     // Draw the background rectangle (Gray color) for cModule_
-    //     doc.setFillColor(200, 200, 200); // RGB for gray
-    //     doc.rect(pageMargin, currentY - 5, boxWidth-10, lineHeight + 2, 'F');
+        img.onload = function () {
+            // Create a canvas to convert the image to base64
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
     
-    //     doc.setFont(reportFont, "normal");
-    //     const cModule__ = "SALES RECORD";
-    //     doc.setTextColor(0, 0, 0); // Reset to black
-    //     //doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY);
-    //     doc.text(cModule__, (boxWidth - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
+            // Set canvas size to the image's size
+            canvas.width = img.width;
+            canvas.height = img.height;
     
-    //     doc.text(headerData[0], centerPosi, currentY)   //Ref. No
+            // Draw the image onto the canvas
+            ctx.drawImage(img, 0, 0);
     
-    //     currentY += lineHeight;
-    //     doc.text(headerData[1], pageMargin, currentY)
-    //     doc.text(headerData[2], centerPosi, currentY)
+            // Convert the canvas to base64 string
+            const base64Image = canvas.toDataURL('image/bmp');
     
-    //     currentY += lineHeight;
-    //     doc.text(headerData[3], pageMargin, currentY)
-    //     doc.text(headerData[4], centerPosi, currentY)
-
-    //     // createLine();
-    //     currentY += lineHeight - 4;
+            if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
+    
+                // Add the image to the PDF, ensuring it fits within the page
+                doc.addImage(base64Image, 'BMP', pageMargin, startY - 10, 18, 18);
         
-    // }
+                doc.output('dataurlnewwindow','Sales Invoice.pdf');
+
+            } else {
+                console.error('Failed to generate or invalid base64 image:');
+            }
+        
+        };
+    
+    }
+    // doc.line(startingCol, rowPosition, length, rowPosition)
+    // doc.text(textStr, startingCol, rowPosition)
+
 });
 
