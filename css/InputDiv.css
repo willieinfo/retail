@@ -184,6 +184,67 @@ textarea {
     border: 2px solid red;  
 }
 
+/* PickList */
+
+#pickListDiv {
+    display: none;  /* Hidden by default */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    height: 400px;
+    width: auto;  
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    z-index: 1000;
+
+}
+#pickListDiv span {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    width: 100%;
+    color: white;
+    background-color: var(--main-bg-color);
+}
+#dropdownList {
+    display: none;           /* Hidden by default, shown dynamically in JS */
+    list-style: none;        /* Remove list style */
+    margin: 0;
+    padding: 0;
+    width: 500px;             /* Ensure dropdown takes up full width of the parent */
+    /* max-width: 300px; */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;  /* Include padding and borders in width calculation */
+    overflow-y: auto;        /* Allow scrolling if items overflow */
+}
+
+
+#dropdownList li {
+    padding: 2px;
+    margin: 0;
+    cursor: pointer;
+    list-style-type: none;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#dropdownList li:hover {
+    color:white;
+    background-color: #333;
+
+}
+
+
+
+
 @media (max-width: 600px) {
     #item-form {
         width:90%

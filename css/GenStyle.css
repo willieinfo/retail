@@ -25,17 +25,6 @@
     border-radius: 5px;
 }
 
-.ReportFooter button {
-    padding: 4px;
-    margin: 6px 0px;
-    cursor: pointer;
-    border: none;
-}
-.ReportFooter button:hover {
-    background-color: var(--second-bg-color);
-    color: whitesmoke;
-}
-
 #loadingIndicator {
     display: flex;
     align-items: center;

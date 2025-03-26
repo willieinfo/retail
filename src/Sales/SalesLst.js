@@ -7,6 +7,10 @@ let itemsDtl = [];      // RecordSet of SALESDTL
 let currentRec = [];    // Current selected SALESREC record
 let currentIndex = 0    // Index of the selected SALESREC record
 
+// values wil be determined as user enters UsersCde and validateField()
+let cItemCode=null  
+let nLandCost=0
+
 async function SalesLst(dDateFrom, dDateTo__, cLocation) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
@@ -465,9 +469,6 @@ function updateItemTable(refreshOnly=false) {
     
 }
 
-
-
-
 document.getElementById('salesFilter').addEventListener('click', async () => {
     try {
         FiltrRec('SalesLst').then(() => {
@@ -508,6 +509,10 @@ function SalesDtl(index,editMode) {
                         <label for="UsersCde">Stock No</label>
                         <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
                             placeholder="Type Stock No. or Bar Code here to search">
+                        <div id="pickListDiv">
+                            <span>Click to select item from list</span>
+                            <ul id="dropdownList" style="display: none;"></ul> 
+                        </div>
                     </div>
                     <div class="subTextDiv">
                         <label for="OtherCde">Bar Code</label>
@@ -580,7 +585,6 @@ function SalesDtl(index,editMode) {
 
 
     if (editMode) {
-        console.log('This is edit mode')
         document.getElementById('UsersCde').value=itemData.UsersCde
         document.getElementById('OtherCde').value=itemData.OtherCde
         document.getElementById('Descript').value=itemData.Descript
@@ -616,8 +620,8 @@ function SalesDtl(index,editMode) {
     const DiscRate=document.getElementById('DiscRate')
     
     // values wil be determined as user enters UsersCde and validateField()
-    let cItemCode=null  
-    let nLandCost=0
+    // let cItemCode=null  
+    // let nLandCost=0
     document.getElementById('UsersCde').addEventListener('blur', async (e) => {
         e.preventDefault()
         
@@ -625,24 +629,29 @@ function SalesDtl(index,editMode) {
             UsersCde.focus();
             return;
         }
-        const dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
+        let dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
             '', true)
-
         if (dataItemList) {
-            // if (dataItemList.length > 0) {
-            // } else {
-            // }
-            document.getElementById('UsersCde').value=dataItemList[0].UsersCde;
-            document.getElementById('OtherCde').value=dataItemList[0].OtherCde;
-            document.getElementById('Descript').value=dataItemList[0].Descript;
+            if (dataItemList.length > 1) {
+                const selectedItem=pickItem(dataItemList, "Select Item from List")
+                if (selectedItem==='undefined' || !selectedItem) {
+                    document.getElementById('UsersCde').value=''
+                    document.getElementById('UsersCde').focus()
+                }
+                return
+            } else {
+                document.getElementById('UsersCde').value=dataItemList[0].UsersCde;
+                document.getElementById('OtherCde').value=dataItemList[0].OtherCde;
+                document.getElementById('Descript').value=dataItemList[0].Descript;
 
-            if (!editMode) {
-                document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce;
-                document.getElementById('Amount__').value=dataItemList[0].ItemPrce;
+                if (!editMode) {
+                    document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce;
+                    document.getElementById('Amount__').value=dataItemList[0].ItemPrce;
+                }
+
+                nLandCost=dataItemList[0].LandCost;
+                cItemCode=dataItemList[0].ItemCode;
             }
-
-            nLandCost=dataItemList[0].LandCost;
-            cItemCode=dataItemList[0].ItemCode;
         }
     })
 
@@ -745,6 +754,7 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     }
 }
 
+
 async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
@@ -793,19 +803,21 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
                 if (tableBody) {
                     const rows = tableBody.getElementsByTagName('tr'); // Get all <tr> in tbody
                     if (rows.length > 0) {
-                        const lastRow = rows[rows.length - 2]; // Get the last <tr> inside tbody
-                        if (lastRow) {
-                            lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                            // 🔹 Simulate a hover effect
-                            lastRow.classList.add('hover-effect'); 
-                            // 🔹 Remove hover effect after 2 seconds
-                            setTimeout(() => lastRow.classList.remove('hover-effect'), 2000); 
-                            lastRow.classList.add('selected');                       
+                        if (rows.length > 0) {
+                            const lastRow = rows[rows.length - 2]; // Get the last <tr> inside tbody
+                            if (lastRow) {
+                                lastRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                                // 🔹 Simulate a hover effect
+                                lastRow.classList.add('hover-effect'); 
+                                // 🔹 Remove hover effect after 2 seconds
+                                setTimeout(() => lastRow.classList.remove('hover-effect'), 2000); 
+                                lastRow.classList.add('selected');                       
+                            }
+                            highlightRow(lastRow, 'ListSalesItem');
                         }
                     }
                 }
             }, 100); // Small delay to ensure table updates first
-            highlightRow(lastRow, 'ListSaleItem')
 
         }
 
@@ -925,13 +937,75 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
     }
 }
 
+const img = new Image();
+img.src = '/images/regent.png'; 
+let base64Image=null
+img.onload = function () {
+    // Create a canvas to convert the image to base64
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size to the image's size
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // Draw the image onto the canvas
+    ctx.drawImage(img, 0, 0);
+
+    // Convert the canvas to base64 string
+    base64Image = canvas.toDataURL('image/png');
+
+    // if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
+    //     console.log(base64Image)
+    // } else {
+    //     console.error('Failed to generate or invalid base64 image:');
+    // }
+
+};
+
 
 document.getElementById('printSalesInvoice').addEventListener('click', async () => {
+    const headerData = [
+        `Ref. No. : ${currentRec.ReferDoc}`,
+        `Location : ${currentRec.LocaName.trim()}`,
+        `OR Date  : ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
+        `Customer : ${currentRec.CustName.trim()}`,
+        `Remarks  : ${currentRec.Remarks_.trim()}`
+    ];
+    const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
+    const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
+    const itemFields = [
+        'Quantity',  // Field from item
+        'UsersCde',  // Field from item
+        'OtherCde',  // Field from item
+        'Descript',  // Field from item
+        'ItemPrce',  // Field from item
+        // Calculated fields
+        (item, formatter) => formatter.format(item.Quantity * item.ItemPrce),  // Gross (calculated)
+        (item, formatter) => formatter.format(item.Quantity * (item.ItemPrce - item.Amount__)),  // Discount (calculated)
+        (item, formatter) => formatter.format(item.Quantity * item.Amount__)  // Net (calculated)
+    ];    
+    const fieldTypes = [
+        'integer',      // Quantity (numeric)
+        'string',      // UsersCde (string)
+        'string',      // OtherCde (string)
+        'string',      // Descript (string)
+        'number',      // ItemPrce (numeric)
+        'calculated',  // Gross (calculated field)
+        'calculated',  // Discount (calculated field)
+        'calculated'   // Net (calculated field)
+    ];        
 
+    printToPDF(headerData, itemsDtl, itemFields ,colWidths, 
+        columns, fieldTypes, base64Image, ['letter','portrait'])
+});
+
+function printToPDF(headerData, detailData, itemFields, colWidths, 
+    columnHeader, fieldTypes ,imgLogo, paperSetup) {
     // Initialize jsPDF
     const { jsPDF } = window.jspdf;
     // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
-    const doc = new jsPDF({ unit: 'mm', format: 'letter', orientation: 'portrait' }); 
+    const doc = new jsPDF({ unit: 'mm', format: paperSetup[0], orientation: paperSetup[1] }); 
     
     const pageMargin = 10; // Page margin (left, top, right, bottom)
     const lineHeight = 6; // Line height for content - ideal 8
@@ -939,59 +1013,51 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     const pageWidth = doc.internal.pageSize.width;
 
     const reportFont='Helvetica'
-
     let currentY = startY;
-
     
     doc.setFont("helvetica", "normal");
     doc.setLineWidth(0.2); // line thickness
 
-    const pageHeight = doc.internal.pageSize.height; // approx position for pageNum
+    // approx position for pageNum
+    const pageHeight = doc.internal.pageSize.height; 
     let pageNum = 1
-    // printLogo()
-
 
     // Render Table Header and Details
     doc.setFontSize(8);
-    const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
+    // const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
     const itemLineHeight = 5; // Line height for items
     const tableHeaderHeight = 6; // Row height - Header height
-    let bottomMargin = 20; // Preferred bottom margin
+    let bottomMargin = 23; // Preferred bottom margin
     
     // Total column widths based on colWidths array
     const totalColWidth = colWidths.reduce((sum, width) => sum + width, pageMargin);
 
     // Document Header
     showDocHeader(true)
+    doc.addImage(imgLogo, 'BMP', pageMargin, startY - 10, 18, 18);
 
-    let currentX = pageMargin; // 10
+    let currentX = pageMargin; 
     showTableHeader()
-    
-    // Calc totalNoOfPages here
-    // Total height available for content
-    const contentHeightPerPage = pageHeight - (pageMargin*2) - bottomMargin; 
-    // Calculate the number of rows that fit on a page
-    const rowsPerPage = Math.floor(contentHeightPerPage / itemLineHeight);
-    // Calculate total number of rows using itemsDtl.length
-    // const totalRows = itemsDtl.length ;
-    // Calculate total number of pages
-    // const totalNoOfPages = Math.ceil(totalRows / rowsPerPage);    
-    const totalNoOfPages = doc.internal.getNumberOfPages()
 
-    itemsDtl.forEach(item => {
-        bottomMargin = currentY + itemLineHeight >= rowsPerPage - (pageMargin*2) ? 10 : 20
-        // bottomMargin = pageNum === totalNoOfPages ? 10 : 20
+    createVertLines(bottomMargin)
+
+    detailData.forEach(item => {
+        // bottomMargin = currentY + itemLineHeight >= rowsPerPage - pageMargin ? 10 : 23
 
         if (currentY + itemLineHeight > pageHeight - bottomMargin - pageMargin) {
-
-            doc.line(pageMargin, currentY, currentX, currentY); // Horizontal bottom line for last row on page
+            doc.setTextColor(0,0,0)
+            // Horizontal bottom line for last row on page
+            // doc.line(pageMargin, currentY, currentX, currentY); 
             showPageNum()
 
             // If we reach the bottom of the page, add a new page
             doc.addPage();
             currentY = startY;  // Reset 
 
+            createVertLines(bottomMargin)
+
             showDocHeader()
+            doc.addImage(imgLogo, 'BMP', pageMargin, startY - 10, 18, 18);
 
             pageNum++
             showPageNum()
@@ -1002,38 +1068,47 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
         }
 
-        let itemRow = [
-            item.Quantity.toFixed(0),
-            item.UsersCde,
-            item.OtherCde,
-            item.Descript.substring(0, 30),
-            formatter.format(item.ItemPrce),
-            formatter.format(item.Quantity * item.ItemPrce),
-            formatter.format(item.Quantity * (item.ItemPrce - item.Amount__)),
-            formatter.format(item.Quantity * item.Amount__)
-        ];
-    
+        let itemRow = itemFields.map((field,index) => {
+            // Handle dynamic formatting based on field type
+            if (typeof field === 'function') {
+                return field(item, formatter);  // Pass the item and formatter to the function
+            }            
+            const value = item[field];
+            if (fieldTypes[index] === 'integer') {
+                return value.toFixed(0);  
+            }            
+            if (typeof value === 'number') {
+                return formatter.format(value); // Currency formatting for numeric fields
+            } else if (typeof value === 'string' && value.length > 30) {
+                return value.substring(0, 30); // Truncate long strings
+            }
+            return value; // Default handling
+        });
+
         currentX = pageMargin; // Reset X for each row
         itemRow.forEach((text, i) => {
-            itemRow[0] < 0 ? doc.setTextColor(255,0,0) : doc.setTextColor(0,0,0)
-            // Add text inside
-            let textX = currentX + 2; // Default left alignment
-            // Align right for numeric columns (Qty, Unit Price, Gross, Discount, Net)
-            if ([0, 4, 5, 6, 7].includes(i)) { 
-                textX = currentX + colWidths[i] - 2; // Adjust to the right within the column
+            // Color based on some condition (e.g., negative quantities)
+            if (i === 0 && parseFloat(itemRow[i]) < 0) {
+                doc.setTextColor(255, 0, 0); // Red text for negative numbers
+            } else {
+                doc.setTextColor(0, 0, 0); // Black text otherwise
+            }
+
+            // Default alignment
+            let textX = currentX + 2;
+
+            // Check the field type to determine alignment
+            const fieldType = fieldTypes[i];
+            if (fieldType === 'number' || fieldType === 'calculated' || fieldType === 'integer') {
+                textX = currentX + colWidths[i] - 2; // Right-align if numeric
                 doc.text(text, textX, currentY + 4, { align: 'right' });
             } else {
+                // Otherwise, align text to the left
                 doc.text(text, textX, currentY + 4, { align: 'left' });
             }
-            // Draw vertical lines only inside the grid
-            if (i !== 0) {
-                doc.setLineDash([1, 2]); 
-                doc.line(currentX, currentY, currentX, currentY + itemLineHeight); 
-                doc.setLineDash([]); 
-            }
-            currentX += colWidths[i];
-        });
-    
+
+            currentX += colWidths[i]; // Move to the next column
+        });        
         currentY += itemLineHeight; // Move to the next row
     });
     doc.setTextColor(0,0,0)
@@ -1041,7 +1116,11 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
     // BOTTOM PAGE
     // Horizontal bottom line for last row on page
+    doc.setLineDash([1, 2]); 
     doc.line(pageMargin, currentY, currentX, currentY); 
+
+    doc.setFontSize(8);
+    doc.setFont(reportFont, "bold");
 
     // Add totals at the bottom of the page
     const totals = {
@@ -1050,9 +1129,6 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         totalDiscount: itemsDtl.reduce((sum, item) => sum + item.Quantity * (item.ItemPrce - item.Amount__), 0),
         totalAmount: itemsDtl.reduce((sum, item) => sum + item.Quantity * item.Amount__, 0)
     };
-
-    doc.setFontSize(8);
-    doc.setFont(reportFont, "bold");
 
     // Align TOTALS dynamically
     let totalX = pageMargin; // Start at left margin
@@ -1081,19 +1157,19 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     doc.text('Totals:', columnTotal , currentY + itemLineHeight, { align: 'right' });
 
     // Draw a final line to separate totals
-    doc.line(pageMargin, currentY + itemLineHeight + 2, totalX, currentY + itemLineHeight + 2); 
+    // doc.line(pageMargin, currentY + itemLineHeight + 2, totalX, currentY + itemLineHeight + 2); 
 
     doc.setFont('Courier', "normal");
-    doc.text('Encoded By:', pageMargin, pageHeight - 18);
-    doc.text('Checked By:', pageMargin + 40, pageHeight - 18);
-    doc.text('__________________ ', pageMargin, pageHeight - 10);
-    doc.text('__________________ ', pageMargin + 40, pageHeight - 10);
+    doc.text('Encoded By:', pageMargin, pageHeight - 22);
+    doc.text('Checked By:', pageMargin + 40, pageHeight - 22);
+    doc.text('__________________ ', pageMargin, pageHeight - 14);
+    doc.text('__________________ ', pageMargin + 40, pageHeight - 14);
 
     const cDate_Now = formatDate(new Date(), 'MM/DD/YYYY')
-    doc.text('RunDate:', pageWidth-pageMargin-40, pageHeight - 18);
-    doc.text(cDate_Now, pageWidth-pageMargin - doc.getTextWidth('RunDate: MM/DD/YYYY') + 8, pageHeight - 18);
-    doc.text('RunTime:', pageWidth-pageMargin-40, pageHeight - 14);
-    doc.text(get24HrTime('12'), pageWidth-pageMargin - doc.getTextWidth('RunTime: 12:00:00 AM') + 10 , pageHeight - 14);
+    doc.text('RunDate:', pageWidth-pageMargin-40, pageHeight - 22);
+    doc.text(cDate_Now, pageWidth-pageMargin - doc.getTextWidth('RunDate: MM/DD/YYYY') + 8, pageHeight - 22);
+    doc.text('RunTime:', pageWidth-pageMargin-40, pageHeight - 16);
+    doc.text(get24HrTime('12'), pageWidth-pageMargin - doc.getTextWidth('RunTime: 12:00:00 AM') + 10 , pageHeight - 16);
 
     showPageNum()
 
@@ -1106,7 +1182,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
 
     function showTableHeader() {
-        const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
+        // const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
 
         currentX = pageMargin; // **Reset
 
@@ -1115,7 +1191,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         // Full header width
         doc.rect(pageMargin, currentY, totalColWidth - pageMargin, tableHeaderHeight, "F"); 
         
-        columns.forEach((header, i) => {
+        columnHeader.forEach((header, i) => {
             // **Draw full grid for header**
             doc.rect(currentX, currentY, colWidths[i], tableHeaderHeight); 
             doc.text(header, currentX + 2, currentY + 4);
@@ -1127,22 +1203,15 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
     function showPageNum() {
         doc.setFont('Courier', "normal");
-        currentY += lineHeight;
-        doc.text(`Page: ${pageNum} of ${totalNoOfPages}`, pageMargin, pageHeight-7)
-        // doc.text(`Page: ${pageNum}`, pageMargin, pageHeight-6)
+        // currentY += lineHeight;
+        // doc.text(`Page: ${pageNum} of ${totalNoOfPages}`, pageWidth -24- pageMargin, startY + 8)
+        doc.text(`Page: ${pageNum}`, pageWidth -18- pageMargin, startY + 8)
     }
 
     function showDocHeader(firstPage=false) {
-        const headerData = [
-            `Ref. No.: ${currentRec.ReferDoc}`,
-            `Location: ${currentRec.LocaName.trim()}`,
-            `OR Date: ${formatDate(currentRec.DateFrom,'MM/DD/YYYY')}`,
-            `Customer: ${currentRec.CustName.trim()}`,
-            `Remarks: ${currentRec.Remarks_.trim()}`
-        ];
 
         doc.setFontSize(10);
-        const cCompName = 'FASHION RACK DESIGNER OUTLET INC.';
+        const cCompName = 'REGENT TRAVEL RETAIL GROUP';
         const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
     
         doc.setFont(reportFont, "bold");
@@ -1154,7 +1223,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     
         const centerPosi = (pageWidth / 2) + pageMargin //-20;
         const boxWidth = centerPosi - pageMargin;
-        const padding = 16
+        const padding = 14
         const headerHeight = lineHeight + 4; // Adjusted height for the header box
     
         currentY += lineHeight -2 ;
@@ -1168,10 +1237,10 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         const cModule__ = "SALES RECORD";
         doc.text(cModule__, (boxWidth + pageMargin - doc.getTextWidth(cModule__)) / 2, currentY + (headerHeight / 2));
         doc.setFont(reportFont, "normal");
-        doc.setFontSize(8);
+        doc.setFont('Courier', "bold");
+        doc.setFontSize(10);
         doc.text(headerData[0], centerPosi + padding, currentY + (headerHeight / 2)); // Ref No.
 
-        doc.setLineDash([1, 2]); 
 
         // Add a vertical line dividing the columns
         const dividerX = centerPosi - pageMargin; // X position for the center dividing line
@@ -1179,13 +1248,11 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
 
         // Draw a line just after the SALES HEADER and Ref. No. row to separate the header
         currentY += lineHeight
-        doc.setLineDash([]); 
         doc.line(pageMargin, currentY + 2, totalColWidth, currentY +2); 
-        doc.setLineDash([1, 2]); 
         doc.line(dividerX, currentY - lineHeight , dividerX, currentY + lineHeight ); // 2nd vert line
     
         currentY += lineHeight
-        doc.setFont(reportFont, "normal");
+        doc.setFont('Courier', "bold");
         doc.text(headerData[1], pageMargin + 2, currentY); // Location
         doc.text(headerData[2], centerPosi + padding, currentY); // OR Date
         doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 3nd vert line
@@ -1194,51 +1261,82 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         doc.text(headerData[3], pageMargin + 2, currentY); // Customer
         doc.text(headerData[4], centerPosi + padding, currentY); // Remarks
         doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 4th vert line
-        doc.setLineDash([]); 
+        doc.setFont(reportFont, "normal");
+        doc.setFontSize(8);
 
         if (firstPage) {
             currentY += lineHeight - 2;
+        } else {
+            currentY += lineHeight - 1
         }
 
     }
 
-    function printLogo() {
-        if ( pageNum !==1 ) return
-        const img = new Image();
-        // img.src = 'InfoPlus.png'; // Image in the root folder
-        img.src = 'InfoPlus.bmp'; // Image in the root folder
+    function createVertLines(bottomLinePosi) {
+        let xPos = pageMargin+colWidths[0];
+        for (let i = 1; i < 8; i++) {
+            doc.setLineDash([1, 2]);
+            // Draw vertical dashed line at xPos
+            doc.line(xPos, startY+40, xPos, pageHeight - bottomLinePosi - pageMargin); 
+            
+            // Move xPos to the next column's starting position
+            xPos += colWidths[i];
+        }    
+        doc.setLineDash([]);
+        const nRowPosi = pageHeight - bottomLinePosi -pageMargin
+        doc.line(pageMargin, nRowPosi , totalColWidth, nRowPosi ); 
 
-        img.onload = function () {
-            // Create a canvas to convert the image to base64
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-    
-            // Set canvas size to the image's size
-            canvas.width = img.width;
-            canvas.height = img.height;
-    
-            // Draw the image onto the canvas
-            ctx.drawImage(img, 0, 0);
-    
-            // Convert the canvas to base64 string
-            const base64Image = canvas.toDataURL('image/bmp');
-    
-            if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
-    
-                // Add the image to the PDF, ensuring it fits within the page
-                doc.addImage(base64Image, 'BMP', pageMargin, startY - 10, 18, 18);
-        
-                doc.output('dataurlnewwindow','Sales Invoice.pdf');
-
-            } else {
-                console.error('Failed to generate or invalid base64 image:');
-            }
-        
-        };
-    
     }
     // doc.line(startingCol, rowPosition, length, rowPosition)
     // doc.text(textStr, startingCol, rowPosition)
 
-});
+}
 
+// Function to fill item details in other fields after selection
+function fillItemDetails(item) {
+    document.getElementById('UsersCde').focus()
+    document.getElementById('OtherCde').value = item.OtherCde;
+    document.getElementById('Descript').value = item.Descript;
+    document.getElementById('ItemPrce').value = item.ItemPrce;
+    document.getElementById('Amount__').value = item.ItemPrce;
+    cItemCode = item.ItemCode
+}
+
+async function pickItem(dataItemList) {
+    const dropdownList = document.getElementById('dropdownList');
+    const pickListDiv = document.getElementById('pickListDiv');
+    
+    // Show the pickListDiv and dropdownList
+    pickListDiv.style.display = 'flex'; // Show the pickListDiv
+    dropdownList.style.display = 'block';  // Show the dropdown
+
+    dropdownList.innerHTML = ''; // Clear previous items
+
+    // Loop through dataItemList and create <li> elements
+    dataItemList.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.UsersCde} - ${item.Descript.substring(0,24)} - P ${formatter.format(item.ItemPrce)}`;
+        li.addEventListener('click', () => {
+            // Set the value to input field when user selects an item
+            UsersCde.value = item.UsersCde;
+            dropdownList.style.display = 'none'; // Hide dropdown after selection
+            pickListDiv.style.display = 'none'; // Optionally hide the entire pickListDiv if needed
+            fillItemDetails(item); // Fill other item details in fields
+        });
+        dropdownList.appendChild(li);
+    });
+
+    // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+    document.addEventListener('click', (e) => {
+        if (!pickListDiv.contains(e.target)) {
+            dropdownList.style.display = 'none'; // Hide dropdown if clicked outside
+            pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+        }
+    });
+
+    // Return the selected item, or null if no selection
+    return new Promise((resolve) => {
+        const selectedItem = dataItemList.find(item => item.UsersCde === UsersCde.value);
+        resolve(selectedItem || null);
+    });
+}

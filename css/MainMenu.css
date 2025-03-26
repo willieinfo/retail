@@ -90,6 +90,9 @@ html {
 
 }
 
+.data-entry {
+    background-color: var(--darker-bg-color);
+}
 /* Sidebar Menu */
 .sidebar {
     display: none;

@@ -16,7 +16,7 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
-        <li class="SalesInvoice">Sales Invoice</li>
+        <li class="SalesInvoice data-entry">Sales Invoice</li>
         <hr class="menuLine">
         <li class="salesRankingByLocation">Sales Ranking by Location</li>
         <li class="salesRankingByBrand">Sales Ranking by Brand</li>
@@ -25,8 +25,8 @@ const menuItems= `
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
-        <li>Purchase Order</li>
-        <li>Receiving Report</li>
+        <li class="PurchaseOrder data-entry">Purchase Order</li>
+        <li class="ReceivingReport data-entry">Receiving Report</li>
         <hr class="menuLine">
         <li>By SKU</li>
         <li>By Category</li>
@@ -35,8 +35,8 @@ const menuItems= `
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li>Stock Transfer</li>
-        <li>Merchandise Pull Out</li>
+        <li class="StockTransfer data-entry">Stock Transfer</li>
+        <li class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
         <li>Stock Transfer by Category</li>
@@ -44,7 +44,7 @@ const menuItems= `
 </li>
 <li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
     <ul class="dropdown submenu">
-        <li>Stock Adjustment</li>
+        <li class="StockAdjustment data-entry">Stock Adjustment</li>
         <hr class="menuLine">
         <li>Adjustments by SKU</li>
         <li>Adjustments by Category</li>
@@ -52,7 +52,7 @@ const menuItems= `
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
-        <li>Physical Count</li>
+        <li class="PhysicalCount data-entry">Physical Count</li>
         <hr class="menuLine">
         <li>Stock Ending</li>
         <li>Stock Position</li>
@@ -61,16 +61,16 @@ const menuItems= `
 </li>
 <li class="lookup"><i class="fa fa-table"></i> Lookup Tables
     <ul class="dropdown submenu">
-        <li class="Products">Products</li>
-        <li class="Brands">Brands</li>
-        <li class="Category">Category</li>
-        <li class="Department">Department</li>
-        <li class="Class">Class</li>
+        <li class="Products data-entry">Products</li>
+        <li class="Brands data-entry">Brands</li>
+        <li class="Category data-entry">Category</li>
+        <li class="Department data-entry">Department</li>
+        <li class="Class data-entry">Class</li>
         <hr class="menuLine">
-        <li class="Location">Location</li>
+        <li class="Location data-entry">Location</li>
         <li>Supplier</li>
         <li>Customer</li>
-        <li>System Users</li>
+        <li class="SystemUsers data-entry">System Users</li>
     </ul>
 </li>
 <li class="settings"><i class="fa fa-tools"></i> Settings

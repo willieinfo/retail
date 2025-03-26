@@ -78,6 +78,7 @@
     padding: 0px 10px 0px 10px;
 
 }
+
 .footSegments {
     display: flex;
     width: auto;
@@ -88,13 +89,20 @@
     min-width: 70px;
     max-width: max-content;
     width: 100%;
-    padding: 0px 20 0px 20px;
+    padding: 0px 20px;
+    margin: 6px 1px;
+    background-blend-mode:lighten;
+}
+.footSegments button:hover{
+    opacity: 0.8;
 }
 #ScanCode {
-    height: 32px;
+    height: 30px;
     max-width: 300px;
     margin-right: 10px;
     margin-left: 10px;
+    padding: 0px 20px;
+
 }
 
 /* Table */
