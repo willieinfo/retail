@@ -357,8 +357,10 @@ export async function populateSuppNum_(cSuppNum_, cSuppName) {
 export async function validateField(fieldId, url, alertMessage, editmode=false) {
     const fieldValue = document.getElementById(fieldId).value;
     const params = new URLSearchParams();
-    if (fieldValue) params.append(fieldId, fieldValue);
+    
+    fieldId = fieldId ==='ScanCode' ? 'UsersCde' : fieldId
 
+    if (fieldValue) params.append(fieldId, fieldValue);
     try {
         const response = await fetch(`${url}?${params.toString()}`);
         const data = await response.json();
@@ -373,7 +375,7 @@ export async function validateField(fieldId, url, alertMessage, editmode=false) 
         // Just check to see if record exist, then return recordset
         // addSalesDetail-> get ItemCode
         if (data.length > 0 && editmode) {
-            return data; 
+            return data;  
         }
 
         return false; // Return false (field does not exist)
@@ -446,4 +448,184 @@ export function highlightRow(targetRow, tableSelector) {
     targetRow.style.backgroundColor = 'color-mix(in srgb, var(--second-bg-color) 30%, white)';
     targetRow.style.color = 'black';
     targetRow.style.fontWeight = 'bold';
+}
+
+// export function pickItem(dataItemList, inputElement) {
+    
+//     if (!inputElement) return
+//     // Create the pickListDiv and dropdownList dynamically
+//     const pickListDiv = document.createElement('div');
+//     pickListDiv.id = 'pickListDiv';
+//     const dropdownList = document.createElement('ul');
+//     dropdownList.id = 'dropdownList';
+//     const pickListTitle = document.createElement('span');
+//     pickListTitle.innerText="Click to select item from list"
+//     pickListDiv.appendChild(pickListTitle)
+    
+//     // Append the dropdown list to the pick list div
+//     pickListDiv.appendChild(dropdownList);
+//     document.body.appendChild(pickListDiv);  // Add it to the body
+
+//     // Show the pickListDiv and dropdownList
+//     pickListDiv.style.display = 'flex';  // Show the pickListDiv
+//     dropdownList.style.display = 'block';  // Show the dropdown
+
+//     dropdownList.innerHTML = ''; // Clear previous items
+
+//     // Loop through dataItemList and create <li> elements
+//     dataItemList.forEach(item => {
+//         const li = document.createElement('li');
+//         li.textContent = `${item.UsersCde} - ${item.Descript.substring(0,24)} - P ${formatter.format(item.ItemPrce)}`;
+
+//         // Add click event to each <li> for selection
+//         li.addEventListener('click', () => {
+//             // Fill the input with the selected item’s information
+//             inputElement.value = item.UsersCde;  // or any value you want to fill
+
+//             // Close the dropdown and pick list after selection
+//             dropdownList.style.display = 'none';
+//             pickListDiv.style.display = 'none';
+
+//             // Update the dataItemList with the selected item, so it can be accessed elsewhere
+//             dataItemList = [item];  // Overwrite the dataItemList with the selected item
+//         });
+
+//         // Append the <li> item to the dropdown list
+//         dropdownList.appendChild(li);
+//     });
+
+//     // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+//     document.addEventListener('click', (e) => {
+//         if (!pickListDiv.contains(e.target)) {
+//             dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
+//             pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+//         }
+//     });
+
+//     // Optional: Return the selected item, or null if no selection
+//     return new Promise((resolve) => {
+//         // Listen for the selection and resolve with the selected item
+//         pickListDiv.addEventListener('click', () => {
+//             resolve(dataItemList[0]);  // Resolving the promise with the selected item
+//         });
+//     });
+// }
+
+
+
+
+export function pickItem(dataItemList, inputElement) {
+    if (!inputElement) return;
+
+    // Create the pickListDiv and dropdownList dynamically
+    const pickListDiv = document.createElement('div');
+    pickListDiv.id = 'pickListDiv';
+    const dropdownList = document.createElement('ul');
+    dropdownList.id = 'dropdownList';
+    const pickListTitle = document.createElement('span');
+    pickListTitle.innerText = "Click to select item from list";
+    pickListDiv.appendChild(pickListTitle);
+
+    // Append the dropdown list to the pick list div
+    pickListDiv.appendChild(dropdownList);
+    document.body.appendChild(pickListDiv);  // Add it to the body
+
+    // Show the pickListDiv and dropdownList
+    pickListDiv.style.display = 'flex';  // Show the pickListDiv
+    dropdownList.style.display = 'block';  // Show the dropdown
+
+    dropdownList.innerHTML = ''; // Clear previous items
+
+    // Loop through dataItemList and create <li> elements
+    dataItemList.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${item.UsersCde} - ${item.Descript.substring(0, 24)} - P ${formatter.format(item.ItemPrce)}`;
+        li.setAttribute('data-index', index);  // Store the index for navigation
+
+        // Add click event to each <li> for selection
+        li.addEventListener('click', () => {
+            selectItem(item);  // Pass the item directly to the selectItem function
+        });
+
+        // Append the <li> item to the dropdown list
+        dropdownList.appendChild(li);
+    });
+
+    // Variables to track the highlighted index and the highlighted item
+    let highlightedIndex = -1;
+    let highlightedItem = null;  // Store the item being highlighted
+    const items = dropdownList.querySelectorAll('li');
+
+    // Function to highlight an item
+    function highlightItem(index) {
+        // Remove highlight from all items
+        items.forEach(item => item.classList.remove('highlight'));
+
+        // Only highlight if the index is valid
+        if (index >= 0 && index < items.length) {
+            items[index].classList.add('highlight');  // Add highlight to the current item
+            highlightedItem = dataItemList[index];  // Update highlighted item
+        }
+    }
+
+    // Handle keydown events for ArrowDown, ArrowUp, and Enter
+    inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+            // Move down in the list
+            if (highlightedIndex < items.length - 1) {
+                highlightedIndex++;
+            }
+            highlightItem(highlightedIndex);
+        } else if (e.key === 'ArrowUp') {
+            // Move up in the list
+            if (highlightedIndex > 0) {
+                highlightedIndex--;
+            }
+            highlightItem(highlightedIndex);
+        } else if (e.key === 'Enter') {
+            // Select the highlighted item
+            if (highlightedItem) {
+                e.preventDefault(); // Prevent Enter from also triggering the click event
+                selectItem(highlightedItem);
+            }
+        }
+    });
+
+    // Function to handle item selection
+    function selectItem(item) {
+        // Fill the input with the selected item’s information
+        inputElement.value = item.UsersCde;  // or any value you want to fill
+
+        // Close the dropdown and pick list after selection
+        dropdownList.style.display = 'none';
+        pickListDiv.style.display = 'none';
+
+        // Resolve the promise with the selected item
+        if (resolvePromise) {
+            resolvePromise(item);
+        }
+
+        // Update the dataItemList with the selected item, so it can be accessed elsewhere
+        dataItemList = [item];  // Overwrite the dataItemList with the selected item
+    }
+
+
+    // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+    document.addEventListener('click', (e) => {
+        if (!pickListDiv.contains(e.target)) {
+            dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
+            pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+        }
+    });
+
+    // Store the resolver function for the promise
+    let resolvePromise = null;
+
+    // Return a promise that resolves when an item is selected
+    const promise = new Promise((resolve) => {
+        resolvePromise = resolve;  // Save the resolve function to use later
+    });
+
+    // Optional: Return the promise so the caller can use it
+    return promise;
 }

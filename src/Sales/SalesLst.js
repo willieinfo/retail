@@ -1,4 +1,4 @@
-import { showReport, formatDate, populateLocation, showNotification, get24HrTime, 
+import { showReport, formatDate, populateLocation, showNotification, get24HrTime, pickItem,
     MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
@@ -107,6 +107,10 @@ function updateTable() {
 }
 
 async function SaleForm(index,editMode) {
+
+    document.getElementById("addSalesDtl").disabled = !editMode;
+    document.getElementById("ScanCode").disabled = !editMode;
+
     const reportBody = document.getElementById('salesInvoice');
     reportBody.innerHTML =''
 
@@ -264,7 +268,10 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
         
         if (addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_,
             dLog_Date, nNoOfItem, cCustName, cSuffixId)) {
-            showReport('SalesLst')  //Show back SalesRec List
+            // showReport('SalesLst')  //Show back SalesRec List
+            document.getElementById("addSalesDtl").disabled = false;
+            document.getElementById("ScanCode").disabled = false;
+    
         }
     }
 });
@@ -345,6 +352,10 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
             showNotification('SalesRec record added successfully!')
             globalData.push(updatedItem);
             updateTable();         
+            // console.log(updatedItem)
+            currentRec=updatedItem
+            document.getElementById("ReferDoc").value = updatedItem.ReferDoc
+
 
             // Scroll to the last row after updating the table
             const tableBody = document.getElementById('ListSalesBody'); 
@@ -436,6 +447,8 @@ function updateItemTable(refreshOnly=false) {
             }
 
             if (!isNaN(index) && index >= 0 && index < itemsDtl.length) {
+                if (refreshOnly) return;
+
                 const confirmed = confirm(`Do you want to delete ${itemsDtl[index].Descript.trim()}?`)
                 if (confirmed) {
                     const deleted_ = await deleteSalesDtl(itemsDtl[index].RecordId,globalData[currentIndex].CtrlNum_,index)
@@ -468,6 +481,7 @@ function updateItemTable(refreshOnly=false) {
     });
     
 }
+
 
 document.getElementById('salesFilter').addEventListener('click', async () => {
     try {
@@ -622,39 +636,15 @@ function SalesDtl(index,editMode) {
     // values wil be determined as user enters UsersCde and validateField()
     // let cItemCode=null  
     // let nLandCost=0
-    document.getElementById('UsersCde').addEventListener('blur', async (e) => {
-        e.preventDefault()
-        
-        if (!UsersCde.value) {
-            UsersCde.focus();
-            return;
-        }
-        let dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
-            '', true)
-        if (dataItemList) {
-            if (dataItemList.length > 1) {
-                const selectedItem=pickItem(dataItemList, "Select Item from List")
-                if (selectedItem==='undefined' || !selectedItem) {
-                    document.getElementById('UsersCde').value=''
-                    document.getElementById('UsersCde').focus()
-                }
-                return
-            } else {
-                document.getElementById('UsersCde').value=dataItemList[0].UsersCde;
-                document.getElementById('OtherCde').value=dataItemList[0].OtherCde;
-                document.getElementById('Descript').value=dataItemList[0].Descript;
 
-                if (!editMode) {
-                    document.getElementById('ItemPrce').value=dataItemList[0].ItemPrce;
-                    document.getElementById('Amount__').value=dataItemList[0].ItemPrce;
-                }
-
-                nLandCost=dataItemList[0].LandCost;
-                cItemCode=dataItemList[0].ItemCode;
-            }
-        }
-    })
-
+    // document.getElementById('UsersCde').addEventListener('blur', async (e) => {
+    //     e.preventDefault();
+    //     chkUsersCde(editMode)        
+    // });
+    document.getElementById('UsersCde').addEventListener('input', debounce(() => {
+        chkUsersCde(editMode)        
+    }, 300));  // 300ms delay (you can adjust the delay as needed)
+    
     document.getElementById('DiscRate').addEventListener('blur', async (e) => {
         e.preventDefault()
         if (ItemPrce.value===0) {
@@ -694,7 +684,13 @@ function SalesDtl(index,editMode) {
                 editSalesDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
         } else {
             const dDate____=currentRec.DateFrom
-            addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost)
+            const cTimeSale=get24HrTime()
+            const nQuantity=document.getElementById('Quantity').value
+            const nItemPrce=document.getElementById('ItemPrce').value
+            const nDiscRate=document.getElementById('DiscRate').value
+            const nAmount__=document.getElementById('Amount__').value
+
+            addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
         }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
@@ -714,7 +710,7 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     const nDiscRate=document.getElementById('DiscRate').value
     const nAmount__=document.getElementById('Amount__').value
 
-    console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
+    // console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
 
     try {
         const response = await fetch('http://localhost:3000/sales/editSalesDetail', {
@@ -755,14 +751,15 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 }
 
 
-async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
+async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
+        nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
-    const nQuantity=document.getElementById('Quantity').value
-    const nItemPrce=document.getElementById('ItemPrce').value
-    const nDiscRate=document.getElementById('DiscRate').value
-    const nAmount__=document.getElementById('Amount__').value
-    const cTimeSale=get24HrTime()
+    // const nQuantity=document.getElementById('Quantity').value
+    // const nItemPrce=document.getElementById('ItemPrce').value
+    // const nDiscRate=document.getElementById('DiscRate').value
+    // const nAmount__=document.getElementById('Amount__').value
+    // const cTimeSale=get24HrTime()
 
     // console.log([cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
 
@@ -784,7 +781,6 @@ async function addSalesDtl(cCtrlNum_,dDate____,cItemCode,nLandCost) {
                 nLandCost: nLandCost
             })
         });
-
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -1088,10 +1084,10 @@ function printToPDF(headerData, detailData, itemFields, colWidths,
         currentX = pageMargin; // Reset X for each row
         itemRow.forEach((text, i) => {
             // Color based on some condition (e.g., negative quantities)
-            if (i === 0 && parseFloat(itemRow[i]) < 0) {
+            if (parseFloat(itemRow[i]) < 0) {
                 doc.setTextColor(255, 0, 0); // Red text for negative numbers
             } else {
-                doc.setTextColor(0, 0, 0); // Black text otherwise
+                doc.setTextColor(0, 0, 0)
             }
 
             // Default alignment
@@ -1292,51 +1288,153 @@ function printToPDF(headerData, detailData, itemFields, colWidths,
 
 }
 
-// Function to fill item details in other fields after selection
-function fillItemDetails(item) {
-    document.getElementById('UsersCde').focus()
-    document.getElementById('OtherCde').value = item.OtherCde;
-    document.getElementById('Descript').value = item.Descript;
-    document.getElementById('ItemPrce').value = item.ItemPrce;
-    document.getElementById('Amount__').value = item.ItemPrce;
-    cItemCode = item.ItemCode
+// document.getElementById('ScanCode').addEventListener('blur', async (e) =>{
+//     e.preventDefault();
+//     addScanCode()
+// })
+// document.getElementById('ScanCode').addEventListener('paste', async () =>{
+//     addScanCode()
+// })
+// Event listener with debounce
+document.getElementById('ScanCode').addEventListener('input', debounce(() => {
+    addScanCode();
+}, 300));  // 300ms delay (you can adjust the delay as needed)
+
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        // Clear the timeout if it exists
+        clearTimeout(timeout);
+        // Set a new timeout to execute the function after the delay
+        timeout = setTimeout(() => func(...args), delay);
+    };
 }
 
-async function pickItem(dataItemList) {
-    const dropdownList = document.getElementById('dropdownList');
-    const pickListDiv = document.getElementById('pickListDiv');
-    
-    // Show the pickListDiv and dropdownList
-    pickListDiv.style.display = 'flex'; // Show the pickListDiv
-    dropdownList.style.display = 'block';  // Show the dropdown
 
-    dropdownList.innerHTML = ''; // Clear previous items
+async function addScanCode() {
+    const ScanCode = document.getElementById('ScanCode')
+    if (!ScanCode.value) {
+        return;
+    }
 
-    // Loop through dataItemList and create <li> elements
-    dataItemList.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.UsersCde} - ${item.Descript.substring(0,24)} - P ${formatter.format(item.ItemPrce)}`;
-        li.addEventListener('click', () => {
-            // Set the value to input field when user selects an item
-            UsersCde.value = item.UsersCde;
-            dropdownList.style.display = 'none'; // Hide dropdown after selection
-            pickListDiv.style.display = 'none'; // Optionally hide the entire pickListDiv if needed
-            fillItemDetails(item); // Fill other item details in fields
-        });
-        dropdownList.appendChild(li);
-    });
+    let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
 
-    // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
-    document.addEventListener('click', (e) => {
-        if (!pickListDiv.contains(e.target)) {
-            dropdownList.style.display = 'none'; // Hide dropdown if clicked outside
-            pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+    try {
+        // Call to your backend to validate and get the list of items
+        const dataItem = await validateField('ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
+        if (!dataItem) {
+            alert(`${ScanCode.value} is not found.`)
+            ScanCode.value=''
+            ScanCode.focus()
+            return
         }
-    });
+        if (dataItem) {
+            // If more than one item is returned, show the pick list
+            if (dataItem.length > 1) {
+                const inputElement = ScanCode;
+                
+                // Call pickItem function to show the pick list
+                const selectedItem = await pickItem(dataItem, inputElement);
+                if (!selectedItem) {
+                    // Handle case where no selection is made
+                    ScanCode.value = '';
+                    ScanCode.focus();
+                    return;
+                }
+                
+                // Proceed with the selected item
+                cItemCode = selectedItem.ItemCode
+                nItemPrce = selectedItem.ItemPrce
+                nLandCost = selectedItem.LandCost
+                nItemCost = selectedItem.ItemCost
 
-    // Return the selected item, or null if no selection
-    return new Promise((resolve) => {
-        const selectedItem = dataItemList.find(item => item.UsersCde === UsersCde.value);
-        resolve(selectedItem || null);
-    });
+            } else {
+                // If only one item is returned, fill in the form fields
+                const item = dataItem[0]; // The single item returned
+                cItemCode = item.ItemCode
+                nItemPrce = item.ItemPrce
+                nLandCost = item.LandCost
+                nItemCost = item.ItemCost
+
+            }
+        }
+
+        const cCtrlNum_ = currentRec.CtrlNum_
+        const nAmount__ = nItemPrce
+        const nQuantity = 1
+        const nDiscRate = 0
+        const cTimeSale = get24HrTime()
+        const dDate____ = new Date()
+
+        // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+        addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+        ScanCode.value=''
+        ScanCode.focus()
+
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+    }
+
+}
+
+async function chkUsersCde(editMode) {
+    if (!UsersCde.value) {
+        UsersCde.focus();
+        return;
+    }
+
+    try {
+        // Call to your backend to validate and get the list of items
+        let dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
+
+        if (dataItemList) {
+            // If more than one item is returned, show the pick list
+            if (dataItemList.length > 1) {
+                const inputElement = UsersCde;
+                
+                // Call pickItem function to show the pick list
+                const selectedItem = await pickItem(dataItemList, inputElement);
+                if (!selectedItem) {
+                    // Handle case where no selection is made
+                    UsersCde.value = '';
+                    UsersCde.focus();
+                    return;
+                }
+                
+                // Proceed with the selected item
+                document.getElementById('UsersCde').value = selectedItem.UsersCde;
+                document.getElementById('OtherCde').value = selectedItem.OtherCde;
+                document.getElementById('Descript').value = selectedItem.Descript;
+                
+                if (!editMode) {
+                    document.getElementById('ItemPrce').value = selectedItem.ItemPrce;
+                    document.getElementById('Amount__').value = selectedItem.ItemPrce;
+                }
+
+                // Additional variables
+                nLandCost = selectedItem.LandCost;
+                cItemCode = selectedItem.ItemCode;
+
+            } else {
+                // If only one item is returned, fill in the form fields
+                const item = dataItemList[0]; // The single item returned
+                document.getElementById('UsersCde').value = item.UsersCde;
+                document.getElementById('OtherCde').value = item.OtherCde;
+                document.getElementById('Descript').value = item.Descript;
+
+                if (!editMode) {
+                    document.getElementById('ItemPrce').value = item.ItemPrce;
+                    document.getElementById('Amount__').value = item.ItemPrce;
+                }
+
+                // Set additional fields
+                nLandCost = item.LandCost;
+                cItemCode = item.ItemCode;
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+    }
+
 }

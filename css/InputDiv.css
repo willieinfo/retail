@@ -189,8 +189,6 @@ textarea {
 #pickListDiv {
     display: none;  /* Hidden by default */
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     padding: 0;
     margin: 0;
     height: 400px;
@@ -202,9 +200,11 @@ textarea {
     background-color: white;
     border: 1px solid #ccc;
     overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
 
 }
+
 #pickListDiv span {
     display: flex;
     justify-content: center;
@@ -222,7 +222,7 @@ textarea {
     /* max-width: 300px; */
     background-color: #fff;
     border: 1px solid #ccc;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); */
     box-sizing: border-box;  /* Include padding and borders in width calculation */
     overflow-y: auto;        /* Allow scrolling if items overflow */
 }
@@ -242,6 +242,10 @@ textarea {
 
 }
 
+#dropdownList li.highlight {
+    background-color: #b3d9ff;  /* A light blue background to highlight */
+    cursor: pointer;
+}
 
 
 
