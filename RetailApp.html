@@ -71,11 +71,12 @@
         <div class="ReportFooter">
             <div class="footSegments">
                 <button id="addSalesDtl"><i class="fa fa-add"></i> Add Item</button>
-                <input type="text" id="ScanCode" placeholder="Type Code to add" spellcheck="false">
+                <input type="text" id="ScanCode" placeholder="Scan or Type Code to add" spellcheck="false" autocomplete="off">
             </div>
-            <div class="footSegments" style="display: none;">
-                <button><i class="fa fa-add"></i> Upload</button>
-                <button><i class="fa fa-locate"></i> Search</button>
+            <div class="footSegments">
+                <button id="uploadItemsBtn"><i class="fa fa-upload"></i> Upload</button>
+                <button id="salesItemsBtn" style="display: none"><i class="fa fa-shopping-cart"></i> Sale Items</button>
+                <button id="paymentsBtn"><i class="fa fa-coins"></i> Payments</button>
             </div>
             <div class="footSegments">
                 <span id="salesDtlCounter" class="recCounter"></span>

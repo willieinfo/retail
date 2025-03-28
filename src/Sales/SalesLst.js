@@ -149,7 +149,7 @@ async function SaleForm(index,editMode) {
                 </div>
             </div>
         </div>
-        <div class="itemsTableDiv">
+        <div class="itemsTableDiv" id="itemsTableDiv";>
             <table class="ListItemTable">
                 <thead id="ListItemHead">
                     <tr>
@@ -167,9 +167,24 @@ async function SaleForm(index,editMode) {
                 <tbody id="ListSaleItem"></tbody>
             </table>
         </div>  
+        <div class="paymentTableDiv" id="paymentTableDiv";>
+            <table class="ListItemTable">
+                <thead id="ListPaymentHead">
+                    <tr>
+                        <th>Payment Mode</th>
+                        <th>Amount Paid</th>
+                        <th>Account Name</th>
+                        <th>Account No.</th>
+                        <th>Authorization</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="ListPaymItem"></tbody>
+            </table>
+        </div>  
     `    
-    // <div style="display: flex; width: 20%; background-color: blue; overflow: hidden;">
-    //     <div style="position: fixed; display: flex; flex-wrap: wrap; padding: 10px; background-color: red; ">
+    // <div style="display: flex; width: 40%; height: 100%; background-color: blue; overflow: hidden;">
+    //     <div style="position: fixed; display: flex; flex-direction: column; flex-wrap: wrap; padding: 10px; background-color: red; ">
     //         <button>Button 1</button>
     //         <button>Button 1</button>
     //         <button>Button 1</button>
@@ -240,8 +255,34 @@ async function SaleForm(index,editMode) {
     }
 }
 
+
+document.getElementById('salesItemsBtn').addEventListener('click', () => {
+    document.getElementById('paymentTableDiv').style.display = "none";
+    document.getElementById('itemsTableDiv').style.display = "flex";
+
+    document.getElementById('paymentsBtn').style.display = "block";
+    document.getElementById('salesItemsBtn').style.display = "none";
+    document.getElementById('uploadItemsBtn').style.display = "block";
+
+    document.getElementById('ScanCode').style.display = "none";
+    document.getElementById('salesDtlCounter').style.display = "block";
+    document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Item`;
+})
+document.getElementById('paymentsBtn').addEventListener('click', () => {
+    document.getElementById('paymentTableDiv').style.display ="flex";
+    document.getElementById('itemsTableDiv').style.display ="none" ;  
+
+    document.getElementById('paymentsBtn').style.display = "none";
+    document.getElementById('salesItemsBtn').style.display = "block";
+    document.getElementById('uploadItemsBtn').style.display = "none";
+
+    document.getElementById('ScanCode').style.display = "none";
+    document.getElementById('salesDtlCounter').style.display = "none";
+    document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Payment`;
+})
+
+
 document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
-    
     const salesDtlCounter=document.getElementById('salesDtlCounter').innerText
     const cLocation=document.getElementById('SaleLoca').value
     const cRemarks_=document.getElementById('Remarks_').value
@@ -522,11 +563,8 @@ function SalesDtl(index,editMode) {
                     <div class="subTextDiv">
                         <label for="UsersCde">Stock No</label>
                         <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
-                            placeholder="Type Stock No. or Bar Code here to search">
-                        <div id="pickListDiv">
-                            <span>Click to select item from list</span>
-                            <ul id="dropdownList" style="display: none;"></ul> 
-                        </div>
+                            placeholder="Type Stock No. or Bar Code here to search"
+                            autocomplete = "off">
                     </div>
                     <div class="subTextDiv">
                         <label for="OtherCde">Bar Code</label>
@@ -754,15 +792,7 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
         nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
-
-    // const nQuantity=document.getElementById('Quantity').value
-    // const nItemPrce=document.getElementById('ItemPrce').value
-    // const nDiscRate=document.getElementById('DiscRate').value
-    // const nAmount__=document.getElementById('Amount__').value
-    // const cTimeSale=get24HrTime()
-
-    // console.log([cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
-
+    
     try {
         const response = await fetch('http://localhost:3000/sales/addSalesDetail', {
             method: 'POST',  
@@ -879,7 +909,12 @@ document.addEventListener('DOMContentLoaded', () => {
         SaleForm();
     });
     addSalesDtl.addEventListener('click', () => {
-        SalesDtl();
+        const addCaption = document.getElementById('addSalesDtl').innerText
+        if (addCaption === ' Add Item') {
+            SalesDtl();
+        } else {
+            alert('Add Payment?')
+        }
     });
 
     closeSalesRec.addEventListener('click', () => {
@@ -1292,13 +1327,14 @@ function printToPDF(headerData, detailData, itemFields, colWidths,
 //     e.preventDefault();
 //     addScanCode()
 // })
-// document.getElementById('ScanCode').addEventListener('paste', async () =>{
-//     addScanCode()
-// })
+document.getElementById('ScanCode').addEventListener('paste', async () =>{
+    addScanCode()
+})
+
 // Event listener with debounce
 document.getElementById('ScanCode').addEventListener('input', debounce(() => {
     addScanCode();
-}, 300));  // 300ms delay (you can adjust the delay as needed)
+}, 300));  
 
 // Debounce function
 function debounce(func, delay) {
@@ -1315,6 +1351,11 @@ function debounce(func, delay) {
 async function addScanCode() {
     const ScanCode = document.getElementById('ScanCode')
     if (!ScanCode.value) {
+        ScanCode.focus();
+        return;
+    }
+    if (ScanCode.value.length < 5) {
+        ScanCode.focus();
         return;
     }
 
@@ -1323,12 +1364,14 @@ async function addScanCode() {
     try {
         // Call to your backend to validate and get the list of items
         const dataItem = await validateField('ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
+        
         if (!dataItem) {
             alert(`${ScanCode.value} is not found.`)
-            ScanCode.value=''
-            ScanCode.focus()
-            return
+            ScanCode.value='';
+            ScanCode.focus();
+            return;
         }
+
         if (dataItem) {
             // If more than one item is returned, show the pick list
             if (dataItem.length > 1) {
@@ -1379,8 +1422,12 @@ async function addScanCode() {
 }
 
 async function chkUsersCde(editMode) {
-    if (!UsersCde.value) {
+    if (!UsersCde.value ) {
         UsersCde.focus();
+        return;
+    }
+    if (UsersCde.value.length < 5) {
+        UsersCde.focus()
         return;
     }
 

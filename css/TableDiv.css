@@ -39,6 +39,17 @@
     padding: 0px 10px;
     overflow: auto;
 }
+.paymentTableDiv {
+    display: none;
+    width: 100%; 
+    align-items: center;
+    align-content: center;
+
+    justify-content: center;
+    max-height: 78%;
+    padding: 0px 10px;
+    overflow: auto;
+}
 /* .ListItemTable {
     display:table-header-group;
     flex-direction: column;
