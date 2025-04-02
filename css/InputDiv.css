@@ -205,7 +205,7 @@ textarea {
 
 }
 
-#pickListDiv span {
+#pickListDiv span, #titleBarDiv span {
     display: flex;
     justify-content: center;
     padding: 10px;
@@ -247,7 +247,75 @@ textarea {
     cursor: pointer;
 }
 
+#selectWallPaper {
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    top: calc(50% + 28px);
+    left: 50%; 
+    transform: translate(-50%, -50%); 
 
+    background-color: white;
+    border: 1px solid #ccc;
+    overflow: auto;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.wallpaperContainer {
+    margin: 10px;
+    cursor: pointer;
+}
+
+.wallpaperImage {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border 0.3s ease;
+}
+
+.wallpaperImage:hover {
+    border: 2px solid #007BFF;
+}
+
+/* .btnDiv {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.saveBtn, .cancelBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.saveBtn {
+    background-color: #28a745;
+    color: white;
+}
+
+.cancelBtn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.saveBtn:hover {
+    background-color: #218838;
+}
+
+.cancelBtn:hover {
+    background-color: #c82333;
+} */
 
 @media (max-width: 600px) {
     #item-form {
