@@ -1,3 +1,5 @@
+import { showReport, showNotification } from '../FunctLib.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const liWallPaperMenu = document.querySelectorAll('.WallPaper');
     liWallPaperMenu.forEach(element => {
@@ -19,6 +21,12 @@ const wallpaper = [
     "./images/RetailShop1.JPG",
     "./images/RetailShop2.JPG",
     "./images/RetailShop3.JPG",
+    "./images/RetailShop4.JPG",
+    "./images/RetailShop5.JPG",
+    "./images/PerfumeShop1.JPG",
+    "./images/PerfumeShop2.JPG",
+    "./images/HardwareTools1.JPG",
+    "./images/HardwareTools2.JPG",
     "./images/RetailShopGrocer1.JPG",
     "./images/RetailShopGrocer2.JPG",
     "./images/RetailShopGrocer3.JPG"
@@ -29,18 +37,29 @@ function changeWallPaper() {
     selectWallPaper.id = 'selectWallPaper';
     selectWallPaper.classList.add('report-section');
 
-    const titleBarDiv = document.createElement('div');
-    titleBarDiv.id = 'titleBarDiv';
+    const titleBar = document.createElement('div');
+    titleBar.id = 'titleBar';
+    titleBar.style.position = "sticky";
+    titleBar.style.top = "0px";
+    titleBar.zindex = "1";
+
     const pickListTitle = document.createElement('span');
     pickListTitle.innerText = "Click to select wall paper from list";
-    selectWallPaper.appendChild(titleBarDiv)
-    titleBarDiv.appendChild(pickListTitle);
+    selectWallPaper.appendChild(titleBar)
+    titleBar.appendChild(pickListTitle);
     
 
     // Create image containers dynamically
+    const imgMainDiv = document.createElement('div');
+    imgMainDiv.style.display = "flex";
+    imgMainDiv.style.flexWrap = "wrap";
+    imgMainDiv.style.justifyContent = "center";
+    selectWallPaper.appendChild(imgMainDiv)
+
     wallpaper.forEach((src, index) => {
         const imageContainer = document.createElement('div');
         imageContainer.classList.add('wallpaperContainer');
+        imageContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
         
         const img = document.createElement('img');
         img.src = src;
@@ -48,7 +67,8 @@ function changeWallPaper() {
         img.classList.add('wallpaperImage');
         
         imageContainer.appendChild(img);
-        selectWallPaper.appendChild(imageContainer);
+        // selectWallPaper.appendChild(imageContainer);
+        imgMainDiv.appendChild(imageContainer);
 
         // Add click event for selecting wallpaper
         imageContainer.addEventListener('click', () => {
@@ -68,6 +88,7 @@ function changeWallPaper() {
     saveBtn.innerHTML = '<i class="fa fa-save"></i> Save';
     saveBtn.addEventListener('click', () => {
         localStorage.setItem('WallPaper', imageSrc.src);
+        showNotification("Wall Paper saved successfully!");
         selectWallPaper.style.display = 'none';
     });
 
@@ -88,5 +109,6 @@ function changeWallPaper() {
 
     // Show the wallpaper selection overlay
     selectWallPaper.style.display = 'flex';
+    showReport('selectWallPaper')
 }
 

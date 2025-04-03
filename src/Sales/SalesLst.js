@@ -194,6 +194,7 @@ async function SaleForm(index,editMode) {
 
     document.getElementById('SalesLst').classList.remove('active')
     showReport('SaleForm')
+    document.getElementById('salesItemsBtn').click()
 
     await populateLocation('', '','SellArea', 'SaleLoca');
 
@@ -264,7 +265,7 @@ document.getElementById('salesItemsBtn').addEventListener('click', () => {
     document.getElementById('salesItemsBtn').style.display = "none";
     document.getElementById('uploadItemsBtn').style.display = "block";
 
-    document.getElementById('ScanCode').style.display = "none";
+    document.getElementById('ScanCode').style.display = "block";
     document.getElementById('salesDtlCounter').style.display = "block";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Item`;
 })
@@ -1402,6 +1403,11 @@ async function addScanCode() {
 
             }
         }
+        // Close pickListDiv if it's open
+        const pickListDiv = document.getElementById('pickListDiv');
+        if (pickListDiv) {
+            pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+        }
 
         const cCtrlNum_ = currentRec.CtrlNum_
         const nAmount__ = nItemPrce
@@ -1479,7 +1485,15 @@ async function chkUsersCde(editMode) {
                 nLandCost = item.LandCost;
                 cItemCode = item.ItemCode;
             }
+            // Close pickListDiv if it's open
+            const pickListDiv = document.getElementById('pickListDiv');
+            if (pickListDiv) {
+                pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+            }
+
         }
+
+
     } catch (error) {
         console.error("Error fetching or processing data:", error);
     }
