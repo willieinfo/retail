@@ -21,6 +21,10 @@ export function FiltrRec(cModules_) {
                         <label for="Date__To">To:</label>
                         <input type="date" id="Date__To">
                     </div>
+                    <div id="txtReferDoc">
+                        <label for="ReferDoc">Ref. No.:</label>
+                        <input type="text" id="ReferDoc" spellcheck="false">
+                    </div>
                 </div>
                 <div id="inputLocation" class="textDiv">
                     <div class="subTextDiv">
@@ -117,11 +121,18 @@ export function FiltrRec(cModules_) {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            await populateLocation('', '', 'SellArea');
+        } else if (cModules_ === 'StockLst') {
+            document.getElementById('StockLst').appendChild(filterForm);
+            document.getElementById('StockLst').appendChild(overlay);
+            document.getElementById('inputDetails').style.display = 'none';
             await populateLocation('', '', 'SellArea');
         }
 
@@ -185,6 +196,7 @@ export function FiltrRec(cModules_) {
             const dDateFrom = document.getElementById('DateFrom').value;
             const dDate__To = document.getElementById('Date__To').value;
             const cLocation = document.getElementById('Location').value.trim();
+            const cReferDoc = document.getElementById('ReferDoc').value.trim();
 
             const cUsersCde = document.getElementById('UsersCde').value.trim();
             const cOtherCde = document.getElementById('OtherCde').value.trim();
@@ -195,7 +207,7 @@ export function FiltrRec(cModules_) {
             const cItemDept = document.getElementById('ItemDept').value;
 
             const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
-                cDescript, cBrandNum, cCategNum, cItemType, cItemDept];
+                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc];
             localStorage.setItem("filterData", JSON.stringify(filterData));
 
             document.getElementById('filter-form').remove(); 

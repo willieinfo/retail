@@ -1,6 +1,6 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
-const updateSalesTotals = async (req, res) => {
+const updateStockTotals = async (req, res) => {
   const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;
   
   // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
@@ -9,9 +9,8 @@ const updateSalesTotals = async (req, res) => {
   }
   
   const cSql = `
-    UPDATE SALESREC SET
+    UPDATE STOCKREC SET
       Amount__=@nTotalAmt,
-      Discount=@nTotalAmt,
       TotalQty=@nTotalQty,
       NoOfItem=@nNoOfItem
     WHERE CtrlNum_=@cCtrlNum_
@@ -23,26 +22,27 @@ const updateSalesTotals = async (req, res) => {
 
     -- Return the full record
     SELECT
-      SALESREC.CtrlNum_,
-      SALESREC.ReferDoc,
-      SALESREC.DateFrom,
+      STOCKREC.CtrlNum_,
+      STOCKREC.ReferDoc,
+      STOCKREC.Date____,
       LOCATION.LocaName,
-      SALESREC.TotalQty,
-      SALESREC.Amount__,
-      SALESREC.NoOfItem,
-      SALESREC.Remarks_,
-      SALESREC.Encoder_,
-      SALESREC.Location,
-      SALESREC.Printed_,
-      SALESREC.CustName,
-      SALESREC.Disabled,
-      SALESREC.Log_Date
-    FROM SALESREC, LOCATION
-    WHERE SALESREC.Location = LOCATION.Location
-    AND SALESREC.CtrlNum_=@cCtrlNum_
+      STOCKREC.TotalQty,
+      STOCKREC.Amount__,
+      STOCKREC.NoOfItem,
+      STOCKREC.Remarks_,
+      STOCKREC.Encoder_,
+      STOCKREC.WhseFrom,
+      STOCKREC.WhseTo__,
+      STOCKREC.Printed_,
+      STOCKREC.CustName,
+      STOCKREC.Disabled,
+      STOCKREC.Log_Date
+    FROM STOCKREC, LOCATION
+    WHERE STOCKREC.WhseFrom = LOCATION.Location
+    AND STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem };
+  const params = { cCtrlNum_, nTotalQty, nTotalAmt, nNoOfItem };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -54,25 +54,26 @@ const updateSalesTotals = async (req, res) => {
     }
     
   } catch (err) {
-    console.error('Update SALESREC Totals error:', err);
-    res.status(500).json({ error: 'Error updating SALESREC' });
+    console.error('Update STOCKREC Totals error:', err);
+    res.status(500).json({ error: 'Error updating STOCKREC' });
   }
 
 }
 
-const editSalesHeader = async (req, res) => {
-  const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled } = req.body;
+const editStockHeader = async (req, res) => {
+  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled } = req.body;
 
-  if (!cLocation || !dDateFrom || !cCtrlNum_) {
+  if (!cWhseFrom || !dDateFrom || !cCtrlNum_) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   const cSql = `
-    UPDATE SALESREC SET
-      Location=@cLocation,
-      DateFrom=@dDateFrom,
+    UPDATE STOCKREC SET
+      WhseFrom=@cWhseFrom,
+      WhseTo__=@cWhseTo__,
+      Date____=@dDate____,
       Remarks_=@cRemarks_,
-      CustName=@cCustName,
+      Prepared=@cPrepared,
       Disabled=@lDisabled
     WHERE CtrlNum_=@cCtrlNum_
 
@@ -83,26 +84,27 @@ const editSalesHeader = async (req, res) => {
     
     -- Return the full record
     SELECT
-      SALESREC.CtrlNum_,
-      SALESREC.ReferDoc,
-      SALESREC.DateFrom,
+      STOCKREC.CtrlNum_,
+      STOCKREC.ReferDoc,
+      STOCKREC.Date____,
       LOCATION.LocaName,
-      SALESREC.TotalQty,
-      SALESREC.Amount__,
-      SALESREC.NoOfItem,
-      SALESREC.Remarks_,
-      SALESREC.Encoder_,
-      SALESREC.Location,
-      SALESREC.Printed_,
-      SALESREC.CustName,
-      SALESREC.Disabled,
-      SALESREC.Log_Date
-    FROM SALESREC, LOCATION
-    WHERE SALESREC.Location = LOCATION.Location
-    AND SALESREC.CtrlNum_=@cCtrlNum_
+      STOCKREC.TotalQty,
+      STOCKREC.Amount__,
+      STOCKREC.NoOfItem,
+      STOCKREC.Remarks_,
+      STOCKREC.Encoder_,
+      STOCKREC.WhseFrom,
+      STOCKREC.WhseTo__,
+      STOCKREC.Printed_,
+      STOCKREC.Prepared,
+      STOCKREC.Disabled,
+      STOCKREC.Log_Date
+    FROM STOCKREC, LOCATION
+    WHERE STOCKREC.WhseFrom = LOCATION.Location
+    AND STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled };
+  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -114,28 +116,28 @@ const editSalesHeader = async (req, res) => {
     }
     
   } catch (err) {
-    console.error('Update SALESREC error:', err);
-    res.status(500).json({ error: 'Error updating SALESREC' });
+    console.error('Update STOCKREC error:', err);
+    res.status(500).json({ error: 'Error updating STOCKREC' });
   }
 }
 
 
-const addSalesHeader = async (req, res) => {
-  const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
-    dLog_Date, nNoOfItem, cCustName, cSuffixId } = req.body;
+const addStockHeader = async (req, res) => {
+  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+    dLog_Date, nNoOfItem, cPrepared, cSuffixId } = req.body;
 
-  if (!cLocation || !dDateFrom || !cEncoder_) {
+  if (!cWhseFrom || !dDate____ || !cEncoder_) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   const cSql = `
-    -- Insert the new record into SALESREC and get the generated AutIncId
-    INSERT INTO SALESREC
-      (CtrlNum_, Location, DateFrom, DateTo__, Remarks_, Encoder_, 
-      Log_Date, NoOfItem, CustName)
+    -- Insert the new record into STOCKREC and get the generated AutIncId
+    INSERT INTO STOCKREC
+      (CtrlNum_, WhseFrom, WhseTo__, Date____, Remarks_, Encoder_,
+    Log_Date, NoOfItem, Prepared)
     VALUES
-      (@cCtrlNum_, @cLocation, @dDateFrom, @dDateFrom, @cRemarks_, 
-      @cEncoder_, @dLog_Date, @nNoOfItem, @cCustName);
+      (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @cDate____, @cRemarks_, @cEncoder_,
+    @dLog_Date, @nNoOfItem, @cPrepared);
 
     -- Get the last inserted AutIncId
     DECLARE @AutIncId INT;
@@ -146,7 +148,7 @@ const addSalesHeader = async (req, res) => {
     SET @CtrlNum_ = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
 
     -- Update the CtrlNum_ field with the new value
-    UPDATE SALESREC
+    UPDATE STOCKREC
     SET CtrlNum_ = @CtrlNum_
     WHERE AutIncId = @AutIncId;
 
@@ -156,8 +158,8 @@ const addSalesHeader = async (req, res) => {
     
     -- Find the latest ReferDoc for the given Location
     SELECT @PrevReferDoc = MAX(ReferDoc)
-    FROM SALESREC
-    WHERE LTRIM(RTRIM(Location)) = LTRIM(RTRIM(@cLocation));
+    FROM STOCKREC
+    WHERE LTRIM(RTRIM(WhseFrom)) = LTRIM(RTRIM(@cWhseFrom));
 
     PRINT 'PrevReferDoc: ' + ISNULL(@PrevReferDoc, 'NULL');
 
@@ -174,34 +176,35 @@ const addSalesHeader = async (req, res) => {
       END
 
     -- Update the ReferDoc field with the new value
-    UPDATE SALESREC
+    UPDATE STOCKREC
     SET ReferDoc = @NewReferDoc
     WHERE AutIncId = @AutIncId;
 
     -- Return the full record
     SELECT
-      SALESREC.CtrlNum_,
-      SALESREC.ReferDoc,
-      SALESREC.DateFrom,
+      STOCKREC.CtrlNum_,
+      STOCKREC.ReferDoc,
+      STOCKREC.DateFrom,
       LOCATION.LocaName,
-      SALESREC.TotalQty,
-      SALESREC.Amount__,
-      SALESREC.NoOfItem,
-      SALESREC.Remarks_,
-      SALESREC.Encoder_,
-      SALESREC.Location,
-      SALESREC.Printed_,
-      SALESREC.CustName,
-      SALESREC.Disabled,
-      SALESREC.Log_Date
-    FROM SALESREC, LOCATION
-    WHERE SALESREC.Location = LOCATION.Location
-    AND SALESREC.AutIncId = @AutIncId
-    ORDER BY LOCATION.LocaName, SALESREC.CtrlNum_, SALESREC.DateFrom
+      STOCKREC.TotalQty,
+      STOCKREC.Amount__,
+      STOCKREC.NoOfItem,
+      STOCKREC.Remarks_,
+      STOCKREC.Encoder_,
+      STOCKREC.WhseFrom,
+      STOCKREC.WhseTo__,
+      STOCKREC.Printed_,
+      STOCKREC.Prepared,
+      STOCKREC.Disabled,
+      STOCKREC.Log_Date
+    FROM STOCKREC, LOCATION
+    WHERE STOCKREC.WhseFrom = LOCATION.Location
+    AND STOCKREC.AutIncId = @AutIncId
+    ORDER BY LOCATION.LocaName, STOCKREC.CtrlNum_, STOCKREC.Date____
   `;
 
-  const params = { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
-    dLog_Date, nNoOfItem, cCustName, cSuffixId };
+  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+    dLog_Date, nNoOfItem, cPrepared, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -213,40 +216,41 @@ const addSalesHeader = async (req, res) => {
     }
     
   } catch (err) {
-    console.error('Insert SALESREC error:', err);
-    res.status(500).json({ error: 'Error inserting SALESREC' });
+    console.error('Insert STOCKREC error:', err);
+    res.status(500).json({ error: 'Error inserting STOCKREC' });
   }
 
 }
 
 // SELECT TOP 1 @PrevReferDoc = ReferDoc
-// FROM SALESREC
+// FROM STOCKREC
 // WHERE LTRIM(RTRIM(Location)) = LTRIM(RTRIM(@cLocation))
 // ORDER BY AutIncId DESC;
 
-const SalesRecLst = async (req, res) => {
-  const cLocation = req.query.Location;
+const StockRecLst = async (req, res) => {
+  const cWhseFrom = req.query.WhseFrom;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
   const cReferDoc = req.query.ReferDoc;
 
   let cSql = `SELECT 
-      SALESREC.CtrlNum_,
-      SALESREC.ReferDoc,
-      SALESREC.DateFrom,
+      STOCKREC.CtrlNum_,
+      STOCKREC.ReferDoc,
+      STOCKREC.Date____,
       LOCATION.LocaName,
-      SALESREC.TotalQty,
-      SALESREC.Amount__,
-      SALESREC.NoOfItem,
-      SALESREC.Remarks_,
-      SALESREC.Encoder_,
-      SALESREC.Location,
-      SALESREC.Printed_,
-      SALESREC.CustName,
-      SALESREC.Disabled,
-      SALESREC.Log_Date
-    FROM SALESREC, LOCATION
-    WHERE SALESREC.Location = LOCATION.Location
+      STOCKREC.TotalQty,
+      STOCKREC.Amount__,
+      STOCKREC.NoOfItem,
+      STOCKREC.Remarks_,
+      STOCKREC.Encoder_,
+      STOCKREC.WhseFrom,
+      STOCKREC.WhseTo__,
+      STOCKREC.Printed_,
+      STOCKREC.Prepared,
+      STOCKREC.Disabled,
+      STOCKREC.Log_Date
+    FROM STOCKREC, LOCATION
+    WHERE STOCKREC.WhseFrom = LOCATION.Location
     AND 1=1
   `
 
@@ -254,20 +258,20 @@ const SalesRecLst = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
-  if (cLocation) {
-    cSql += " AND SALESREC.Location LIKE @cLocation";
-    params.cLocation = `%${cLocation}%`;
+  if (cWhseFrom) {
+    cSql += " AND STOCKREC.WhseFrom LIKE @cWhseFrom";
+    params.cWhseFrom = `%${cWhseFrom}%`;
   }
   if (dDateFrom) {
-    cSql += " AND SALESREC.DateFrom >= @dDateFrom";
+    cSql += " AND STOCKREC.Date____ >= @dDateFrom";
     params.dDateFrom = `${dDateFrom}`;
   }
   if (dDateTo__) {
-    cSql += " AND SALESREC.DateFrom <= @dDateTo__";
+    cSql += " AND STOCKREC.Date____ <= @dDateTo__";
     params.dDateTo__ = `${dDateTo__}`;
   }
   if (cReferDoc) {
-    cSql += " AND SALESREC.ReferDoc LIKE @cReferDoc";
+    cSql += " AND STOCKREC.ReferDoc LIKE @cReferDoc";
     params.cReferDoc = `%${cReferDoc}%`;
   }
   cSql += ` ORDER BY 1 `;
@@ -285,24 +289,22 @@ const SalesRecLst = async (req, res) => {
   }
 };
 
-const SalesDtlLst = async (req, res) => {
+const StockDtlLst = async (req, res) => {
   const cCtrlNum_ = req.query.CtrlNum_;
 
   let cSql = `SELECT 
-        SALESDTL.RecordId,
-        SALESDTL.CtrlNum_,
-        SALESDTL.ItemCode,
+        STOCKDTL.RecordId,
+        STOCKDTL.CtrlNum_,
+        STOCKDTL.ItemCode,
         ITEMLIST.UsersCde,
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
-        SALESDTL.Quantity,
-        SALESDTL.ItemPrce,
-        SALESDTL.DiscRate,
-        SALESDTL.Amount__,
-        SALESDTL.LandCost
-        FROM SALESREC, SALESDTL, ITEMLIST
-        WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
-        AND SALESDTL.ItemCode = ITEMLIST.ItemCode
+        STOCKDTL.Quantity,
+        STOCKDTL.Amount__,
+        STOCKDTL.LandCost
+        FROM STOCKREC, STOCKDTL, ITEMLIST
+        WHERE STOCKREC.CtrlNum_ = STOCKDTL.CtrlNum_
+        AND STOCKDTL.ItemCode = ITEMLIST.ItemCode
         AND 1=1
         `
 
@@ -311,7 +313,7 @@ const SalesDtlLst = async (req, res) => {
 
   // Additional filters based on query parameters
   if (cCtrlNum_) {
-    cSql += " AND SALESREC.CtrlNum_ LIKE @cCtrlNum_";
+    cSql += " AND STOCKREC.CtrlNum_ LIKE @cCtrlNum_";
     params.cCtrlNum_ = `%${cCtrlNum_}%`;
   }
   
@@ -331,9 +333,9 @@ const SalesDtlLst = async (req, res) => {
 };
 
 
-const addSalesDetail = async (req, res) => {
-  const { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-      nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
+const addStockDetail = async (req, res) => {
+  const { cCtrlNum_, cItemCode,dDate____,
+    nQuantity,nAmount__,nLandCost } = req.body;
 
   if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -343,7 +345,7 @@ const addSalesDetail = async (req, res) => {
   const checkTypeSql = `
       SELECT DATA_TYPE 
       FROM INFORMATION_SCHEMA.COLUMNS 
-      WHERE TABLE_NAME = 'SALESDTL' AND COLUMN_NAME = 'RecordId';
+      WHERE TABLE_NAME = 'STOCKDTL' AND COLUMN_NAME = 'RecordId';
   `;
 
   try {
@@ -351,12 +353,10 @@ const addSalesDetail = async (req, res) => {
       const dataType = typeResult[0]?.DATA_TYPE;
 
       const sqlInsert = `
-          INSERT INTO SALESDTL
-            (CtrlNum_, ItemCode, Date____, TimeSale, 
-            Quantity, ItemPrce, DiscRate, Amount__, LandCost)
+          INSERT INTO STOCKDTL
+            (CtrlNum_, ItemCode, Date____, Quantity, Amount__, LandCost)
           VALUES
-            (@cCtrlNum_, @cItemCode, @dDate____, @cTimeSale, 
-            @nQuantity, @nItemPrce, @nDiscRate, @nAmount__, @nLandCost);
+            (@cCtrlNum_, @cItemCode, @dDate____, @nQuantity,  @nAmount__, @nLandCost);
       `;
 
       let sqlRecordId = '';
@@ -373,7 +373,7 @@ const addSalesDetail = async (req, res) => {
               DECLARE @RecordId VARCHAR(12);
               SET @RecordId = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
 
-              UPDATE SALESDTL
+              UPDATE STOCKDTL
               SET RecordId = @RecordId
               WHERE AutIncId = @AutIncId;
           `;
@@ -381,26 +381,23 @@ const addSalesDetail = async (req, res) => {
 
       const fullRecordSet = `
           SELECT 
-              SALESDTL.RecordId,
-              SALESDTL.CtrlNum_,
-              SALESDTL.ItemCode,
+              STOCKDTL.RecordId,
+              STOCKDTL.CtrlNum_,
+              STOCKDTL.ItemCode,
               ITEMLIST.UsersCde,
               ITEMLIST.OtherCde,
               ITEMLIST.Descript,
-              SALESDTL.Quantity,
-              SALESDTL.ItemPrce,
-              SALESDTL.DiscRate,
-              SALESDTL.Amount__,
-              SALESDTL.LandCost
-          FROM SALESDTL
-          JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
-          WHERE SALESDTL.RecordId = @RecordId;
+              STOCKDTL.Quantity,
+              STOCKDTL.Amount__,
+              STOCKDTL.LandCost
+          FROM STOCKDTL
+          JOIN ITEMLIST ON STOCKDTL.ItemCode = ITEMLIST.ItemCode
+          WHERE STOCKDTL.RecordId = @RecordId;
       `;
 
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
-      const params = { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-        nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+      const params = { cCtrlNum_, cItemCode, dDate____, nQuantity, nItemPrce, nLandCost };
 
       const result = await queryDatabase(cSql, params);
 
@@ -411,26 +408,22 @@ const addSalesDetail = async (req, res) => {
       }
       
   } catch (err) {
-      console.error('Insert SALESDTL error:', err);
-      return res.status(500).json({ error: 'Error inserting SALESDTL' });
+      console.error('Insert STOCKDTL error:', err);
+      return res.status(500).json({ error: 'Error inserting STOCKDTL' });
   }
 };
 
-const editSalesDetail = async (req, res) => {
-  const {cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
+const editStockDetail = async (req, res) => {
+  const {cRecordId, cItemCode, nQuantity, nAmount__, nLandCost } = req.body;
   
-  // console.log(cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__,nLandCost);
-
   if ( !cRecordId || !cItemCode || !nQuantity ) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   const cSql = `
-    UPDATE SALESDTL SET
+    UPDATE STOCKDTL SET
       ItemCode=@cItemCode, 
       Quantity=@nQuantity, 
-      ItemPrce=@nItemPrce, 
-      DiscRate=@nDiscRate, 
       Amount__=@nAmount__, 
       LandCost=@nLandCost
     WHERE RecordId=@cRecordId
@@ -440,23 +433,21 @@ const editSalesDetail = async (req, res) => {
 
     -- Return the full record
     SELECT 
-        SALESDTL.RecordId,
-        SALESDTL.CtrlNum_,
-        SALESDTL.ItemCode,
+        STOCKDTL.RecordId,
+        STOCKDTL.CtrlNum_,
+        STOCKDTL.ItemCode,
         ITEMLIST.UsersCde,
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
-        SALESDTL.Quantity,
-        SALESDTL.ItemPrce,
-        SALESDTL.DiscRate,
-        SALESDTL.Amount__,
-        SALESDTL.LandCost
-        FROM SALESDTL, ITEMLIST
-        WHERE SALESDTL.ItemCode = ITEMLIST.ItemCode
-        AND SALESDTL.RecordId = @cRecordId
+        STOCKDTL.Quantity,
+        STOCKDTL.Amount__,
+        STOCKDTL.LandCost
+        FROM STOCKDTL, ITEMLIST
+        WHERE STOCKDTL.ItemCode = ITEMLIST.ItemCode
+        AND STOCKDTL.RecordId = @cRecordId
   `;
 
-  const params = { cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+  const params = { cRecordId, cItemCode, nQuantity, nAmount__, nLandCost };
   // console.log(params)
 
   try {
@@ -469,32 +460,32 @@ const editSalesDetail = async (req, res) => {
     }
     
   } catch (err) {
-      console.error('Update SALESDTL error:', err);
-      res.status(500).json({ error: 'Error updating SALESDTL' });
+      console.error('Update STOCKDTL error:', err);
+      res.status(500).json({ error: 'Error updating STOCKDTL' });
   }
 
 }
 
-const deleteSalesDetail = async (req, res) => {
+const deleteStockDetail = async (req, res) => {
   const { id } = req.params;  // Read id from URL params
 
   if (!id) {
     return res.status(400).json({ error: 'Missing required parameter: id' });
   }
 
-  cSql = `DELETE FROM SALESDTL WHERE RecordId=@id`;
+  cSql = `DELETE FROM STOCKDTL WHERE RecordId=@id`;
   const params = { id };
 
   try {
     const deleteResult = await queryDatabase(cSql, params);
-    return res.json({ message: 'SalesDtl deleted successfully', rowsAffected: deleteResult });
+    return res.json({ message: 'StockDtl deleted successfully', rowsAffected: deleteResult });
   } catch (err) {
-    console.error('Delete SALESDTL error:', err);
+    console.error('Delete STOCKDTL error:', err);
     return res.status(500).json({ error: 'Error deleting SalesDtl' });
   }
 
 };
 
 
-module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader, 
-  addSalesDetail, editSalesDetail, updateSalesTotals, deleteSalesDetail };
+module.exports = { StockRecLst, StockDtlLst, addStockHeader, editStockHeader, 
+  addStockDetail, editStockDetail, updateStockTotals, deleteStockDetail };

@@ -1,6 +1,6 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
-const updateSalesTotals = async (req, res) => {
+const updateStockTotals = async (req, res) => {
   const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;
   
   // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
@@ -60,7 +60,7 @@ const updateSalesTotals = async (req, res) => {
 
 }
 
-const editSalesHeader = async (req, res) => {
+const editStockHeader = async (req, res) => {
   const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled } = req.body;
 
   if (!cLocation || !dDateFrom || !cCtrlNum_) {
@@ -120,7 +120,7 @@ const editSalesHeader = async (req, res) => {
 }
 
 
-const addSalesHeader = async (req, res) => {
+const addStockHeader = async (req, res) => {
   const { cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_, 
     dLog_Date, nNoOfItem, cCustName, cSuffixId } = req.body;
 
@@ -220,11 +220,11 @@ const addSalesHeader = async (req, res) => {
 }
 
 // SELECT TOP 1 @PrevReferDoc = ReferDoc
-// FROM SALESREC
+// FROM STOCKREC
 // WHERE LTRIM(RTRIM(Location)) = LTRIM(RTRIM(@cLocation))
 // ORDER BY AutIncId DESC;
 
-const SalesRecLst = async (req, res) => {
+const StockRecLst = async (req, res) => {
   const cLocation = req.query.Location;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
@@ -285,7 +285,7 @@ const SalesRecLst = async (req, res) => {
   }
 };
 
-const SalesDtlLst = async (req, res) => {
+const StockDtlLst = async (req, res) => {
   const cCtrlNum_ = req.query.CtrlNum_;
 
   let cSql = `SELECT 
@@ -331,7 +331,7 @@ const SalesDtlLst = async (req, res) => {
 };
 
 
-const addSalesDetail = async (req, res) => {
+const addStockDetail = async (req, res) => {
   const { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
       nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
 
@@ -416,7 +416,7 @@ const addSalesDetail = async (req, res) => {
   }
 };
 
-const editSalesDetail = async (req, res) => {
+const editStockDetail = async (req, res) => {
   const {cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
   
   // console.log(cRecordId, cItemCode, nQuantity, nItemPrce, nDiscRate, nAmount__,nLandCost);
@@ -475,7 +475,7 @@ const editSalesDetail = async (req, res) => {
 
 }
 
-const deleteSalesDetail = async (req, res) => {
+const deleteStockDetail = async (req, res) => {
   const { id } = req.params;  // Read id from URL params
 
   if (!id) {
@@ -496,5 +496,5 @@ const deleteSalesDetail = async (req, res) => {
 };
 
 
-module.exports = { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader, 
-  addSalesDetail, editSalesDetail, updateSalesTotals, deleteSalesDetail };
+module.exports = { StockRecLst, StockDtlLst, addStockHeader, editStockHeader, 
+  addStockDetail, editStockDetail, updateStockTotals, deleteStockDetail };

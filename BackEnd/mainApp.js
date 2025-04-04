@@ -13,13 +13,15 @@ app.use(cors());
 app.use(express.json());
 
 const productRouter = require('./Routers/productRouter');  
-const salesRouter = require('./Routers/salesRouter');      
 const lookupRouter = require('./Routers/lookupRouter');      
+const salesRouter = require('./Routers/salesRouter');      
+const stockRouter = require('./Routers/stockRouter');      
 
 // Use the different routers
 app.use('/product', productRouter);
-app.use('/sales', salesRouter);  
 app.use('/lookup', lookupRouter);
+app.use('/sales', salesRouter);  
+app.use('/transfers', stockRouter);  
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

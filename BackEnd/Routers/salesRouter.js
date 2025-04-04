@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { SalesRankStore, SalesRankBrand } = require('../Controllers/salesController');
+const { SalesRankStore, SalesRankBrand } = require('../Controllers/salesReport');
 const { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader,
     addSalesDetail, editSalesDetail, deleteSalesDetail, updateSalesTotals } = require('../Controllers/salesInput');
 

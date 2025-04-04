@@ -207,7 +207,7 @@ const checkUsersCde = async (req, res) => {
   const cUsersCde = req.query.UsersCde;  
 
   let cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
-    ItemPrce, LandCost FROM ITEMLIST WHERE UsersCde LIKE @cUsersCde`;
+    ItemPrce, LandCost FROM ITEMLIST WHERE UsersCde LIKE @cUsersCde ORDER BY 1`;
   const params = { cUsersCde: `%${cUsersCde}%` };  
   
   let result = '';
@@ -221,7 +221,7 @@ const checkUsersCde = async (req, res) => {
     } else {
       // No results found, try searching with OtherCde
       cSql = `SELECT UsersCde, OtherCde, Descript, ItemCode,
-        ItemPrce, LandCost FROM ITEMLIST WHERE OtherCde LIKE @cUsersCde`;
+        ItemPrce, LandCost FROM ITEMLIST WHERE OtherCde LIKE @cUsersCde ORDER BY 1`;
       result = await queryDatabase(cSql, params);
       
       if (result && result.length > 0) {
