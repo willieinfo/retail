@@ -1,5 +1,5 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, pickItem,
-    MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, validateField, highlightRow, loadImageToBase64} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 let globalData = [];    // Define a global array
@@ -971,31 +971,31 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
     }
 }
 
-const img = new Image();
-img.src = '/images/regent.png'; 
-let base64Image=null
-img.onload = function () {
-    // Create a canvas to convert the image to base64
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+// const img = new Image();
+// img.src = '/images/regent.png'; 
+// let base64Image=null
+// img.onload = function () {
+//     // Create a canvas to convert the image to base64
+//     const canvas = document.createElement('canvas');
+//     const ctx = canvas.getContext('2d');
 
-    // Set canvas size to the image's size
-    canvas.width = img.width;
-    canvas.height = img.height;
+//     // Set canvas size to the image's size
+//     canvas.width = img.width;
+//     canvas.height = img.height;
 
-    // Draw the image onto the canvas
-    ctx.drawImage(img, 0, 0);
+//     // Draw the image onto the canvas
+//     ctx.drawImage(img, 0, 0);
 
-    // Convert the canvas to base64 string
-    base64Image = canvas.toDataURL('image/png');
+//     // Convert the canvas to base64 string
+//     base64Image = canvas.toDataURL('image/png');
 
-    // if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
-    //     console.log(base64Image)
-    // } else {
-    //     console.error('Failed to generate or invalid base64 image:');
-    // }
+//     // if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
+//     //     console.log(base64Image)
+//     // } else {
+//     //     console.error('Failed to generate or invalid base64 image:');
+//     // }
 
-};
+// };
 
 
 document.getElementById('printSalesInvoice').addEventListener('click', async () => {
@@ -1031,7 +1031,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     ];        
 
     printToPDF(headerData, itemsDtl, itemFields ,colWidths, 
-        columns, fieldTypes, base64Image, ['letter','portrait'])
+        columns, fieldTypes, window.base64Image, ['letter','portrait'])
 });
 
 function printToPDF(headerData, detailData, itemFields, colWidths, 

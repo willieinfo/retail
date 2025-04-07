@@ -1,4 +1,4 @@
-#invoiceForm{
+#invoiceForm, #transfersForm{
     justify-content: center; 
     align-items: center;
     padding: 10px;
@@ -31,6 +31,19 @@
 #invoiceForm select{
     margin: 0px;
     padding: 0px;
+}
+
+/* Stock Transfer */
+#inputStock1{
+    display: grid;
+    column-gap: 30px;
+    grid-template-columns: 80% 20%;
+}
+#inputStock2{
+    display: grid;
+    column-gap: 30px;
+    grid-template-columns: 26% 26% auto auto auto ;
+    
 }
 
 

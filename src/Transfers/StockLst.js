@@ -117,39 +117,41 @@ async function StocForm(index,editMode) {
     reportBody.innerHTML = `
         <div id="transfersForm">
             <div id="inputStock1" class="textDiv">
-                <div>
-                    <label for="WhseFrom">Origin</label>
-                    <select id="WhseFrom"></select>
+                <div class="textDiv">
+                    <div>
+                        <label for="StockRec_WhseFrom">Origin</label>
+                        <select id="StockRec_WhseFrom"></select>
+                    </div>
+                    <div>
+                        <label for="StockRec_WhseTo__">Destination</label>
+                        <select id="StockRec_WhseTo__"></select>
+                    </div>
                 </div>
                 <div>
-                    <label for="WhseTo__">Destination</label>
-                    <select id="WhseTo__"></select>
-                </div>
-                <div>
-                    <label for="ReferDoc">Ref. No</label>
-                    <input type="text" id="ReferDoc" spellcheck="false" readonly>
-                </div>
-                <div>
-                    <label for="Date____">Transfer Date:</label>
-                    <input type="date" id="Date____">
+                    <label for="StockRec_ReferDoc">Ref. No</label>
+                    <input type="text" id="StockRec_ReferDoc" spellcheck="false" readonly>
                 </div>
             </div>
             <div id="inputStock2" class="textDiv">
                 <div>
-                    <label for="Prepared">Transferred By:</label>
-                    <input type="text" id="Prepared" spellcheck="false">
+                    <label for="StockRec_Prepared">Transferred By:</label>
+                    <input type="text" id="StockRec_Prepared" spellcheck="false">
                 </div>
                 <div>
-                    <label for="Remarks_">Remarks</label>
-                    <input type="text" id="Remarks_" spellcheck="false">
+                    <label for="StockRec_Remarks_">Remarks</label>
+                    <input type="text" id="StockRec_Remarks_" spellcheck="false">
                 </div>
                 <div>
-                    <label for="DateRcvd">Date Received:</label>
-                    <input type="date" id="DateRcvd">
+                    <label for="StockRec_Date____">Date Issued:</label>
+                    <input type="date" id="StockRec_Date____">
+                </div>
+                <div>
+                    <label for="StockRec_DateRcvd">Date Received:</label>
+                    <input type="date" id="StockRec_DateRcvd">
                 </div>
                 <div id="chkDiv">
-                    <input type="checkbox" id="Disabled" >
-                    <label for="Disabled">Disabled</label>
+                    <input type="checkbox" id="StockRec_Disabled" >
+                    <label for="StockRec_Disabled">Disabled</label>
                 </div>
             </div>
         </div>
@@ -157,10 +159,11 @@ async function StocForm(index,editMode) {
             <table class="ListItemTable">
                 <thead id="ListItemHead">
                     <tr>
-                        <th>Qty</th>
                         <th>Stock No.</th>
                         <th>Bar Code</th>
                         <th>Item Description</th>
+                        <th>Qty. Out</th>
+                        <th>Qty. In</th>
                         <th>Unit Price</th>
                         <th>Ext. Price</th>
                         <th></th>
@@ -181,14 +184,15 @@ async function StocForm(index,editMode) {
         document.getElementById('loadingIndicator').style.display = 'flex';
 
         const cCtrlNum_=itemData.CtrlNum_
-        document.getElementById('ReferDoc').value=itemData.ReferDoc
-        document.getElementById('Date____').value=formatDate(itemData.Date____,'YYYY-MM-DD')
-        document.getElementById('Remarks_').value=itemData.Remarks_
-        document.getElementById('Prepared').value=itemData.Prepared
-        document.getElementById('Disabled').checked=itemData.Disabled ? true : false
+        document.getElementById('StockRec_ReferDoc').value=itemData.ReferDoc
+        document.getElementById('StockRec_Date____').value=formatDate(itemData.Date____,'YYYY-MM-DD')
+        document.getElementById('StockRec_DateRcvd').value=formatDate(itemData.DateRcvd,'YYYY-MM-DD')
+        document.getElementById('StockRec_Remarks_').value=itemData.Remarks_
+        document.getElementById('StockRec_Prepared').value=itemData.Prepared
+        document.getElementById('StockRec_Disabled').checked=itemData.Disabled ? true : false
 
 
-        const whsefromSelect = document.getElementById('WhseFrom');
+        const whsefromSelect = document.getElementById('StockRec_WhseFrom');
         const whsefromValue = itemData.WhseFrom.trim(); // The value that should be selected
         // Check if the select element has options, then set the selected option
         const option1 = whsefromSelect.options;
@@ -199,7 +203,7 @@ async function StocForm(index,editMode) {
                 break; 
             }
         }
-        const whseto__Select = document.getElementById('WhseTo__');
+        const whseto__Select = document.getElementById('StockRec_WhseTo__');
         const whseto__Value = itemData.WhseTo__.trim(); 
         const option2 = whseto__Select.options;
         for (let i = 0; i < option2.length; i++) {
@@ -236,9 +240,10 @@ async function StocForm(index,editMode) {
     } else {
         // Triggered from +Add button Footer
         const dNew_Date= new Date()
-        document.getElementById('Date____').value=formatDate(dNew_Date,'YYYY-MM-DD')
-        document.getElementById('ReferDoc').value='New Record'
-        document.getElementById('Remarks_').value=''
+        document.getElementById('StockRec_Date____').value=formatDate(dNew_Date,'YYYY-MM-DD')
+        document.getElementById('StockRec_DateRcvd').value=formatDate(dNew_Date,'YYYY-MM-DD')
+        document.getElementById('StockRec_ReferDoc').value='New Record'
+        document.getElementById('StockRec_Remarks_').value=''
         itemsDtl = []; 
         updateItemTable();
         
@@ -248,27 +253,28 @@ async function StocForm(index,editMode) {
 
 document.getElementById('saveStockRecBtn').addEventListener('click', () => {
     const stockDtlCounter=document.getElementById('stockDtlCounter').innerText
-    const cWhseFrom=document.getElementById('WhseFrom').value
-    const cWhseTo__=document.getElementById('WhseTo__').value
-    const cRemarks_=document.getElementById('Remarks_').value
-    const dDate____=document.getElementById('Date____').value
-    const cPrepared=document.getElementById('Prepared').value
-    const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
+    const cWhseFrom=document.getElementById('StockRec_WhseFrom').value
+    const cWhseTo__=document.getElementById('StockRec_WhseTo__').value
+    const cRemarks_=document.getElementById('StockRec_Remarks_').value
+    const dDate____=document.getElementById('StockRec_Date____').value
+    const dDateRcvd=document.getElementById('StockRec_DateRcvd').value
+    const cPrepared=document.getElementById('StockRec_Prepared').value
+    const lDisabled=document.getElementById('StockRec_Disabled').checked ? 1 : 0 
 
     if (!cWhseFrom) {
-        document.getElementById('WhseFrom').focus();
-        document.getElementById('WhseFrom').classList.add('invalid');  // Add a class to highlight
+        document.getElementById('StockRec_WhseFrom').focus();
+        document.getElementById('StockRec_WhseFrom').classList.add('invalid');  // Add a class to highlight
         return ;
     }
     if (!cWhseTo__) {
-        document.getElementById('WhseTo__').focus();
-        document.getElementById('WhseTo__').classList.add('invalid');  // Add a class to highlight
+        document.getElementById('StockRec_WhseTo__').focus();
+        document.getElementById('StockRec_WhseTo__').classList.add('invalid');  // Add a class to highlight
         return ;
     }
 
     if (stockDtlCounter) {
 
-        editStockRec(currentRec.CtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled)
+        editStockRec(currentRec.CtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled)
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
@@ -277,10 +283,10 @@ document.getElementById('saveStockRecBtn').addEventListener('click', () => {
         const dLog_Date=new Date()
         const nNoOfItem=0
         
-        if (addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+        if (addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
             dLog_Date, nNoOfItem, cPrepared, cSuffixId)) {
             document.getElementById("addStockDtl").disabled = false;
-            document.getElementById("ScanCode").disabled = false;
+            document.getElementById("StockRec_ScanCode").disabled = false;
     
         }
     }
@@ -291,9 +297,9 @@ document.getElementById('cancelStockRecBtn').addEventListener('click', () => {
     showReport('StockLst')  
 });
 
-async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled) {
+async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled) {
 
-    lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+    lDisabled = document.getElementById("StockRec_Disabled").checked ? '1' : '0';
 
     try {
         const response = await fetch('http://localhost:3000/transfers/editStockHeader', {
@@ -306,6 +312,7 @@ async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks
                 cWhseFrom: cWhseFrom, 
                 cWhseTo__: cWhseTo__, 
                 dDate____: dDate____,
+                dDateRcvd: dDateRcvd,
                 cRemarks_: cRemarks_,
                 cPrepared: cPrepared,
                 lDisabled: lDisabled
@@ -330,7 +337,7 @@ async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks
 }
 
 
-async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
     dLog_Date, nNoOfItem, cPrepared, cSuffixId) {
 
     try {
@@ -344,6 +351,7 @@ async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_
                 cWhseFrom: cWhseFrom, 
                 cWhseTo__: cWhseTo__, 
                 dDate____: dDate____,
+                dDateRcvd: dDateRcvd,
                 cRemarks_: cRemarks_,
                 cEncoder_: cEncoder_,
                 dLog_Date: dLog_Date,
@@ -365,7 +373,7 @@ async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_
             updateTable();         
             // console.log(updatedItem)
             currentRec=updatedItem
-            document.getElementById("ReferDoc").value = updatedItem.ReferDoc
+            document.getElementById("StockRec_ReferDoc").value = updatedItem.ReferDoc
 
 
             // Scroll to the last row after updating the table
@@ -393,20 +401,23 @@ async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_
 
 function updateItemTable(refreshOnly=false) {
     let nTotalQty = 0;
+    let nTotalRcv = 0;
     let nTotalAmt = 0;
 
-    const ListSaleItem=document.getElementById('ListSaleItem')
+    const ListStocItem=document.getElementById('ListStocItem')
     // Map through itemsDtl and build rows while accumulating totals
     const listTable = itemsDtl.map((item, index) => {
         // Accumulate totals inside the map
         nTotalQty += item.Quantity || 0;
+        nTotalRcv += item.QtyRecvd || 0;
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
-            <tr data-index="${index}" style="${item.Quantity < 0 ? 'color: red;' : ''}">
-                <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
+            <tr data-index="${index}">
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
+                <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
+                <td style="text-align: center">${item.QtyRecvd.toFixed(0) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
                 <td class="action-icons">
@@ -421,17 +432,18 @@ function updateItemTable(refreshOnly=false) {
     const listFooter=`
             <tfoot id="ListItemFoot">
                 <tr style="font-weight: bold;">
-                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td style="text-align: right">Totals: </td>
+                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                    <td style="text-align: center">${nTotalRcv.toFixed(0) || 'N/A'}</td>
+                    <td></td>
                     <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
                 </tr>
             </tfoot>
 `
 
-    ListSaleItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
+    ListStocItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
 
     document.getElementById('ListStocItem').addEventListener('click', async (event) => {
         const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
@@ -516,31 +528,35 @@ function StockDtl(index,editMode) {
             <div class="subTextDiv" id="inputDetails">
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="UsersCde">Stock No</label>
-                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
+                        <label for="StockRec_UsersCde">Stock No</label>
+                        <input type="text" id="StockRec_UsersCde" name="UsersCde" spellcheck="false" 
                             placeholder="Type Stock No. or Bar Code here to search"
                             autocomplete = "off">
                     </div>
                     <div class="subTextDiv">
-                        <label for="OtherCde">Bar Code</label>
-                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false" readonly>
+                        <label for="StockRec_OtherCde">Bar Code</label>
+                        <input type="text" id="StockRec_OtherCde" name="OtherCde" spellcheck="false" readonly>
                     </div>
                 </div>
 
                 <div id="inputDescript" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
-                        <label for="Descript">Item Description</label>
-                        <input type="text" id="Descript" name="Descript" readonly>
+                        <label for="StockRec_Descript">Item Description</label>
+                        <input type="text" id="StockRec_Descript" name="Descript" readonly>
                     </div>
                 </div>
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="Quantity">Quantity</label>
-                        <input type="number" id="Quantity" name="Quantity">
+                        <label for="StockRec_Quantity">Qty. Out</label>
+                        <input type="number" id="StockRec_Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="Amount__">Net Amount</label>
-                        <input type="number" id="Amount__" name="Amount__">
+                        <label for="StockRec_QtyRecvd">Qty. In</label>
+                        <input type="number" id="StockRec_QtyRecvd" name="QtyRecvd">
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="StockRec_Amount__">Net Amount</label>
+                        <input type="number" id="StockRec_Amount__" name="Amount__">
                     </div>
                 </div>
             </div>
@@ -584,35 +600,36 @@ function StockDtl(index,editMode) {
 
 
     if (editMode) {
-        document.getElementById('UsersCde').value=itemData.UsersCde
-        document.getElementById('OtherCde').value=itemData.OtherCde
-        document.getElementById('Descript').value=itemData.Descript
-        document.getElementById('Quantity').value=itemData.Quantity
-        document.getElementById('Amount__').value=itemData.Amount__
-        document.getElementById('Quantity').focus()
+        document.getElementById('StockRec_UsersCde').value=itemData.UsersCde
+        document.getElementById('StockRec_OtherCde').value=itemData.OtherCde
+        document.getElementById('StockRec_Descript').value=itemData.Descript
+        document.getElementById('StockRec_Quantity').value=itemData.Quantity
+        document.getElementById('StockRec_QtyRecvd').value=itemData.QtyRecvd
+        document.getElementById('StockRec_Amount__').value=itemData.Amount__
+        document.getElementById('StockRec_Quantity').focus()
     } else {
-        document.getElementById('UsersCde').value=''
-        document.getElementById('OtherCde').value=''
-        document.getElementById('Descript').value=''
-        document.getElementById('Quantity').value=1
-        document.getElementById('Amount__').value=0.00
-        document.getElementById('UsersCde').focus()
+        document.getElementById('StockRec_UsersCde').value=''
+        document.getElementById('StockRec_OtherCde').value=''
+        document.getElementById('StockRec_Descript').value=''
+        document.getElementById('StockRec_Quantity').value=1
+        document.getElementById('StockRec_QtyRecvd').value=1
+        document.getElementById('StockRec_Amount__').value=0.00
+        document.getElementById('StockRec_UsersCde').focus()
 
     }
-    document.getElementById('Amount__').readonly = true;
-    document.getElementById('OtherCde').readonly = true;
-    document.getElementById('Descript').readonly = true;
-    document.getElementById('Amount__').setAttribute('tabindex', '-1');
-    document.getElementById('OtherCde').setAttribute('tabindex', '-1');
-    document.getElementById('Descript').setAttribute('tabindex', '-1');
+    document.getElementById('StockRec_Amount__').readonly = true;
+    document.getElementById('StockRec_OtherCde').readonly = true;
+    document.getElementById('StockRec_Descript').readonly = true;
+    document.getElementById('StockRec_Amount__').setAttribute('tabindex', '-1');
+    document.getElementById('StockRec_OtherCde').setAttribute('tabindex', '-1');
+    document.getElementById('StockRec_Descript').setAttribute('tabindex', '-1');
 
     // Get the id's of the elements for checkEmptyValue() function before saving
-    const UsersCde=document.getElementById('UsersCde')
-
-    const Quantity=document.getElementById('Quantity')
-    const Amount__=document.getElementById('Amount__')
+    const UsersCde=document.getElementById('StockRec_UsersCde')
+    const Quantity=document.getElementById('StockRec_Quantity')
+    const Amount__=document.getElementById('StockRec_Amount__')
     
-    document.getElementById('UsersCde').addEventListener('input', debounce(() => {
+    document.getElementById('StockRec_UsersCde').addEventListener('input', debounce(() => {
         chkUsersCde(editMode)        
     }, 300));  // 300ms delay (you can adjust the delay as needed)
     
@@ -645,9 +662,8 @@ function StockDtl(index,editMode) {
                 editStockDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
         } else {
             const dDate____=currentRec.DateFrom
-            const cTimeSale=get24HrTime()
-            const nQuantity=document.getElementById('Quantity').value
-            const nAmount__=document.getElementById('Amount__').value
+            const nQuantity=document.getElementById('StockRec_Quantity').value
+            const nAmount__=document.getElementById('StockRec_Amount__').value
 
             addStockDtl(cCtrlNum_,cItemCode,dDate____,nQuantity,nAmount__,nLandCost)
         }
@@ -664,8 +680,9 @@ function StockDtl(index,editMode) {
 async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
-    const nQuantity=document.getElementById('Quantity').value
-    const nAmount__=document.getElementById('Amount__').value
+    const nQuantity=document.getElementById('StockRec_Quantity').value
+    const nQtyRecvd=document.getElementById('StockRec_QtyRecvd').value
+    const nAmount__=document.getElementById('StockRec_Amount__').value
 
     // console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
 
@@ -679,6 +696,7 @@ async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
                 cRecordId: cRecordId,
                 cItemCode: cItemCode,
                 nQuantity: nQuantity,
+                nQtyRecvd: nQtyRecvd,
                 nAmount__: nAmount__,
                 nLandCost: nLandCost
             })
@@ -706,8 +724,7 @@ async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 }
 
 
-async function addStockDtl(cCtrlNum_,cItemCode,dDate____,
-        nQuantity,nAmount__,nLandCost) {
+async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
     
     try {
@@ -719,8 +736,8 @@ async function addStockDtl(cCtrlNum_,cItemCode,dDate____,
             body: JSON.stringify({
                 cCtrlNum_: cCtrlNum_,
                 cItemCode: cItemCode,
-                dDate____: dDate____,
                 nQuantity: nQuantity,
+                nQtyRecvd: nQtyRecvd,
                 nAmount__: nAmount__,
                 nLandCost: nLandCost
             })
@@ -816,10 +833,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addStockRec.addEventListener('click', () => {
         document.getElementById('stockDtlCounter').innerText=''
-        // StocForm();
+        StocForm();
     });
     addStockDtl.addEventListener('click', () => {
-        // StockDtl();
+        StockDtl();
     });
 
     closeStockRec.addEventListener('click', () => {

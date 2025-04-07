@@ -675,3 +675,28 @@ export function pickItem(dataItemList, inputElement) {
         });
     });
 }
+
+
+// imageLoader.js
+window.base64Image = null;
+
+export function loadImageToBase64() {
+    const img = new Image();
+    img.src = '/images/regent.png';  // Path to your logo image
+
+    img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.drawImage(img, 0, 0);
+        
+        window.base64Image = canvas.toDataURL('image/png');
+        console.log("Image loaded and converted to base64.");
+    };
+}
+
+// Load the image when the page loads (or when this script is executed)
+loadImageToBase64();

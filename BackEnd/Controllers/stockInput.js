@@ -25,6 +25,7 @@ const updateStockTotals = async (req, res) => {
       STOCKREC.CtrlNum_,
       STOCKREC.ReferDoc,
       STOCKREC.Date____,
+      STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
       STOCKREC.Amount__,
@@ -61,7 +62,7 @@ const updateStockTotals = async (req, res) => {
 }
 
 const editStockHeader = async (req, res) => {
-  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled } = req.body;
+  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled } = req.body;
 
   if (!cWhseFrom || !dDateFrom || !cCtrlNum_) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -72,6 +73,7 @@ const editStockHeader = async (req, res) => {
       WhseFrom=@cWhseFrom,
       WhseTo__=@cWhseTo__,
       Date____=@dDate____,
+      DateRcvd=@dDateRcvd,
       Remarks_=@cRemarks_,
       Prepared=@cPrepared,
       Disabled=@lDisabled
@@ -87,6 +89,7 @@ const editStockHeader = async (req, res) => {
       STOCKREC.CtrlNum_,
       STOCKREC.ReferDoc,
       STOCKREC.Date____,
+      STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
       STOCKREC.Amount__,
@@ -104,7 +107,7 @@ const editStockHeader = async (req, res) => {
     AND STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cPrepared, lDisabled };
+  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -123,7 +126,7 @@ const editStockHeader = async (req, res) => {
 
 
 const addStockHeader = async (req, res) => {
-  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
     dLog_Date, nNoOfItem, cPrepared, cSuffixId } = req.body;
 
   if (!cWhseFrom || !dDate____ || !cEncoder_) {
@@ -133,10 +136,10 @@ const addStockHeader = async (req, res) => {
   const cSql = `
     -- Insert the new record into STOCKREC and get the generated AutIncId
     INSERT INTO STOCKREC
-      (CtrlNum_, WhseFrom, WhseTo__, Date____, Remarks_, Encoder_,
+      (CtrlNum_, WhseFrom, WhseTo__, Date____, DateRcvd, Remarks_, Encoder_,
     Log_Date, NoOfItem, Prepared)
     VALUES
-      (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @cDate____, @cRemarks_, @cEncoder_,
+      (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @cDate____, @dDateRcvd, @cRemarks_, @cEncoder_,
     @dLog_Date, @nNoOfItem, @cPrepared);
 
     -- Get the last inserted AutIncId
@@ -184,7 +187,8 @@ const addStockHeader = async (req, res) => {
     SELECT
       STOCKREC.CtrlNum_,
       STOCKREC.ReferDoc,
-      STOCKREC.DateFrom,
+      STOCKREC.Date____,
+      STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
       STOCKREC.Amount__,
@@ -203,7 +207,7 @@ const addStockHeader = async (req, res) => {
     ORDER BY LOCATION.LocaName, STOCKREC.CtrlNum_, STOCKREC.Date____
   `;
 
-  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, cRemarks_, cEncoder_,
+  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
     dLog_Date, nNoOfItem, cPrepared, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
@@ -237,6 +241,7 @@ const StockRecLst = async (req, res) => {
       STOCKREC.CtrlNum_,
       STOCKREC.ReferDoc,
       STOCKREC.Date____,
+      STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
       STOCKREC.Amount__,
@@ -300,6 +305,7 @@ const StockDtlLst = async (req, res) => {
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
         STOCKDTL.Quantity,
+        STOCKDTL.QtyRecvd,
         STOCKDTL.Amount__,
         STOCKDTL.LandCost
         FROM STOCKREC, STOCKDTL, ITEMLIST
@@ -334,10 +340,9 @@ const StockDtlLst = async (req, res) => {
 
 
 const addStockDetail = async (req, res) => {
-  const { cCtrlNum_, cItemCode,dDate____,
-    nQuantity,nAmount__,nLandCost } = req.body;
-
-  if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity) {
+  const { cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost } = req.body;
+  
+  if (!cCtrlNum_ || !cItemCode || !nQuantity) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
 
@@ -354,9 +359,9 @@ const addStockDetail = async (req, res) => {
 
       const sqlInsert = `
           INSERT INTO STOCKDTL
-            (CtrlNum_, ItemCode, Date____, Quantity, Amount__, LandCost)
+            (CtrlNum_, ItemCode, Quantity, QtyRecvd, Amount__, LandCost)
           VALUES
-            (@cCtrlNum_, @cItemCode, @dDate____, @nQuantity,  @nAmount__, @nLandCost);
+            (@cCtrlNum_, @cItemCode, @nQuantity, @nQtyRecvd,  @nAmount__, @nLandCost);
       `;
 
       let sqlRecordId = '';
@@ -388,6 +393,7 @@ const addStockDetail = async (req, res) => {
               ITEMLIST.OtherCde,
               ITEMLIST.Descript,
               STOCKDTL.Quantity,
+              STOCKDTL.QtyRecvd,
               STOCKDTL.Amount__,
               STOCKDTL.LandCost
           FROM STOCKDTL
@@ -397,7 +403,7 @@ const addStockDetail = async (req, res) => {
 
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
-      const params = { cCtrlNum_, cItemCode, dDate____, nQuantity, nItemPrce, nLandCost };
+      const params = { cCtrlNum_, cItemCode, dDate____, nQuantity, nQtyRecvd, nAmount__, nLandCost };
 
       const result = await queryDatabase(cSql, params);
 
@@ -414,7 +420,7 @@ const addStockDetail = async (req, res) => {
 };
 
 const editStockDetail = async (req, res) => {
-  const {cRecordId, cItemCode, nQuantity, nAmount__, nLandCost } = req.body;
+  const {cRecordId, cItemCode, nQuantity, nQtyRecvd, nAmount__, nLandCost } = req.body;
   
   if ( !cRecordId || !cItemCode || !nQuantity ) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -424,6 +430,7 @@ const editStockDetail = async (req, res) => {
     UPDATE STOCKDTL SET
       ItemCode=@cItemCode, 
       Quantity=@nQuantity, 
+      QtyRecvd=@nQtyRecvd, 
       Amount__=@nAmount__, 
       LandCost=@nLandCost
     WHERE RecordId=@cRecordId
@@ -440,6 +447,7 @@ const editStockDetail = async (req, res) => {
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
         STOCKDTL.Quantity,
+        STOCKDTL.QtyRecvd,
         STOCKDTL.Amount__,
         STOCKDTL.LandCost
         FROM STOCKDTL, ITEMLIST
@@ -447,7 +455,7 @@ const editStockDetail = async (req, res) => {
         AND STOCKDTL.RecordId = @cRecordId
   `;
 
-  const params = { cRecordId, cItemCode, nQuantity, nAmount__, nLandCost };
+  const params = { cRecordId, cItemCode, nQuantity, nQtyRecvd, nAmount__, nLandCost };
   // console.log(params)
 
   try {

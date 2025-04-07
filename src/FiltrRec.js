@@ -33,7 +33,7 @@ export function FiltrRec(cModules_) {
                     </div>
                 </div>
 
-                <div class="subTextDiv" id="inputDetails">
+                <div id="inputDetails" class="subTextDiv">
                     <div class="textDiv">
                         <div class="subTextDiv">
                             <label for="UsersCde">Stock No</label>
@@ -133,7 +133,7 @@ export function FiltrRec(cModules_) {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
-            await populateLocation('', '', 'SellArea');
+            await populateLocation('', '', 'StocArea');
         }
 
         // Show the form by changing its display style
