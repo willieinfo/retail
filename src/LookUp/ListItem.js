@@ -175,75 +175,75 @@ async function ItemForm(index, editMode) {
             <br>
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="UsersCde">Stock No</label>
-                    <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" required>
+                    <label for="ItemList_UsersCde">Stock No</label>
+                    <input type="text" id="ItemList_UsersCde" name="UsersCde" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="OtherCde">Bar Code</label>
-                    <input type="text" id="OtherCde" name="OtherCde" spellcheck="false" required>
+                    <label for="ItemList_OtherCde">Bar Code</label>
+                    <input type="text" id="ItemList_OtherCde" name="OtherCde" spellcheck="false" required>
                 </div>
             </div>
 
             <div class="textDiv">
                 <div class="subTextDiv" style="width:100%;">
-                    <label for="Descript">Item Description</label>
-                    <input type="text" style="width: 100%" id="Descript" name="Descript" spellcheck="false" required>
+                    <label for="ItemList_Descript">Item Description</label>
+                    <input type="text" style="width: 100%" id="ItemList_Descript" name="Descript" spellcheck="false" required>
                 </div>
             </div>
 
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="BrandNum">Brand</label>
-                    <select id="BrandNum" required></select>
+                    <label for="ItemList_BrandNum">Brand</label>
+                    <select id="ItemList_BrandNum" required></select>
                 </div>
                 <div class="subTextDiv">
-                    <label for="CategNum">Category</label>
-                    <select id="CategNum" required></select>
+                    <label for="ItemList_CategNum">Category</label>
+                    <select id="ItemList_CategNum" required></select>
                 </div>
             </div>
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="ItemDept">Department</label>
-                    <select id="ItemDept" required></select>
+                    <label for="ItemList_ItemDept">Department</label>
+                    <select id="ItemList_ItemDept" required></select>
                 </div>
                 <div class="subTextDiv">
-                    <label for="ItemType">Class</label>
-                    <select id="ItemType" required></select>
+                    <label for="ItemList_ItemType">Class</label>
+                    <select id="ItemList_ItemType" required></select>
                 </div>
                 <div class="subTextDiv">
-                    <label for="SuppNum_">Supplier</label>
-                    <select id="SuppNum_" required></select>
+                    <label for="ItemList_SuppNum_">Supplier</label>
+                    <select id="ItemList_SuppNum_" required></select>
                 </div>
             </div>
 
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="ItemPrce">Item Price</label>
-                    <input type="number" id="ItemPrce" name="ItemPrce">
+                    <label for="ItemList_ItemPrce">Item Price</label>
+                    <input type="number" id="ItemList_ItemPrce" name="ItemPrce">
                 </div>
                 
                 <div class="subTextDiv">
-                    <label for="ItemCost">Item Cost</label>
-                    <input type="number" id="ItemCost" name="ItemCost">
+                    <label for="ItemList_ItemCost">Item Cost</label>
+                    <input type="number" id="ItemList_ItemCost" name="ItemCost">
                 </div>
 
                 <div class="subTextDiv">
-                    <label for="LandCost">Land Cost</label>
-                    <input type="number" id="LandCost" name="LandCost">
+                    <label for="ItemList_LandCost">Land Cost</label>
+                    <input type="number" id="ItemList_LandCost" name="LandCost">
                 </div>
             </div>
             <div class="textDiv">
                 <div id="chkDiv">
-                    <input type="checkbox" id="Outright" >
-                    <label for="Outright">Outright</label>
+                    <input type="checkbox" id="ItemList_Outright" >
+                    <label for="ItemList_Outright">Outright</label>
                 </div>
                 <div id="chkDiv">
-                    <input type="checkbox" id="Services" >
-                    <label for="Services">NCV</label>
+                    <input type="checkbox" id="ItemList_Services" >
+                    <label for="ItemList_Services">NCV</label>
                 </div>
                 <div id="chkDiv">
-                    <input type="checkbox" id="Disabled" >
-                    <label for="Disabled">Disabled</label>
+                    <input type="checkbox" id="ItemList_Disabled" >
+                    <label for="ItemList_Disabled">Disabled</label>
                 </div>
             </div>
 
@@ -272,28 +272,28 @@ async function ItemForm(index, editMode) {
     // Show the form by changing its display style
     itemForm.style.display='flex'
 
-    await populateBrandNum('','');
-    await populateItemDept('','');
-    await populateItemType('','');
-    await populateCategNum('','');
-    await populateSuppNum_('','');
+    await populateBrandNum('','','ItemList');
+    await populateItemDept('','','ItemList');
+    await populateItemType('','','ItemList');
+    await populateCategNum('','','ItemList');
+    await populateSuppNum_('','','ItemList');
 
 
     if (editMode) {
         // If editing an existing record, show its details
-        document.getElementById('UsersCde').value = itemData.UsersCde;
-        document.getElementById('OtherCde').value = itemData.OtherCde;
-        document.getElementById('Descript').value = itemData.Descript;
-        document.getElementById('ItemPrce').value = itemData.ItemPrce;
-        document.getElementById('ItemCost').value = itemData.ItemCost;
-        document.getElementById('LandCost').value = itemData.LandCost;
-        document.getElementById('Outright').checked = itemData.Outright===1 ? true : false;
-        document.getElementById('Disabled').checked = itemData.Disabled ? true : false;
-        document.getElementById('Services').checked = itemData.Services ? true : false;
+        document.getElementById('ItemList_UsersCde').value = itemData.UsersCde;
+        document.getElementById('ItemList_OtherCde').value = itemData.OtherCde;
+        document.getElementById('ItemList_Descript').value = itemData.Descript;
+        document.getElementById('ItemList_ItemPrce').value = itemData.ItemPrce;
+        document.getElementById('ItemList_ItemCost').value = itemData.ItemCost;
+        document.getElementById('ItemList_LandCost').value = itemData.LandCost;
+        document.getElementById('ItemList_Outright').checked = itemData.Outright===1 ? true : false;
+        document.getElementById('ItemList_Disabled').checked = itemData.Disabled ? true : false;
+        document.getElementById('ItemList_Services').checked = itemData.Services ? true : false;
 
         
         // Loop and to find correct option on each select select element
-        const brandNumSelect = document.getElementById('BrandNum');
+        const brandNumSelect = document.getElementById('ItemList_BrandNum');
         const brandNumValue = itemData.BrandNum; // The value that should be selected
          // Check if the select element has options, then set the selected option
         const options1 = brandNumSelect.options;
@@ -304,7 +304,7 @@ async function ItemForm(index, editMode) {
             }
         }
 
-        const categNumSelect = document.getElementById('CategNum');
+        const categNumSelect = document.getElementById('ItemList_CategNum');
         const categNumValue = itemData.CategNum; 
         const options2 = categNumSelect.options;
         for (let i = 0; i < options2.length; i++) {
@@ -314,7 +314,7 @@ async function ItemForm(index, editMode) {
             }
         }
 
-        const itemTypeSelect = document.getElementById('ItemType');
+        const itemTypeSelect = document.getElementById('ItemList_ItemType');
         const itemTypeValue = itemData.ItemType; 
         const options3 = itemTypeSelect.options;
         for (let i = 0; i < options3.length; i++) {
@@ -324,7 +324,7 @@ async function ItemForm(index, editMode) {
             }
         }
 
-        const itemDeptSelect = document.getElementById('ItemDept');
+        const itemDeptSelect = document.getElementById('ItemList_ItemDept');
         const itemDeptValue = itemData.ItemDept; 
         const options4 = itemDeptSelect.options;
         for (let i = 0; i < options4.length; i++) {
@@ -335,7 +335,7 @@ async function ItemForm(index, editMode) {
         }
 
         
-        const suppNum_Select = document.getElementById('SuppNum_');
+        const suppNum_Select = document.getElementById('ItemList_SuppNum_');
         const suppNum_Value = itemData.SuppNum_; 
         const options5 = suppNum_Select.options;
         for (let i = 0; i < options5.length; i++) {
@@ -348,15 +348,15 @@ async function ItemForm(index, editMode) {
 
     } else {
         // If adding new, populate with default empty values
-        document.getElementById('UsersCde').value = '';
-        document.getElementById('OtherCde').value = '';
-        document.getElementById('Descript').value = '';
-        document.getElementById('ItemPrce').value = 0.00;
-        document.getElementById('ItemCost').value = 0.00;
-        document.getElementById('LandCost').value = 0.00;
-        document.getElementById('Outright').checked = true ;
-        document.getElementById('Disabled').checked = false;
-        document.getElementById('Services').checked = false;
+        document.getElementById('ItemList_UsersCde').value = '';
+        document.getElementById('ItemList_OtherCde').value = '';
+        document.getElementById('ItemList_Descript').value = '';
+        document.getElementById('ItemList_ItemPrce').value = 0.00;
+        document.getElementById('ItemList_ItemCost').value = 0.00;
+        document.getElementById('ItemList_LandCost').value = 0.00;
+        document.getElementById('ItemList_Outright').checked = true ;
+        document.getElementById('ItemList_Disabled').checked = false;
+        document.getElementById('ItemList_Services').checked = false;
 
     }        
 
@@ -372,44 +372,44 @@ async function ItemForm(index, editMode) {
         e.preventDefault();
 
         const cItemCode= editMode ? itemData.ItemCode : 'NEW_ITEM';
-        const cUsersCde=document.getElementById('UsersCde').value;
-        const cOtherCde=document.getElementById('OtherCde').value;
-        const cDescript=document.getElementById('Descript').value;
-        const cBrandNum=document.getElementById('BrandNum').value;
-        const cItemType=document.getElementById('ItemType').value;
-        const cItemDept=document.getElementById('ItemDept').value;
-        const cCategNum=document.getElementById('CategNum').value;
-        const cSuppNum_=document.getElementById('SuppNum_').value;
-        const nItemPrce=document.getElementById('ItemPrce').value;
-        const nItemCost=document.getElementById('ItemCost').value;
-        const nLandCost=document.getElementById('LandCost').value;
-        const nOutright=document.getElementById('Outright').checked ? 1 : 0 
-        const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
-        const lServices=document.getElementById('Services').checked ? 1 : 0 
+        const cUsersCde=document.getElementById('ItemList_UsersCde').value;
+        const cOtherCde=document.getElementById('ItemList_OtherCde').value;
+        const cDescript=document.getElementById('ItemList_Descript').value;
+        const cBrandNum=document.getElementById('ItemList_BrandNum').value;
+        const cItemType=document.getElementById('ItemList_ItemType').value;
+        const cItemDept=document.getElementById('ItemList_ItemDept').value;
+        const cCategNum=document.getElementById('ItemList_CategNum').value;
+        const cSuppNum_=document.getElementById('ItemList_SuppNum_').value;
+        const nItemPrce=document.getElementById('ItemList_ItemPrce').value;
+        const nItemCost=document.getElementById('ItemList_ItemCost').value;
+        const nLandCost=document.getElementById('ItemList_LandCost').value;
+        const nOutright=document.getElementById('ItemList_Outright').checked ? 1 : 0 
+        const lDisabled=document.getElementById('ItemList_Disabled').checked ? 1 : 0 
+        const lServices=document.getElementById('ItemList_Services').checked ? 1 : 0 
         
 
         if (!cUsersCde || !cOtherCde) {
             e.preventDefault();
             if (!cUsersCde) {
-                document.getElementById('UsersCde').focus();
-                document.getElementById('UsersCde').classList.add('invalid');  // Add a class to highlight
+                document.getElementById('ItemList_UsersCde').focus();
+                document.getElementById('ItemList_UsersCde').classList.add('invalid');  // Add a class to highlight
             } else if (!cOtherCde) {
-                document.getElementById('OtherCde').focus();
-                document.getElementById('OtherCde').classList.add('invalid');  // Add a class to highlight
+                document.getElementById('ItemList_OtherCde').focus();
+                document.getElementById('ItemList_OtherCde').classList.add('invalid');  // Add a class to highlight
             }
             return;
         }
 
         
         // Check for Empty Values
-        const Descript = document.getElementById('Descript');
-        const BrandNum = document.getElementById('BrandNum');
-        const ItemType = document.getElementById('ItemType');
-        const ItemDept = document.getElementById('ItemDept');
-        const CategNum = document.getElementById('CategNum');
-        const SuppNum_ = document.getElementById('SuppNum_');
-        const ItemPrce = document.getElementById('ItemPrce');
-        const LandCost = document.getElementById('LandCost');
+        const Descript = document.getElementById('ItemList_Descript');
+        const BrandNum = document.getElementById('ItemList_BrandNum');
+        const ItemType = document.getElementById('ItemList_ItemType');
+        const ItemDept = document.getElementById('ItemList_ItemDept');
+        const CategNum = document.getElementById('ItemList_CategNum');
+        const SuppNum_ = document.getElementById('ItemList_SuppNum_');
+        const ItemPrce = document.getElementById('ItemList_ItemPrce');
+        const LandCost = document.getElementById('ItemList_LandCost');
 
         if (!checkEmptyValue(Descript, BrandNum, CategNum, ItemDept, ItemType, SuppNum_, ItemPrce, LandCost)) {
             return;  // If any field is empty, stop here and do not proceed
@@ -426,19 +426,19 @@ async function ItemForm(index, editMode) {
         
         } else {
             //Await the validateField function to ensure it finishes before proceeding
-            const isUsersCdeValid = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde',
+            const isUsersCdeValid = await validateField('ItemList','UsersCde', 'http://localhost:3000/product/checkUsersCde',
                 'Stock No. already exists.', false);
             if (!isUsersCdeValid) {
                 // If validation fails, set focus and return early
-                document.getElementById('UsersCde').focus();
+                document.getElementById('ItemList_UsersCde').focus();
                 return;
             }
 
-            const isOtherCdeValid = await validateField('OtherCde', 'http://localhost:3000/product/checkOtherCde',
+            const isOtherCdeValid = await validateField('ItemList','OtherCde', 'http://localhost:3000/product/checkOtherCde',
                 'Bar Code already exists.', false);
             if (!isOtherCdeValid) {
                 // If validation fails, set focus and return early
-                document.getElementById('OtherCde').focus();
+                document.getElementById('ItemList_OtherCde').focus();
                 return;
             }
     
@@ -461,9 +461,9 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices) {
     try {
-        nOutright = document.getElementById("Outright").checked ? '1' : '2';
-        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
-        lServices = document.getElementById("Services").checked ? '1' : '0';
+        nOutright = document.getElementById("ItemList_Outright").checked ? '1' : '2';
+        lDisabled = document.getElementById("ItemList_Disabled").checked ? '1' : '0';
+        lServices = document.getElementById("ItemList_Services").checked ? '1' : '0';
 
         const response = await fetch('http://localhost:3000/product/editItemList', {
             method: 'PUT',  // Use PUT method
@@ -509,9 +509,9 @@ async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices,cSuffixId) {
     try {
-        nOutright = document.getElementById("Outright").checked ? '1' : '2';
-        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
-        lServices = document.getElementById("Services").checked ? '1' : '0';
+        nOutright = document.getElementById("ItemList_Outright").checked ? '1' : '2';
+        lDisabled = document.getElementById("ItemList_Disabled").checked ? '1' : '0';
+        lServices = document.getElementById("ItemList_Services").checked ? '1' : '0';
 
         const response = await fetch('http://localhost:3000/product/addItemList', {
             method: 'POST',  
@@ -549,7 +549,7 @@ async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
             updateTable();            
             // Scroll to the last row after updating the table
             setTimeout(() => {
-                const tableBody = document.getElementById('ListLocaBody'); 
+                const tableBody = document.getElementById('ListItemBody'); 
                 if (tableBody) {
                     const lastRow = tableBody.lastElementChild; // Get the last row
                     if (lastRow) {

@@ -107,7 +107,7 @@
 .footSegments button:hover{
     opacity: 0.8;
 }
-#ScanCode {
+.ScanCode {
     height: 30px;
     max-width: 300px;
     margin-right: 10px;

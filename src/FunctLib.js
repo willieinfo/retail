@@ -1,3 +1,5 @@
+import { addSalesDtl } from './Sales/SalesLst.js';
+import { addStockDtl } from './Transfers/StockLst.js';
 
 // Function to show the selected report and hide others
 export function showReport(reportType) {
@@ -146,8 +148,8 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
     });
 }
 
-export async function populateBrandNum(cBrandNum, cBrandNme) {
-    const brandSelect = document.getElementById('BrandNum');
+export async function populateBrandNum(cBrandNum, cBrandNme, cModule='FiltrRec') {
+    const brandSelect = document.getElementById(cModule+'_BrandNum');
     brandSelect.innerHTML = '';
 
     const emptyOption = document.createElement('option');
@@ -180,8 +182,8 @@ export async function populateBrandNum(cBrandNum, cBrandNme) {
     }
 }
 
-export async function populateCategNum(cCategNum, cCategNme) {
-    const categnumSelect = document.getElementById('CategNum');
+export async function populateCategNum(cCategNum, cCategNme, cModule='FiltrRec') {
+    const categnumSelect = document.getElementById(cModule+'_CategNum');
     categnumSelect.innerHTML = '';
 
     const emptyOption = document.createElement('option');
@@ -215,8 +217,8 @@ export async function populateCategNum(cCategNum, cCategNme) {
 }
 
 
-export async function populateItemDept(cItemDept, cDescript) {
-    const itemdeptSelect = document.getElementById('ItemDept');
+export async function populateItemDept(cItemDept, cDescript, cModule='FiltrRec') {
+    const itemdeptSelect = document.getElementById(cModule+'_ItemDept');
     itemdeptSelect.innerHTML = '';
 
     const emptyOption = document.createElement('option');
@@ -249,8 +251,8 @@ export async function populateItemDept(cItemDept, cDescript) {
     }
 }
 
-export async function populateItemType(cItemType, cDescript) {
-    const itemtypeSelect = document.getElementById('ItemType');
+export async function populateItemType(cItemType, cDescript, cModule='FiltrRec') {
+    const itemtypeSelect = document.getElementById(cModule+'_ItemType');
     itemtypeSelect.innerHTML = '';
 
     const emptyOption = document.createElement('option');
@@ -283,7 +285,7 @@ export async function populateItemType(cItemType, cDescript) {
     }
 }
 
-export async function populateLocation(cLocation, cLocaName, cSellArea='', cLocat_Id='Location') {
+export async function populateLocation(cLocation, cLocaName, cSellArea='', cLocat_Id='FiltrRec_Location') {
     const locationSelect = document.getElementById(cLocat_Id);
     locationSelect.innerHTML = '';
 
@@ -320,8 +322,8 @@ export async function populateLocation(cLocation, cLocaName, cSellArea='', cLoca
     }
 }
 
-export async function populateSuppNum_(cSuppNum_, cSuppName) {
-    const suppnum_Select = document.getElementById('SuppNum_');
+export async function populateSuppNum_(cSuppNum_, cSuppName, cModule='ItemList') {
+    const suppnum_Select = document.getElementById(cModule+'_SuppNum_');
     suppnum_Select.innerHTML = '';
 
     const emptyOption = document.createElement('option');
@@ -354,8 +356,9 @@ export async function populateSuppNum_(cSuppNum_, cSuppName) {
         console.error('Fetch Supplier error:', error);
     }
 }
-export async function validateField(fieldId, url, alertMessage, editmode=false) {
-    const fieldValue = document.getElementById(fieldId).value;
+
+export async function validateField(cModule, fieldId, url, alertMessage, editmode=false) {
+    const fieldValue = document.getElementById(cModule+'_'+fieldId).value;
     const params = new URLSearchParams();
     
     fieldId = fieldId ==='ScanCode' ? 'UsersCde' : fieldId
@@ -450,113 +453,7 @@ export function highlightRow(targetRow, tableSelector) {
     targetRow.style.fontWeight = 'bold';
 }
 
-// export function pickItem(dataItemList, inputElement) {
-//     return new Promise((resolve) => {
-//         if (!inputElement) return;
-
-//         // Disable autocomplete to prevent suggestions
-//         inputElement.setAttribute('autocomplete', 'off');
-
-//         // Create the pickListDiv and dropdownList dynamically
-//         const pickListDiv = document.createElement('div');
-//         pickListDiv.id = 'pickListDiv';
-//         const dropdownList = document.createElement('ul');
-//         dropdownList.id = 'dropdownList';
-//         const pickListTitle = document.createElement('span');
-//         pickListTitle.innerText = "Click to select item from list";
-//         pickListDiv.appendChild(pickListTitle);
-
-//         // Append the dropdown list to the pick list div
-//         pickListDiv.appendChild(dropdownList);
-//         document.body.appendChild(pickListDiv);  // Add it to the body
-
-//         // Show the pickListDiv and dropdownList
-//         pickListDiv.style.display = 'flex';  // Show the pickListDiv
-//         dropdownList.style.display = 'block';  // Show the dropdown
-
-//         dropdownList.innerHTML = ''; // Clear previous items
-
-//         // Loop through dataItemList and create <li> elements
-//         dataItemList.forEach(item => {
-//             const li = document.createElement('li');
-//             li.textContent = `${item.UsersCde} - ${item.Descript.substring(0, 24)} - P ${formatter.format(item.ItemPrce)}`;
-
-//             // Add click event to each <li> for selection
-//             li.addEventListener('click', () => {
-//                 // Fill the input with the selected item’s information
-//                 inputElement.value = item.UsersCde;  // or any value you want to fill
-
-//                 // Close the dropdown and pick list after selection
-//                 dropdownList.style.display = 'none';
-//                 pickListDiv.style.display = 'none';
-
-//                 // Resolve the promise with the selected item
-//                 resolve(item); // Return the selected item when clicked
-//             });
-
-//             // Append the <li> item to the dropdown list
-//             dropdownList.appendChild(li);
-//         });
-
-//         // Variables to track the highlighted index and the highlighted item
-//         let highlightedIndex = -1;
-//         let highlightedItem = null;  // Store the item being highlighted
-//         const items = dropdownList.querySelectorAll('li');
-
-//         // Function to highlight an item
-//         function highlightItem(index) {
-//             // Remove highlight from all items
-//             items.forEach(item => item.classList.remove('highlight'));
-
-//             // Only highlight if the index is valid
-//             if (index >= 0 && index < items.length) {
-//                 items[index].classList.add('highlight');  // Add highlight to the current item
-//                 highlightedItem = dataItemList[index];  // Update highlighted item
-//             }
-//         }
-
-//         // Handle keydown events for ArrowDown, ArrowUp, and Enter
-//         inputElement.addEventListener('keydown', (e) => {
-//             if (e.key === 'ArrowDown') {
-//                 // Move down in the list
-//                 if (highlightedIndex < items.length - 1) {
-//                     highlightedIndex++;
-//                 }
-//                 highlightItem(highlightedIndex);
-//             } else if (e.key === 'ArrowUp') {
-//                 // Move up in the list
-//                 if (highlightedIndex > 0) {
-//                     highlightedIndex--;
-//                 }
-//                 highlightItem(highlightedIndex);
-//             } else if (e.key === 'Enter') {
-//                 // Select the highlighted item
-//                 if (highlightedItem) {
-//                     inputElement.value = highlightedItem.UsersCde;
-
-//                     // Close the dropdown and pick list after selection
-//                     dropdownList.style.display = 'none';
-//                     pickListDiv.style.display = 'none';
-
-//                     // Resolve the promise with the highlighted item (the single item)
-//                     resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
-//                 }
-//             }
-//         });
-
-//         // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
-//         document.addEventListener('click', (e) => {
-//             if (!pickListDiv.contains(e.target)) {
-//                 dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
-//                 pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
-//             }
-//         });
-//     });
-// }
-
-
-
-export function pickItem(dataItemList, inputElement) {
+export function pickItem_bak(dataItemList, inputElement) {
     return new Promise((resolve) => {
         if (!inputElement) return;
 
@@ -700,3 +597,320 @@ export function loadImageToBase64() {
 
 // Load the image when the page loads (or when this script is executed)
 loadImageToBase64();
+
+export async function chkUsersCde(editMode, cModule, otherDetails) {
+    const UsersCde=document.getElementById(cModule+'_UsersCde')
+
+    if (!UsersCde.value ) {
+        UsersCde.focus();
+        return;
+    }
+    if (UsersCde.value.length < 5) {
+        UsersCde.focus()
+        return;
+    }
+
+    try {
+        // Call to your backend to validate and get the list of items
+        let dataItemList = await validateField(cModule,'UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
+
+        if (dataItemList) {
+            // If more than one item is returned, show the pick list
+            if (dataItemList.length > 1) {
+                const inputElement = UsersCde;
+                
+                // Call pickItem function to show the pick list
+                const selectedItem = await pickItem(dataItemList, inputElement);
+                if (!selectedItem) {
+                    // Handle case where no selection is made
+                    UsersCde.value = '';
+                    UsersCde.focus();
+                    return;
+                }
+                
+                // Proceed with the selected item
+                document.getElementById(cModule+'_UsersCde').value = selectedItem.UsersCde;
+                document.getElementById(cModule+'_OtherCde').value = selectedItem.OtherCde;
+                document.getElementById(cModule+'_Descript').value = selectedItem.Descript;
+                
+                if (!editMode) {
+                    if (cModule!=='StockRec') {
+                       document.getElementById(cModule+'_ItemPrce').value = selectedItem.ItemPrce;
+                    }
+                    document.getElementById(cModule+'_Amount__').value = selectedItem.ItemPrce;
+                }
+
+                // Additional variables
+                otherDetails.nLandCost = selectedItem.LandCost;
+                otherDetails.cItemCode = selectedItem.ItemCode;
+
+            } else {
+                // If only one item is returned, fill in the form fields
+                const item = dataItemList[0]; // The single item returned
+                document.getElementById(cModule+'_UsersCde').value = item.UsersCde;
+                document.getElementById(cModule+'_OtherCde').value = item.OtherCde;
+                document.getElementById(cModule+'_Descript').value = item.Descript;
+
+                if (!editMode) {
+                    document.getElementById(cModule+'_ItemPrce').value = item.ItemPrce;
+                    document.getElementById(cModule+'_Amount__').value = item.ItemPrce;
+                }
+
+                // Set additional fields
+                otherDetails.nLandCost = item.LandCost;
+                otherDetails.cItemCode = item.ItemCode;
+            }
+            // Close pickListDiv if it's open
+            const pickListDiv = document.getElementById('pickListDiv');
+            if (pickListDiv) {
+                pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+            }
+
+        }
+
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+    }
+
+}
+
+export async function addScanCode(cModule, currentRec) {
+    const ScanCode = document.getElementById(cModule+'_ScanCode')
+    if (!ScanCode.value) {
+        ScanCode.focus();
+        return;
+    }
+    if (ScanCode.value.length < 5) {
+        ScanCode.focus();
+        return;
+    }
+
+    try {
+
+        let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
+        // Call to your backend to validate and get the list of items
+        const dataItem = await validateField(cModule,'ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
+        
+        if (!dataItem) {
+            alert(`${ScanCode.value} is not found.`)
+            ScanCode.value='';
+            ScanCode.focus();
+            return;
+        }
+
+        if (dataItem) {
+            // If more than one item is returned, show the pick list
+            if (dataItem.length > 1) {
+                const inputElement = ScanCode;
+                
+                // Call pickItem function to show the pick list
+                const selectedItem = await pickItem(dataItem, inputElement);
+                if (!selectedItem) {
+                    // Handle case where no selection is made
+                    ScanCode.value = '';
+                    ScanCode.focus();
+                    return;
+                }
+                
+                // Proceed with the selected item
+                cItemCode = selectedItem.ItemCode
+                nItemPrce = selectedItem.ItemPrce
+                nLandCost = selectedItem.LandCost
+                nItemCost = selectedItem.ItemCost
+
+            } else {
+                // If only one item is returned, fill in the form fields
+                const item = dataItem[0]; // The single item returned
+                cItemCode = item.ItemCode
+                nItemPrce = item.ItemPrce
+                nLandCost = item.LandCost
+                nItemCost = item.ItemCost
+
+            }
+        }
+        // Close pickListDiv if it's open
+        const pickListDiv = document.getElementById('pickListDiv');
+        if (pickListDiv) {
+            pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+        }
+
+        const cCtrlNum_ = currentRec.CtrlNum_
+        const nAmount__ = nItemPrce
+        const nQuantity = 1
+        const nQtyRecvd = 1
+        const nDiscRate = 0
+        const cTimeSale = get24HrTime()
+        const dDate____ = new Date()
+
+        // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+
+        if (cModule==='SalesRec') {
+            addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+        } else if (cModule==='StockRec') {
+            addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost)
+        }
+        ScanCode.value=''
+        ScanCode.focus()
+
+    } catch (error) {
+        console.error("Error fetching or processing data:", error);
+    }
+
+}
+
+
+
+
+export function pickItem(dataItemList, inputElement) {
+    return new Promise((resolve) => {
+        if (!inputElement) return;
+
+        // Disable autocomplete to prevent suggestions
+        inputElement.setAttribute('autocomplete', 'off');
+
+        // Create the pickListDiv and dropdownList dynamically
+        const pickListDiv = document.createElement('div');
+        pickListDiv.id = 'pickListDiv';
+        const dropdownList = document.createElement('table');
+        dropdownList.classList.add('ListItemTable');
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+            <tr>
+                <th>Stock No.</th>
+                <th>Bar Code</th>
+                <th>Item Description</th>
+                <th>Unit Price</th>
+            </tr>
+        `;
+        const tbody = document.createElement('tbody');
+        tbody.id = 'pickItemList';
+        dropdownList.appendChild(thead);
+        dropdownList.appendChild(tbody);
+
+        const pickListTitle = document.createElement('span');
+        pickListTitle.innerText = "Click to select item from list";
+        pickListDiv.appendChild(pickListTitle);
+
+        // Append the dropdown list to the pick list div
+        pickListDiv.appendChild(dropdownList);
+        document.body.appendChild(pickListDiv);  // Add it to the body
+
+        // Show the pickListDiv and dropdownList
+        pickListDiv.style.display = 'flex';  // Show the pickListDiv
+        dropdownList.style.display = 'block';  // Show the dropdown
+
+        tbody.innerHTML = ''; // Clear previous items
+
+        // Loop through dataItemList and create <tr> elements for the table
+        dataItemList.forEach(item => {
+            // Create the row HTML using template literals
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+                <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
+                <td class="colNoWrap">${item.Descript.substring(0, 30) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+            `;
+
+            // Add click event to each row for selection
+            tr.addEventListener('click', () => {
+                // Fill the input with the selected item’s information
+                inputElement.value = item.UsersCde;  // or any value you want to fill
+
+                // Close the dropdown and pick list after selection
+                tbody.style.display = 'none';
+                pickListDiv.style.display = 'none';
+
+                // Resolve the promise with the selected item
+                resolve(item); // Return the selected item when clicked
+            });
+
+            // Append the row to the tbody
+            tbody.appendChild(tr);
+        });
+
+        // Variables to track the highlighted index and the highlighted item
+        let highlightedIndex = -1;
+        let highlightedItem = null;  // Store the item being highlighted
+        const rows = tbody.querySelectorAll('tr');
+
+        // Function to highlight a row
+        function highlightRow(index) {
+            // Log the index and row being highlighted for debugging
+            // console.log(`Highlighting row at index: ${index}`);
+        
+            // Remove the highlight from all rows
+            rows.forEach(row => row.classList.remove('highlight'));
+        
+            // Only highlight if the index is valid
+            if (index >= 0 && index < rows.length) {
+                rows[index].classList.add('highlight');
+                highlightedItem = dataItemList[index];  // Update the highlighted item
+        
+                // Log which row is being highlighted
+                // console.log(`Row highlighted:`, rows[index]);
+        
+                // Get the row and its position
+                const row = rows[index];
+                const rowTop = row.offsetTop;
+                const rowBottom = rowTop + row.offsetHeight;
+                const listTop = tbody.scrollTop;
+                const listBottom = listTop + tbody.offsetHeight;
+        
+                // Scroll the picklist to make the highlighted row fully visible
+                if (rowTop < listTop) {
+                    // If the row is above the visible area, scroll up
+                    tbody.scrollTop = rowTop; // Scroll to the top of the row
+                } else if (rowBottom > listBottom) {
+                    // If the row is below the visible area, scroll down
+                    tbody.scrollTop = rowBottom - tbody.offsetHeight; // Scroll to the bottom of the row
+                }
+            }
+        }
+        
+        // Set focus on pickListDiv or dropdownList to capture keydown events
+        dropdownList.tabIndex = 0;  // Make sure the table is focusable
+        dropdownList.focus();  // Focus on the table to start receiving keydown events
+
+        // Attach the keydown event listener to the pickListDiv (table dropdown)
+        dropdownList.addEventListener('keydown', (e) => {
+            console.log('keydown event triggered', e.key); // Log keydown event for debugging
+
+            const rows = tbody.querySelectorAll('tr');
+
+            if (e.key === 'ArrowDown') {
+                // Move down in the list
+                if (highlightedIndex < rows.length - 1) {
+                    highlightedIndex++;
+                }
+                highlightRow(highlightedIndex);
+            } else if (e.key === 'ArrowUp') {
+                // Move up in the list
+                if (highlightedIndex > 0) {
+                    highlightedIndex--;
+                }
+                highlightRow(highlightedIndex);
+            } else if (e.key === 'Enter') {
+                // Select the highlighted item
+                if (highlightedItem) {
+                    inputElement.value = highlightedItem.UsersCde;
+
+                    // Close the dropdown and pick list after selection
+                    tbody.style.display = 'none';
+                    pickListDiv.style.display = 'none';
+
+                    // Resolve the promise with the highlighted item (the single item)
+                    resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
+                }
+            }
+        });
+
+        // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+        document.addEventListener('click', (e) => {
+            if (!pickListDiv.contains(e.target)) {
+                tbody.style.display = 'none';  // Hide dropdown if clicked outside
+                pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+            }
+        });
+    });
+}

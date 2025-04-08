@@ -1,5 +1,5 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, pickItem,
-    MessageBox, formatter, checkEmptyValue, validateField, highlightRow, loadImageToBase64} from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 let globalData = [];    // Define a global array
@@ -60,6 +60,7 @@ function updateTable() {
                     <th>Amount</th>
                     <th>Items</th>
                     <th>Remarks</th>
+                    <th>Customer</th>
                     <th>Encoder</th>
                     <th>Log Date</th>
                 </tr>
@@ -75,6 +76,7 @@ function updateTable() {
                         <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                         <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
                         <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
+                        <td class="colNoWrap">${item.CustName || 'N/A'}</td>
                         <td>${item.Encoder_ || 'N/A'}</td>
                         <td>${formatDate(item.Log_Date) || 'N/A'}</td>
                     </tr>
@@ -110,7 +112,7 @@ function updateTable() {
 async function SaleForm(index,editMode) {
 
     document.getElementById("addSalesDtl").disabled = !editMode;
-    document.getElementById("ScanCode").disabled = !editMode;
+    document.getElementById("SalesRec_ScanCode").disabled = !editMode;
 
     const reportBody = document.getElementById('salesInvoice');
     reportBody.innerHTML =''
@@ -123,30 +125,30 @@ async function SaleForm(index,editMode) {
         <div id="invoiceForm">
             <div id="inputSale1" class="textDiv">
                 <div>
-                    <label for="Location">Location</label>
-                    <select id="SaleLoca"></select>
+                    <label for="SalesRec_Location">Location</label>
+                    <select id="SalesRec_Location"></select>
                 </div>
                 <div>
-                    <label for="ReferDoc">Ref. No</label>
-                    <input type="text" id="ReferDoc" spellcheck="false" readonly>
+                    <label for="SalesRec_DateFrom">Date:</label>
+                    <input type="date" id="SalesRec_DateFrom">
                 </div>
                 <div>
-                    <label for="DateFrom">Date:</label>
-                    <input type="date" id="DateFrom">
+                    <label for="SalesRec_ReferDoc">Ref. No</label>
+                    <input type="text" id="SalesRec_ReferDoc" spellcheck="false" readonly>
                 </div>
             </div>
             <div id="inputSale2" class="textDiv">
                 <div>
-                    <label for="CustName">Customer</label>
-                    <input type="text" id="CustName" spellcheck="false">
+                    <label for="SalesRec_CustName">Customer</label>
+                    <input type="text" id="SalesRec_CustName" spellcheck="false">
                 </div>
                 <div>
-                    <label for="Remarks_">Remarks</label>
-                    <input type="text" id="Remarks_" spellcheck="false">
+                    <label for="SalesRec_Remarks_">Remarks</label>
+                    <input type="text" id="SalesRec_Remarks_" spellcheck="false">
                 </div>
                 <div id="chkDiv">
-                    <input type="checkbox" id="Disabled" >
-                    <label for="Disabled">Disabled</label>
+                    <input type="checkbox" id="SalesRec_Disabled" >
+                    <label for="SalesRec_Disabled">Disabled</label>
                 </div>
             </div>
         </div>
@@ -197,20 +199,20 @@ async function SaleForm(index,editMode) {
     showReport('SaleForm')
     document.getElementById('salesItemsBtn').click()
 
-    await populateLocation('', '','SellArea', 'SaleLoca');
+    await populateLocation('', '','SellArea', 'SalesRec_Location');
 
     if (editMode) {
         document.getElementById('loadingIndicator').style.display = 'flex';
 
         const cCtrlNum_=itemData.CtrlNum_
-        document.getElementById('ReferDoc').value=itemData.ReferDoc
-        document.getElementById('DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
-        document.getElementById('Remarks_').value=itemData.Remarks_
-        document.getElementById('CustName').value=itemData.CustName
-        document.getElementById('Disabled').checked=itemData.Disabled ? true : false
+        document.getElementById('SalesRec_ReferDoc').value=itemData.ReferDoc
+        document.getElementById('SalesRec_DateFrom').value=formatDate(itemData.DateFrom,'YYYY-MM-DD')
+        document.getElementById('SalesRec_Remarks_').value=itemData.Remarks_
+        document.getElementById('SalesRec_CustName').value=itemData.CustName
+        document.getElementById('SalesRec_Disabled').checked=itemData.Disabled ? true : false
 
 
-        const locationSelect = document.getElementById('SaleLoca');
+        const locationSelect = document.getElementById('SalesRec_Location');
         const locationValue = itemData.Location.trim(); // The value that should be selected
         // Check if the select element has options, then set the selected option
         const options = locationSelect.options;
@@ -248,9 +250,9 @@ async function SaleForm(index,editMode) {
     } else {
         // Triggered from +Add button Footer
         const dNew_Date= new Date()
-        document.getElementById('DateFrom').value=formatDate(dNew_Date,'YYYY-MM-DD')
-        document.getElementById('ReferDoc').value='New Record'
-        document.getElementById('Remarks_').value=''
+        document.getElementById('SalesRec_DateFrom').value=formatDate(dNew_Date,'YYYY-MM-DD')
+        document.getElementById('SalesRec_ReferDoc').value='New Record'
+        document.getElementById('SalesRec_Remarks_').value=''
         itemsDtl = []; 
         updateItemTable();
         
@@ -266,7 +268,7 @@ document.getElementById('salesItemsBtn').addEventListener('click', () => {
     document.getElementById('salesItemsBtn').style.display = "none";
     document.getElementById('uploadItemsBtn').style.display = "block";
 
-    document.getElementById('ScanCode').style.display = "block";
+    document.getElementById('SalesRec_ScanCode').style.display = "block";
     document.getElementById('salesDtlCounter').style.display = "block";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Item`;
 })
@@ -278,7 +280,7 @@ document.getElementById('paymentsBtn').addEventListener('click', () => {
     document.getElementById('salesItemsBtn').style.display = "block";
     document.getElementById('uploadItemsBtn').style.display = "none";
 
-    document.getElementById('ScanCode').style.display = "none";
+    document.getElementById('SalesRec_ScanCode').style.display = "none";
     document.getElementById('salesDtlCounter').style.display = "none";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Payment`;
 })
@@ -286,15 +288,15 @@ document.getElementById('paymentsBtn').addEventListener('click', () => {
 
 document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
     const salesDtlCounter=document.getElementById('salesDtlCounter').innerText
-    const cLocation=document.getElementById('SaleLoca').value
-    const cRemarks_=document.getElementById('Remarks_').value
-    const dDateFrom=document.getElementById('DateFrom').value
-    const cCustName=document.getElementById('CustName').value
-    const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
+    const cLocation=document.getElementById('SalesRec_Location').value
+    const cRemarks_=document.getElementById('SalesRec_Remarks_').value
+    const dDateFrom=document.getElementById('SalesRec_DateFrom').value
+    const cCustName=document.getElementById('SalesRec_CustName').value
+    const lDisabled=document.getElementById('SalesRec_Disabled').checked ? 1 : 0 
 
     if (!cLocation) {
-        document.getElementById('SaleLoca').focus();
-        document.getElementById('SaleLoca').classList.add('invalid');  // Add a class to highlight
+        document.getElementById('SalesRec_Location').focus();
+        document.getElementById('SalesRec_Location').classList.add('invalid');  // Add a class to highlight
         return ;
     }
 
@@ -313,7 +315,7 @@ document.getElementById('saveSalesRecBtn').addEventListener('click', () => {
             dLog_Date, nNoOfItem, cCustName, cSuffixId)) {
             // showReport('SalesLst')  //Show back SalesRec List
             document.getElementById("addSalesDtl").disabled = false;
-            document.getElementById("ScanCode").disabled = false;
+            document.getElementById("SalesRec_ScanCode").disabled = false;
     
         }
     }
@@ -326,7 +328,7 @@ document.getElementById('cancelSalesRecBtn').addEventListener('click', () => {
 
 async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName, lDisabled) {
     // console.log(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustName)
-    lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+    lDisabled = document.getElementById("SalesRec_Disabled").checked ? '1' : '0';
 
     try {
         const response = await fetch('http://localhost:3000/sales/editSalesHeader', {
@@ -397,7 +399,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
             updateTable();         
             // console.log(updatedItem)
             currentRec=updatedItem
-            document.getElementById("ReferDoc").value = updatedItem.ReferDoc
+            document.getElementById("SalesRec_ReferDoc").value = updatedItem.ReferDoc
 
 
             // Scroll to the last row after updating the table
@@ -564,39 +566,39 @@ function SalesDtl(index,editMode) {
             <div class="subTextDiv" id="inputDetails">
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="UsersCde">Stock No</label>
-                        <input type="text" id="UsersCde" name="UsersCde" spellcheck="false" 
+                        <label for="SalesRec_UsersCde">Stock No</label>
+                        <input type="text" id="SalesRec_UsersCde" name="UsersCde" spellcheck="false" 
                             placeholder="Type Stock No. or Bar Code here to search"
                             autocomplete = "off">
                     </div>
                     <div class="subTextDiv">
-                        <label for="OtherCde">Bar Code</label>
-                        <input type="text" id="OtherCde" name="OtherCde" spellcheck="false" readonly>
+                        <label for="SalesRec_OtherCde">Bar Code</label>
+                        <input type="text" id="SalesRec_OtherCde" name="OtherCde" spellcheck="false" readonly>
                     </div>
                 </div>
 
                 <div id="inputDescript" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
-                        <label for="Descript">Item Description</label>
-                        <input type="text" id="Descript" name="Descript" readonly>
+                        <label for="SalesRec_Descript">Item Description</label>
+                        <input type="text" id="SalesRec_Descript" name="Descript" readonly>
                     </div>
                 </div>
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="Quantity">Quantity</label>
-                        <input type="number" id="Quantity" name="Quantity">
+                        <label for="SalesRec_Quantity">Quantity</label>
+                        <input type="number" id="SalesRec_Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="ItemPrce">Unit Item Price</label>
-                        <input type="number" id="ItemPrce" name="ItemPrce">
+                        <label for="SalesRec_ItemPrce">Unit Item Price</label>
+                        <input type="number" id="SalesRec_ItemPrce" name="ItemPrce">
                     </div>
                     <div class="subTextDiv">
-                        <label for="DiscRate">Less %</label>
-                        <input type="number" id="DiscRate" name="DiscRate">
+                        <label for="SalesRec_DiscRate">Less %</label>
+                        <input type="number" id="SalesRec_DiscRate" name="DiscRate">
                     </div>
                     <div class="subTextDiv">
-                        <label for="Amount__">Net Amount</label>
-                        <input type="number" id="Amount__" name="Amount__">
+                        <label for="SalesRec_Amount__">Net Amount</label>
+                        <input type="number" id="SalesRec_Amount__" name="Amount__">
                     </div>
                 </div>
             </div>
@@ -640,53 +642,52 @@ function SalesDtl(index,editMode) {
 
 
     if (editMode) {
-        document.getElementById('UsersCde').value=itemData.UsersCde
-        document.getElementById('OtherCde').value=itemData.OtherCde
-        document.getElementById('Descript').value=itemData.Descript
-        document.getElementById('Quantity').value=itemData.Quantity
-        document.getElementById('ItemPrce').value=itemData.ItemPrce
-        document.getElementById('DiscRate').value=itemData.DiscRate
-        document.getElementById('Amount__').value=itemData.Amount__
-        document.getElementById('Quantity').focus()
+        document.getElementById('SalesRec_UsersCde').value=itemData.UsersCde
+        document.getElementById('SalesRec_OtherCde').value=itemData.OtherCde
+        document.getElementById('SalesRec_Descript').value=itemData.Descript
+        document.getElementById('SalesRec_Quantity').value=itemData.Quantity
+        document.getElementById('SalesRec_ItemPrce').value=itemData.ItemPrce
+        document.getElementById('SalesRec_DiscRate').value=itemData.DiscRate
+        document.getElementById('SalesRec_Amount__').value=itemData.Amount__
+        document.getElementById('SalesRec_Quantity').focus()
     } else {
-        document.getElementById('UsersCde').value=''
-        document.getElementById('OtherCde').value=''
-        document.getElementById('Descript').value=''
-        document.getElementById('Quantity').value=1
-        document.getElementById('ItemPrce').value=0.00
-        document.getElementById('DiscRate').value=0.00
-        document.getElementById('Amount__').value=0.00
-        document.getElementById('UsersCde').focus()
+        document.getElementById('SalesRec_UsersCde').value=''
+        document.getElementById('SalesRec_OtherCde').value=''
+        document.getElementById('SalesRec_Descript').value=''
+        document.getElementById('SalesRec_Quantity').value=1
+        document.getElementById('SalesRec_ItemPrce').value=0.00
+        document.getElementById('SalesRec_DiscRate').value=0.00
+        document.getElementById('SalesRec_Amount__').value=0.00
+        document.getElementById('SalesRec_UsersCde').focus()
 
     }
-    document.getElementById('Amount__').readonly = true;
-    document.getElementById('OtherCde').readonly = true;
-    document.getElementById('Descript').readonly = true;
-    document.getElementById('Amount__').setAttribute('tabindex', '-1');
-    document.getElementById('OtherCde').setAttribute('tabindex', '-1');
-    document.getElementById('Descript').setAttribute('tabindex', '-1');
+    document.getElementById('SalesRec_Amount__').readonly = true;
+    document.getElementById('SalesRec_OtherCde').readonly = true;
+    document.getElementById('SalesRec_Descript').readonly = true;
+    document.getElementById('SalesRec_Amount__').setAttribute('tabindex', '-1');
+    document.getElementById('SalesRec_OtherCde').setAttribute('tabindex', '-1');
+    document.getElementById('SalesRec_Descript').setAttribute('tabindex', '-1');
 
     // Get the id's of the elements for checkEmptyValue() function before saving
-    const UsersCde=document.getElementById('UsersCde')
+    const UsersCde=document.getElementById('SalesRec_UsersCde')
 
-    const Quantity=document.getElementById('Quantity')
-    const ItemPrce=document.getElementById('ItemPrce')
-    const Amount__=document.getElementById('Amount__')
-    const DiscRate=document.getElementById('DiscRate')
-    
-    // values wil be determined as user enters UsersCde and validateField()
-    // let cItemCode=null  
-    // let nLandCost=0
+    const Quantity=document.getElementById('SalesRec_Quantity')
+    const ItemPrce=document.getElementById('SalesRec_ItemPrce')
+    const Amount__=document.getElementById('SalesRec_Amount__')
+    const DiscRate=document.getElementById('SalesRec_DiscRate')
 
-    // document.getElementById('UsersCde').addEventListener('blur', async (e) => {
-    //     e.preventDefault();
-    //     chkUsersCde(editMode)        
-    // });
-    document.getElementById('UsersCde').addEventListener('input', debounce(() => {
-        chkUsersCde(editMode)        
+    document.getElementById('SalesRec_UsersCde').addEventListener('input', debounce(async () => {
+        const otherDetails = { 
+            cItemCode: '',
+            nLandCost: 0
+        }
+
+        await chkUsersCde(editMode, 'SalesRec', otherDetails)        
+        cItemCode=otherDetails.cItemCode
+        nLandCost=otherDetails.nLandCost
     }, 300));  // 300ms delay (you can adjust the delay as needed)
     
-    document.getElementById('DiscRate').addEventListener('blur', async (e) => {
+    document.getElementById('SalesRec_DiscRate').addEventListener('blur', async (e) => {
         e.preventDefault()
         if (ItemPrce.value===0) {
             ItemPrce.focus()
@@ -726,10 +727,10 @@ function SalesDtl(index,editMode) {
         } else {
             const dDate____=currentRec.DateFrom
             const cTimeSale=get24HrTime()
-            const nQuantity=document.getElementById('Quantity').value
-            const nItemPrce=document.getElementById('ItemPrce').value
-            const nDiscRate=document.getElementById('DiscRate').value
-            const nAmount__=document.getElementById('Amount__').value
+            const nQuantity=document.getElementById('SalesRec_Quantity').value
+            const nItemPrce=document.getElementById('SalesRec_ItemPrce').value
+            const nDiscRate=document.getElementById('SalesRec_DiscRate').value
+            const nAmount__=document.getElementById('SalesRec_Amount__').value
 
             addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
         }
@@ -746,10 +747,10 @@ function SalesDtl(index,editMode) {
 async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
-    const nQuantity=document.getElementById('Quantity').value
-    const nItemPrce=document.getElementById('ItemPrce').value
-    const nDiscRate=document.getElementById('DiscRate').value
-    const nAmount__=document.getElementById('Amount__').value
+    const nQuantity=document.getElementById('SalesRec_Quantity').value
+    const nItemPrce=document.getElementById('SalesRec_ItemPrce').value
+    const nDiscRate=document.getElementById('SalesRec_DiscRate').value
+    const nAmount__=document.getElementById('SalesRec_Amount__').value
 
     // console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
 
@@ -791,8 +792,8 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     }
 }
 
-
-async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
+// exported to Functlib for addScanCode() function
+export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
         nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
     
@@ -970,33 +971,6 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
         return false;
     }
 }
-
-// const img = new Image();
-// img.src = '/images/regent.png'; 
-// let base64Image=null
-// img.onload = function () {
-//     // Create a canvas to convert the image to base64
-//     const canvas = document.createElement('canvas');
-//     const ctx = canvas.getContext('2d');
-
-//     // Set canvas size to the image's size
-//     canvas.width = img.width;
-//     canvas.height = img.height;
-
-//     // Draw the image onto the canvas
-//     ctx.drawImage(img, 0, 0);
-
-//     // Convert the canvas to base64 string
-//     base64Image = canvas.toDataURL('image/png');
-
-//     // if (base64Image && base64Image.startsWith('data:image/png;base64,')) {
-//     //     console.log(base64Image)
-//     // } else {
-//     //     console.error('Failed to generate or invalid base64 image:');
-//     // }
-
-// };
-
 
 document.getElementById('printSalesInvoice').addEventListener('click', async () => {
     const headerData = [
@@ -1330,13 +1304,13 @@ function printToPDF(headerData, detailData, itemFields, colWidths,
 //     e.preventDefault();
 //     addScanCode()
 // })
-document.getElementById('ScanCode').addEventListener('paste', async () =>{
-    addScanCode()
+document.getElementById('SalesRec_ScanCode').addEventListener('paste', async () =>{
+    await addScanCode('SalesRec', currentRec);
 })
 
 // Event listener with debounce
-document.getElementById('ScanCode').addEventListener('input', debounce(() => {
-    addScanCode();
+document.getElementById('SalesRec_ScanCode').addEventListener('input', debounce(async () => {
+    await addScanCode('SalesRec', currentRec);
 }, 300));  
 
 // Debounce function
@@ -1351,153 +1325,3 @@ function debounce(func, delay) {
 }
 
 
-async function addScanCode() {
-    const ScanCode = document.getElementById('ScanCode')
-    if (!ScanCode.value) {
-        ScanCode.focus();
-        return;
-    }
-    if (ScanCode.value.length < 5) {
-        ScanCode.focus();
-        return;
-    }
-
-    try {
-
-        let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
-        // Call to your backend to validate and get the list of items
-        const dataItem = await validateField('ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
-        
-        if (!dataItem) {
-            alert(`${ScanCode.value} is not found.`)
-            ScanCode.value='';
-            ScanCode.focus();
-            return;
-        }
-
-        if (dataItem) {
-            // If more than one item is returned, show the pick list
-            if (dataItem.length > 1) {
-                const inputElement = ScanCode;
-                
-                // Call pickItem function to show the pick list
-                const selectedItem = await pickItem(dataItem, inputElement);
-                if (!selectedItem) {
-                    // Handle case where no selection is made
-                    ScanCode.value = '';
-                    ScanCode.focus();
-                    return;
-                }
-                
-                // Proceed with the selected item
-                cItemCode = selectedItem.ItemCode
-                nItemPrce = selectedItem.ItemPrce
-                nLandCost = selectedItem.LandCost
-                nItemCost = selectedItem.ItemCost
-
-            } else {
-                // If only one item is returned, fill in the form fields
-                const item = dataItem[0]; // The single item returned
-                cItemCode = item.ItemCode
-                nItemPrce = item.ItemPrce
-                nLandCost = item.LandCost
-                nItemCost = item.ItemCost
-
-            }
-        }
-        // Close pickListDiv if it's open
-        const pickListDiv = document.getElementById('pickListDiv');
-        if (pickListDiv) {
-            pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-        }
-
-        const cCtrlNum_ = currentRec.CtrlNum_
-        const nAmount__ = nItemPrce
-        const nQuantity = 1
-        const nDiscRate = 0
-        const cTimeSale = get24HrTime()
-        const dDate____ = new Date()
-
-        // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
-        addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
-        ScanCode.value=''
-        ScanCode.focus()
-
-    } catch (error) {
-        console.error("Error fetching or processing data:", error);
-    }
-
-}
-
-async function chkUsersCde(editMode) {
-    if (!UsersCde.value ) {
-        UsersCde.focus();
-        return;
-    }
-    if (UsersCde.value.length < 5) {
-        UsersCde.focus()
-        return;
-    }
-
-    try {
-        // Call to your backend to validate and get the list of items
-        let dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
-
-        if (dataItemList) {
-            // If more than one item is returned, show the pick list
-            if (dataItemList.length > 1) {
-                const inputElement = UsersCde;
-                
-                // Call pickItem function to show the pick list
-                const selectedItem = await pickItem(dataItemList, inputElement);
-                if (!selectedItem) {
-                    // Handle case where no selection is made
-                    UsersCde.value = '';
-                    UsersCde.focus();
-                    return;
-                }
-                
-                // Proceed with the selected item
-                document.getElementById('UsersCde').value = selectedItem.UsersCde;
-                document.getElementById('OtherCde').value = selectedItem.OtherCde;
-                document.getElementById('Descript').value = selectedItem.Descript;
-                
-                if (!editMode) {
-                    document.getElementById('ItemPrce').value = selectedItem.ItemPrce;
-                    document.getElementById('Amount__').value = selectedItem.ItemPrce;
-                }
-
-                // Additional variables
-                nLandCost = selectedItem.LandCost;
-                cItemCode = selectedItem.ItemCode;
-
-            } else {
-                // If only one item is returned, fill in the form fields
-                const item = dataItemList[0]; // The single item returned
-                document.getElementById('UsersCde').value = item.UsersCde;
-                document.getElementById('OtherCde').value = item.OtherCde;
-                document.getElementById('Descript').value = item.Descript;
-
-                if (!editMode) {
-                    document.getElementById('ItemPrce').value = item.ItemPrce;
-                    document.getElementById('Amount__').value = item.ItemPrce;
-                }
-
-                // Set additional fields
-                nLandCost = item.LandCost;
-                cItemCode = item.ItemCode;
-            }
-            // Close pickListDiv if it's open
-            const pickListDiv = document.getElementById('pickListDiv');
-            if (pickListDiv) {
-                pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-            }
-
-        }
-
-
-    } catch (error) {
-        console.error("Error fetching or processing data:", error);
-    }
-
-}

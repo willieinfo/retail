@@ -1,5 +1,5 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, pickItem,
-    MessageBox, formatter, checkEmptyValue, validateField, highlightRow} from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 let globalData = [];    // Define a global array
@@ -56,7 +56,8 @@ function updateTable() {
                     <th>Ref. Doc</th>
                     <th>Date</th>
                     <th>Location</th>
-                    <th>Qty.</th>
+                    <th>Qty. Out</th>
+                    <th>Qty. In</th>
                     <th>Amount</th>
                     <th>Items</th>
                     <th>Remarks</th>
@@ -72,6 +73,7 @@ function updateTable() {
                         <td>${formatDate(item.Date____) || 'N/A'}</td>
                         <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
                         <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
+                        <td style="text-align: center">${item.TotalRcv.toFixed(0) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                         <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
                         <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
@@ -105,7 +107,7 @@ function updateTable() {
 async function StocForm(index,editMode) {
 
     document.getElementById("addStockDtl").disabled = !editMode;
-    document.getElementById("ScanCode").disabled = !editMode;
+    document.getElementById("StockRec_ScanCode").disabled = !editMode;
 
     const reportBody = document.getElementById('stockTransfer');
     reportBody.innerHTML =''
@@ -177,8 +179,8 @@ async function StocForm(index,editMode) {
     document.getElementById('StockLst').classList.remove('active')
     showReport('StocForm')
 
-    await populateLocation('', '','StocArea', 'WhseFrom');
-    await populateLocation('', '','StocArea', 'WhseTo__');
+    await populateLocation('', '','StocArea', 'StockRec_WhseFrom');
+    await populateLocation('', '','StocArea', 'StockRec_WhseTo__');
 
     if (editMode) {
         document.getElementById('loadingIndicator').style.display = 'flex';
@@ -339,7 +341,8 @@ async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcv
 
 async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
     dLog_Date, nNoOfItem, cPrepared, cSuffixId) {
-
+    // console.log(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
+    //     dLog_Date, nNoOfItem, cPrepared, cSuffixId)
     try {
         const response = await fetch('http://localhost:3000/transfers/addStockHeader', {
             method: 'POST',  
@@ -629,9 +632,15 @@ function StockDtl(index,editMode) {
     const Quantity=document.getElementById('StockRec_Quantity')
     const Amount__=document.getElementById('StockRec_Amount__')
     
-    document.getElementById('StockRec_UsersCde').addEventListener('input', debounce(() => {
-        chkUsersCde(editMode)        
-    }, 300));  // 300ms delay (you can adjust the delay as needed)
+    document.getElementById('StockRec_UsersCde').addEventListener('input', debounce(async () => {
+        const otherDetails = { 
+            cItemCode: '',
+            nLandCost: 0
+        }
+        await chkUsersCde(editMode, 'StockRec', otherDetails)        
+        cItemCode=otherDetails.cItemCode
+        nLandCost=otherDetails.nLandCost
+}, 300));  // 300ms delay (you can adjust the delay as needed)
     
     document.getElementById('saveStockDtlBtn').addEventListener('click', async (e) => {
         e.preventDefault()
@@ -661,11 +670,11 @@ function StockDtl(index,editMode) {
         if (editMode) {
                 editStockDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
         } else {
-            const dDate____=currentRec.DateFrom
             const nQuantity=document.getElementById('StockRec_Quantity').value
+            const nQtyRecvd=document.getElementById('StockRec_QtyRecvd').value
             const nAmount__=document.getElementById('StockRec_Amount__').value
 
-            addStockDtl(cCtrlNum_,cItemCode,dDate____,nQuantity,nAmount__,nLandCost)
+            addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost)
         }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
@@ -723,8 +732,8 @@ async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     }
 }
 
-
-async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost) {
+// exported to Functlib for addScanCode() function
+export async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
     
     try {
@@ -788,6 +797,8 @@ async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLa
 async function updateStockTotals(cCtrlNum_) {
     const headerTotals=[
         calcTotalQty(),
+        calcTotalRcv(),
+        calcTotalAmt(),
         calcTotalCnt()
     ]
     const res = await fetch('http://localhost:3000/transfers/updateStockTotals', {
@@ -798,7 +809,9 @@ async function updateStockTotals(cCtrlNum_) {
         body: JSON.stringify({
             cCtrlNum_: cCtrlNum_,
             nTotalQty: headerTotals[0],
-            nNoOfItem: headerTotals[1]
+            nTotalRcv: headerTotals[1],
+            nTotalAmt: headerTotals[2],
+            nNoOfItem: headerTotals[3]
         })
     });
 
@@ -809,12 +822,12 @@ async function updateStockTotals(cCtrlNum_) {
     function calcTotalQty() {
         return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
     }
-    // function calcTotalPrc() {
-    //     return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
-    // }
-    // function calcTotalAmt() {
-    //     return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
-    // }            
+    function calcTotalRcv() {
+        return itemsDtl.reduce((total, item) => total + parseInt(item.QtyRecvd, 10), 0);
+    }
+    function calcTotalAmt() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
+    }            
     function calcTotalCnt() {
         return itemsDtl.length
     }            
@@ -890,26 +903,6 @@ async function deleteStockDtl(cRecordId,cCtrlNum_,index) {
     }
 }
 
-const img = new Image();
-img.src = '/images/regent.png'; 
-let base64Image=null
-img.onload = function () {
-    // Create a canvas to convert the image to base64
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    // Set canvas size to the image's size
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    // Draw the image onto the canvas
-    ctx.drawImage(img, 0, 0);
-
-    // Convert the canvas to base64 string
-    base64Image = canvas.toDataURL('image/png');
-
-};
-
 
 document.getElementById('printStockTransfer').addEventListener('click', async () => {
     const headerData = [
@@ -944,7 +937,7 @@ document.getElementById('printStockTransfer').addEventListener('click', async ()
     ];        
 
     printToPDF(headerData, itemsDtl, itemFields ,colWidths, 
-        columns, fieldTypes, base64Image, ['letter','portrait'])
+        columns, fieldTypes, window.base64Image, ['letter','portrait'])
 });
 
 function printToPDF(headerData, detailData, itemFields, colWidths, 
@@ -1239,17 +1232,13 @@ function printToPDF(headerData, detailData, itemFields, colWidths,
 
 }
 
-// document.getElementById('ScanCode').addEventListener('blur', async (e) =>{
-//     e.preventDefault();
-//     addScanCode()
-// })
-document.getElementById('ScanCode').addEventListener('paste', async () =>{
-    addScanCode()
+document.getElementById('StockRec_ScanCode').addEventListener('paste', async () =>{
+    await addScanCode('StockRec',currentRec);
 })
 
 // Event listener with debounce
-document.getElementById('ScanCode').addEventListener('input', debounce(() => {
-    addScanCode();
+document.getElementById('StockRec_ScanCode').addEventListener('input', debounce(async () => {
+    await addScanCode('StockRec',currentRec);
 }, 300));  
 
 // Debounce function
@@ -1264,150 +1253,148 @@ function debounce(func, delay) {
 }
 
 
-async function addScanCode() {
-    const ScanCode = document.getElementById('ScanCode')
-    if (!ScanCode.value) {
-        ScanCode.focus();
-        return;
-    }
-    if (ScanCode.value.length < 5) {
-        ScanCode.focus();
-        return;
-    }
+// async function addScanCode() {
+//     const ScanCode = document.getElementById('StockRec_ScanCode')
+//     if (!ScanCode.value) {
+//         ScanCode.focus();
+//         return;
+//     }
+//     if (ScanCode.value.length < 5) {
+//         ScanCode.focus();
+//         return;
+//     }
 
+//     try {
+//         let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
 
-    try {
-        let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
-
-        // Call to your backend to validate and get the list of items
-        const dataItem = await validateField('ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
+//         // Call to your backend to validate and get the list of items
+//         const dataItem = await validateField('StockRec','ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
         
-        if (!dataItem) {
-            alert(`${ScanCode.value} is not found.`)
-            ScanCode.value='';
-            ScanCode.focus();
-            return;
-        }
+//         if (!dataItem) {
+//             alert(`${ScanCode.value} is not found.`)
+//             ScanCode.value='';
+//             ScanCode.focus();
+//             return;
+//         }
 
-        if (dataItem) {
-            // If more than one item is returned, show the pick list
-            if (dataItem.length > 1) {
-                const inputElement = ScanCode;
+//         if (dataItem) {
+//             // If more than one item is returned, show the pick list
+//             if (dataItem.length > 1) {
+//                 const inputElement = ScanCode;
                 
-                // Call pickItem function to show the pick list
-                const selectedItem = await pickItem(dataItem, inputElement);
-                if (!selectedItem) {
-                    // Handle case where no selection is made
-                    ScanCode.value = '';
-                    ScanCode.focus();
-                    return;
-                }
+//                 // Call pickItem function to show the pick list
+//                 const selectedItem = await pickItem(dataItem, inputElement);
+//                 if (!selectedItem) {
+//                     // Handle case where no selection is made
+//                     ScanCode.value = '';
+//                     ScanCode.focus();
+//                     return;
+//                 }
                 
-                // Proceed with the selected item
-                cItemCode = selectedItem.ItemCode
-                nItemPrce = selectedItem.ItemPrce
-                nLandCost = selectedItem.LandCost
-                nItemCost = selectedItem.ItemCost
+//                 // Proceed with the selected item
+//                 cItemCode = selectedItem.ItemCode
+//                 nItemPrce = selectedItem.ItemPrce
+//                 nLandCost = selectedItem.LandCost
+//                 nItemCost = selectedItem.ItemCost
 
-            } else {
-                // If only one item is returned, fill in the form fields
-                const item = dataItem[0]; // The single item returned
-                cItemCode = item.ItemCode
-                nItemPrce = item.ItemPrce
-                nLandCost = item.LandCost
-                nItemCost = item.ItemCost
+//             } else {
+//                 // If only one item is returned, fill in the form fields
+//                 const item = dataItem[0]; // The single item returned
+//                 cItemCode = item.ItemCode
+//                 nItemPrce = item.ItemPrce
+//                 nLandCost = item.LandCost
+//                 nItemCost = item.ItemCost
 
-            }
-        }
-        // Close pickListDiv if it's open
-        const pickListDiv = document.getElementById('pickListDiv');
-        if (pickListDiv) {
-            pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-        }
+//             }
+//         }
+//         // Close pickListDiv if it's open
+//         const pickListDiv = document.getElementById('pickListDiv');
+//         if (pickListDiv) {
+//             pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+//         }
 
-        const cCtrlNum_ = currentRec.CtrlNum_
-        const nAmount__ = nItemPrce
-        const nQuantity = 1
-        const dDate____ = new Date()
+//         const cCtrlNum_ = currentRec.CtrlNum_
+//         const nAmount__ = nItemPrce
+//         const nQuantity = 1
+//         const nQtyRecvd = 1
 
-        // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
-        addStockDtl(cCtrlNum_,cItemCode,dDate____,nQuantity,nAmount__,nLandCost)
-        ScanCode.value=''
-        ScanCode.focus()
+//         // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+//         addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost)
+//         ScanCode.value=''
+//         ScanCode.focus()
 
-    } catch (error) {
-        console.error("Error fetching or processing data:", error);
-    }
+//     } catch (error) {
+//         console.error("Error fetching or processing data:", error);
+//     }
 
-}
+// }
 
-async function chkUsersCde(editMode) {
-    if (!UsersCde.value ) {
-        UsersCde.focus();
-        return;
-    }
-    if (UsersCde.value.length < 5) {
-        UsersCde.focus()
-        return;
-    }
+// async function chkUsersCde(editMode) {
+//     const UsersCde=document.getElementById('StockRec_UsersCde')
+//     if (!UsersCde.value ) {
+//         UsersCde.focus();
+//         return;
+//     }
+//     if (UsersCde.value.length < 5) {
+//         UsersCde.focus()
+//         return;
+//     }
 
-    try {
-        // Call to your backend to validate and get the list of items
-        let dataItemList = await validateField('UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
+//     try {
+//         // Call to your backend to validate and get the list of items
+//         let dataItemList = await validateField('StockRec','UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
 
-        if (dataItemList) {
-            // If more than one item is returned, show the pick list
-            if (dataItemList.length > 1) {
-                const inputElement = UsersCde;
+//         if (dataItemList) {
+//             // If more than one item is returned, show the pick list
+//             if (dataItemList.length > 1) {
+//                 const inputElement = UsersCde;
                 
-                // Call pickItem function to show the pick list
-                const selectedItem = await pickItem(dataItemList, inputElement);
-                if (!selectedItem) {
-                    // Handle case where no selection is made
-                    UsersCde.value = '';
-                    UsersCde.focus();
-                    return;
-                }
+//                 // Call pickItem function to show the pick list
+//                 const selectedItem = await pickItem(dataItemList, inputElement);
+//                 if (!selectedItem) {
+//                     // Handle case where no selection is made
+//                     UsersCde.value = '';
+//                     UsersCde.focus();
+//                     return;
+//                 }
                 
-                // Proceed with the selected item
-                document.getElementById('UsersCde').value = selectedItem.UsersCde;
-                document.getElementById('OtherCde').value = selectedItem.OtherCde;
-                document.getElementById('Descript').value = selectedItem.Descript;
-                
-                if (!editMode) {
-                    document.getElementById('Amount__').value = selectedItem.ItemPrce;
-                }
-
-                // Additional variables
-                nLandCost = selectedItem.LandCost;
-                cItemCode = selectedItem.ItemCode;
-
-            } else {
-                // If only one item is returned, fill in the form fields
-                const item = dataItemList[0]; // The single item returned
-                document.getElementById('UsersCde').value = item.UsersCde;
-                document.getElementById('OtherCde').value = item.OtherCde;
-                document.getElementById('Descript').value = item.Descript;
-
-                if (!editMode) {
-                    document.getElementById('Amount__').value = item.ItemPrce;
-                }
-
-                // Set additional fields
-                nLandCost = item.LandCost;
-                cItemCode = item.ItemCode;
-            }
-            // Close pickListDiv if it's open
-            const pickListDiv = document.getElementById('pickListDiv');
-            if (pickListDiv) {
-                pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-            }
-
-        }
+//                 // Proceed with the selected item
+//                 document.getElementById('StockRec_UsersCde').value = selectedItem.UsersCde;
+//                 document.getElementById('StockRec_OtherCde').value = selectedItem.OtherCde;
+//                 document.getElementById('StockRec_Descript').value = selectedItem.Descript;
+//                 document.getElementById('StockRec_Amount__').value = selectedItem.ItemPrce;
 
 
-    } catch (error) {
-        console.error("Error fetching or processing data:", error);
-    }
+//                 // Additional variables
+//                 nLandCost = selectedItem.LandCost;
+//                 cItemCode = selectedItem.ItemCode;
 
-}
+//             } else {
+//                 // If only one item is returned, fill in the form fields
+//                 const item = dataItemList[0]; // The single item returned
+//                 document.getElementById('StockRec_UsersCde').value = item.UsersCde;
+//                 document.getElementById('StockRec_OtherCde').value = item.OtherCde;
+//                 document.getElementById('StockRec_Descript').value = item.Descript;
+
+//                 if (!editMode) {
+//                     document.getElementById('StockRec_Amount__').value = item.ItemPrce;
+//                 }
+
+//                 // Set additional fields
+//                 nLandCost = item.LandCost;
+//                 cItemCode = item.ItemCode;
+//             }
+//             // Close pickListDiv if it's open
+//             const pickListDiv = document.getElementById('pickListDiv');
+//             if (pickListDiv) {
+//                 pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+//             }
+
+//         }
+
+
+//     } catch (error) {
+//         console.error("Error fetching or processing data:", error);
+//     }
+
+// }

@@ -261,6 +261,10 @@ textarea {
     background-color: #b3d9ff;  /* A light blue background to highlight */
     cursor: pointer;
 }
+.highlight {
+    background-color: #ffeb3b; /* Yellow background to highlight */
+    color: black; /* Black text for contrast */
+}
 
 #selectWallPaper {
     display: none; /* Hidden by default */

@@ -1,10 +1,10 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
 const updateStockTotals = async (req, res) => {
-  const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;
+  const { cCtrlNum_, nTotalQty, nTotalRcv, nTotalAmt, nNoOfItem } = req.body;
   
   // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
-  if (!cCtrlNum_ || !nTotalQty || !nTotalPrc || !nTotalAmt || !nNoOfItem) {
+  if (!cCtrlNum_ || !nTotalQty || !nTotalRcv || !nTotalAmt || !nNoOfItem) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
   
@@ -12,6 +12,7 @@ const updateStockTotals = async (req, res) => {
     UPDATE STOCKREC SET
       Amount__=@nTotalAmt,
       TotalQty=@nTotalQty,
+      TotalRcv=@nTotalRcv,
       NoOfItem=@nNoOfItem
     WHERE CtrlNum_=@cCtrlNum_
 
@@ -28,6 +29,7 @@ const updateStockTotals = async (req, res) => {
       STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
+      STOCKREC.TotalRcv,
       STOCKREC.Amount__,
       STOCKREC.NoOfItem,
       STOCKREC.Remarks_,
@@ -35,7 +37,7 @@ const updateStockTotals = async (req, res) => {
       STOCKREC.WhseFrom,
       STOCKREC.WhseTo__,
       STOCKREC.Printed_,
-      STOCKREC.CustName,
+      STOCKREC.Prepared,
       STOCKREC.Disabled,
       STOCKREC.Log_Date
     FROM STOCKREC, LOCATION
@@ -43,7 +45,7 @@ const updateStockTotals = async (req, res) => {
     AND STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, nTotalQty, nTotalAmt, nNoOfItem };
+  const params = { cCtrlNum_, nTotalQty, nTotalRcv, nTotalAmt, nNoOfItem };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -92,6 +94,7 @@ const editStockHeader = async (req, res) => {
       STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
+      STOCKREC.TotalRcv,
       STOCKREC.Amount__,
       STOCKREC.NoOfItem,
       STOCKREC.Remarks_,
@@ -139,7 +142,7 @@ const addStockHeader = async (req, res) => {
       (CtrlNum_, WhseFrom, WhseTo__, Date____, DateRcvd, Remarks_, Encoder_,
     Log_Date, NoOfItem, Prepared)
     VALUES
-      (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @cDate____, @dDateRcvd, @cRemarks_, @cEncoder_,
+      (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @dDate____, @dDateRcvd, @cRemarks_, @cEncoder_,
     @dLog_Date, @nNoOfItem, @cPrepared);
 
     -- Get the last inserted AutIncId
@@ -191,6 +194,7 @@ const addStockHeader = async (req, res) => {
       STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
+      STOCKREC.TotalRcv,
       STOCKREC.Amount__,
       STOCKREC.NoOfItem,
       STOCKREC.Remarks_,
@@ -211,7 +215,7 @@ const addStockHeader = async (req, res) => {
     dLog_Date, nNoOfItem, cPrepared, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
-    // console.log(params)
+    console.log(params)
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'No records found' });
@@ -244,6 +248,7 @@ const StockRecLst = async (req, res) => {
       STOCKREC.DateRcvd,
       LOCATION.LocaName,
       STOCKREC.TotalQty,
+      STOCKREC.TotalRcv,
       STOCKREC.Amount__,
       STOCKREC.NoOfItem,
       STOCKREC.Remarks_,
@@ -403,7 +408,7 @@ const addStockDetail = async (req, res) => {
 
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
-      const params = { cCtrlNum_, cItemCode, dDate____, nQuantity, nQtyRecvd, nAmount__, nLandCost };
+      const params = { cCtrlNum_, cItemCode, nQuantity, nQtyRecvd, nAmount__, nLandCost };
 
       const result = await queryDatabase(cSql, params);
 

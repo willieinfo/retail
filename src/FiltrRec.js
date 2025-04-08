@@ -14,61 +14,61 @@ export function FiltrRec(cModules_) {
                 <br>
                 <div id="inputDates" class="subTextDiv" style="flex-direction: row;">
                     <div>
-                        <label for="DateFrom">From:</label>
-                        <input type="date" id="DateFrom">
+                        <label for="FiltrRec_DateFrom">From:</label>
+                        <input type="date" id="FiltrRec_DateFrom">
                     </div>
                     <div>
-                        <label for="Date__To">To:</label>
-                        <input type="date" id="Date__To">
+                        <label for="FiltrRec_Date__To">To:</label>
+                        <input type="date" id="FiltrRec_Date__To">
                     </div>
                     <div id="txtReferDoc">
-                        <label for="ReferDoc">Ref. No.:</label>
-                        <input type="text" id="ReferDoc" spellcheck="false">
+                        <label for="FiltrRec_ReferDoc">Ref. No.:</label>
+                        <input type="text" id="FiltrRec_ReferDoc" spellcheck="false">
                     </div>
                 </div>
                 <div id="inputLocation" class="textDiv">
                     <div class="subTextDiv">
-                        <label for="Location">Location</label>
-                        <select id="Location"></select>
+                        <label for="FiltrRec_Location">Location</label>
+                        <select id="FiltrRec_Location"></select>
                     </div>
                 </div>
 
                 <div id="inputDetails" class="subTextDiv">
                     <div class="textDiv">
                         <div class="subTextDiv">
-                            <label for="UsersCde">Stock No</label>
-                            <input type="text" id="UsersCde" name="UsersCde" spellcheck="false">
+                            <label for="FiltrRec_UsersCde">Stock No</label>
+                            <input type="text" id="FiltrRec_UsersCde" name="UsersCde" spellcheck="false">
                         </div>
                         <div class="subTextDiv">
-                            <label for="OtherCde">Bar Code</label>
-                            <input type="text" id="OtherCde" name="OtherCde" spellcheck="false">
+                            <label for="FiltrRec_OtherCde">Bar Code</label>
+                            <input type="text" id="FiltrRec_OtherCde" name="OtherCde" spellcheck="false">
                         </div>
                     </div>
 
                     <div id="inputDescript" class="textDiv">
                         <div class="subTextDiv" style="width:100%;">
-                            <label for="Descript">Item Description</label>
-                            <input type="text" id="Descript" name="Descript" spellcheck="false">
+                            <label for="FiltrRec_Descript">Item Description</label>
+                            <input type="text" id="FiltrRec_Descript" name="Descript" spellcheck="false">
                         </div>
                     </div>
                     <div class="textDiv">
                         <div class="subTextDiv">
-                            <label for="BrandNum">Brand</label>
-                            <select id="BrandNum"></select>
+                            <label for="FiltrRec_BrandNum">Brand</label>
+                            <select id="FiltrRec_BrandNum"></select>
                         </div>
                         <div class="subTextDiv">
-                            <label for="CategNum">Category</label>
-                            <select id="CategNum"></select>
+                            <label for="FiltrRec_CategNum">Category</label>
+                            <select id="FiltrRec_CategNum"></select>
                         </div>
                     </div>
                     <div class="textDiv">
                         <div class="subTextDiv">
-                            <label for="ItemDept">Department</label>
-                            <select id="ItemDept"></select>
+                            <label for="FiltrRec_ItemDept">Department</label>
+                            <select id="FiltrRec_ItemDept"></select>
                         </div>
                         <div class="subTextDiv">
-                            <label for="ItemType">Class</label>
-                            <select id="ItemType"></select>
+                            <label for="FiltrRec_ItemType">Class</label>
+                            <select id="FiltrRec_ItemType"></select>
                         </div>
                     </div>
                 </div>
@@ -116,24 +116,24 @@ export function FiltrRec(cModules_) {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
-            await populateLocation('', '', 'SellArea');
+            await populateLocation('', '', 'SellArea','FiltrRec_Location');
         } else if (cModules_ === 'SaleRnk1') {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
-            await populateLocation('', '', 'SellArea');
+            await populateLocation('', '', 'SellArea','FiltrRec_Location');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
-            await populateLocation('', '', 'SellArea');
+            await populateLocation('', '', 'SellArea','FiltrRec_Location');
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
-            await populateLocation('', '', 'StocArea');
+            await populateLocation('', '', 'StocArea','FiltrRec_Location');
         }
 
         // Show the form by changing its display style
@@ -153,17 +153,17 @@ export function FiltrRec(cModules_) {
             filterData = [formattedDateFrom, formattedDateTo];
         }
 
-        document.getElementById('DateFrom').value = filterData[0];
-        document.getElementById('Date__To').value = filterData[1];
+        document.getElementById('FiltrRec_DateFrom').value = filterData[0];
+        document.getElementById('FiltrRec_Date__To').value = filterData[1];
         
 
         // Wait for populate functions to finish
-        await populateBrandNum('', '');
-        await populateCategNum('', '');
-        await populateItemDept('', '');
-        await populateItemType('', '');
+        await populateBrandNum('', '', 'FiltrRec');
+        await populateCategNum('', '', 'FiltrRec');
+        await populateItemDept('', '', 'FiltrRec');
+        await populateItemType('', '', 'FiltrRec');
 
-        const locationSelect = document.getElementById('Location');
+        const locationSelect = document.getElementById('FiltrRec_Location');
         const locationValue = filterData[2].trim(); // The value that should be selected
         // Check if the select element has options, then set the selected option
         const options = locationSelect.options;
@@ -187,24 +187,24 @@ export function FiltrRec(cModules_) {
 
             // Check for empty values for filter to prevent voluminous data
             if (cModules_==='ListItem') {
-                const BrandNum = document.getElementById('BrandNum')
+                const BrandNum = document.getElementById('FiltrRec_BrandNum')
                 if (!checkEmptyValue(BrandNum)) {
                     return;  
                 }
             }
     
-            const dDateFrom = document.getElementById('DateFrom').value;
-            const dDate__To = document.getElementById('Date__To').value;
-            const cLocation = document.getElementById('Location').value.trim();
-            const cReferDoc = document.getElementById('ReferDoc').value.trim();
+            const dDateFrom = document.getElementById('FiltrRec_DateFrom').value;
+            const dDate__To = document.getElementById('FiltrRec_Date__To').value;
+            const cLocation = document.getElementById('FiltrRec_Location').value.trim();
+            const cReferDoc = document.getElementById('FiltrRec_ReferDoc').value.trim();
 
-            const cUsersCde = document.getElementById('UsersCde').value.trim();
-            const cOtherCde = document.getElementById('OtherCde').value.trim();
-            const cDescript = document.getElementById('Descript').value.trim();
-            const cBrandNum = document.getElementById('BrandNum').value;
-            const cCategNum = document.getElementById('CategNum').value;
-            const cItemType = document.getElementById('ItemType').value;
-            const cItemDept = document.getElementById('ItemDept').value;
+            const cUsersCde = document.getElementById('FiltrRec_UsersCde').value.trim();
+            const cOtherCde = document.getElementById('FiltrRec_OtherCde').value.trim();
+            const cDescript = document.getElementById('FiltrRec_Descript').value.trim();
+            const cBrandNum = document.getElementById('FiltrRec_BrandNum').value;
+            const cCategNum = document.getElementById('FiltrRec_CategNum').value;
+            const cItemType = document.getElementById('FiltrRec_ItemType').value;
+            const cItemDept = document.getElementById('FiltrRec_ItemDept').value;
 
             const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
                 cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc];
