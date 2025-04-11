@@ -53,3 +53,24 @@
     font-size: 24px; /* You can adjust this size */
   }
   
+@keyframes wiggle {
+0%, 100% { transform: rotate(0deg); }
+25% { transform: rotate(40deg); }
+75% { transform: rotate(-40deg); }
+}
+.wiggle-on-hover:hover {
+    animation: wiggle 0.6s ease;
+}
+
+@keyframes smallWiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    75% { transform: rotate(-10deg); }
+    }
+.wiggle-on-hover:hover {
+    animation: smallwiggle 0.6s ease;
+}
+    
+*, *::before, *::after {
+    box-sizing: border-box;
+}

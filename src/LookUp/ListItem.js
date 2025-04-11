@@ -167,6 +167,7 @@ async function ItemForm(index, editMode) {
     // Create the form element
     const itemForm = document.createElement('form');
     itemForm.id = "item-form";
+    itemForm.classList.add('item-form');
     itemForm.style.display = "none";  // Start with it hidden
 
     itemForm.innerHTML = `

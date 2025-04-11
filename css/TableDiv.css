@@ -27,9 +27,6 @@
     grid-template-rows: auto 1fr auto;
     grid-template-columns: minmax(0, 1fr);    
 }
-/* #SaleForm { 
-    overflow: hidden;
-}  */
 
 .itemsTableDiv {
     display: flex;
@@ -50,16 +47,7 @@
     padding: 0px 10px;
     overflow: auto;
 }
-/* .ListItemTable {
-    display:table-header-group;
-    flex-direction: column;
-    width: 100%; 
-
-    position: static;
-    max-height: 78%;
-    padding: 0px 10px;
-    overflow: auto;
-} */
+  
 
 .ReportHead {
     height: auto;
@@ -107,15 +95,6 @@
 .footSegments button:hover{
     opacity: 0.8;
 }
-.ScanCode {
-    height: 30px;
-    max-width: 300px;
-    margin-right: 10px;
-    margin-left: 10px;
-    padding: 0px 20px;
-
-}
-
 /* Table */
 table {
     margin-top: 0px;
@@ -185,8 +164,10 @@ td:last-child {
     padding-right: 6px;
 
 }
+
 .closeForm:hover {
     background-color: red;
+    animation: wiggle 0.6s ease;
 }
 
 tr  {
@@ -195,7 +176,9 @@ tr  {
     cursor: pointer;
 }
 tr:nth-child(even) {
-    background-color: rgb(230,230,230);
+    /* background-color: rgb(230,230,230); */
+    /* background-color: rgb(240, 240, 240); Lighter shade for even rows */
+    background-color: rgb(236, 236, 236); 
 }
 tr:hover {
     color: black;
@@ -253,3 +236,97 @@ tr:hover td.action-icons i {
     visibility: visible; /* Icon becomes visible on row hover */
     opacity: 1;
 }
+
+
+#pickItemDiv {
+    /* display: flex; So children like the table can flex-grow */
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    height: 400px;
+    width: auto;  
+    /* max-width: 1000px; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow: hidden; 
+
+}
+
+.PickItemTable {
+    width: 100%;
+    height: 100%;  
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.PickItemTable thead {
+    background-color: #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.PickItemTable tbody {
+    display: block;
+    flex: 1;
+    overflow-y: auto;
+    height: 100%; /* Will be constrained by its container */
+}
+
+.PickItemTable thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.PickItemTable tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    scroll-margin-top: 40px;
+
+}
+.PickItemTable tr.highlight {
+    background-color: yellow;
+}
+
+/* .PickItemTable {
+    display: table-header-group;
+    flex-direction: column;
+    width: 100%; 
+    height: auto;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+} */
+
+/* #dropdownTable {
+    display: none;           
+    list-style: none;        
+    margin: 0;
+    padding: 0;
+    width: 500px;             
+    background-color: red;
+    border: 1px solid #ccc;
+    box-sizing: border-box;  
+    overflow-y: auto;        
+} */
+
+/* .highlight {
+    color: black; 
+} */

@@ -122,7 +122,7 @@ async function SaleForm(index,editMode) {
     currentRec = globalData[index];
 
     reportBody.innerHTML = `
-        <div id="invoiceForm">
+        <div id="invoiceForm" class="invoice">
             <div id="inputSale1" class="textDiv">
                 <div>
                     <label for="SalesRec_Location">Location</label>
@@ -153,7 +153,7 @@ async function SaleForm(index,editMode) {
             </div>
         </div>
         <div class="itemsTableDiv" id="itemsTableDiv";>
-            <table class="ListItemTable">
+            <table class="SalesDtlTable">
                 <thead id="ListItemHead">
                     <tr>
                         <th>Qty</th>
@@ -171,7 +171,7 @@ async function SaleForm(index,editMode) {
             </table>
         </div>  
         <div class="paymentTableDiv" id="paymentTableDiv";>
-            <table class="ListItemTable">
+            <table class="SalesDtlTable">
                 <thead id="ListPaymentHead">
                     <tr>
                         <th>Payment Mode</th>
@@ -508,12 +508,12 @@ function updateItemTable(refreshOnly=false) {
             // If not a delete button, handle the row click
             const row = event.target.closest('tr');
             if (row) {
-                // const rows = document.querySelectorAll('.ListItemTable tbody tr');
+                // const rows = document.querySelectorAll('.SalesDtlTable tbody tr');
                 // rows.forEach(r => r.classList.remove('selected'));
                 // // Add 'selected' class to the clicked row
                 // row.classList.add('selected');
 
-                highlightRow(row, '.ListItemTable');
+                highlightRow(row, '.SalesDtlTable');
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
@@ -555,7 +555,8 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
 
 function SalesDtl(index,editMode) {
     const itemsDtlForm = document.createElement('form');
-    itemsDtlForm.id = "items-form";
+    itemsDtlForm.id = "sale-form";
+    itemsDtlForm.classList.add('item-form');
     itemsDtlForm.style.display = "none";  // Start with it hidden
 
     const itemData = itemsDtl[index];
@@ -715,7 +716,7 @@ function SalesDtl(index,editMode) {
                     UsersCde.focus()
                 } else if (buttonIndex === 1) {
                     document.getElementById('modal-overlay').remove();
-                    document.getElementById('items-form').remove();  // Close the form
+                    document.getElementById('sale-form').remove();  // Close the form
                 }
             })
             return;        
@@ -734,12 +735,12 @@ function SalesDtl(index,editMode) {
 
             addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
         }
-        document.getElementById('items-form').remove()
+        document.getElementById('sale-form').remove()
         document.getElementById('modal-overlay').remove();
     })
 
     document.getElementById('cancelSalesDtlBtn').addEventListener('click', () => {
-        document.getElementById('items-form').remove()
+        document.getElementById('sale-form').remove()
         document.getElementById('modal-overlay').remove();
     })
 }

@@ -117,7 +117,7 @@ async function StocForm(index,editMode) {
     currentRec = globalData[index];
 
     reportBody.innerHTML = `
-        <div id="transfersForm">
+        <div id="transfersForm" class="invoice">
             <div id="inputStock1" class="textDiv">
                 <div class="textDiv">
                     <div>
@@ -135,21 +135,29 @@ async function StocForm(index,editMode) {
                 </div>
             </div>
             <div id="inputStock2" class="textDiv">
-                <div>
-                    <label for="StockRec_Prepared">Transferred By:</label>
-                    <input type="text" id="StockRec_Prepared" spellcheck="false">
+                <div class="textDiv">
+                    <div>
+                        <label for="StockRec_Prepared">Transferred By:</label>
+                        <input type="text" id="StockRec_Prepared" spellcheck="false">
+                    </div>
+                    <div>
+                        <label for="StockRec_Date____">Date Issued:</label>
+                        <input type="date" id="StockRec_Date____">
+                    </div>
+                </div>
+                <div class="textDiv">
+                    <div>
+                        <label for="StockRec_Received">Received By:</label>
+                        <input type="text" id="StockRec_Received" spellcheck="false">
+                    </div>
+                    <div>
+                        <label for="StockRec_DateRcvd">Date Received:</label>
+                        <input type="date" id="StockRec_DateRcvd">
+                    </div>
                 </div>
                 <div>
                     <label for="StockRec_Remarks_">Remarks</label>
                     <input type="text" id="StockRec_Remarks_" spellcheck="false">
-                </div>
-                <div>
-                    <label for="StockRec_Date____">Date Issued:</label>
-                    <input type="date" id="StockRec_Date____">
-                </div>
-                <div>
-                    <label for="StockRec_DateRcvd">Date Received:</label>
-                    <input type="date" id="StockRec_DateRcvd">
                 </div>
                 <div id="chkDiv">
                     <input type="checkbox" id="StockRec_Disabled" >
@@ -158,7 +166,7 @@ async function StocForm(index,editMode) {
             </div>
         </div>
         <div class="itemsTableDiv" id="itemsTableDiv";>
-            <table class="ListItemTable">
+            <table class="StockDtlTable">
                 <thead id="ListItemHead">
                     <tr>
                         <th>Stock No.</th>
@@ -189,8 +197,9 @@ async function StocForm(index,editMode) {
         document.getElementById('StockRec_ReferDoc').value=itemData.ReferDoc
         document.getElementById('StockRec_Date____').value=formatDate(itemData.Date____,'YYYY-MM-DD')
         document.getElementById('StockRec_DateRcvd').value=formatDate(itemData.DateRcvd,'YYYY-MM-DD')
-        document.getElementById('StockRec_Remarks_').value=itemData.Remarks_
         document.getElementById('StockRec_Prepared').value=itemData.Prepared
+        document.getElementById('StockRec_Received').value=itemData.Received
+        document.getElementById('StockRec_Remarks_').value=itemData.Remarks_
         document.getElementById('StockRec_Disabled').checked=itemData.Disabled ? true : false
 
 
@@ -261,6 +270,7 @@ document.getElementById('saveStockRecBtn').addEventListener('click', () => {
     const dDate____=document.getElementById('StockRec_Date____').value
     const dDateRcvd=document.getElementById('StockRec_DateRcvd').value
     const cPrepared=document.getElementById('StockRec_Prepared').value
+    const cReceived=document.getElementById('StockRec_Received').value
     const lDisabled=document.getElementById('StockRec_Disabled').checked ? 1 : 0 
 
     if (!cWhseFrom) {
@@ -276,7 +286,7 @@ document.getElementById('saveStockRecBtn').addEventListener('click', () => {
 
     if (stockDtlCounter) {
 
-        editStockRec(currentRec.CtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled)
+        editStockRec(currentRec.CtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived, lDisabled)
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
@@ -286,7 +296,7 @@ document.getElementById('saveStockRecBtn').addEventListener('click', () => {
         const nNoOfItem=0
         
         if (addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-            dLog_Date, nNoOfItem, cPrepared, cSuffixId)) {
+            dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId)) {
             document.getElementById("addStockDtl").disabled = false;
             document.getElementById("StockRec_ScanCode").disabled = false;
     
@@ -299,7 +309,7 @@ document.getElementById('cancelStockRecBtn').addEventListener('click', () => {
     showReport('StockLst')  
 });
 
-async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled) {
+async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived ,lDisabled) {
 
     lDisabled = document.getElementById("StockRec_Disabled").checked ? '1' : '0';
 
@@ -317,6 +327,7 @@ async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcv
                 dDateRcvd: dDateRcvd,
                 cRemarks_: cRemarks_,
                 cPrepared: cPrepared,
+                cReceived: cReceived,
                 lDisabled: lDisabled
             })
         });
@@ -340,7 +351,7 @@ async function editStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcv
 
 
 async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cPrepared, cSuffixId) {
+    dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId) {
     // console.log(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
     //     dLog_Date, nNoOfItem, cPrepared, cSuffixId)
     try {
@@ -360,6 +371,7 @@ async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd
                 dLog_Date: dLog_Date,
                 nNoOfItem: nNoOfItem,
                 cPrepared: cPrepared,
+                cReceived: cReceived,
                 cSuffixId: cSuffixId
             })
         });
@@ -478,7 +490,7 @@ function updateItemTable(refreshOnly=false) {
             const row = event.target.closest('tr');
             if (row) {
 
-                highlightRow(row, '.ListItemTable');
+                highlightRow(row, '.StockDtlTable');
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
@@ -1253,148 +1265,3 @@ function debounce(func, delay) {
 }
 
 
-// async function addScanCode() {
-//     const ScanCode = document.getElementById('StockRec_ScanCode')
-//     if (!ScanCode.value) {
-//         ScanCode.focus();
-//         return;
-//     }
-//     if (ScanCode.value.length < 5) {
-//         ScanCode.focus();
-//         return;
-//     }
-
-//     try {
-//         let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
-
-//         // Call to your backend to validate and get the list of items
-//         const dataItem = await validateField('StockRec','ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
-        
-//         if (!dataItem) {
-//             alert(`${ScanCode.value} is not found.`)
-//             ScanCode.value='';
-//             ScanCode.focus();
-//             return;
-//         }
-
-//         if (dataItem) {
-//             // If more than one item is returned, show the pick list
-//             if (dataItem.length > 1) {
-//                 const inputElement = ScanCode;
-                
-//                 // Call pickItem function to show the pick list
-//                 const selectedItem = await pickItem(dataItem, inputElement);
-//                 if (!selectedItem) {
-//                     // Handle case where no selection is made
-//                     ScanCode.value = '';
-//                     ScanCode.focus();
-//                     return;
-//                 }
-                
-//                 // Proceed with the selected item
-//                 cItemCode = selectedItem.ItemCode
-//                 nItemPrce = selectedItem.ItemPrce
-//                 nLandCost = selectedItem.LandCost
-//                 nItemCost = selectedItem.ItemCost
-
-//             } else {
-//                 // If only one item is returned, fill in the form fields
-//                 const item = dataItem[0]; // The single item returned
-//                 cItemCode = item.ItemCode
-//                 nItemPrce = item.ItemPrce
-//                 nLandCost = item.LandCost
-//                 nItemCost = item.ItemCost
-
-//             }
-//         }
-//         // Close pickListDiv if it's open
-//         const pickListDiv = document.getElementById('pickListDiv');
-//         if (pickListDiv) {
-//             pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-//         }
-
-//         const cCtrlNum_ = currentRec.CtrlNum_
-//         const nAmount__ = nItemPrce
-//         const nQuantity = 1
-//         const nQtyRecvd = 1
-
-//         // console.log(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
-//         addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost)
-//         ScanCode.value=''
-//         ScanCode.focus()
-
-//     } catch (error) {
-//         console.error("Error fetching or processing data:", error);
-//     }
-
-// }
-
-// async function chkUsersCde(editMode) {
-//     const UsersCde=document.getElementById('StockRec_UsersCde')
-//     if (!UsersCde.value ) {
-//         UsersCde.focus();
-//         return;
-//     }
-//     if (UsersCde.value.length < 5) {
-//         UsersCde.focus()
-//         return;
-//     }
-
-//     try {
-//         // Call to your backend to validate and get the list of items
-//         let dataItemList = await validateField('StockRec','UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
-
-//         if (dataItemList) {
-//             // If more than one item is returned, show the pick list
-//             if (dataItemList.length > 1) {
-//                 const inputElement = UsersCde;
-                
-//                 // Call pickItem function to show the pick list
-//                 const selectedItem = await pickItem(dataItemList, inputElement);
-//                 if (!selectedItem) {
-//                     // Handle case where no selection is made
-//                     UsersCde.value = '';
-//                     UsersCde.focus();
-//                     return;
-//                 }
-                
-//                 // Proceed with the selected item
-//                 document.getElementById('StockRec_UsersCde').value = selectedItem.UsersCde;
-//                 document.getElementById('StockRec_OtherCde').value = selectedItem.OtherCde;
-//                 document.getElementById('StockRec_Descript').value = selectedItem.Descript;
-//                 document.getElementById('StockRec_Amount__').value = selectedItem.ItemPrce;
-
-
-//                 // Additional variables
-//                 nLandCost = selectedItem.LandCost;
-//                 cItemCode = selectedItem.ItemCode;
-
-//             } else {
-//                 // If only one item is returned, fill in the form fields
-//                 const item = dataItemList[0]; // The single item returned
-//                 document.getElementById('StockRec_UsersCde').value = item.UsersCde;
-//                 document.getElementById('StockRec_OtherCde').value = item.OtherCde;
-//                 document.getElementById('StockRec_Descript').value = item.Descript;
-
-//                 if (!editMode) {
-//                     document.getElementById('StockRec_Amount__').value = item.ItemPrce;
-//                 }
-
-//                 // Set additional fields
-//                 nLandCost = item.LandCost;
-//                 cItemCode = item.ItemCode;
-//             }
-//             // Close pickListDiv if it's open
-//             const pickListDiv = document.getElementById('pickListDiv');
-//             if (pickListDiv) {
-//                 pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
-//             }
-
-//         }
-
-
-//     } catch (error) {
-//         console.error("Error fetching or processing data:", error);
-//     }
-
-// }

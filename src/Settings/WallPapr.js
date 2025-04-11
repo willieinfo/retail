@@ -39,15 +39,54 @@ function changeWallPaper() {
 
     const titleBar = document.createElement('div');
     titleBar.id = 'titleBar';
+    titleBar.style.display = 'flex';
+    titleBar.style.width = '100%';
     titleBar.style.position = "sticky";
     titleBar.style.top = "0px";
-    titleBar.zindex = "1";
-
-    const pickListTitle = document.createElement('span');
-    pickListTitle.innerText = "Click to select wall paper from list";
-    selectWallPaper.appendChild(titleBar)
-    titleBar.appendChild(pickListTitle);
+    titleBar.style.justifyContent = "space-between";
+    titleBar.style.alignItems = "center";
+    titleBar.style.padding = "10px";
+    titleBar.style.zIndex = "1";
+    titleBar.style.borderBottom = "1px solid #ccc";
     
+    // Create title text
+    const titleText = document.createElement('p');
+    titleText.textContent = "Click to select wall paper";
+    titleText.style.margin = "0";
+    titleText.style.flex = "1";  
+    titleText.style.whiteSpace = "nowrap";  
+    titleText.style.overflow = "hidden";
+    titleText.style.textOverflow = "ellipsis";
+
+    // Create close button
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'closeForm';
+    closeBtn.innerHTML = '<i class="fa fa-close"></i>';
+    closeBtn.style.cursor = "pointer";
+    closeBtn.style.flex = "0";  
+    closeBtn.style.marginLeft = "10px";
+    closeBtn.style.display = 'flex';
+    closeBtn.style.alignItems = 'center';
+    closeBtn.style.justifyContent = 'center';
+    closeBtn.style.height = '100%'; 
+    closeBtn.classList.add('wiggle-on-hover');
+
+    closeBtn.addEventListener('mouseenter', () => {
+        closeBtn.style.backgroundColor = 'red';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+        closeBtn.style.backgroundColor = ''; // or restore original color
+    });
+    closeBtn.addEventListener('click', () => {
+        selectWallPaper.style.display = 'none';
+    });
+        
+    // Append both to titleBar
+    titleBar.appendChild(titleText);
+    titleBar.appendChild(closeBtn);
+    
+    // Append titleBar to the main container
+    selectWallPaper.appendChild(titleBar);
 
     // Create image containers dynamically
     const imgMainDiv = document.createElement('div');

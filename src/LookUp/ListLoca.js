@@ -138,8 +138,8 @@ async function updateTableRow(index , cLocation) {
 
 
 async function LocaForm(index, editMode) {
-    if (document.getElementById('item-form')) {
-        console.log("item-form exists");
+    if (document.getElementById('stoc-form')) {
+        console.log("stoc-form exists");
         return; // If it already exists, do nothing
     }
 
@@ -147,7 +147,8 @@ async function LocaForm(index, editMode) {
 
     // Create the form element
     const itemForm = document.createElement('form');
-    itemForm.id = "item-form";
+    itemForm.id = "stoc-form";
+    itemForm.classList.add('item-form');
     itemForm.style.display = "none";  // Start with it hidden
 
     itemForm.innerHTML = `
@@ -226,7 +227,7 @@ async function LocaForm(index, editMode) {
 
     // Event listener for Cancel button to close the modal
     document.getElementById('cancelLocationBtn').addEventListener('click', () => {
-        document.getElementById('item-form').remove(); // Remove the form from the DOM
+        document.getElementById('stoc-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
 
@@ -261,7 +262,7 @@ async function LocaForm(index, editMode) {
             addLocation(cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled)
                             
         }
-        document.getElementById('item-form').remove(); // Remove the form from the DOM
+        document.getElementById('stoc-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
     });
 }

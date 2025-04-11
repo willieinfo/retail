@@ -453,125 +453,125 @@ export function highlightRow(targetRow, tableSelector) {
     targetRow.style.fontWeight = 'bold';
 }
 
-export function pickItem_bak(dataItemList, inputElement) {
-    return new Promise((resolve) => {
-        if (!inputElement) return;
+// export function pickList(dataItemList, inputElement) {
+//     return new Promise((resolve) => {
+//         if (!inputElement) return;
 
-        // Disable autocomplete to prevent suggestions
-        inputElement.setAttribute('autocomplete', 'off');
+//         // Disable autocomplete to prevent suggestions
+//         inputElement.setAttribute('autocomplete', 'off');
 
-        // Create the pickListDiv and dropdownList dynamically
-        const pickListDiv = document.createElement('div');
-        pickListDiv.id = 'pickListDiv';
-        const dropdownList = document.createElement('ul');
-        dropdownList.id = 'dropdownList';
-        const pickListTitle = document.createElement('span');
-        pickListTitle.innerText = "Click to select item from list";
-        pickListDiv.appendChild(pickListTitle);
+//         // Create the pickListDiv and dropdownList dynamically
+//         const pickListDiv = document.createElement('div');
+//         pickListDiv.id = 'pickListDiv';
+//         const dropdownList = document.createElement('ul');
+//         dropdownList.id = 'dropdownList';
+//         const pickListTitle = document.createElement('span');
+//         pickListTitle.innerText = "Click to select item from list";
+//         pickListDiv.appendChild(pickListTitle);
 
-        // Append the dropdown list to the pick list div
-        pickListDiv.appendChild(dropdownList);
-        document.body.appendChild(pickListDiv);  // Add it to the body
+//         // Append the dropdown list to the pick list div
+//         pickListDiv.appendChild(dropdownList);
+//         document.body.appendChild(pickListDiv);  // Add it to the body
 
-        // Show the pickListDiv and dropdownList
-        pickListDiv.style.display = 'flex';  // Show the pickListDiv
-        dropdownList.style.display = 'block';  // Show the dropdown
+//         // Show the pickListDiv and dropdownList
+//         pickListDiv.style.display = 'flex';  // Show the pickListDiv
+//         dropdownList.style.display = 'block';  // Show the dropdown
 
-        dropdownList.innerHTML = ''; // Clear previous items
+//         dropdownList.innerHTML = ''; // Clear previous items
 
-        // Loop through dataItemList and create <li> elements
-        dataItemList.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = `${item.UsersCde} - ${item.Descript.substring(0, 24)} - P ${formatter.format(item.ItemPrce)}`;
+//         // Loop through dataItemList and create <li> elements
+//         dataItemList.forEach(item => {
+//             const li = document.createElement('li');
+//             li.textContent = `${item.UsersCde} - ${item.Descript.substring(0, 24)} - P ${formatter.format(item.ItemPrce)}`;
 
-            // Add click event to each <li> for selection
-            li.addEventListener('click', () => {
-                // Fill the input with the selected item’s information
-                inputElement.value = item.UsersCde;  // or any value you want to fill
+//             // Add click event to each <li> for selection
+//             li.addEventListener('click', () => {
+//                 // Fill the input with the selected item’s information
+//                 inputElement.value = item.UsersCde;  // or any value you want to fill
 
-                // Close the dropdown and pick list after selection
-                dropdownList.style.display = 'none';
-                pickListDiv.style.display = 'none';
+//                 // Close the dropdown and pick list after selection
+//                 dropdownList.style.display = 'none';
+//                 pickListDiv.style.display = 'none';
 
-                // Resolve the promise with the selected item
-                resolve(item); // Return the selected item when clicked
-            });
+//                 // Resolve the promise with the selected item
+//                 resolve(item); // Return the selected item when clicked
+//             });
 
-            // Append the <li> item to the dropdown list
-            dropdownList.appendChild(li);
-        });
+//             // Append the <li> item to the dropdown list
+//             dropdownList.appendChild(li);
+//         });
 
-        // Variables to track the highlighted index and the highlighted item
-        let highlightedIndex = -1;
-        let highlightedItem = null;  // Store the item being highlighted
-        const items = dropdownList.querySelectorAll('li');
+//         // Variables to track the highlighted index and the highlighted item
+//         let highlightedIndex = -1;
+//         let highlightedItem = null;  // Store the item being highlighted
+//         const items = dropdownList.querySelectorAll('li');
 
-        // Function to highlight an item
-        function highlightItem(index) {
-            // Remove highlight from all items
-            items.forEach(item => item.classList.remove('highlight'));
+//         // Function to highlight an item
+//         function highlightItem(index) {
+//             // Remove highlight from all items
+//             items.forEach(item => item.classList.remove('highlight'));
 
-            // Only highlight if the index is valid
-            if (index >= 0 && index < items.length) {
-                items[index].classList.add('highlight');  // Add highlight to the current item
-                highlightedItem = dataItemList[index];  // Update highlighted item
+//             // Only highlight if the index is valid
+//             if (index >= 0 && index < items.length) {
+//                 items[index].classList.add('highlight');  // Add highlight to the current item
+//                 highlightedItem = dataItemList[index];  // Update highlighted item
 
-                // Auto-scroll if the highlighted item is out of view
-                const item = items[index];
-                const itemTop = item.offsetTop;
-                const itemBottom = itemTop + item.offsetHeight;
-                const listTop = dropdownList.scrollTop;
-                const listBottom = listTop + dropdownList.offsetHeight;
+//                 // Auto-scroll if the highlighted item is out of view
+//                 const item = items[index];
+//                 const itemTop = item.offsetTop;
+//                 const itemBottom = itemTop + item.offsetHeight;
+//                 const listTop = dropdownList.scrollTop;
+//                 const listBottom = listTop + dropdownList.offsetHeight;
 
-                // Scroll the picklist to make the highlighted item fully visible
-                if (itemTop < listTop) {
-                    // If the item is above the visible area, scroll up
-                    dropdownList.scrollTop = itemTop;
-                } else if (itemBottom > listBottom) {
-                    // If the item is below the visible area, scroll down
-                    dropdownList.scrollTop = itemBottom - dropdownList.offsetHeight;
-                }
-            }
-        }
+//                 // Scroll the picklist to make the highlighted item fully visible
+//                 if (itemTop < listTop) {
+//                     // If the item is above the visible area, scroll up
+//                     dropdownList.scrollTop = itemTop;
+//                 } else if (itemBottom > listBottom) {
+//                     // If the item is below the visible area, scroll down
+//                     dropdownList.scrollTop = itemBottom - dropdownList.offsetHeight;
+//                 }
+//             }
+//         }
 
-        // Handle keydown events for ArrowDown, ArrowUp, and Enter
-        inputElement.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowDown') {
-                // Move down in the list
-                if (highlightedIndex < items.length - 1) {
-                    highlightedIndex++;
-                }
-                highlightItem(highlightedIndex);
-            } else if (e.key === 'ArrowUp') {
-                // Move up in the list
-                if (highlightedIndex > 0) {
-                    highlightedIndex--;
-                }
-                highlightItem(highlightedIndex);
-            } else if (e.key === 'Enter') {
-                // Select the highlighted item
-                if (highlightedItem) {
-                    inputElement.value = highlightedItem.UsersCde;
+//         // Handle keydown events for ArrowDown, ArrowUp, and Enter
+//         inputElement.addEventListener('keydown', (e) => {
+//             if (e.key === 'ArrowDown') {
+//                 // Move down in the list
+//                 if (highlightedIndex < items.length - 1) {
+//                     highlightedIndex++;
+//                 }
+//                 highlightItem(highlightedIndex);
+//             } else if (e.key === 'ArrowUp') {
+//                 // Move up in the list
+//                 if (highlightedIndex > 0) {
+//                     highlightedIndex--;
+//                 }
+//                 highlightItem(highlightedIndex);
+//             } else if (e.key === 'Enter') {
+//                 // Select the highlighted item
+//                 if (highlightedItem) {
+//                     inputElement.value = highlightedItem.UsersCde;
 
-                    // Close the dropdown and pick list after selection
-                    dropdownList.style.display = 'none';
-                    pickListDiv.style.display = 'none';
+//                     // Close the dropdown and pick list after selection
+//                     dropdownList.style.display = 'none';
+//                     pickListDiv.style.display = 'none';
 
-                    // Resolve the promise with the highlighted item (the single item)
-                    resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
-                }
-            }
-        });
+//                     // Resolve the promise with the highlighted item (the single item)
+//                     resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
+//                 }
+//             }
+//         });
 
-        // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
-        document.addEventListener('click', (e) => {
-            if (!pickListDiv.contains(e.target)) {
-                dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
-                pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
-            }
-        });
-    });
-}
+//         // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+//         document.addEventListener('click', (e) => {
+//             if (!pickListDiv.contains(e.target)) {
+//                 dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
+//                 pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+//             }
+//         });
+//     });
+// }
 
 
 // imageLoader.js
@@ -660,10 +660,10 @@ export async function chkUsersCde(editMode, cModule, otherDetails) {
                 otherDetails.nLandCost = item.LandCost;
                 otherDetails.cItemCode = item.ItemCode;
             }
-            // Close pickListDiv if it's open
-            const pickListDiv = document.getElementById('pickListDiv');
-            if (pickListDiv) {
-                pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+            // Close pickItemDiv if it's open
+            const pickItemDiv = document.getElementById('pickItemDiv');
+            if (pickItemDiv) {
+                pickItemDiv.style.display = 'none';  // Hide the pickItemDiv if it's open
             }
 
         }
@@ -728,10 +728,10 @@ export async function addScanCode(cModule, currentRec) {
 
             }
         }
-        // Close pickListDiv if it's open
-        const pickListDiv = document.getElementById('pickListDiv');
-        if (pickListDiv) {
-            pickListDiv.style.display = 'none';  // Hide the pickListDiv if it's open
+        // Close pickItemDiv if it's open
+        const pickItemDiv = document.getElementById('pickItemDiv');
+        if (pickItemDiv) {
+            pickItemDiv.style.display = 'none';  // Hide the pickItemDiv if it's open
         }
 
         const cCtrlNum_ = currentRec.CtrlNum_
@@ -759,8 +759,6 @@ export async function addScanCode(cModule, currentRec) {
 }
 
 
-
-
 export function pickItem(dataItemList, inputElement) {
     return new Promise((resolve) => {
         if (!inputElement) return;
@@ -768,11 +766,13 @@ export function pickItem(dataItemList, inputElement) {
         // Disable autocomplete to prevent suggestions
         inputElement.setAttribute('autocomplete', 'off');
 
-        // Create the pickListDiv and dropdownList dynamically
-        const pickListDiv = document.createElement('div');
-        pickListDiv.id = 'pickListDiv';
+        // Create the pickItemDiv and dropdownList dynamically
+        const pickItemDiv = document.createElement('div');
+        pickItemDiv.id = 'pickItemDiv';
+
         const dropdownList = document.createElement('table');
-        dropdownList.classList.add('ListItemTable');
+        dropdownList.classList.add('PickItemTable');
+
         const thead = document.createElement('thead');
         thead.innerHTML = `
             <tr>
@@ -787,19 +787,66 @@ export function pickItem(dataItemList, inputElement) {
         dropdownList.appendChild(thead);
         dropdownList.appendChild(tbody);
 
-        const pickListTitle = document.createElement('span');
-        pickListTitle.innerText = "Click to select item from list";
-        pickListDiv.appendChild(pickListTitle);
+        const titleBar = document.createElement('div');
+        titleBar.id = 'titleBar';
+        titleBar.style.display = 'flex';
+        titleBar.style.width = '100%';
+        titleBar.style.position = "sticky";
+        titleBar.style.top = "0px";
+        titleBar.style.justifyContent = "space-between";
+        titleBar.style.alignItems = "center";
+        titleBar.style.padding = "10px";
+        titleBar.style.zIndex = "1";
+        titleBar.style.borderBottom = "1px solid #ccc";
+        
+        // Create title text
+        const titleText = document.createElement('p');
+        titleText.textContent = "Click to select item from list";
+        titleText.style.margin = "0";
+        titleText.style.flex = "1";  
+        titleText.style.whiteSpace = "nowrap";  
+        titleText.style.overflow = "hidden";
+        titleText.style.textOverflow = "ellipsis";
+    
+        // Create close button
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'closeForm';
+        closeBtn.innerHTML = '<i class="fa fa-close"></i>';
+        closeBtn.style.cursor = "pointer";
+        closeBtn.style.flex = "0";  
+        closeBtn.style.marginLeft = "10px";
+        closeBtn.style.display = 'flex';
+        closeBtn.style.alignItems = 'center';
+        closeBtn.style.justifyContent = 'center';
+        closeBtn.style.height = '100%'; 
+        closeBtn.classList.add('wiggle-on-hover');
+        closeBtn.addEventListener('mouseenter', () => {
+            closeBtn.style.backgroundColor = 'red';
+        });
+        closeBtn.addEventListener('mouseleave', () => {
+            closeBtn.style.backgroundColor = ''; // or restore original color
+        });
+        closeBtn.addEventListener('click', () => {
+            pickItemDiv.style.display = 'none';
+        });
+            
+        // Append both to titleBar
+        titleBar.appendChild(titleText);
+        titleBar.appendChild(closeBtn);
+        pickItemDiv.appendChild(titleBar);
 
         // Append the dropdown list to the pick list div
-        pickListDiv.appendChild(dropdownList);
-        document.body.appendChild(pickListDiv);  // Add it to the body
+        pickItemDiv.appendChild(dropdownList);
+        document.body.appendChild(pickItemDiv);  // Add it to the body
 
-        // Show the pickListDiv and dropdownList
-        pickListDiv.style.display = 'flex';  // Show the pickListDiv
+        // Show the pickItemDiv and dropdownList
+        pickItemDiv.style.display = 'flex';  // Show the pickItemDiv
         dropdownList.style.display = 'block';  // Show the dropdown
 
         tbody.innerHTML = ''; // Clear previous items
+        // console.log("pickItemDiv height:", pickItemDiv.offsetHeight);
+        // console.log(pickItemDiv.scrollHeight, pickItemDiv.clientHeight);
+
 
         // Loop through dataItemList and create <tr> elements for the table
         dataItemList.forEach(item => {
@@ -819,7 +866,7 @@ export function pickItem(dataItemList, inputElement) {
 
                 // Close the dropdown and pick list after selection
                 tbody.style.display = 'none';
-                pickListDiv.style.display = 'none';
+                pickItemDiv.style.display = 'none';
 
                 // Resolve the promise with the selected item
                 resolve(item); // Return the selected item when clicked
@@ -830,15 +877,13 @@ export function pickItem(dataItemList, inputElement) {
         });
 
         // Variables to track the highlighted index and the highlighted item
-        let highlightedIndex = -1;
+        let highlightedIndex = 0    //-1 no highlight at start;
         let highlightedItem = null;  // Store the item being highlighted
         const rows = tbody.querySelectorAll('tr');
+        highlightRow(highlightedIndex);
 
         // Function to highlight a row
         function highlightRow(index) {
-            // Log the index and row being highlighted for debugging
-            // console.log(`Highlighting row at index: ${index}`);
-        
             // Remove the highlight from all rows
             rows.forEach(row => row.classList.remove('highlight'));
         
@@ -846,9 +891,6 @@ export function pickItem(dataItemList, inputElement) {
             if (index >= 0 && index < rows.length) {
                 rows[index].classList.add('highlight');
                 highlightedItem = dataItemList[index];  // Update the highlighted item
-        
-                // Log which row is being highlighted
-                // console.log(`Row highlighted:`, rows[index]);
         
                 // Get the row and its position
                 const row = rows[index];
@@ -868,14 +910,14 @@ export function pickItem(dataItemList, inputElement) {
             }
         }
         
-        // Set focus on pickListDiv or dropdownList to capture keydown events
+        // Set focus on pickItemDiv or dropdownList to capture keydown events
         dropdownList.tabIndex = 0;  // Make sure the table is focusable
         dropdownList.focus();  // Focus on the table to start receiving keydown events
 
-        // Attach the keydown event listener to the pickListDiv (table dropdown)
+        // Attach the keydown event listener to the pickItemDiv (table dropdown)
         dropdownList.addEventListener('keydown', (e) => {
-            console.log('keydown event triggered', e.key); // Log keydown event for debugging
-
+            // console.log('keydown event triggered', e.key); 
+            // e.preventDefault()
             const rows = tbody.querySelectorAll('tr');
 
             if (e.key === 'ArrowDown') {
@@ -897,7 +939,7 @@ export function pickItem(dataItemList, inputElement) {
 
                     // Close the dropdown and pick list after selection
                     tbody.style.display = 'none';
-                    pickListDiv.style.display = 'none';
+                    pickItemDiv.style.display = 'none';
 
                     // Resolve the promise with the highlighted item (the single item)
                     resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
@@ -905,11 +947,11 @@ export function pickItem(dataItemList, inputElement) {
             }
         });
 
-        // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
+        // Close the dropdown if the user clicks outside of the input, dropdown, or pickItemDiv
         document.addEventListener('click', (e) => {
-            if (!pickListDiv.contains(e.target)) {
+            if (!pickItemDiv.contains(e.target)) {
                 tbody.style.display = 'none';  // Hide dropdown if clicked outside
-                pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
+                pickItemDiv.style.display = 'none';  // Hide pickItemDiv if clicked outside
             }
         });
     });

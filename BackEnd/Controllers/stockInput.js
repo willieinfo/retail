@@ -38,6 +38,7 @@ const updateStockTotals = async (req, res) => {
       STOCKREC.WhseTo__,
       STOCKREC.Printed_,
       STOCKREC.Prepared,
+      STOCKREC.Received,
       STOCKREC.Disabled,
       STOCKREC.Log_Date
     FROM STOCKREC, LOCATION
@@ -64,9 +65,9 @@ const updateStockTotals = async (req, res) => {
 }
 
 const editStockHeader = async (req, res) => {
-  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled } = req.body;
+  const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived, lDisabled } = req.body;
 
-  if (!cWhseFrom || !dDateFrom || !cCtrlNum_) {
+  if (!cWhseFrom || !dDate____ || !cCtrlNum_) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
@@ -78,6 +79,7 @@ const editStockHeader = async (req, res) => {
       DateRcvd=@dDateRcvd,
       Remarks_=@cRemarks_,
       Prepared=@cPrepared,
+      Received=@cReceived,
       Disabled=@lDisabled
     WHERE CtrlNum_=@cCtrlNum_
 
@@ -103,6 +105,7 @@ const editStockHeader = async (req, res) => {
       STOCKREC.WhseTo__,
       STOCKREC.Printed_,
       STOCKREC.Prepared,
+      STOCKREC.Received,
       STOCKREC.Disabled,
       STOCKREC.Log_Date
     FROM STOCKREC, LOCATION
@@ -110,7 +113,7 @@ const editStockHeader = async (req, res) => {
     AND STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, lDisabled };
+  const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived, lDisabled };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -130,7 +133,7 @@ const editStockHeader = async (req, res) => {
 
 const addStockHeader = async (req, res) => {
   const { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cPrepared, cSuffixId } = req.body;
+    dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId } = req.body;
 
   if (!cWhseFrom || !dDate____ || !cEncoder_) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -140,10 +143,10 @@ const addStockHeader = async (req, res) => {
     -- Insert the new record into STOCKREC and get the generated AutIncId
     INSERT INTO STOCKREC
       (CtrlNum_, WhseFrom, WhseTo__, Date____, DateRcvd, Remarks_, Encoder_,
-    Log_Date, NoOfItem, Prepared)
+    Log_Date, NoOfItem, Prepared, Received)
     VALUES
       (@cCtrlNum_, @cWhseFrom, @cWhseTo__, @dDate____, @dDateRcvd, @cRemarks_, @cEncoder_,
-    @dLog_Date, @nNoOfItem, @cPrepared);
+    @dLog_Date, @nNoOfItem, @cPrepared, @cReceived);
 
     -- Get the last inserted AutIncId
     DECLARE @AutIncId INT;
@@ -203,6 +206,7 @@ const addStockHeader = async (req, res) => {
       STOCKREC.WhseTo__,
       STOCKREC.Printed_,
       STOCKREC.Prepared,
+      STOCKREC.Received,
       STOCKREC.Disabled,
       STOCKREC.Log_Date
     FROM STOCKREC, LOCATION
@@ -212,7 +216,7 @@ const addStockHeader = async (req, res) => {
   `;
 
   const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cPrepared, cSuffixId };
+    dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
     console.log(params)
@@ -257,6 +261,7 @@ const StockRecLst = async (req, res) => {
       STOCKREC.WhseTo__,
       STOCKREC.Printed_,
       STOCKREC.Prepared,
+      STOCKREC.Received,
       STOCKREC.Disabled,
       STOCKREC.Log_Date
     FROM STOCKREC, LOCATION
