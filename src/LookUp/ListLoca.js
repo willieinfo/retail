@@ -53,7 +53,7 @@ async function ListLoca(cLocation, cLocaName) {
                     // Optionally, call your edit function if needed
                     const index = parseInt(row.getAttribute('data-index'));
                     if (!isNaN(index) && index >= 0 && index < globalData.length) {
-                        console.log(`Row clicked for index: ${index}`);
+                        // console.log(`Row clicked for index: ${index}`);
                         LocaForm(index, true); // Pass only the index to your form
                     }
                 }

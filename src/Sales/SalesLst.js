@@ -152,6 +152,7 @@ async function SaleForm(index,editMode) {
                 </div>
             </div>
         </div>
+
         <div class="itemsTableDiv" id="itemsTableDiv";>
             <table class="SalesDtlTable">
                 <thead id="ListItemHead">
@@ -170,6 +171,7 @@ async function SaleForm(index,editMode) {
                 <tbody id="ListSaleItem"></tbody>
             </table>
         </div>  
+        
         <div class="paymentTableDiv" id="paymentTableDiv";>
             <table class="SalesDtlTable">
                 <thead id="ListPaymentHead">

@@ -782,10 +782,21 @@ export function pickItem(dataItemList, inputElement) {
                 <th>Unit Price</th>
             </tr>
         `;
+        const tfoot = document.createElement('tfoot');
+        tfoot.innerHTML = `
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        `;
+
         const tbody = document.createElement('tbody');
         tbody.id = 'pickItemList';
         dropdownList.appendChild(thead);
         dropdownList.appendChild(tbody);
+        dropdownList.appendChild(tfoot);
 
         const titleBar = document.createElement('div');
         titleBar.id = 'titleBar';
@@ -835,8 +846,18 @@ export function pickItem(dataItemList, inputElement) {
         titleBar.appendChild(closeBtn);
         pickItemDiv.appendChild(titleBar);
 
+        const bottomBar = document.createElement('div');
+        bottomBar.style.display = 'flex';
+        bottomBar.style.width = '100%';
+        bottomBar.style.alignItems = "center";
+        bottomBar.style.padding = "2px 10px";
+        bottomBar.style.justifyContent = "flex-end";
+        bottomBar.classList.add('bottomBar');
+
+        
         // Append the dropdown list to the pick list div
         pickItemDiv.appendChild(dropdownList);
+        pickItemDiv.appendChild(bottomBar);
         document.body.appendChild(pickItemDiv);  // Add it to the body
 
         // Show the pickItemDiv and dropdownList
@@ -876,6 +897,7 @@ export function pickItem(dataItemList, inputElement) {
             tbody.appendChild(tr);
         });
 
+
         // Variables to track the highlighted index and the highlighted item
         let highlightedIndex = 0    //-1 no highlight at start;
         let highlightedItem = null;  // Store the item being highlighted
@@ -884,29 +906,31 @@ export function pickItem(dataItemList, inputElement) {
 
         // Function to highlight a row
         function highlightRow(index) {
+            bottomBar.textContent = `Record: ${index+1} Rows: ${dataItemList.length}`;
+
             // Remove the highlight from all rows
             rows.forEach(row => row.classList.remove('highlight'));
         
             // Only highlight if the index is valid
-            if (index >= 0 && index < rows.length) {
+            if (index >= 0 && index <= rows.length) {
                 rows[index].classList.add('highlight');
                 highlightedItem = dataItemList[index];  // Update the highlighted item
         
                 // Get the row and its position
                 const row = rows[index];
-                const rowTop = row.offsetTop;
-                const rowBottom = rowTop + row.offsetHeight;
+                const rowTop = row.offsetTop - 40;
+                const rowBottom = rowTop + row.offsetHeight +40;
                 const listTop = tbody.scrollTop;
                 const listBottom = listTop + tbody.offsetHeight;
-        
+
                 // Scroll the picklist to make the highlighted row fully visible
                 if (rowTop < listTop) {
                     // If the row is above the visible area, scroll up
-                    tbody.scrollTop = rowTop; // Scroll to the top of the row
+                    tbody.scrollTop = rowTop  ; // Scroll to the top of the row
                 } else if (rowBottom > listBottom) {
                     // If the row is below the visible area, scroll down
                     tbody.scrollTop = rowBottom - tbody.offsetHeight; // Scroll to the bottom of the row
-                }
+                }                
             }
         }
         

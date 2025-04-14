@@ -882,7 +882,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function deleteStockDtl(cRecordId,cCtrlNum_,index) {
-    console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
+    // console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
     const stockDtlCounter=document.getElementById('stockDtlCounter')
     try {
         const response = await fetch(`http://localhost:3000/transfers/deleteStockDetail/${encodeURIComponent(cRecordId)}`, {
@@ -900,7 +900,7 @@ async function deleteStockDtl(cRecordId,cCtrlNum_,index) {
         }
 
         const result = await response.json();
-        console.log('Deleted Rows Affected:', result.rowsAffected);
+        // console.log('Deleted Rows Affected:', result.rowsAffected);
         showNotification('StockDtl deleted successfully');
         // Remove the item from the itemsDtl array
         itemsDtl.splice(index, 1);
