@@ -20,8 +20,9 @@ const SalesRankStore = async (req, res) => {
 				Sum(SALESDTL.LandCost*SALESDTL.Quantity) AS LandCost,
 				Sum((SALESDTL.Quantity*SALESDTL.Amount__)*SALESREC.ConcRate/100) AS Concessi,
 				Sum(SALESDTL.ItemPrce*SALESDTL.Quantity) AS ItemPrce,
-				Sum(SALESDTL.Amount__*SALESDTL.Quantity) AS Amount__ 
-				FROM SALESREC, SALESDTL, LOCATION, ITEMLIST
+				Sum(SALESDTL.Amount__*SALESDTL.Quantity) AS Amount__,
+        'REGENT GROUP' AS LocaGrup
+        FROM SALESREC, SALESDTL, LOCATION, ITEMLIST
 				WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
 				AND SALESREC.Location = LOCATION.Location
 				AND ITEMLIST.ItemCode = SALESDTL.ItemCode

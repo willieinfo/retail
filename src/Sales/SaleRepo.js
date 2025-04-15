@@ -1,9 +1,10 @@
-import { showReport, showNotification, formatter } from '../FunctLib.js';
+import { showReport, showNotification, formatter, printReportExcel } from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 
 async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
 
+    let data = null;
     document.getElementById('loadingIndicator').style.display = 'flex';
     try {
         // Build query parameters
@@ -38,7 +39,7 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     
         
         const listCounter=document.getElementById('saleRank1Counter')
-        const data = await response.json();
+        data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
 
@@ -134,6 +135,29 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
     }
+
+    document.getElementById('printStoreRank').addEventListener('click', () => {
+        const HeaderRow = [
+            'Group','Location','Quantity','Gross','Discount','Net','Cost','Gross Profit','GP %','CTS %'
+        ]
+        const DetailRow = [
+            row => row.LocaGrup,
+            row => row.LocaName,
+            row => +row.Quantity,
+            row => +row.ItemPrce,
+            row => +(row.ItemPrce - row.Amount__),
+            row => +row.Amount__,
+            row => +row.LandCost,
+            row => +(row.Amount__ - row.LandCost),
+            row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) : 0,
+            row => row.Amount__ ? (row.Amount__ / row.Quantity) : 0
+        ];    
+        const createTotals = [
+            false,false,true,true,true,true,true,true,false,false
+        ]
+        printReportExcel(data,HeaderRow,DetailRow,createTotals,'LocaGrup')
+    })
+    
 }
 
 // Wait for the DOM to fully load before adding the event listener
