@@ -1,12 +1,9 @@
-// /* <script src="https://unpkg.com/write-excel-file@1.x/bundle/write-excel-file.min.js"></script> */
-
-const btnXLSX=document.getElementById("btnXLSX")
-btnXLSX.addEventListener('click', ()=>createXLSX())
-
+const btnXLSX = document.getElementById("btnXLSX").addEventListener('click', () => createXLSX());
 
 function createXLSX() {
     const jsonData = [
         {LocaGrup: 'REGENT TRAVEL GROUP',
+            Date____: '01/31/2025',
             LocaName: 'AIRMALL T3',
             Quantity: 120,
             ItemPrce: 1200,
@@ -14,19 +11,35 @@ function createXLSX() {
             LandCost: 400
         },
         {LocaGrup: 'REGENT TRAVEL GROUP',
+            Date____: '01/31/2025',
             LocaName: 'TRAVEL HUB BATANGAS',
             Quantity: 120,
             ItemPrce: 2100,
             Amount__: 1600,
             LandCost: 460
         }
-    ]
+    ];
+
     const titleRows = [
         [{ value: 'REGENT TRAVEL RETAIL GROUP', fontWeight: 'bold', fontSize: 14 }],
-        [{ value: 'Sales Ranking by Location', fontWeight: 'bold', fontSize: 12, fontStyle:'italic' }],
+        [{ value: 'Sales Ranking by Location', fontWeight: 'bold', fontSize: 12, fontStyle: 'italic' }],
         [{ value: '' }] // empty row
     ];
-    
+
+    const colWidths = [
+        { width: 25 }, // Column A (e.g. Group)
+        { width: 15 },
+        { width: 30 }, // Column B (e.g. Location)
+        { width: 10 }, // Quantity
+        { width: 15 }, // Gross
+        { width: 15 }, // Discount
+        { width: 15 }, // Net
+        { width: 15 }, // Cost
+        { width: 15 }, // Gross Profit
+        { width: 10 }, // GP %
+        { width: 10 }  // CTS %
+    ];
+
     const columnConfig = [
         {
           label: 'Group',
@@ -35,10 +48,17 @@ function createXLSX() {
           align: 'left'
         },
         {
+          label: 'Date',
+          getValue: row => row.Date____,
+          type: 'string',
+          align: 'center',
+        },
+        {
           label: 'Location',
           getValue: row => row.LocaName,
           type: 'string',
-          align: 'left'
+          align: 'left',
+          totalLabel: 'TOTALS:'
         },
         {
           label: 'Quantity',
@@ -46,42 +66,42 @@ function createXLSX() {
           total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
           align: 'right',
           type: 'integer',
-          format: '#,##0'
+          cellFormat: '#,##0' // changed format to cellFormat
         },
         {
           label: 'Gross',
           getValue: row => +row.ItemPrce,
           total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
           align: 'right',
-          format: '#,##0.00'
+          cellFormat: '#,##0.00' // changed format to cellFormat
         },
         {
           label: 'Discount',
           getValue: row => +(row.ItemPrce - row.Amount__),
           total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
           align: 'right',
-          format: '#,##0.00'
+          cellFormat: '#,##0.00' // changed format to cellFormat
         },
         {
           label: 'Net',
           getValue: row => +row.Amount__,
           total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
           align: 'right',
-          format: '#,##0.00'
+          cellFormat: '#,##0.00' // changed format to cellFormat
         },
         {
           label: 'Cost',
           getValue: row => +row.LandCost,
           total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
           align: 'right',
-          format: '#,##0.00'
+          cellFormat: '#,##0.00' // changed format to cellFormat
         },
         {
           label: 'Gross Profit',
           getValue: row => +(row.Amount__ - row.LandCost),
           total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
           align: 'right',
-          format: '#,##0.00'
+          cellFormat: '#,##0.00' // changed format to cellFormat
         },
         {
           label: 'GP %',
@@ -92,7 +112,7 @@ function createXLSX() {
             return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
           },
           align: 'right',
-          format: 'percent'
+          cellFormat: 'percent' // changed format to cellFormat
         },
         {
           label: 'CTS %',
@@ -101,23 +121,12 @@ function createXLSX() {
             return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
           },
           align: 'right',
-          format: 'percent'
+          totalLabel: '100%',
+          cellFormat: 'percent' // changed format to cellFormat
         }
     ];
-      
-    const colWidths =  [
-        { width: 25 }, // Column A (e.g. Group)
-        { width: 30 }, // Column B (e.g. Location)
-        { width: 10 }, // Quantity
-        { width: 15 }, // Gross
-        { width: 15 }, // Discount
-        { width: 15 }, // Net
-        { width: 15 }, // Cost
-        { width: 20 }, // Gross Profit
-        { width: 10 }, // GP %
-        { width: 10 }  // CTS %
-    ]
-   printReportExcel(jsonData, columnConfig, colWidths, titleRows, 'StoreRanking');
+
+    printReportExcel(jsonData, columnConfig, colWidths, titleRows, 'StoreRanking');
 }
 
 async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [], cRepoTitle = 'Report') {
@@ -127,41 +136,67 @@ async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [
     }
   
     // Build header row
-    const headers = columnConfig.map(col => ({ value: col.label, fontWeight: 'bold' }));
+    const headers = columnConfig.map(col => ({ value: col.label, fontWeight: 'bold', align: 'center' }));
   
     // Build data rows
     const rows = jsonData.map(row =>
       columnConfig.map(col => {
         let value = col.getValue(row, jsonData); // pass full data for % columns
-        const isPercent = col.format === 'percent';
+        const isPercent = col.cellFormat === 'percent'; // changed format to cellFormat
         return {
           value: isPercent ? `${value.toFixed(2)}%` : value,
           align: col.align || 'left',
-          format: isPercent ? undefined : col.format
+          format: isPercent ? undefined : col.cellFormat // changed format to cellFormat
         };
       })
     );
   
-    // Build totals row
     const totalsRow = columnConfig.map(col => {
-    
       if (typeof col.total === 'function') {
-        const totalValue = col.total(jsonData);
-        const isPercent = col.format === 'percent';
-        return {
-          value: isPercent ? `${totalValue.toFixed(2)}%` : totalValue,
-          align: col.align || 'right',
-          fontWeight: 'bold',
-          topBorderStyle : "thick"
-        };
-
+          const totalValue = col.total(jsonData);
+    
+          // Check if the format should apply commas (i.e., not for percentages)
+          const isPercent = col.cellFormat === 'percent';
+          let formattedValue = totalValue;
+    
+          // Apply comma formatting with 2 decimal places for numbers (except Quantity)
+          if (!isPercent) {
+              if (col.type === 'integer') {
+                  // Quantity (integer) should have no decimals
+                  formattedValue = totalValue.toLocaleString(); // Apply comma formatting, no decimals
+              } else {
+                  formattedValue = totalValue.toFixed(2); // Ensure 2 decimal places as a string
+                  formattedValue = formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Apply comma formatting in the string
+                  // console.log(col.label,formattedValue)
+              }
+          }
+    
+          // Handle the formatting for percentages (without commas, with % symbol)
+          if (isPercent) {
+              formattedValue = `${(totalValue).toFixed(2)}%`; // Show percentage with 2 decimal places
+          }
+    
+          return {
+            value: formattedValue,
+            align: col.align || 'right',
+            fontWeight: 'bold',
+            topBorderStyle: "thick",
+            cellFormat: '#,##0.00' 
+          };
+    
+      } else if (col.totalLabel === '100%') {
+          return { value: '100.00%', align: 'right', fontWeight: 'bold', topBorderStyle: "thick" };
+    
       } else if (typeof col.type === 'string') {
-        return { value: '', align: col.align || 'left' };
+        if (col.totalLabel === 'undefined') {
+          return { value: '', align: 'left' };
+        } 
+        return { value: col.totalLabel, align: 'right', fontWeight: 'bold' };
     
       }
-      return { value: '', align: col.align || 'left', fontWeight: 'bold',  topBorderStyle : "thick" };
+      return { value: '', align: col.align || 'left', fontWeight: 'bold', topBorderStyle: "thick" };
     });
-  
+    
     // Assemble final data
     const data = [
         ...titleRows,
@@ -178,7 +213,7 @@ async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [
       fileName: filename,
       columns: colWidths
     });
-  }
+}
   
 // Property	Description
 // value	The actual cell content (string, number, boolean, or Date)
