@@ -20,12 +20,12 @@ function createXLSX() {
         }
     ];
 
-    const titleRows = [
-        [{ value: 'REGENT TRAVEL RETAIL GROUP', fontWeight: 'bold', fontSize: 14 }],
-        [{ value: 'Sales Ranking by Location', fontWeight: 'bold', fontSize: 12, fontStyle: 'italic' }],
-        [{ value: '' }] // empty row
+    const titleRowsContent = [
+      { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+      { text: 'Sales Ranking by Location', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 12 } },
+      { text: '' } // Spacer row
     ];
-
+    
     const colWidths = [
         { width: 25 }, // Column A (e.g. Group)
         { width: 15 },
@@ -125,7 +125,36 @@ function createXLSX() {
           cellFormat: 'percent' // changed format to cellFormat
         }
     ];
+    const numCols = columnConfig.length;
 
+    function generateTitleRows(columnConfig, titleRowsContent, visualStartIndex = 1) {
+      const totalCols = columnConfig.length;
+      const visualCols = totalCols - visualStartIndex;
+      const centerIndex = visualStartIndex + Math.floor(visualCols / 2) - 1;
+    
+      const buildCenteredRow = (text, style = {}) => {
+        return [
+          ...Array(centerIndex).fill({ value: '' }),
+          {
+            value: text,
+            align: 'center',
+            ...style
+          },
+          ...Array(totalCols - centerIndex - 1).fill({ value: '' })
+        ];
+      };
+    
+      return titleRowsContent.map(row =>
+        row.text === ''
+          ? Array(totalCols).fill({ value: '' }) // full-width spacer row
+          : buildCenteredRow(row.text, row.style)
+      );
+    }
+    
+    
+    const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+     
     printReportExcel(jsonData, columnConfig, colWidths, titleRows, 'StoreRanking');
 }
 
@@ -211,7 +240,9 @@ async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [
   
     await writeXlsxFile(data, {
       fileName: filename,
-      columns: colWidths
+      columns: colWidths,
+      stickyRowsCount: titleRows.length,
+      stickyColumnsCount: 1
     });
 }
   

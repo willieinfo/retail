@@ -1,4 +1,5 @@
-import { showReport, showNotification, formatter, printReportExcel } from '../FunctLib.js';
+import { showReport, showNotification, formatter, formatDate} from '../FunctLib.js';
+import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec } from "../FiltrRec.js"
 
 async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -137,25 +138,111 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     }
 
     document.getElementById('printStoreRank').addEventListener('click', () => {
-        const HeaderRow = [
-            'Group','Location','Quantity','Gross','Discount','Net','Cost','Gross Profit','GP %','CTS %'
-        ]
-        const DetailRow = [
-            row => row.LocaGrup,
-            row => row.LocaName,
-            row => +row.Quantity,
-            row => +row.ItemPrce,
-            row => +(row.ItemPrce - row.Amount__),
-            row => +row.Amount__,
-            row => +row.LandCost,
-            row => +(row.Amount__ - row.LandCost),
-            row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) : 0,
-            row => row.Amount__ ? (row.Amount__ / row.Quantity) : 0
-        ];    
-        const createTotals = [
-            false,false,true,true,true,true,true,true,false,false
-        ]
-        printReportExcel(data,HeaderRow,DetailRow,createTotals,'LocaGrup')
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Sales Ranking by Location', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+          ];
+          
+          const colWidths = [
+              { width: 25 }, // Column A (e.g. Group)
+              { width: 30 }, // Column B (e.g. Location)
+              { width: 10 }, // Quantity
+              { width: 15 }, // Gross
+              { width: 15 }, // Discount
+              { width: 15 }, // Net
+              { width: 15 }, // Cost
+              { width: 15 }, // Gross Profit
+              { width: 10 }, // GP %
+              { width: 10 }  // CTS %
+          ];
+      
+          const columnConfig = [
+              {
+                label: 'Group',
+                getValue: row => row.StoreGrp,
+                type: 'string',
+                align: 'left'
+              },
+              {
+                label: 'Location',
+                getValue: row => row.LocaName,
+                type: 'string',
+                align: 'left',
+                totalLabel: 'TOTALS:'
+              },
+              {
+                label: 'Quantity',
+                getValue: row => +row.Quantity,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                align: 'right',
+                type: 'integer',
+                cellFormat: '#,##0' // changed format to cellFormat
+              },
+              {
+                label: 'Gross',
+                getValue: row => +row.ItemPrce,
+                total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Discount',
+                getValue: row => +(row.ItemPrce - row.Amount__),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Net',
+                getValue: row => +row.Amount__,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Cost',
+                getValue: row => +row.LandCost,
+                total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Gross Profit',
+                getValue: row => +(row.Amount__ - row.LandCost),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'GP %',
+                getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+                total: rows => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+                  return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+                },
+                align: 'right',
+                cellFormat: 'percent' // changed format to cellFormat
+              },
+              {
+                label: 'CTS %',
+                getValue: (row, rows) => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+                },
+                align: 'right',
+                totalLabel: '100%',
+                cellFormat: 'percent' // changed format to cellFormat
+              }
+          ];
+          
+          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+           
+          printReportExcel(data, columnConfig, colWidths, titleRows, 'StoreRanking');
     })
     
 }
@@ -182,6 +269,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
+    let data = null;
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/sales/SalesRankBrand');
@@ -214,7 +302,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         let nGP_Total = 0
     
         const listCounter=document.getElementById('saleRank2Counter')
-        const data = await response.json();
+        data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
 
@@ -309,6 +397,108 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
     }
+
+    document.getElementById('printBrandRank').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Sales Ranking by Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+          ];
+
+          const colWidths = [
+              { width: 25 }, // Brand
+              { width: 10 }, // Quantity
+              { width: 15 }, // Gross
+              { width: 15 }, // Discount
+              { width: 15 }, // Net
+              { width: 15 }, // Cost
+              { width: 15 }, // Gross Profit
+              { width: 10 }, // GP %
+              { width: 10 }  // CTS %
+          ];
+      
+          const columnConfig = [
+              {
+                label: 'Brand',
+                getValue: row => row.BrandNme,
+                type: 'string',
+                align: 'left',
+                totalLabel: 'TOTALS:'
+              },
+              {
+                label: 'Quantity',
+                getValue: row => +row.Quantity,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                align: 'right',
+                type: 'integer',
+                cellFormat: '#,##0' // changed format to cellFormat
+              },
+              {
+                label: 'Gross',
+                getValue: row => +row.ItemPrce,
+                total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Discount',
+                getValue: row => +(row.ItemPrce - row.Amount__),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Net',
+                getValue: row => +row.Amount__,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Cost',
+                getValue: row => +row.LandCost,
+                total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'Gross Profit',
+                getValue: row => +(row.Amount__ - row.LandCost),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+                align: 'right',
+                cellFormat: '#,##0.00' // changed format to cellFormat
+              },
+              {
+                label: 'GP %',
+                getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+                total: rows => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+                  return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+                },
+                align: 'right',
+                cellFormat: 'percent' // changed format to cellFormat
+              },
+              {
+                label: 'CTS %',
+                getValue: (row, rows) => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+                },
+                align: 'right',
+                totalLabel: '100%',
+                cellFormat: 'percent' // changed format to cellFormat
+              }
+          ];
+          
+          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+          printReportExcel(data, columnConfig, colWidths, titleRows, 'StoreRanking');
+    })
+
 }
 
 // Wait for the DOM to fully load before adding the event listener

@@ -21,7 +21,7 @@ const SalesRankStore = async (req, res) => {
 				Sum((SALESDTL.Quantity*SALESDTL.Amount__)*SALESREC.ConcRate/100) AS Concessi,
 				Sum(SALESDTL.ItemPrce*SALESDTL.Quantity) AS ItemPrce,
 				Sum(SALESDTL.Amount__*SALESDTL.Quantity) AS Amount__,
-        'REGENT GROUP' AS LocaGrup
+        LOCATION.StoreGrp
         FROM SALESREC, SALESDTL, LOCATION, ITEMLIST
 				WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
 				AND SALESREC.Location = LOCATION.Location
@@ -69,7 +69,7 @@ const SalesRankStore = async (req, res) => {
     cSql += " AND SALESDTL.Date____ <= @dDateTo__";
     params.dDateTo__ = `${dDateTo__}`;
   }
-  cSql += ` GROUP BY LOCATION.LocaName
+  cSql += ` GROUP BY LOCATION.LocaName, LOCATION.StoreGrp
     ORDER BY 7 DESC `;
 
   // Log SQL query and parameters for debugging

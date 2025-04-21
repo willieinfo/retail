@@ -1,6 +1,7 @@
-import { showReport, formatDate, populateLocation, showNotification, debounce, printFormPDF, MessageBox, 
+import { showReport, formatDate, populateLocation, showNotification, debounce, MessageBox, 
     formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
+import { printFormPDF } from "../PrintRep.js"
 
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of STOCKDTL
@@ -685,8 +686,9 @@ function StockDtl(index,editMode) {
             const nQuantity=document.getElementById('StockRec_Quantity').value
             const nQtyRecvd=document.getElementById('StockRec_QtyRecvd').value
             const nAmount__=document.getElementById('StockRec_Amount__').value
+            const cSuffixId='ES'
 
-            addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost)
+            addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost,cSuffixId)
         }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
@@ -745,7 +747,7 @@ async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 }
 
 // exported to Functlib for addScanCode() function
-export async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost) {
+export async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost,cSuffixId) {
     document.getElementById('loadingIndicator').style.display = 'flex';
     
     try {
@@ -760,7 +762,8 @@ export async function addStockDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmoun
                 nQuantity: nQuantity,
                 nQtyRecvd: nQtyRecvd,
                 nAmount__: nAmount__,
-                nLandCost: nLandCost
+                nLandCost: nLandCost,
+                cSuffixId: cSuffixId
             })
         });
         if (!response.ok) {
@@ -965,7 +968,7 @@ document.getElementById('printStockTransfer').addEventListener('click', async ()
     const createTotals = [false,false,false,true,true,false,true]
 
     printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
-        columns, fieldTypes, window.base64Image, ['letter','portrait'], 'Stock Transfer')
+        columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Stock Transfer')
 });
 
 

@@ -1,6 +1,8 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, debounce,
-    printFormPDF, MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
+    MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
+
 import { FiltrRec } from "../FiltrRec.js"
+import { printFormPDF } from "../PrintRep.js"
 
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of SALESDTL
@@ -734,8 +736,9 @@ function SalesDtl(index,editMode) {
             const nItemPrce=document.getElementById('SalesRec_ItemPrce').value
             const nDiscRate=document.getElementById('SalesRec_DiscRate').value
             const nAmount__=document.getElementById('SalesRec_Amount__').value
+            const cSuffixId='ES'
 
-            addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost)
+            addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost,cSuffixId)
         }
         document.getElementById('sale-form').remove()
         document.getElementById('modal-overlay').remove();
@@ -797,7 +800,7 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 
 // exported to Functlib for addScanCode() function
 export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
-        nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost) {
+        nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost,cSuffixId) {
     document.getElementById('loadingIndicator').style.display = 'flex';
     
     try {
@@ -815,7 +818,8 @@ export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
                 nItemPrce: nItemPrce,
                 nDiscRate: nDiscRate,
                 nAmount__: nAmount__,
-                nLandCost: nLandCost
+                nLandCost: nLandCost,
+                cSuffixId: cSuffixId
             })
         });
         if (!response.ok) {
@@ -1011,7 +1015,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     const createTotals = [true,false,false,false,false,true,true,true]
 
     printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
-        columns, fieldTypes, window.base64Image, ['letter','portrait'], 'Sales Record')
+        columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Sales Record')
 });
 
 document.getElementById('SalesRec_ScanCode').addEventListener('paste', async () =>{

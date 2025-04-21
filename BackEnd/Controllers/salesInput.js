@@ -333,7 +333,7 @@ const SalesDtlLst = async (req, res) => {
 
 const addSalesDetail = async (req, res) => {
   const { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-      nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost } = req.body;
+      nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost, cSuffixId } = req.body;
 
   if (!cCtrlNum_ || !cItemCode || !dDate____ || !nQuantity) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -400,7 +400,7 @@ const addSalesDetail = async (req, res) => {
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
       const params = { cCtrlNum_, cItemCode, dDate____, cTimeSale, 
-        nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost };
+        nQuantity, nItemPrce, nDiscRate, nAmount__, nLandCost, cSuffixId };
 
       const result = await queryDatabase(cSql, params);
 
