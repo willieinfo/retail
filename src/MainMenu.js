@@ -16,7 +16,7 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
-        <li class="SalesInvoice data-entry">Sales Invoice</li>
+        <li class="SalesInvoice data-entry"><i class="fa fa-table"></i> Sales Invoice</li>
         <hr class="menuLine">
         <li class="salesRankingByLocation">Sales Ranking by Location</li>
         <li class="salesRankingByBrand">Sales Ranking by Brand</li>
@@ -26,7 +26,7 @@ const menuItems= `
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
         <li class="PurchaseOrder data-entry">Purchase Order</li>
-        <li class="ReceivingReport data-entry">Receiving Report</li>
+        <li class="StockReceiving data-entry"><i class="fa fa-table"></i> Stock Receiving Form</li>
         <hr class="menuLine">
         <li>By SKU</li>
         <li>By Category</li>
@@ -35,7 +35,7 @@ const menuItems= `
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li class="StockTransfer data-entry">Stock Transfer</li>
+        <li class="StockTransfer data-entry"><i class="fa fa-table"></i> Stock Transfer</li>
         <li class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
@@ -61,13 +61,13 @@ const menuItems= `
 </li>
 <li class="lookup"><i class="fa fa-table"></i> Lookup Tables
     <ul class="dropdown submenu">
-        <li class="Products data-entry">Products</li>
+        <li class="Products data-entry"><i class="fa fa-table"></i> Products</li>
         <li class="Brands data-entry">Brands</li>
         <li class="Category data-entry">Category</li>
         <li class="Department data-entry">Department</li>
         <li class="Class data-entry">Class</li>
         <hr class="menuLine">
-        <li class="Location data-entry">Location</li>
+        <li class="Location data-entry"><i class="fa fa-table"></i> Location</li>
         <li>Supplier</li>
         <li>Customer</li>
         <li class="SystemUsers data-entry">System Users</li>
@@ -79,7 +79,7 @@ const menuItems= `
         <li class="WallPaper">Wall Paper</li>
     </ul>
 </li>
-<li class="exit"><i class="fa fa-close"></i> Exit
+<li class="exit"><i class="fa-solid fa-door-open"></i> Exit
     <ul class="dropdown submenu">
         <li class="LogOut">Log-Out</li>
         <li class="About">About</li>

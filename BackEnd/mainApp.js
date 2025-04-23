@@ -16,12 +16,14 @@ const productRouter = require('./Routers/productRouter');
 const lookupRouter = require('./Routers/lookupRouter');      
 const salesRouter = require('./Routers/salesRouter');      
 const stockRouter = require('./Routers/stockRouter');      
+const purchRouter = require('./Routers/purchRouter');      
 
 // Use the different routers
 app.use('/product', productRouter);
 app.use('/lookup', lookupRouter);
 app.use('/sales', salesRouter);  
 app.use('/transfers', stockRouter);  
+app.use('/purchases', purchRouter);  
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

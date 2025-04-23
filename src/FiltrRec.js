@@ -134,6 +134,11 @@ export function FiltrRec(cModules_) {
             document.getElementById('StockLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
             await populateLocation('', '', 'StocArea','FiltrRec_Location');
+        } else if (cModules_ === 'PurchLst') {
+            document.getElementById('PurchLst').appendChild(filterForm);
+            document.getElementById('PurchLst').appendChild(overlay);
+            document.getElementById('inputDetails').style.display = 'none';
+            await populateLocation('', '', 'PurcArea','FiltrRec_Location');
         }
 
         // Show the form by changing its display style

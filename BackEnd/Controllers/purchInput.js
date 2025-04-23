@@ -31,6 +31,7 @@ const updatePurchTotals = async (req, res) => {
       PURCHREC.PONum___,
       PURCHREC.PODate__,
       LOCATION.LocaName,
+      PURCHREC.Location,
       PURCHREC.TotalQty,
       PURCHREC.Amount__,
       PURCHREC.NoOfItem,
@@ -38,10 +39,12 @@ const updatePurchTotals = async (req, res) => {
       PURCHREC.Encoder_,
       PURCHREC.Printed_,
       PURCHREC.Disabled,
+      SUPPLIER.SuppName,
+      PURCHREC.SuppNum_,
       PURCHREC.Log_Date
-    FROM PURCHREC, LOCATION
-    WHERE PURCHREC.Location = LOCATION.Location
-    AND PURCHREC.CtrlNum_=@cCtrlNum_
+    FROM PURCHREC LEFT JOIN SUPPLIER
+    ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
+    WHERE PURCHREC.CtrlNum_=@cCtrlNum_
   `;
 
   const params = { cCtrlNum_, nTotalQty, nTotalAmt, nNoOfItem };
@@ -96,6 +99,7 @@ const editPurchHeader = async (req, res) => {
       PURCHREC.PONum___,
       PURCHREC.PODate__,
       LOCATION.LocaName,
+      PURCHREC.Location,
       PURCHREC.TotalQty,
       PURCHREC.Amount__,
       PURCHREC.NoOfItem,
@@ -103,10 +107,12 @@ const editPurchHeader = async (req, res) => {
       PURCHREC.Encoder_,
       PURCHREC.Printed_,
       PURCHREC.Disabled,
+      SUPPLIER.SuppName,
+      PURCHREC.SuppNum_,
       PURCHREC.Log_Date
-    FROM PURCHREC, LOCATION
-    WHERE PURCHREC.Location = LOCATION.Location
-    AND PURCHREC.CtrlNum_=@cCtrlNum_
+    FROM PURCHREC LEFT JOIN SUPPLIER
+    ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
+    WHERE PURCHREC.CtrlNum_=@cCtrlNum_
   `;
 
   const params = { cCtrlNum_, cLocation, dDate____, dDR__Date, dDRNum___, dPO__Date, dPONum___, cRemarks_, lDisabled };
@@ -195,6 +201,7 @@ const addPurchHeader = async (req, res) => {
       PURCHREC.PONum___,
       PURCHREC.PODate__,
       LOCATION.LocaName,
+      PURCHREC.Location,
       PURCHREC.TotalQty,
       PURCHREC.Amount__,
       PURCHREC.NoOfItem,
@@ -202,10 +209,12 @@ const addPurchHeader = async (req, res) => {
       PURCHREC.Encoder_,
       PURCHREC.Printed_,
       PURCHREC.Disabled,
+      SUPPLIER.SuppName,
+      PURCHREC.SuppNum_,
       PURCHREC.Log_Date
-    FROM PURCHREC, LOCATION
-    WHERE PURCHREC.Location = LOCATION.Location
-    AND PURCHREC.AutIncId = @AutIncId
+    FROM PURCHREC LEFT JOIN SUPPLIER
+    ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
+    WHERE PURCHREC.AutIncId = @AutIncId
     ORDER BY LOCATION.LocaName, PURCHREC.CtrlNum_, PURCHREC.Date____
   `;
 
@@ -248,6 +257,7 @@ const PurchRecLst = async (req, res) => {
       PURCHREC.PONum___,
       PURCHREC.PODate__,
       LOCATION.LocaName,
+      PURCHREC.Location,
       PURCHREC.TotalQty,
       PURCHREC.Amount__,
       PURCHREC.NoOfItem,
@@ -255,8 +265,11 @@ const PurchRecLst = async (req, res) => {
       PURCHREC.Encoder_,
       PURCHREC.Printed_,
       PURCHREC.Disabled,
+      SUPPLIER.SuppName,
+      PURCHREC.SuppNum_,
       PURCHREC.Log_Date
-    FROM PURCHREC, LOCATION
+    FROM PURCHREC LEFT JOIN SUPPLIER
+    ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
     WHERE PURCHREC.Location = LOCATION.Location
     AND 1=1
   `
@@ -265,7 +278,7 @@ const PurchRecLst = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
-  if (cWhseFrom) {
+  if (cLocation) {
     cSql += " AND PURCHREC.Location LIKE @cLocation";
     params.cLocation = `%${cLocation}%`;
   }
@@ -281,7 +294,7 @@ const PurchRecLst = async (req, res) => {
     cSql += " AND PURCHREC.ReferDoc LIKE @cReferDoc";
     params.cReferDoc = `%${cReferDoc}%`;
   }
-  cSql += ` ORDER BY 1 `;
+  cSql += ` ORDER BY LOCATION.LocaName, PURCHREC.CtrlNum_, PURCHREC.Date____ `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
@@ -306,6 +319,7 @@ const PurchDtlLst = async (req, res) => {
         ITEMLIST.UsersCde,
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
+        PURCHDTL.POQty___,
         PURCHDTL.Quantity,
         PURCHDTL.QtyGood_,
         PURCHDTL.QtyBad__,
@@ -397,6 +411,7 @@ const addPurchDetail = async (req, res) => {
           ITEMLIST.UsersCde,
           ITEMLIST.OtherCde,
           ITEMLIST.Descript,
+          PURCHDTL.POQty___,
           PURCHDTL.Quantity,
           PURCHDTL.QtyGood_,
           PURCHDTL.QtyBad__,
@@ -456,6 +471,7 @@ const editPurchDetail = async (req, res) => {
         ITEMLIST.UsersCde,
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
+        PURCHDTL.POQty___,
         PURCHDTL.Quantity,
         PURCHDTL.QtyGood_,
         PURCHDTL.QtyBad__,

@@ -20,13 +20,14 @@
 }
 .invoice select{
     padding: 0px;
+    max-width: 400px;
 }
 
 /* Sales Header */
 #inputSale1{
     display: grid;
     column-gap: 30px;
-    grid-template-columns: 50% auto auto;
+    grid-template-columns: auto auto auto;
 }
 #inputSale2{
     display: grid;
@@ -47,6 +48,23 @@
     grid-template-columns: 32% 32% 20% auto  ;
     
 }
+
+/* Purchases Header */
+#inputPurch1, #inputPurch2, #inputPurch3{
+    display: grid;
+    column-gap: 30px;
+    grid-template-columns: 40% 30% 30%;
+}
+/* #inputPurch2{
+    display: grid;
+    column-gap: 30px;
+    grid-template-columns: 40% 30% 30%;
+}
+#inputPurch3{
+    display: grid;
+    column-gap: 30px;
+    grid-template-columns: 40% 30% 30%;
+} */
 
 
 .item-form {
