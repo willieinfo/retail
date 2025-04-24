@@ -1,18 +1,17 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
 const updatePurchTotals = async (req, res) => {
-  const { cCtrlNum_, nTotalQty, nTotalAmt, nNoOfItem } = req.body;
+  const { cCtrlNum_, nTotalQty, nTotalCos, nNoOfItem } = req.body;
   
   // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
-  if (!cCtrlNum_ || !nTotalQty || !nTotalRcv || !nTotalAmt || !nNoOfItem) {
+  if (!cCtrlNum_ || !nTotalQty || !nTotalCos || !nNoOfItem) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
   
   const cSql = `
     UPDATE PURCHREC SET
-      Amount__=@nTotalAmt,
+      Amount__=@nTotalCos,
       TotalQty=@nTotalQty,
-      TotalRcv=@nTotalRcv,
       NoOfItem=@nNoOfItem
     WHERE CtrlNum_=@cCtrlNum_
 
@@ -44,10 +43,11 @@ const updatePurchTotals = async (req, res) => {
       PURCHREC.Log_Date
     FROM PURCHREC LEFT JOIN SUPPLIER
     ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
-    WHERE PURCHREC.CtrlNum_=@cCtrlNum_
+    WHERE PURCHREC.Location = LOCATION.Location
+    AND PURCHREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, nTotalQty, nTotalAmt, nNoOfItem };
+  const params = { cCtrlNum_, nTotalQty, nTotalCos, nNoOfItem  };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -66,20 +66,21 @@ const updatePurchTotals = async (req, res) => {
 }
 
 const editPurchHeader = async (req, res) => {
-  const { cCtrlNum_, cLocation, dDate____, dDR__Date, dDRNum___, dPO__Date, dPONum___, cRemarks_, lDisabled } = req.body;
-
-  if (!cWhseFrom || !dDate____ || !cCtrlNum_) {
+  const { cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, lDisabled } = req.body;
+  if (!cLocation || !dDate____ || !cCtrlNum_) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   const cSql = `
     UPDATE PURCHREC SET
       Location=@cLocation,
+      SuppNum_=@cSuppNum_,
       Date____=@dDate____,
-      DRNum___=@dDRNum___,
+      DRNum___=@cDRNum___,
       DR__Date=@dDR__Date,
-      PONum___=@dPONum___,
-      PO__Date=@dPO__Date,
+      PONum___=@cPONum___,
+      PODate__=@dPODate__,
       Remarks_=@cRemarks_,
       Disabled=@lDisabled
     WHERE CtrlNum_=@cCtrlNum_
@@ -112,10 +113,12 @@ const editPurchHeader = async (req, res) => {
       PURCHREC.Log_Date
     FROM PURCHREC LEFT JOIN SUPPLIER
     ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
-    WHERE PURCHREC.CtrlNum_=@cCtrlNum_
+    WHERE PURCHREC.Location = LOCATION.Location
+    AND PURCHREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, cLocation, dDate____, dDR__Date, dDRNum___, dPO__Date, dPONum___, cRemarks_, lDisabled };
+  const params = { cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, lDisabled };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -134,30 +137,30 @@ const editPurchHeader = async (req, res) => {
 
 
 const addPurchHeader = async (req, res) => {
-  const { cCtrlNum_, cLocation, dDate____,  dDR__Date, dDRNum___, dPO__Date, dPONum___, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cSuffixId } = req.body;
+  const { cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, nNoOfItem, cEncoder_, dLog_Date, cSuffixId } = req.body;
 
-  if (!cWhseFrom || !dDate____ || !cEncoder_) {
+  if (!cLocation || !dDate____ || !cEncoder_) {
     return res.status(400).json({ error: 'Missing required parameters' });
   }
 
   const cSql = `
     -- Insert the new record into PURCHREC and get the generated AutIncId
     INSERT INTO PURCHREC
-      (CtrlNum_, Location, Date____, DR__Date, DRNum___, PO__Date, PONum___, Remarks_, Encoder_,
-    Log_Date, NoOfItem)
+      (CtrlNum_, Location, SuppNum_, Date____, DRNum___, DR__Date,
+    PONum___, PODate__, Remarks_, NoOfItem, Encoder_, Log_Date)
     VALUES
-      (@cCtrlNum_, @cLocation, @dDate____, @dDR__Date, @dDRNum___, @dPO__Date, @dPONum___, @cRemarks_, @cEncoder_,
-    @dLog_Date, @nNoOfItem);
+      (@cCtrlNum_, @cLocation, @cSuppNum_, @dDate____, @cDRNum___, @dDR__Date,
+    @cPONum___, @dPODate__, @cRemarks_, @nNoOfItem, @cEncoder_, @dLog_Date);
 
     -- Get the last inserted AutIncId
     DECLARE @AutIncId INT;
     SET @AutIncId = SCOPE_IDENTITY();
 
     -- Dynamically generate the next CtrlNum_ based on AutIncId and cSuffixId
-    DECLARE @CtrlNum_ VARCHAR(12);
+    DECLARE @CtrlNum_ VARCHAR(11);
     SET @CtrlNum_ = RIGHT('00000000000' + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
-
+    
     -- Update the CtrlNum_ field with the new value
     UPDATE PURCHREC
     SET CtrlNum_ = @CtrlNum_
@@ -214,15 +217,16 @@ const addPurchHeader = async (req, res) => {
       PURCHREC.Log_Date
     FROM PURCHREC LEFT JOIN SUPPLIER
     ON PURCHREC.SuppNum_ = SUPPLIER.SuppNum_ , LOCATION
-    WHERE PURCHREC.AutIncId = @AutIncId
+    WHERE PURCHREC.Location = LOCATION.Location
+    AND PURCHREC.AutIncId = @AutIncId
     ORDER BY LOCATION.LocaName, PURCHREC.CtrlNum_, PURCHREC.Date____
   `;
 
-  const params = { cCtrlNum_, cLocation, dDate____,  dDR__Date, dDRNum___, dPO__Date, dPONum___, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cSuffixId };
+  const params = { cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, nNoOfItem, cEncoder_, dLog_Date, cSuffixId  };
   try {
     const result = await queryDatabase(cSql, params);
-    console.log(params)
+    // console.log(params)
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'No records found' });
@@ -359,7 +363,7 @@ const PurchDtlLst = async (req, res) => {
 
 
 const addPurchDetail = async (req, res) => {
-  const { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost,cSuffixId } = req.body;
+  const { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId } = req.body;
   
   if (!cCtrlNum_ || !cItemCode || !nQuantity) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -378,9 +382,9 @@ const addPurchDetail = async (req, res) => {
 
       const sqlInsert = `
           INSERT INTO PURCHDTL
-            (CtrlNum_,ItemCode,Quantity,QtyGood_,QtyBad__,ItemPrce,SellPrce,LandCost)
+            (CtrlNum_,ItemCode,Quantity,QtyGood_,QtyBad__,POQty___,nItemPrce,nSellPrce,nLandCost)
           VALUES
-            (@cCtrlNum_,@cItemCode,@nQuantity,@nQtyGood_,@nQtyBad__,@nItemPrce,@nSellPrce,@nLandCost);
+            (@cCtrlNum_,@cItemCode,@nQuantity,@nQtyGood_,@nQtyBad__,@nPOQty___,@nItemPrce,@nSellPrce,@nLandCost);
       `;
 
       let sqlRecordId = '';
@@ -426,7 +430,7 @@ const addPurchDetail = async (req, res) => {
 
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
-      const params = { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost,cSuffixId };
+      const params = { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId };
 
       const result = await queryDatabase(cSql, params);
 
@@ -443,7 +447,7 @@ const addPurchDetail = async (req, res) => {
 };
 
 const editPurchDetail = async (req, res) => {
-  const {cRecordId, cItemCode, nQuantity, nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost } = req.body;
+  const {cRecordId, cItemCode, nQuantity, nPOQty___,nItemPrce,nLandCost } = req.body;
   
   if ( !cRecordId || !cItemCode || !nQuantity ) {
     return res.status(400).json({ error: 'Missing required parameters' });
@@ -453,10 +457,8 @@ const editPurchDetail = async (req, res) => {
     UPDATE PURCHDTL SET
       ItemCode=@cItemCode, 
       Quantity=@nQuantity, 
-      QtyGood_=@nQtyGood_, 
-      QtyBad__=@nQtyBad__, 
+      POQty___=@nPOQty___, 
       ItemPrce=@nItemPrce, 
-      SellPrce=@nSellPrce, 
       LandCost=@nLandCost
     WHERE RecordId=@cRecordId
   
@@ -471,10 +473,8 @@ const editPurchDetail = async (req, res) => {
         ITEMLIST.UsersCde,
         ITEMLIST.OtherCde,
         ITEMLIST.Descript,
-        PURCHDTL.POQty___,
         PURCHDTL.Quantity,
-        PURCHDTL.QtyGood_,
-        PURCHDTL.QtyBad__,
+        PURCHDTL.POQty___,
         PURCHDTL.Amount__,
         PURCHDTL.ItemPrce,
         PURCHDTL.SellPrce,
@@ -484,7 +484,7 @@ const editPurchDetail = async (req, res) => {
         AND PURCHDTL.RecordId = @cRecordId
   `;
 
-  const params = { cRecordId, cItemCode, nQuantity, nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost };
+  const params = { cRecordId, cItemCode, nQuantity, nPOQty___,nItemPrce,nLandCost };
   // console.log(params)
 
   try {
@@ -500,7 +500,6 @@ const editPurchDetail = async (req, res) => {
       console.error('Update PURCHDTL error:', err);
       res.status(500).json({ error: 'Error updating PURCHDTL' });
   }
-
 }
 
 const deletePurchDetail = async (req, res) => {
