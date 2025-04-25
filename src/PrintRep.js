@@ -1,4 +1,4 @@
-import {formatDate, get24HrTime} from './FunctLib.js'
+import {formatDate, get24HrTime, showNotification} from './FunctLib.js'
 
 export async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [], cRepoTitle = 'Report') {
     if (!jsonData || !jsonData.length) {
@@ -80,6 +80,8 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
     const date = new Date().toISOString().slice(0, 10);
     const filename = `${cRepoTitle}_Report_${date}.xlsx`;
   
+    showNotification(`${filename} in Excel`);
+
     await writeXlsxFile(data, {
       fileName: filename,
       columns: colWidths,
@@ -353,7 +355,7 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
         doc.text(cAddress_, (pageWidth - doc.getTextWidth(cAddress_)) / 2, currentY);
         // doc.text(cAddress_, 30, currentY);
     
-        const centerPosi = (pageWidth / 2) + pageMargin //-20;
+        const centerPosi = (pageWidth / 2) + pageMargin -10;
         const boxWidth = centerPosi - pageMargin;
         const padding = 2
         const headerHeight = lineHeight + 4; // Adjusted height for the header box

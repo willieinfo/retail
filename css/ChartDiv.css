@@ -1,0 +1,46 @@
+
+
+.chartContainer {
+    display: flex;
+    height: 700px;
+    width: 100%;
+}
+
+/* Ensure canvas elements take full width and height of their containers */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Sales Ranking By Location / Brand SALEREPO */
+/* The first chart occupying 70% of the parent width */
+#storeRankChart, #brandRankChart {
+    display: none;
+}
+#topStores, #topBrands{
+    width: 70%;
+    height: 100%;
+    padding: 10px;
+    background-color: whitesmoke;
+}
+#topBrands{
+    width: 100%;
+}
+#storeChart1, #brandChart1 {
+    width: 70%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+/* The second chart occupying 30% of the parent width */
+#ctsStores {
+    width: 30%;
+    height: 100%;
+    padding: 10px;
+    background-color: whitesmoke;
+}
+#storeChart2 {
+    width: 30%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+

@@ -14,7 +14,7 @@
     margin: 0px;
     padding: 0px 10px;
 }
-.invoice input, select{
+.invoice input {
     margin: 0px;
     padding: 0px 10px;
 }
@@ -55,16 +55,9 @@
     column-gap: 30px;
     grid-template-columns: 40% 30% 30%;
 }
-/* #inputPurch2{
-    display: grid;
-    column-gap: 30px;
-    grid-template-columns: 40% 30% 30%;
-}
 #inputPurch3{
-    display: grid;
-    column-gap: 30px;
-    grid-template-columns: 40% 30% 30%;
-} */
+    grid-template-columns: 40% auto auto auto;
+} 
 
 
 .item-form {
@@ -180,7 +173,7 @@ input, select {
     border: 1px solid #ccc;
     box-sizing: border-box;
     padding: 10px;  
-    display: inline-block;
+    /* display: inline-block; */
 }
 input[type="number"] {
     text-align: center;
@@ -224,7 +217,7 @@ textarea {
     border: 2px solid red;  
 }
 .ScanCode {
-    height: 30px;
+    height: 26px;
     max-width: 300px;
     margin-right: 10px;
     margin-left: 10px;

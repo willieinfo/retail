@@ -58,7 +58,7 @@
     display: flex; /* Align header content */
 }
 
-.ReportBody, .ReportBodyForm {
+.ReportBody, .DetailsForm {
     --rowHeight: 24px;
     height: auto;
     width: 100%;
@@ -66,7 +66,7 @@
     display: block; /* Remove flex to avoid centering */
 }
 
-.ReportBodyForm {
+.DetailsForm {
     overflow-y: hidden;
 }
 
@@ -99,7 +99,8 @@
 .footSegments button:hover{
     opacity: 0.8;
 }
-/* Table */
+
+/* Table - general CSS for tables */
 table {
     margin-top: 0px;
     margin-bottom: 5px;
@@ -115,7 +116,6 @@ tbody {
     height: 100%; 
     /* Adjust based on the height of other elements */
     max-height: calc(100% - 50px); 
-
 }
 
 thead {
@@ -300,6 +300,10 @@ tr:hover td.action-icons i {
 }
 .PickItemTable tr.highlight {
     background-color: yellow;
+}
+
+.PurchDtlTable {
+    margin-bottom: 50px; /* 50px To accomodate 3rd grid */
 }
 
 /* .PickItemTable {

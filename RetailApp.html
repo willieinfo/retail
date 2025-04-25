@@ -9,12 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/write-excel-file@1.x/bundle/write-excel-file.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="./css/MainMenu.css">
     <link rel="stylesheet" href="./css/TableDiv.css">
     <link rel="stylesheet" href="./css/GenStyle.css">
     <link rel="stylesheet" href="./css/InputDiv.css">
     <link rel="stylesheet" href="./css/Settings.css">
+    <link rel="stylesheet" href="./css/ChartDiv.css">
 </head>
 <body>
     <img alt="Retail Shop" id="background-image" />
@@ -63,7 +65,7 @@
             <button id="closeSalesDtl" class="closeForm">✖</button>
         </div>
         <!-- <div class="itemsTableDiv"> -->
-       <div id="salesInvoice" class="ReportBodyForm"></div>
+       <div id="salesInvoice" class="DetailsForm"></div>
         <!-- </div> -->
         <div class="btnDiv">
             <button type="submit" id="saveSalesRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
@@ -91,7 +93,19 @@
             <span>Sales Ranking Report by Location</span>
             <button id="closeRepo1" class="closeForm">✖</button>
         </div>
-        <div id="salesRankStore" class="ReportBody"></div>
+        <div class="ReportBody">
+            <div id="salesRankStore" class="ReportBody"></div>
+            <div id="storeRankChart" class="chartContainer">
+                <div id="topStores">
+                    <h5>Top 30 Stores</h5>
+                    <canvas id="storeChart1"></canvas>
+                </div>
+                <div id="ctsStores">
+                    <h5>Contribution To Sales</h5>
+                    <canvas id="storeChart2"></canvas>
+                </div>
+            </div>
+        </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="saleRank1Counter" class="recCounter"></span>
@@ -105,7 +119,15 @@
             <span>Sales Ranking Report by Brand</span>
             <button id="closeRepo2" class="closeForm">✖</button>
         </div>
-        <div id="salesRankBrand" class="ReportBody"></div>
+        <div class="ReportBody">
+            <div id="salesRankBrand" class="ReportBody"></div>
+            <div id="brandRankChart" class="chartContainer">
+                <div id="topBrands">
+                    <h5>Top 30 Brands</h5>
+                    <canvas id="brandChart1"></canvas>
+                </div>
+            </div>
+        </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="saleRank2Counter" class="recCounter"></span>
@@ -201,7 +223,7 @@
             <button id="closeStockDtl" class="closeForm">✖</button>
         </div>
         <!-- <div class="itemsTableDiv"> -->
-       <div id="stockTransfer" class="ReportBodyForm"></div>
+       <div id="stockTransfer" class="DetailsForm"></div>
         <!-- </div> -->
         <div class="btnDiv">
             <button type="submit" id="saveStockRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
@@ -249,7 +271,7 @@
             <button id="closePurchDtl" class="closeForm">✖</button>
         </div>
         <!-- <div class="itemsTableDiv"> -->
-       <div id="stockReceiving" class="ReportBodyForm"></div>
+       <div id="stockReceiving" class="DetailsForm"></div>
         <!-- </div> -->
         <div class="btnDiv">
             <button type="submit" id="savePurchRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>

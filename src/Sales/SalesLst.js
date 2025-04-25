@@ -159,10 +159,10 @@ async function SaleForm(index,editMode) {
             <table class="SalesDtlTable">
                 <thead id="ListItemHead">
                     <tr>
-                        <th>Qty</th>
                         <th>Stock No.</th>
                         <th>Bar Code</th>
                         <th>Item Description</th>
+                        <th>Qty</th>
                         <th>Unit Price</th>
                         <th>Gross</th>
                         <th>Discount</th>
@@ -449,10 +449,10 @@ function updateItemTable(refreshOnly=false) {
         nTotalAmt += item.Quantity * item.Amount__ || 0;
         return `
             <tr data-index="${index}" style="${item.Quantity < 0 ? 'color: red;' : ''}">
-                <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
+                <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
@@ -469,11 +469,11 @@ function updateItemTable(refreshOnly=false) {
     const listFooter=`
             <tfoot id="ListItemFoot">
                 <tr style="font-weight: bold;">
-                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td style="text-align: right">Totals: </td>
+                    <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                    <td></td>
                     <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                     <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
                     <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
@@ -987,13 +987,13 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         `Customer : ${currentRec.CustName.trim()}`,
         `Remarks  : ${currentRec.Remarks_.trim()}`
     ];
-    const colWidths = [10, 20, 28, 60, 16, 20, 20, 20]; // Adjust widths as needed
-    const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
+    const colWidths = [20, 28, 60, 10, 16, 20, 20, 20]; // Adjust widths as needed
+    const columns = ['Stock No.', 'Bar Code', 'Item Description', 'Qty', 'Unit Price', 'Gross', 'Discount', 'Net'];
     const itemFields = [
-        'Quantity',  // Field from item
         'UsersCde',  // Field from item
         'OtherCde',  // Field from item
         'Descript',  // Field from item
+        'Quantity',  // Field from item
         'ItemPrce',  // Field from item
         // Calculated fields
         (item, formatter) => formatter.format(item.Quantity * item.ItemPrce),  // Gross (calculated)
@@ -1001,10 +1001,10 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
         (item, formatter) => formatter.format(item.Quantity * item.Amount__)  // Net (calculated)
     ];    
     const fieldTypes = [
-        'integer',      // Quantity (numeric)
         'string',      // UsersCde (string)
         'string',      // OtherCde (string)
         'string',      // Descript (string)
+        'integer',      // Quantity (numeric)
         'number',      // ItemPrce (numeric)
         'calculated',  // Gross (calculated field)
         'calculated',  // Discount (calculated field)
@@ -1012,7 +1012,7 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     ];        
     
     // columns to create totals based on itemFields array
-    const createTotals = [true,false,false,false,false,true,true,true]
+    const createTotals = [false,false,false,true,false,true,true,true]
 
     printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
         columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Sales Record')

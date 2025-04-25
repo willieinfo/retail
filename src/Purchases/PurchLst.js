@@ -7,6 +7,7 @@ let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of PURCHDTL
 let currentRec = [];    // Current selected PURCHREC record
 let currentIndex = 0    // Index of the selected PURCHREC record
+let editRecMode = false
 
 // values wil be determined as user enters UsersCde and validateField()
 let cItemCode=null  
@@ -35,7 +36,7 @@ async function PurchLst(dDateFrom, dDateTo__, cLocation, cReferDoc) {
         globalData = await response.json(); // Store full data array globally
         purchLstCounter.innerHTML=`${globalData.length} Records`
       
-        updateTable() //Render Purch Transfer List
+        updateTable() //Render Stock Receiving List
 
     } catch (error) {
         console.error('Fetch error:', error);
@@ -62,7 +63,7 @@ function updateTable() {
                     <th>DR Date</th>
                     <th>PO No.</th>
                     <th>PO Date</th>
-                    <th>Total Qty.</th>
+                    <th>Qty.</th>
                     <th>Amount</th>
                     <th>Items</th>
                     <th>Remarks</th>
@@ -107,6 +108,7 @@ function updateTable() {
             currentIndex = index
             if (!isNaN(index) && index >= 0 && index < globalData.length) {
                 // console.log(`Row clicked for index: ${index}`);
+                editRecMode = true
                 PurcForm(index, true); // Pass only the index to your form
             }
         }
@@ -129,65 +131,51 @@ async function PurcForm(index,editMode) {
     reportBody.innerHTML = `
         <div id="purchasesForm" class="invoice">
             <div id="inputPurch1" class="textDiv">
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_SuppNum_">Supplier</label>
-                        <select id="PurchRec_SuppNum_"></select>
-                    </div>
+                <div>
+                    <label for="PurchRec_SuppNum_">Supplier</label>
+                    <select id="PurchRec_SuppNum_"></select>
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_ReferDoc">Ref. No</label>
-                        <input type="text" id="PurchRec_ReferDoc" spellcheck="false" readonly>
-                    </div>
+                <div>
+                    <label for="PurchRec_ReferDoc">Ref. No</label>
+                    <input type="text" id="PurchRec_ReferDoc" spellcheck="false" readonly>
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_Date____">Date Received</label>
-                        <input type="date" id="PurchRec_Date____">
-                    </div>
+                <div>
+                    <label for="PurchRec_Date____">Date Received</label>
+                    <input type="date" id="PurchRec_Date____">
                 </div>
             </div>
 
             <div id="inputPurch2" class="textDiv">
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_Location">Location</label>
-                        <select id="PurchRec_Location"></select>
-                    </div>
+                <div>
+                    <label for="PurchRec_Location">Location</label>
+                    <select id="PurchRec_Location"></select>
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_DRNum___">DR No.</label>
-                        <input type="text" id="PurchRec_DRNum___" spellcheck="false">
-                    </div>
+                <div>
+                    <label for="PurchRec_DRNum___">DR No.</label>
+                    <input type="text" id="PurchRec_DRNum___" spellcheck="false">
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_DR__Date">DR Date</label>
-                        <input type="date" id="PurchRec_DR__Date">
-                    </div>
+                <div>
+                    <label for="PurchRec_DR__Date">DR Date</label>
+                    <input type="date" id="PurchRec_DR__Date">
                 </div>
             </div>
 
             <div id="inputPurch3" class="textDiv">
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_Remarks_">Location</label>
-                        <input type="text" id="PurchRec_Remarks_" spellcheck="false">
-                    </div>
+                <div>
+                    <label for="PurchRec_Remarks_">Remarks</label>
+                    <input type="text" id="PurchRec_Remarks_" spellcheck="false">
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_PONum___">PO No.</label>
-                        <input type="text" id="PurchRec_PONum___" spellcheck="false">
-                    </div>
+                <div>
+                    <label for="PurchRec_PONum___">PO No.</label>
+                    <input type="text" id="PurchRec_PONum___" spellcheck="false">
                 </div>
-                <div class="textDiv">
-                    <div>
-                        <label for="PurchRec_PODate__">DR Date</label>
-                        <input type="date" id="PurchRec_PODate__">
-                    </div>
+                <div>
+                    <label for="PurchRec_PODate__">PO Date</label>
+                    <input type="date" id="PurchRec_PODate__">
+                </div>
+                <div id="chkDiv">
+                    <input type="checkbox" id="PurchRec_Disabled" >
+                    <label for="PurchRec_Disabled">Disabled</label>
                 </div>
             </div>
 
@@ -203,6 +191,8 @@ async function PurcForm(index,editMode) {
                         <th>Item Description</th>
                         <th>PO Qty.</th>
                         <th>RR Qty.</th>
+                        <th>Unit Cost</th>
+                        <th>Ext. Cost</th>
                         <th>Unit Price</th>
                         <th>Ext. Price</th>
                         <th></th>
@@ -230,8 +220,7 @@ async function PurcForm(index,editMode) {
         document.getElementById('PurchRec_PONum___').value=itemData.PONum___
         document.getElementById('PurchRec_PODate__').value=formatDate(itemData.PODate__,'YYYY-MM-DD')
         document.getElementById('PurchRec_Remarks_').value=itemData.Remarks_
-
-        // document.getElementById('PurchRec_Disabled').checked=itemData.Disabled ? true : false
+        document.getElementById('PurchRec_Disabled').checked=itemData.Disabled ? true : false
 
         const locationSelect = document.getElementById('PurchRec_Location');
         const locationValue = itemData.Location.trim(); // The value that should be selected
@@ -270,7 +259,7 @@ async function PurcForm(index,editMode) {
             itemsDtl = await response.json(); // Store full data array globally
             stockDtlCounter.innerHTML=`${itemsDtl.length} Records`
 
-            updateItemTable();  // Render items using <tr>
+            updateItemTable();  // Render detailed items using <tr>
 
     
         } catch (error) {
@@ -281,10 +270,13 @@ async function PurcForm(index,editMode) {
     } else {
         // Triggered from +Add button Footer
         const dNew_Date= new Date()
-        document.getElementById('PurchRec_Date____').value=formatDate(dNew_Date,'YYYY-MM-DD')
-        document.getElementById('PurchRec_DateRcvd').value=formatDate(dNew_Date,'YYYY-MM-DD')
         document.getElementById('PurchRec_ReferDoc').value='New Record'
+        document.getElementById('PurchRec_Date____').value=formatDate(dNew_Date,'YYYY-MM-DD')
+        document.getElementById('PurchRec_DRNum___').value=''
+        document.getElementById('PurchRec_DR__Date').value=formatDate(dNew_Date,'YYYY-MM-DD')
         document.getElementById('PurchRec_Remarks_').value=''
+        document.getElementById('PurchRec_PONum___').value=''
+        document.getElementById('PurchRec_PODate__').value=formatDate(dNew_Date,'YYYY-MM-DD')
         itemsDtl = []; 
         updateItemTable();
         
@@ -293,30 +285,33 @@ async function PurcForm(index,editMode) {
 
 
 document.getElementById('savePurchRecBtn').addEventListener('click', () => {
-    const stockDtlCounter=document.getElementById('stockDtlCounter').innerText
-    const cWhseFrom=document.getElementById('PurchRec_WhseFrom').value
-    const cWhseTo__=document.getElementById('PurchRec_WhseTo__').value
-    const cRemarks_=document.getElementById('PurchRec_Remarks_').value
+    // const stockDtlCounter=document.getElementById('stockDtlCounter').innerText
+    const cLocation=document.getElementById('PurchRec_Location').value
+    const cSuppNum_=document.getElementById('PurchRec_SuppNum_').value
     const dDate____=document.getElementById('PurchRec_Date____').value
-    const dDateRcvd=document.getElementById('PurchRec_DateRcvd').value
-    const cPrepared=document.getElementById('PurchRec_Prepared').value
-    const cReceived=document.getElementById('PurchRec_Received').value
+    const cDRNum___=document.getElementById('PurchRec_DRNum___').value
+    const dDR__Date=document.getElementById('PurchRec_DR__Date').value
+    const cPONum___=document.getElementById('PurchRec_PONum___').value
+    const dPODate__=document.getElementById('PurchRec_PODate__').value
+
+    const cRemarks_=document.getElementById('PurchRec_Remarks_').value
     const lDisabled=document.getElementById('PurchRec_Disabled').checked ? 1 : 0 
 
-    if (!cWhseFrom) {
-        document.getElementById('PurchRec_WhseFrom').focus();
-        document.getElementById('PurchRec_WhseFrom').classList.add('invalid');  // Add a class to highlight
+    if (!cSuppNum_) {
+        document.getElementById('PurchRec_SuppNum_').focus();
+        document.getElementById('PurchRec_SuppNum_').classList.add('invalid');  
         return ;
     }
-    if (!cWhseTo__) {
-        document.getElementById('PurchRec_WhseTo__').focus();
-        document.getElementById('PurchRec_WhseTo__').classList.add('invalid');  // Add a class to highlight
+    if (!cLocation) {
+        document.getElementById('PurchRec_Location').focus();
+        document.getElementById('PurchRec_Location').classList.add('invalid');  
         return ;
     }
 
-    if (stockDtlCounter) {
+    if (editRecMode) {
 
-        editPurchRec(currentRec.CtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived, lDisabled)
+        editPurchRec(currentRec.CtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+            cPONum___, dPODate__, cRemarks_, lDisabled)
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
@@ -325,8 +320,8 @@ document.getElementById('savePurchRecBtn').addEventListener('click', () => {
         const dLog_Date=new Date()
         const nNoOfItem=0
         
-        if (addPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-            dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId)) {
+        if (addPurchRec(cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+            cPONum___, dPODate__, cRemarks_, nNoOfItem, cEncoder_, dLog_Date, cSuffixId)) {
             document.getElementById("addPurchDtl").disabled = false;
             document.getElementById("PurchRec_ScanCode").disabled = false;
     
@@ -339,25 +334,26 @@ document.getElementById('cancelPurchRecBtn').addEventListener('click', () => {
     showReport('PurchLst')  
 });
 
-async function editPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived ,lDisabled) {
+async function editPurchRec(cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, lDisabled) {
 
     lDisabled = document.getElementById("PurchRec_Disabled").checked ? '1' : '0';
-
     try {
         const response = await fetch('http://localhost:3000/purchases/editPurchHeader', {
             method: 'PUT',  
             headers: {
-                'Content-Type': 'application/json'  // Specify JSON format
+                'Content-Type': 'application/json'  
             },
             body: JSON.stringify({
                 cCtrlNum_: cCtrlNum_,
-                cWhseFrom: cWhseFrom, 
-                cWhseTo__: cWhseTo__, 
+                cLocation: cLocation, 
+                cSuppNum_: cSuppNum_, 
                 dDate____: dDate____,
-                dDateRcvd: dDateRcvd,
+                cDRNum___: cDRNum___,
+                dDR__Date: dDR__Date,
+                cPONum___: cPONum___,
+                dPODate__: dPODate__,
                 cRemarks_: cRemarks_,
-                cPrepared: cPrepared,
-                cReceived: cReceived,
                 lDisabled: lDisabled
             })
         });
@@ -380,10 +376,8 @@ async function editPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcv
 }
 
 
-async function addPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-    dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId) {
-    // console.log(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
-    //     dLog_Date, nNoOfItem, cPrepared, cSuffixId)
+async function addPurchRec(cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
+    cPONum___, dPODate__, cRemarks_, nNoOfItem, cEncoder_, dLog_Date, cSuffixId) {
     try {
         const response = await fetch('http://localhost:3000/purchases/addPurchHeader', {
             method: 'POST',  
@@ -392,16 +386,17 @@ async function addPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd
             },
             body: JSON.stringify({
                 cCtrlNum_: cCtrlNum_,
-                cWhseFrom: cWhseFrom, 
-                cWhseTo__: cWhseTo__, 
+                cLocation: cLocation, 
+                cSuppNum_: cSuppNum_, 
                 dDate____: dDate____,
-                dDateRcvd: dDateRcvd,
+                cDRNum___: cDRNum___,
+                dDR__Date: dDR__Date,
+                cPONum___: cPONum___,
+                dPODate__: dPODate__,
                 cRemarks_: cRemarks_,
+                nNoOfItem: nNoOfItem,
                 cEncoder_: cEncoder_,
                 dLog_Date: dLog_Date,
-                nNoOfItem: nNoOfItem,
-                cPrepared: cPrepared,
-                cReceived: cReceived,
                 cSuffixId: cSuffixId
             })
         });
@@ -447,6 +442,7 @@ async function addPurchRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd
 function updateItemTable(refreshOnly=false) {
     let nTotalQty = 0;
     let nTotalOrd = 0;
+    let nTotalPrc = 0;
     let nTotalSel = 0;
 
     const ListPurcItem=document.getElementById('ListPurcItem')
@@ -455,6 +451,7 @@ function updateItemTable(refreshOnly=false) {
         // Accumulate totals inside the map
         nTotalQty += item.Quantity || 0;
         nTotalOrd += item.POQty___ || 0;
+        nTotalPrc += item.Quantity * item.ItemPrce || 0;
         nTotalSel += item.Quantity * item.SellPrce || 0;
         return `
             <tr data-index="${index}">
@@ -463,6 +460,8 @@ function updateItemTable(refreshOnly=false) {
                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
                 <td style="text-align: center">${item.POQty___.toFixed(0) || 'N/A'}</td>
                 <td style="text-align: center">${item.Quantity.toFixed(0) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.SellPrce) || 'N/A'}</td>
                 <td class="action-icons">
@@ -482,6 +481,8 @@ function updateItemTable(refreshOnly=false) {
                     <td style="text-align: right">Totals: </td>
                     <td style="text-align: center">${nTotalOrd.toFixed(0) || 'N/A'}</td>
                     <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                    <td></td>
+                    <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                     <td></td>
                     <td style="text-align: right">${formatter.format(nTotalSel) || 'N/A'}</td>
                 </tr>
@@ -573,9 +574,9 @@ function PurchDtl(index,editMode) {
             <div class="subTextDiv" id="inputDetails">
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="PurchRec_UsersCde">Purch No</label>
+                        <label for="PurchRec_UsersCde">Stock No</label>
                         <input type="text" id="PurchRec_UsersCde" name="UsersCde" spellcheck="false" 
-                            placeholder="Type Purch No. or Bar Code here to search"
+                            placeholder="Type Stock No. or Bar Code here to search"
                             autocomplete = "off">
                     </div>
                     <div class="subTextDiv">
@@ -592,16 +593,20 @@ function PurchDtl(index,editMode) {
                 </div>
                 <div class="textDiv">
                     <div class="subTextDiv">
-                        <label for="PurchRec_Quantity">Qty. Out</label>
+                        <label for="PurchRec_Quantity">Qty. Rcv</label>
                         <input type="number" id="PurchRec_Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="PurchRec_QtyRecvd">Qty. In</label>
-                        <input type="number" id="PurchRec_QtyRecvd" name="QtyRecvd">
+                        <label for="PurchRec_QtyRecvd">Qty. Ord</label>
+                        <input type="number" id="PurchRec_POQty___" name="POQty___">
                     </div>
                     <div class="subTextDiv">
-                        <label for="PurchRec_Amount__">Net Amount</label>
-                        <input type="number" id="PurchRec_Amount__" name="Amount__">
+                        <label for="PurchRec_ItemPrce">Net Cost</label>
+                        <input type="number" id="PurchRec_ItemPrce" name="ItemPrce">
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="PurchRec_SellPrce">Net Selling Price</label>
+                        <input type="number" id="PurchRec_SellPrce" name="SellPrce">
                     </div>
                 </div>
             </div>
@@ -639,8 +644,8 @@ function PurchDtl(index,editMode) {
     itemsDtlForm.style.width = '80%';
     itemsDtlForm.style.maxWidth = '800px';
 
-    document.getElementById('StocForm').appendChild(itemsDtlForm);
-    document.getElementById('StocForm').appendChild(overlay);
+    document.getElementById('PurcForm').appendChild(itemsDtlForm);
+    document.getElementById('PurcForm').appendChild(overlay);
     itemsDtlForm.style.display = 'flex'
 
 
@@ -649,30 +654,32 @@ function PurchDtl(index,editMode) {
         document.getElementById('PurchRec_OtherCde').value=itemData.OtherCde
         document.getElementById('PurchRec_Descript').value=itemData.Descript
         document.getElementById('PurchRec_Quantity').value=itemData.Quantity
-        document.getElementById('PurchRec_QtyRecvd').value=itemData.QtyRecvd
-        document.getElementById('PurchRec_Amount__').value=itemData.Amount__
+        document.getElementById('PurchRec_POQty___').value=itemData.POQty___
+        document.getElementById('PurchRec_ItemPrce').value=itemData.ItemPrce
+        document.getElementById('PurchRec_SellPrce').value=itemData.SellPrce
         document.getElementById('PurchRec_Quantity').focus()
     } else {
         document.getElementById('PurchRec_UsersCde').value=''
         document.getElementById('PurchRec_OtherCde').value=''
         document.getElementById('PurchRec_Descript').value=''
         document.getElementById('PurchRec_Quantity').value=1
-        document.getElementById('PurchRec_QtyRecvd').value=1
-        document.getElementById('PurchRec_Amount__').value=0.00
+        document.getElementById('PurchRec_POQty___').value=1
+        document.getElementById('PurchRec_ItemPrce').value=0.00
+        document.getElementById('PurchRec_SellPrce').value=0.00
         document.getElementById('PurchRec_UsersCde').focus()
 
     }
-    document.getElementById('PurchRec_Amount__').readonly = true;
     document.getElementById('PurchRec_OtherCde').readonly = true;
     document.getElementById('PurchRec_Descript').readonly = true;
-    document.getElementById('PurchRec_Amount__').setAttribute('tabindex', '-1');
+    document.getElementById('PurchRec_ItemPrce').setAttribute('tabindex', '-1');
+    document.getElementById('PurchRec_SellPrce').setAttribute('tabindex', '-1');
     document.getElementById('PurchRec_OtherCde').setAttribute('tabindex', '-1');
     document.getElementById('PurchRec_Descript').setAttribute('tabindex', '-1');
 
     // Get the id's of the elements for checkEmptyValue() function before saving
     const UsersCde=document.getElementById('PurchRec_UsersCde')
     const Quantity=document.getElementById('PurchRec_Quantity')
-    const Amount__=document.getElementById('PurchRec_Amount__')
+    // const ItemPrce=document.getElementById('PurchRec_ItemPrce')
     
     document.getElementById('PurchRec_UsersCde').addEventListener('input', debounce(async () => {
         const otherDetails = { 
@@ -682,12 +689,12 @@ function PurchDtl(index,editMode) {
         await chkUsersCde(editMode, 'PurchRec', otherDetails)        
         cItemCode=otherDetails.cItemCode
         nLandCost=otherDetails.nLandCost
-}, 300));  // 300ms delay (you can adjust the delay as needed)
+    }, 300));  // 300ms delay (you can adjust the delay as needed)
     
     document.getElementById('savePurchDtlBtn').addEventListener('click', async (e) => {
         e.preventDefault()
     
-        if (!checkEmptyValue(UsersCde,Quantity,Amount__)) {
+        if (!checkEmptyValue(UsersCde,Quantity)) {
             return;  // If any field is empty, stop here and do not proceed
         }
         if (editMode) {
@@ -696,7 +703,7 @@ function PurchDtl(index,editMode) {
         }
         if (cItemCode==null) {
             document.getElementById('modal-overlay').style.display='none';
-            MessageBox('Invalid record.\n Purch No. is not found.', 'Ok,Close', 'Alert Message')
+            MessageBox('Invalid record.\n Stock No. is not found.', 'Ok,Close', 'Alert Message')
                 .then((buttonIndex) => {
                 if (buttonIndex === 0) {  // If 'Ok' is clicked
                     UsersCde.focus()
@@ -713,11 +720,12 @@ function PurchDtl(index,editMode) {
                 editPurchDtl(index,cCtrlNum_,itemData.RecordId,cItemCode,nLandCost)
         } else {
             const nQuantity=document.getElementById('PurchRec_Quantity').value
-            const nQtyRecvd=document.getElementById('PurchRec_QtyRecvd').value
-            const nAmount__=document.getElementById('PurchRec_Amount__').value
+            const nPOQty___=document.getElementById('PurchRec_POQty___').value
+            const nItemPrce=document.getElementById('PurchRec_ItemPrce').value
+            const nSellPrce=document.getElementById('PurchRec_SellPrce').value
             const cSuffixId='ES'
 
-            addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost,cSuffixId)
+            addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId)
         }
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
@@ -733,8 +741,9 @@ async function editPurchDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
     document.getElementById('loadingIndicator').style.display = 'flex';
 
     const nQuantity=document.getElementById('PurchRec_Quantity').value
-    const nQtyRecvd=document.getElementById('PurchRec_QtyRecvd').value
-    const nAmount__=document.getElementById('PurchRec_Amount__').value
+    const nPOQty___=document.getElementById('PurchRec_POQty___').value
+    const nItemPrce=document.getElementById('PurchRec_ItemPrce').value
+    const nSellPrce=document.getElementById('PurchRec_SellPrce').value
 
     // console.log([cRecordId,cItemCode,nQuantity,nItemPrce,nDiscRate,nAmount__,nLandCost])
 
@@ -748,8 +757,9 @@ async function editPurchDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
                 cRecordId: cRecordId,
                 cItemCode: cItemCode,
                 nQuantity: nQuantity,
-                nQtyRecvd: nQtyRecvd,
-                nAmount__: nAmount__,
+                nPOQty___: nPOQty___,
+                nItemPrce: nItemPrce,
+                nSellPrce: nSellPrce,
                 nLandCost: nLandCost
             })
         });
@@ -763,7 +773,7 @@ async function editPurchDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
         if (updatedItem) {
             itemsDtl[index]=updatedItem;
             updateItemTable(true)
-            showNotification('Purch Transfer Item record updated successfully!')
+            showNotification('Stock Receiving record updated successfully!')
             // console.log(updatedItem)
             updatePurchTotals(cCtrlNum_) // Update PURCHREC Header
         }
@@ -776,9 +786,13 @@ async function editPurchDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 }
 
 // exported to Functlib for addScanCode() function
-export async function addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmount__,nLandCost,cSuffixId) {
+export async function addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId) {
+    
     document.getElementById('loadingIndicator').style.display = 'flex';
     
+    const nQtyGood_ = 1
+    const nQtyBad__ = 0
+
     try {
         const response = await fetch('http://localhost:3000/purchases/addPurchDetail', {
             method: 'POST',  
@@ -789,8 +803,11 @@ export async function addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmoun
                 cCtrlNum_: cCtrlNum_,
                 cItemCode: cItemCode,
                 nQuantity: nQuantity,
-                nQtyRecvd: nQtyRecvd,
-                nAmount__: nAmount__,
+                nPOQty___: nPOQty___,
+                nQtyGood_: nQtyGood_,
+                nQtyBad__: nQtyBad__,
+                nItemPrce: nItemPrce,
+                nSellPrce: nSellPrce,
                 nLandCost: nLandCost,
                 cSuffixId: cSuffixId
             })
@@ -804,7 +821,7 @@ export async function addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmoun
         if (updatedItem) {
             itemsDtl.push(updatedItem);
             updateItemTable(true)
-            showNotification('Purch Transfer Item record added successfully!')
+            showNotification('Stock Receiving Item record added successfully!')
 
             updatePurchTotals(updatedItem.CtrlNum_) // Update PURCHREC Header
 
@@ -841,8 +858,8 @@ export async function addPurchDtl(cCtrlNum_,cItemCode,nQuantity,nQtyRecvd,nAmoun
 async function updatePurchTotals(cCtrlNum_) {
     const headerTotals=[
         calcTotalQty(),
-        calcTotalRcv(),
-        calcTotalAmt(),
+        calcTotalCos(),
+        calcTotalSel(),
         calcTotalCnt()
     ]
     const res = await fetch('http://localhost:3000/purchases/updatePurchTotals', {
@@ -853,8 +870,8 @@ async function updatePurchTotals(cCtrlNum_) {
         body: JSON.stringify({
             cCtrlNum_: cCtrlNum_,
             nTotalQty: headerTotals[0],
-            nTotalRcv: headerTotals[1],
-            nTotalAmt: headerTotals[2],
+            nTotalCos: headerTotals[1],
+            nTotalSRP: headerTotals[2],
             nNoOfItem: headerTotals[3]
         })
     });
@@ -862,15 +879,14 @@ async function updatePurchTotals(cCtrlNum_) {
     const editTotals = await res.json()
     globalData[currentIndex] = editTotals
     updateTable()
-    
     function calcTotalQty() {
         return itemsDtl.reduce((total, item) => total + parseInt(item.Quantity, 10), 0);
     }
-    function calcTotalRcv() {
-        return itemsDtl.reduce((total, item) => total + parseInt(item.QtyRecvd, 10), 0);
-    }
-    function calcTotalAmt() {
-        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.Amount__), 0).toFixed(2);
+    function calcTotalCos() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.ItemPrce), 0).toFixed(2);
+    }            
+    function calcTotalSel() {
+        return itemsDtl.reduce((total, item) => total + parseFloat(item.Quantity*item.SellPrce), 0).toFixed(2);
     }            
     function calcTotalCnt() {
         return itemsDtl.length
@@ -890,6 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addPurchRec.addEventListener('click', () => {
         document.getElementById('purchDtlCounter').innerText=''
+        editRecMode = false
         PurcForm();
     });
     addPurchDtl.addEventListener('click', () => {
@@ -952,36 +969,36 @@ document.getElementById('printStockReceiving').addEventListener('click', async (
     const cReferDoc=document.getElementById('PurchRec_ReferDoc').value
     const cRemarks_=document.getElementById('PurchRec_Remarks_').value
     const dDate____=document.getElementById('PurchRec_Date____').value
-    const dDateRcvd=document.getElementById('PurchRec_DateRcvd').value
-    const cPrepared=document.getElementById('PurchRec_Prepared').value
-    const cReceived=document.getElementById('PurchRec_Received').value
+    const cDRNum___=document.getElementById('PurchRec_DRNum___').value
+    const dDR__Date=document.getElementById('PurchRec_DR__Date').value
+    const cPONum___=document.getElementById('PurchRec_PONum___').value
+    const dPODate__=document.getElementById('PurchRec_PODate__').value
     
-    const cWhseFrom=document.getElementById('PurchRec_WhseFrom')
-    const cWhseTo__=document.getElementById('PurchRec_WhseTo__')
-    const cFromWhse = cWhseFrom.options[cWhseFrom.selectedIndex].text;
-    const cTo__Whse = cWhseTo__.options[cWhseTo__.selectedIndex].text;
+    const cLocation=document.getElementById('PurchRec_Location')
+    const cSuppNum_=document.getElementById('PurchRec_SuppNum_')
+    const cLocaName = cLocation.options[cLocation.selectedIndex].text;
+    const cSuppName = cSuppNum_.options[cSuppNum_.selectedIndex].text;
 
     const headerData = [
         `Ref. No.     : ${cReferDoc}`,
-        `Origin       : ${cFromWhse.trim()}`,
-        `Destination  : ${cTo__Whse.trim()}`,
-        `Transfer Date: ${formatDate(dDate____,'MM/DD/YYYY')}`,
-        `Date Received: ${formatDate(dDateRcvd,'MM/DD/YYYY')}`,
-        `Prepared By  : ${cPrepared.trim()}`,
-        `Received By  : ${cReceived.trim()}`,
-        `Remarks      : ${cRemarks_.trim()}`,
+        `Supplier : ${cSuppName.trim()}`,
+        `DR No - Date : ${cDRNum___.trim()} - ${formatDate(dDR__Date,'MM/DD/YYYY')}`,
+        `Location : ${cLocaName.trim()}`,
+        `Date Received: ${formatDate(dDate____,'MM/DD/YYYY')}`,
+        `PO No. - Date: ${cPONum___.trim()} - ${formatDate(dPODate__,'MM/DD/YYYY')}`,
+        `Remarks: ${cRemarks_.substring(1,36).trim()}`,
         ''
     ];
     const colWidths = [26, 26, 76, 14, 12, 20, 20]; // Adjust widths as needed
-    const columns = ['Purch No.','Bar Code','Item Description','Qty.Out','Qty.In','Unit Price','Ext. Price'];
+    const columns = ['Stock No.','Bar Code','Item Description','PO Qty','RR Qty','Unit Price','Ext. Price'];
     const itemFields = [
         'UsersCde',  // Field from item
         'OtherCde',  // Field from item
         'Descript',  // Field from item
+        'POQty___',  
         'Quantity',  
-        'QtyRecvd',  
-        'Amount__',  // Field from item
-        (item, formatter) => formatter.format(item.Quantity * item.Amount__)  
+        'SellPrce',  
+        (item, formatter) => formatter.format(item.Quantity * item.SellPrce)  
     ];    
     const fieldTypes = [
         'string',      // UsersCde (string)
@@ -997,7 +1014,7 @@ document.getElementById('printStockReceiving').addEventListener('click', async (
     const createTotals = [false,false,false,true,true,false,true]
 
     printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
-        columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Purch Transfer')
+        columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Stock Receiving Report')
 });
 
 

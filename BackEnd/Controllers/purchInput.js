@@ -1,9 +1,9 @@
 const { queryDatabase } = require('../DBConnect/dbConnect');
 
 const updatePurchTotals = async (req, res) => {
-  const { cCtrlNum_, nTotalQty, nTotalCos, nNoOfItem } = req.body;
+  const { cCtrlNum_, nTotalQty, nTotalCos, nTotalSRP, nNoOfItem } = req.body;
   
-  // console.log(cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem);
+  // console.log(cCtrlNum_, nTotalQty, nTotalCos, nTotalSRP, nNoOfItem);
   if (!cCtrlNum_ || !nTotalQty || !nTotalCos || !nNoOfItem) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
@@ -11,6 +11,7 @@ const updatePurchTotals = async (req, res) => {
   const cSql = `
     UPDATE PURCHREC SET
       Amount__=@nTotalCos,
+      TotalSRP=@nTotalSRP,
       TotalQty=@nTotalQty,
       NoOfItem=@nNoOfItem
     WHERE CtrlNum_=@cCtrlNum_
@@ -47,7 +48,7 @@ const updatePurchTotals = async (req, res) => {
     AND PURCHREC.CtrlNum_=@cCtrlNum_
   `;
 
-  const params = { cCtrlNum_, nTotalQty, nTotalCos, nNoOfItem  };
+  const params = { cCtrlNum_, nTotalQty, nTotalCos, nTotalSRP, nNoOfItem  };
   try {
     const result = await queryDatabase(cSql, params);
     // console.log(params)
@@ -363,8 +364,9 @@ const PurchDtlLst = async (req, res) => {
 
 
 const addPurchDetail = async (req, res) => {
-  const { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId } = req.body;
-  
+  const { cCtrlNum_,cItemCode,nQuantity,nPOQty___,nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost,cSuffixId } = req.body;
+  // console.log(cCtrlNum_,cItemCode,nQuantity,nPOQty___,nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost,cSuffixId)
+
   if (!cCtrlNum_ || !cItemCode || !nQuantity) {
       return res.status(400).json({ error: 'Missing required parameters' });
   }
@@ -382,9 +384,9 @@ const addPurchDetail = async (req, res) => {
 
       const sqlInsert = `
           INSERT INTO PURCHDTL
-            (CtrlNum_,ItemCode,Quantity,QtyGood_,QtyBad__,POQty___,nItemPrce,nSellPrce,nLandCost)
+            (CtrlNum_,ItemCode,Quantity,POQty___,QtyGood_,QtyBad__,ItemPrce,SellPrce,LandCost)
           VALUES
-            (@cCtrlNum_,@cItemCode,@nQuantity,@nQtyGood_,@nQtyBad__,@nPOQty___,@nItemPrce,@nSellPrce,@nLandCost);
+            (@cCtrlNum_,@cItemCode,@nQuantity,@nPOQty___,@nQtyGood_,@nQtyBad__,@nItemPrce,@nSellPrce,@nLandCost);
       `;
 
       let sqlRecordId = '';
@@ -423,14 +425,14 @@ const addPurchDetail = async (req, res) => {
           PURCHDTL.ItemPrce,
           PURCHDTL.SellPrce,
           PURCHDTL.LandCost
-          FROM PURCHDTL
-          JOIN ITEMLIST ON PURCHDTL.ItemCode = ITEMLIST.ItemCode
-          WHERE PURCHDTL.RecordId = @RecordId;
+          FROM PURCHDTL, ITEMLIST
+          WHERE PURCHDTL.ItemCode = ITEMLIST.ItemCode
+          AND PURCHDTL.RecordId = @RecordId;
       `;
 
       const cSql = sqlInsert + sqlRecordId + fullRecordSet;
 
-      const params = { cCtrlNum_,cItemCode,nQuantity,nQtyGood_,nQtyBad__,nPOQty___,nItemPrce,nSellPrce,nLandCost,cSuffixId };
+      const params = { cCtrlNum_,cItemCode,nQuantity,nPOQty___,nQtyGood_,nQtyBad__,nItemPrce,nSellPrce,nLandCost,cSuffixId };
 
       const result = await queryDatabase(cSql, params);
 

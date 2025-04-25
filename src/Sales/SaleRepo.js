@@ -129,6 +129,11 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         
         // Add the table HTML to the div
         reportBody.innerHTML = rankTable;
+        // Show store ranking chart
+        document.getElementById('storeRankChart').style.display='flex';
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        setStoreChart(data, dateRange)
+
        
     } catch (error) {
         console.error('Fetch error:', error);
@@ -390,6 +395,11 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         
         // Add the table HTML to the div
         reportBody.innerHTML = rankTable;
+
+        // Show store ranking chart
+        document.getElementById('brandRankChart').style.display='flex';
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        rankBrandSales(data, dateRange)
        
     } catch (error) {
         console.error('Fetch error:', error);
@@ -569,3 +579,387 @@ document.getElementById('saleRank2').addEventListener('click', () => {
 
 })
 
+
+async function setStoreChart(chartData, dateRange) {
+
+    try {
+        const storeData = chartData;
+        const storeChart1Element = document.getElementById('storeChart1');
+        const storeChart2Element = document.getElementById('storeChart2');
+
+        // Declare variables for chart instances
+        let myChart1 = window.myChart1 || null;
+        let myChart2 = window.myChart2 || null;
+
+        // Destroy existing charts if they exist
+        if (myChart1) {
+            myChart1.destroy();
+            window.myChart1 = null;  // Reset reference
+        }
+        if (myChart2) {
+            myChart2.destroy();
+            window.myChart2 = null;  // Reset reference
+        }
+
+        // Clear the canvas context manually (important when reusing canvas elements)
+        storeChart1Element.getContext('2d').clearRect(0, 0, storeChart1Element.width, storeChart1Element.height);
+        storeChart2Element.getContext('2d').clearRect(0, 0, storeChart2Element.width, storeChart2Element.height);
+
+        // Aggregate totalamt per storname
+        const storeTotals = storeData.reduce((acc, entry) => {
+            const totalAmount = parseFloat(entry.Amount__) || 0;
+            const storeName = entry.LocaName.trim(); // Ensure store name is trimmed
+            acc[storeName] = (acc[storeName] || 0) + totalAmount;
+            return acc;
+        }, {});
+
+        // Convert aggregated data into an array for charting
+        const topStores = Object.entries(storeTotals)
+            .sort((a, b) => b[1] - a[1]) // Sort by totalamt in descending order
+            .slice(0, 30); // Take the top 30 stores
+
+        const storeNames = topStores.map(entry => entry[0]); // Store names
+        const storeAmounts = topStores.map(entry => entry[1]); // Total amounts
+
+        // Create the horizontal bar chart (myChart1)
+        // const ctx1 = storeChart1Element.getContext('2d');
+        // myChart1 = new Chart(ctx1, {
+        //     type: 'bar',
+        //     data: {
+        //         labels: storeNames,
+        //         datasets: [{
+        //             label: 'Top 30 Stores',
+        //             data: storeAmounts,
+        //             backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        //             borderColor: 'rgba(54, 162, 235, 1)',
+        //             borderWidth: 1
+        //         }]
+        //     },
+        //     options: {
+        //         responsive: true,
+        //         maintainAspectRatio: false,
+        //         backgroundColor: '#282828',  // Set the background color of the chart area
+        //         layout: {
+        //             padding: {
+        //                 left: 10,
+        //                 right: 10,
+        //                 top: 10,
+        //                 bottom: 10
+        //             }
+        //         },
+        //         indexAxis: 'y',
+        //         scales: {
+        //             x: {
+        //                 beginAtZero: true,
+        //                 ticks: {
+        //                     font: {
+        //                         family: 'Arial Narrow',
+        //                         size: 12
+        //                     },
+        //                     color: 'white',  // x-axis tick labels color
+        //                     padding: 5,  // Adjust padding between x-axis labels and canvas
+        //                 },
+        //                 grid: {
+        //                     color: '#d3d3d3',  // Set grid color for x-axis
+        //                 }
+        //             },
+        //             y: {
+        //                 ticks: {
+        //                     font: {
+        //                         family: 'Arial Narrow',
+        //                         size: 12
+        //                     },
+        //                     color: 'black',  // y-axis tick labels color
+        //                 },
+        //                 grid: {
+        //                     color: '#d3d3d3',  // Set grid color for y-axis
+        //                 }
+        //             }
+        //         },
+        //         plugins: {
+        //             legend: {
+        //                 display: false
+        //             }
+        //         }
+        //     }
+        // });
+        const ctx1 = storeChart1Element.getContext('2d');
+        myChart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: storeNames,
+                datasets: [{
+                    label: 'Top 30 Stores',
+                    data: storeAmounts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                backgroundColor: '#282828',  // Set the background color of the chart area
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: 10
+                    }
+                },
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Arial Narrow',
+                                size: 12
+                            },
+                            color: 'white',  // x-axis tick labels color
+                            padding: 5,  // Adjust padding between x-axis labels and canvas
+                        },
+                        grid: {
+                            color: '#d3d3d3',  // Set grid color for x-axis
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                family: 'Arial Narrow',
+                                size: 12
+                            },
+                            color: 'black',  // y-axis tick labels color
+                        },
+                        grid: {
+                            color: '#d3d3d3',  // Set grid color for y-axis
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: dateRange,  // Your desired title text here
+                        font: {
+                            family: 'Arial',
+                            size: 16
+                        },
+                        color: 'black',  // Title text color
+                        padding: {
+                            top: 20,  // Space between title and chart
+                            bottom: 10
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Prepare data for the doughnut chart (Contribution to Total Sales by store group)
+        const storeGroupTotals = chartData.reduce((acc, entry) => {
+            const totalAmount = parseFloat(entry.Amount__) || 0;
+            const storeGroup = entry.StoreGrp.trim(); // Ensure group name is trimmed
+            acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
+            return acc;
+        }, {});
+
+        // Sort store groups by total amount in descending order
+        const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
+
+        const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
+        const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
+
+        const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
+        const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
+
+        const generateRandomColor = () => {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, 0.6)`;
+        };
+
+        const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
+        const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+
+        // Create the doughnut chart (myChart2)
+        const ctx2 = storeChart2Element.getContext('2d');
+        myChart2 = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: storeGroupLabels,
+                datasets: [{
+                    label: 'Contribution to Total Sales',
+                    data: storeGroupValues,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Arial Narrow',
+                                size: 10
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
+                                const value = context.raw || 0;
+                                return `${percentage}%`; 
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: (value, context) => {
+                            const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
+                            return `${percentage}%`;
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: '10'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Store the chart instances globally if needed (optional)
+        window.myChart1 = myChart1;
+        window.myChart2 = myChart2;
+
+    } catch (error) {
+        console.error('Error processing chart data:', error);
+    }
+}
+
+
+async function rankBrandSales(data, dateRange) {
+   
+    let myChart3 = window.myChart3 || null;
+
+    try {
+        const brandData = data;
+        const brandMap = {};
+        
+        // Build brandMap without filling background colors yet
+        brandData.forEach(item => {
+            if (!brandMap[item.BrandNme]) {
+                brandMap[item.BrandNme] = { Amount__: 0};
+            }
+            brandMap[item.BrandNme].Amount__ += Math.round(item.Amount__);
+        });
+
+        // Sort the brandMap by amount
+        let sortedBrands = Object.entries(brandMap)
+            .map(([BrandNme, values]) => ({ BrandNme, ...values }))
+            .slice(0, 30);
+
+        // Now assign background colors after sorting
+        const backgroundColors = sortedBrands.map(item => 
+            item.Outright === 'Outright' ? 'rgba(54, 162, 235, 0.6)' : 'rgba(75, 192, 192, 0.2)'
+        );
+
+        const labels = sortedBrands.map(item => item.BrandNme.substring(0, 15).trim());
+        const curreamtData = sortedBrands.map(item => item.Amount__);
+
+        // Function to round up to the nearest multiple of step
+        const getMagnitudeStep = (value) => {
+            const magnitude = Math.floor(Math.log10(value));
+            return Math.pow(10, magnitude); // Returns the nearest power of 10
+        };
+
+        // Function to round up to the nearest appropriate step
+        const roundUpToDynamicStep = (value) => {
+            const step = getMagnitudeStep(value);
+            return Math.ceil(value / step) * step;
+        };
+
+        // Calculate the maximum value for the x-axis
+        const maxCurreamt = Math.max(...curreamtData);
+        // Round up maxValue to the nearest appropriate step
+        const roundedMaxValue = roundUpToDynamicStep(maxCurreamt);
+
+        if (myChart3) myChart3.destroy();
+
+        const getChartOptions = () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: roundedMaxValue, // Use the dynamically rounded max value
+                    ticks: {
+                        font: { family: 'Arial Narrow', size: 12 },
+                        color: 'white',  
+                        padding: 5, 
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: false },
+                    ticks: {
+                        autoSkip: false,
+                        font: { family: 'Arial Narrow', size: 12 }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: dateRange,  // Your desired title text here
+                    font: {
+                        family: 'Arial',
+                        size: 16
+                    },
+                    color: 'black',  // Title text color
+                    padding: {
+                        top: 20,  // Space between title and chart
+                        bottom: 10
+                    }
+                }
+                }
+
+        });
+
+        const ctx3 = document.getElementById('brandChart1').getContext('2d');
+        myChart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: dateRange,
+                    data: curreamtData,
+                    backgroundColor: backgroundColors, 
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: getChartOptions(),
+        });
+
+        window.myChart3 = myChart3;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        // Add UI feedback here if needed
+    }
+}

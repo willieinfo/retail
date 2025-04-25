@@ -100,6 +100,7 @@ const SalesRankBrand = async (req, res) => {
   // Constructing the base SQL query
   let cSql = `SELECT 
 				BRAND___.BrandNme,
+        ITEMLIST.Outright,
 				Sum(SALESDTL.Quantity) AS Quantity,
 				Sum(SALESDTL.ItemCost*SALESDTL.Quantity) AS ItemCost,
 				Sum(SALESDTL.LandCost*SALESDTL.Quantity) AS LandCost,
@@ -153,8 +154,8 @@ const SalesRankBrand = async (req, res) => {
     cSql += " AND SALESDTL.Date____ <= @dDateTo__";
     params.dDateTo__ = `${dDateTo__}`;
   }
-  cSql += ` GROUP BY BRAND___.BrandNme
-    ORDER BY 7 DESC `;
+  cSql += ` GROUP BY BRAND___.BrandNme, ITEMLIST.Outright
+    ORDER BY 8 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
