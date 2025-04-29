@@ -851,7 +851,7 @@ async function updateStockTotals(cCtrlNum_) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const liStockLstMenu = document.querySelectorAll('.StockTransfer');
+    const liStockLstMenu = document.getElementById('StockTransfer');
     const stockLstFileDiv = document.getElementById('StockLst');
     const stocFormFileDiv = document.getElementById('StocForm');
     const closeStockRec = document.getElementById('closeStockRec');
@@ -876,10 +876,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add event listener to each element with the necessary arguments
-    liStockLstMenu.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('StockLst')
-        });
+    liStockLstMenu.addEventListener('click', () => {
+        showReport('StockLst')
     });
 
 });

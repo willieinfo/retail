@@ -896,7 +896,7 @@ async function updatePurchTotals(cCtrlNum_) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const liPurchLstMenu = document.querySelectorAll('.StockReceiving');
+    const liPurchLstMenu = document.getElementById('StockReceiving');
     const purchLstFileDiv = document.getElementById('PurchLst');
     const purcFormFileDiv = document.getElementById('PurcForm');
     const closePurchRec = document.getElementById('closePurchRec');
@@ -922,10 +922,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add event listener to each element with the necessary arguments
-    liPurchLstMenu.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('PurchLst')
-        });
+    liPurchLstMenu.addEventListener('click', () => {
+        showReport('PurchLst')
     });
 
 });

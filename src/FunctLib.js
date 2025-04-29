@@ -1008,4 +1008,13 @@ export function debounce(func, delay) {
     };
 }
 
-
+export function goMonth(dateString, monthOffset) {
+    const date = new Date(dateString);
+    date.setMonth(date.getMonth() + monthOffset);  // Adjust month by the offset
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Format month
+    const day = String(date.getDate()).padStart(2, '0');  // Format day
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+    // return `${month}/${day}/${year}`;
+}
+  

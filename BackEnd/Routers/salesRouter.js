@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { SalesRankStore, SalesRankBrand } = require('../Controllers/salesReport');
+const { SalesCompStore, SalesRankBrand } = require('../Controllers/salesReport');
 const { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader,
     addSalesDetail, editSalesDetail, deleteSalesDetail, updateSalesTotals } = require('../Controllers/salesInput');
 
@@ -12,7 +12,7 @@ const { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader,
 router.get('/SalesRecLst', SalesRecLst)
 router.get('/SalesDtlLst', SalesDtlLst)
 
-router.get('/SalesRankStore', SalesRankStore)
+router.get('/SalesCompStore', SalesCompStore)
 router.get('/SalesRankBrand', SalesRankBrand)
 
 router.post('/addSalesHeader', addSalesHeader)

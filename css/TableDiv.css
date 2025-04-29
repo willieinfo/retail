@@ -306,6 +306,10 @@ tr:hover td.action-icons i {
     margin-bottom: 50px; /* 50px To accomodate 3rd grid */
 }
 
+.thDateRange {
+    font-size: 0.8em; 
+    font-weight: normal
+}
 /* .PickItemTable {
     display: table-header-group;
     flex-direction: column;

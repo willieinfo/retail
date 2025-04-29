@@ -16,7 +16,7 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
-        <li class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
+        <li id="SalesInvoice" class="data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
         <li class="salesRankingByLocation">Sales Ranking by Location</li>
         <li class="salesRankingByBrand">Sales Ranking by Brand</li>
@@ -26,7 +26,7 @@ const menuItems= `
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
         <li class="PurchaseOrder data-entry">Purchase Order</li>
-        <li class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
+        <li id="StockReceiving" class="data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
         <li>By SKU</li>
         <li>By Category</li>
@@ -35,7 +35,7 @@ const menuItems= `
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
+        <li id="StockTransfer" class="data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
         <li class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
@@ -127,3 +127,4 @@ async function applyColorsAndShowContent() {
 document.addEventListener('DOMContentLoaded', () => {
     applyColorsAndShowContent();
 });
+

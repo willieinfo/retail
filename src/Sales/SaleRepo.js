@@ -1,15 +1,23 @@
-import { showReport, showNotification, formatter, formatDate} from '../FunctLib.js';
+import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec } from "../FiltrRec.js"
 
-async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
 
     let data = null;
+    const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
+    const dYearTo__ = goMonth(dDateTo__, -12)
+    const dMontFrom = goMonth(dDateFrom, -1)    // Previous Month
+    const dMontTo__ = goMonth(dDateTo__, -1)
+
+    // console.log('Prev Year ',dYearFrom,dYearTo__)
+    // console.log('Prev Month',dMontFrom,dMontTo__)
+
     document.getElementById('loadingIndicator').style.display = 'flex';
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/sales/SalesRankStore');
+        const url = new URL('http://localhost:3000/sales/SalesCompStore');
         const params = new URLSearchParams();
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cUsersCde) params.append('UsersCde', cUsersCde);
@@ -20,6 +28,10 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cLocation) params.append('Location', cLocation);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (dYearFrom) params.append('YearFrom', dYearFrom); 
+        if (dYearTo__) params.append('YearTo__', dYearTo__); 
+        if (dMontFrom) params.append('MontFrom', dMontFrom); 
+        if (dMontTo__) params.append('MontTo__', dMontTo__); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -27,22 +39,24 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             throw new Error('Network response was not ok');
         }
 
+        data = await response.json();
+        // console.log(data)
+
         let nTotalQty = 0
         let nTotalPrc = 0
         let nTotalDsc = 0
         let nTotalAmt = 0
-        let nTotalCon = 0
-        let nTotalDue = 0
         let nTotalCos = 0
         let nTotalGro = 0
         let nGP_Prcnt = 0
         let nGP_Total = 0
-    
-        
-        const listCounter=document.getElementById('saleRank1Counter')
-        data = await response.json();
-        listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
+
+        let nTotPrvYr = 0
+        let nPrvYrPct = 0
+        let nTotYrPct = 0
+        let nTotPrvMo = 0
+        let nPrvMoPct = 0
+        let nTotMoPct = 0
 
         if (Array.isArray(data)) {
             data.forEach(item => {
@@ -50,16 +64,21 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 nTotalPrc+=item.ItemPrce
                 nTotalDsc+=(item.ItemPrce-item.Amount__)
                 nTotalAmt+=item.Amount__
-                nTotalCon+=item.Concessi
-                nTotalDue+=(item.Amount__-item.Concessi)
                 nTotalCos+=item.LandCost
-                nTotalGro+=(item.Amount__-item.Concessi-item.LandCost)
+                nTotalGro+=(item.Amount__-item.LandCost)
 
+                nTotPrvYr+=item.PrvYrAmt
+                nTotPrvMo+=item.PrvMoAmt
             });
         }
         if (nTotalAmt !== 0) {
-            nGP_Total = ((nTotalAmt-nTotalCos-nTotalCon) / nTotalAmt) * 100; // GP% formula
+            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+            nTotMoPct = ((nTotalAmt-nTotPrvMo) / nTotalAmt) * 100; // Total Inc/Dec formula
+            nTotYrPct = ((nTotalAmt-nTotPrvYr) / nTotalAmt) * 100; // Total Inc/Dec formula
         }
+
+        // console.log('Total Prev Year :',nTotPrvYr)
+        // console.log('Total Prev Month:',nTotPrvMo)
 
         const salesRankStoreDiv = document.getElementById('SalesRankStore');
         salesRankStoreDiv.classList.add('active');
@@ -72,24 +91,49 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             <table id="salesRankTable1">
                 <thead id="rankTHead1">
                     <tr>
-                        <th>Location</th>
+                        <th rowspan="2">Location</th>
+                        <th colspan="7">
+                            Current
+                            <div class='thDateRange'">
+                                ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                        <th colspan="2">
+                            Previous Month
+                            <div class='thDateRange'">
+                                ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                        <th colspan="2">
+                            Previous Year
+                            <div class='thDateRange'">
+                                ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
                         <th>Quantity</th>
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
-                        <th>Concession</th>
-                        <th>Net Due</th>
                         <th>Cost</th>
                         <th>Gross Profit</th>
                         <th>GP %</th>
-                        <th>CTS %</th>
+                        <th>Net</th>
+                        <th>Inc/Dec %</th>
+                        <th>Net</th>
+                        <th>Inc/Dec %</th>
                     </tr>
                 </thead>
                 <tbody id="rankTBody">
                     ${data.map(item => {
                         nGP_Prcnt = 0;
+                        nPrvYrPct = 0
+                        nPrvMoPct = 0
                         if (item.Amount__ !== 0) {
-                            nGP_Prcnt = ((item.Amount__ - item.LandCost-item.Concessi) / item.Amount__) * 100; // GP% formula
+                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
+                            nPrvYrPct = ((item.Amount__ - item.PrvYrAmt) / item.Amount__) * 100
+                            nPrvMoPct = ((item.Amount__ - item.PrvMoAmt) / item.Amount__) * 100
                         }
                         return `
                             <tr>
@@ -98,30 +142,31 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Concessi) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.Concessi) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost -item.Concessi) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost) || 'N/A'}</td>
                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
-                                <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.PrvMoAmt) || 'N/A'}</td>
+                                <td style="text-align: right; color: ${nPrvMoPct < 0 ? 'red' : 'black'}">${nPrvMoPct ? nPrvMoPct.toFixed(2) + '%' : 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.PrvYrAmt) || 'N/A'}</td>
+                                <td style="text-align: right; color: ${nPrvYrPct < 0 ? 'red' : 'black'}">${nPrvYrPct ? nPrvYrPct.toFixed(2) + '%' : 'N/A'}</td>
                             </tr>
                         `;
                     }).join('')}
                 </tbody>
                 <tfoot>
-                    <tr style="height: 2px"></tr>
                     <tr style="font-weight: bold">
                         <td style="text-align: right">Total</td>
                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalCon) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalDue) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
                         <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
-                        <td>100%</td>
+                        <td style="text-align: right">${formatter.format(nTotPrvMo) || 'N/A'}</td>
+                        <td style="text-align: right; color: ${nTotMoPct < 0 ? 'red' : 'black'}">${nTotMoPct ? nTotMoPct.toFixed(2) + '%' : 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotPrvYr) || 'N/A'}</td>
+                        <td style="text-align: right; color: ${nTotYrPct < 0 ? 'red' : 'black'}">${nTotYrPct ? nTotYrPct.toFixed(2) + '%' : 'N/A'}</td>
                     </tr>
                  </tfoot>
             </table>
@@ -134,11 +179,10 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         setStoreChart(data, dateRange)
 
-       
+        
     } catch (error) {
         console.error('Fetch error:', error);
     } finally {
-        // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
     }
 
@@ -249,8 +293,10 @@ async function SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
            
           printReportExcel(data, columnConfig, colWidths, titleRows, 'StoreRanking');
     })
-    
+
 }
+
+
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
@@ -299,8 +345,6 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         let nTotalPrc = 0
         let nTotalDsc = 0
         let nTotalAmt = 0
-        let nTotalCon = 0
-        let nTotalDue = 0
         let nTotalCos = 0
         let nTotalGro = 0
         let nGP_Prcnt = 0
@@ -317,14 +361,12 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 nTotalPrc+=item.ItemPrce
                 nTotalDsc+=(item.ItemPrce-item.Amount__)
                 nTotalAmt+=item.Amount__
-                nTotalCon+=item.Concessi
-                nTotalDue+=(item.Amount__-item.Concessi)
                 nTotalCos+=item.LandCost
-                nTotalGro+=(item.Amount__-item.Concessi-item.LandCost)
+                nTotalGro+=(item.Amount__-item.LandCost)
             });
         }
         if (nTotalAmt !== 0) {
-            nGP_Total = ((nTotalAmt-nTotalCos-nTotalCon) / nTotalAmt) * 100; // GP% formula
+            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
         }
 
         const salesRankBrandDiv = document.getElementById('SalesRankBrand');
@@ -343,8 +385,6 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
-                        <th>Concession</th>
-                        <th>Net Due</th>
                         <th>Cost</th>
                         <th>Gross Profit</th>
                         <th>GP %</th>
@@ -355,7 +395,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     ${data.map(item => {
                         nGP_Prcnt = 0;
                         if (item.Amount__ !== 0) {
-                            nGP_Prcnt = ((item.Amount__ - item.LandCost-item.Concessi) / item.Amount__) * 100; // GP% formula
+                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
                         }
                         return `
                             <tr>
@@ -364,10 +404,8 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Concessi) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.Concessi) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost -item.Concessi) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
                                 <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
                             </tr>
@@ -382,8 +420,6 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalCon) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalDue) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
                         <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
@@ -545,9 +581,11 @@ document.getElementById('saleRank1').addEventListener('click', () => {
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
     
-            SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+            // SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+            //     cItemType, cLocation, dDateFrom, dDate__To);
+            SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To);
-
+    
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -621,68 +659,6 @@ async function setStoreChart(chartData, dateRange) {
         const storeNames = topStores.map(entry => entry[0]); // Store names
         const storeAmounts = topStores.map(entry => entry[1]); // Total amounts
 
-        // Create the horizontal bar chart (myChart1)
-        // const ctx1 = storeChart1Element.getContext('2d');
-        // myChart1 = new Chart(ctx1, {
-        //     type: 'bar',
-        //     data: {
-        //         labels: storeNames,
-        //         datasets: [{
-        //             label: 'Top 30 Stores',
-        //             data: storeAmounts,
-        //             backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        //             borderColor: 'rgba(54, 162, 235, 1)',
-        //             borderWidth: 1
-        //         }]
-        //     },
-        //     options: {
-        //         responsive: true,
-        //         maintainAspectRatio: false,
-        //         backgroundColor: '#282828',  // Set the background color of the chart area
-        //         layout: {
-        //             padding: {
-        //                 left: 10,
-        //                 right: 10,
-        //                 top: 10,
-        //                 bottom: 10
-        //             }
-        //         },
-        //         indexAxis: 'y',
-        //         scales: {
-        //             x: {
-        //                 beginAtZero: true,
-        //                 ticks: {
-        //                     font: {
-        //                         family: 'Arial Narrow',
-        //                         size: 12
-        //                     },
-        //                     color: 'white',  // x-axis tick labels color
-        //                     padding: 5,  // Adjust padding between x-axis labels and canvas
-        //                 },
-        //                 grid: {
-        //                     color: '#d3d3d3',  // Set grid color for x-axis
-        //                 }
-        //             },
-        //             y: {
-        //                 ticks: {
-        //                     font: {
-        //                         family: 'Arial Narrow',
-        //                         size: 12
-        //                     },
-        //                     color: 'black',  // y-axis tick labels color
-        //                 },
-        //                 grid: {
-        //                     color: '#d3d3d3',  // Set grid color for y-axis
-        //                 }
-        //             }
-        //         },
-        //         plugins: {
-        //             legend: {
-        //                 display: false
-        //             }
-        //         }
-        //     }
-        // });
         const ctx1 = storeChart1Element.getContext('2d');
         myChart1 = new Chart(ctx1, {
             type: 'bar',
