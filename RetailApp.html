@@ -96,11 +96,11 @@
         <div class="ReportBody">
             <div id="salesRankStore" class="ReportBody"></div>
             <div id="storeRankChart" class="chartContainer">
-                <div id="topStores">
+                <div class="divChart70">
                     <h5>Top 30 Stores</h5>
                     <canvas id="storeChart1"></canvas>
                 </div>
-                <div id="ctsStores">
+                <div class="divChart30">
                     <h5>Contribution To Sales</h5>
                     <canvas id="storeChart2"></canvas>
                 </div>
@@ -292,6 +292,33 @@
         </div>
     </div>
 
+    <div id="StockEndLocation" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Ending By Location</span>
+            <button id="closeStockEndLoca" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="stockEndLocation" class="ReportBody"></div>
+            <div id="stockEndLocaChart">
+                <div id="locaEndBarChart">
+                    <h5>Inventory By SRP</h5>
+                    <canvas id="locaEndChart1"></canvas>
+                </div>
+                <div id="locaEndPieChart">
+                    <h5>Contribution to Total Inventory</h5>
+                    <canvas id="locaEndChart2"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="stockEndLocaCounter" class="recCounter"></span>
+                <button id="printStockEndLoca"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="stockEndLocaFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/MainMenu.js"></script>
@@ -310,6 +337,8 @@
     <script type="module" src="./src/Transfers/StockLst.js"></script>
 
     <script type="module" src="./src/Purchases/PurchLst.js"></script>
+
+    <script type="module" src="./src/Inventory/InveRepo.js"></script>
 
 </body>
 </html>

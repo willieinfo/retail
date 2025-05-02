@@ -17,12 +17,21 @@ canvas {
 #storeRankChart, #brandRankChart {
     display: none;
 }
-#topStores, #topBrands{
+.divChart70, .divChart30{
     width: 70%;
     height: 100%;
     padding: 10px;
     background-color: whitesmoke;
 }
+#locaEndBarChart, #locaEndPieChart{
+    width: 100%;
+    padding: 10px;
+    background-color: whitesmoke;
+}
+#locaEndPieChart{
+    height: 700px;
+}
+
 #topBrands{
     width: 100%;
 }
@@ -32,7 +41,7 @@ canvas {
     box-sizing: border-box;
 }
 /* The second chart occupying 30% of the parent width */
-#ctsStores {
+.divChart30 {
     width: 30%;
     height: 100%;
     padding: 10px;
