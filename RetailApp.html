@@ -319,6 +319,28 @@
         </div>
     </div>
 
+    <div id="StockEndBrand" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Ending By Brand</span>
+            <button id="closeStockEndBrand" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="stockEndBrand" class="ReportBody"></div>
+            <div id="stockEndBrandChart">
+                <div id="brandEndPieChart">
+                    <h5>Contribution to Total Inventory</h5>
+                    <canvas id="brandEndChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="stockEndbrandCounter" class="recCounter"></span>
+                <button id="printStockEndBrand"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="stockEndbrandFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/MainMenu.js"></script>

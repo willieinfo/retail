@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { SalesCompStore, SalesRankBrand } = require('../Controllers/salesReport');
+const { SalesCompStore, SalesRankBrand } = require('../Controllers/Sales/salesReport');
 const { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader,
-    addSalesDetail, editSalesDetail, deleteSalesDetail, updateSalesTotals } = require('../Controllers/salesInput');
+    addSalesDetail, editSalesDetail, deleteSalesDetail, updateSalesTotals } = require('../Controllers/Sales/salesInput');
 
 // router.get('/sales', getSales);  // Route to get sales
 // router.post('/sales', createSale);  // Route to create a sale

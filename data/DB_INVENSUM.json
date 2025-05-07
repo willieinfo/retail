@@ -1,8 +1,8 @@
 [{
-"locaname": "ACCLI WAREHOUSE-VS",
-"totalqty":64912.00,
-"totalsrp":117248551,
-"totalcos":44099571.8
+"locaname": "ACCLI",
+"totalqty":161827.00,
+"totalsrp":145411211,
+"totalcos":55278466.8
 },
 {
 "locaname": "SUBIC PUREGOLD",
@@ -39,12 +39,6 @@
 "totalqty":11166.00,
 "totalsrp":16235830.0,
 "totalcos":5436969.75
-},
-{
-"locaname": "ACCLI-RDPI",
-"totalqty":90067.00,
-"totalsrp":16069820.0,
-"totalcos":4714131.79
 },
 {
 "locaname": "NLEX BALAGTAS",
@@ -87,12 +81,6 @@
 "totalqty":10563.00,
 "totalsrp":12753780.3,
 "totalcos":4319606.03
-},
-{
-"locaname": "ACCLI-FRDO",
-"totalqty":6848.00,
-"totalsrp":12092840.0,
-"totalcos":6464763.14
 },
 {
 "locaname": "BBW T3 LANDSIDE",

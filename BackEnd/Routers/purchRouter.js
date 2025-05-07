@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { PurchRecLst, PurchDtlLst, addPurchHeader, editPurchHeader,
-    addPurchDetail, editPurchDetail, deletePurchDetail, updatePurchTotals } = require('../Controllers/purchInput');
+    addPurchDetail, editPurchDetail, deletePurchDetail, updatePurchTotals } = require('../Controllers/Purchases/purchInput');
 
 router.get('/PurchRecLst', PurchRecLst)
 router.get('/PurchDtlLst', PurchDtlLst)

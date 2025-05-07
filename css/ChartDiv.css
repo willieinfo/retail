@@ -23,12 +23,12 @@ canvas {
     padding: 10px;
     background-color: whitesmoke;
 }
-#locaEndBarChart, #locaEndPieChart{
+#locaEndBarChart, #locaEndPieChart, #brandEndPieChart{
     width: 100%;
     padding: 10px;
     background-color: whitesmoke;
 }
-#locaEndPieChart{
+#locaEndPieChart, #brandEndPieChart{
     height: 700px;
 }
 

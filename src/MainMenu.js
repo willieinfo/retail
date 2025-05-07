@@ -55,6 +55,7 @@ const menuItems= `
         <li class="PhysicalCount data-entry">Physical Count</li>
         <hr class="menuLine">
         <li id='stockEndingByLocation'>Stock Ending By Location</li>
+        <li id='stockEndingByBrand'>Stock Ending By Brand</li>
         <li>Stock Position</li>
         <li>Inventory Variance</li>
     </ul>
