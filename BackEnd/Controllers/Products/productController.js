@@ -1,5 +1,5 @@
 
-const { queryDatabase } = require('../DBConnect/dbConnect'); // Import the database connection
+const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
 
 // Modified route to accept multiple query parameters
 const listItem = async (req, res) => {

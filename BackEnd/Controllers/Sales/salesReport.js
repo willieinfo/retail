@@ -1,4 +1,4 @@
-const { queryDatabase } = require('../DBConnect/dbConnect');
+const { queryDatabase } = require('../../DBConnect/dbConnect');
 
 const SalesCompStore = async (req, res) => {
   // Extract query parameters

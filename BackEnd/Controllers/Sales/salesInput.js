@@ -1,4 +1,4 @@
-const { queryDatabase } = require('../DBConnect/dbConnect');
+const { queryDatabase } = require('../../DBConnect/dbConnect');
 
 const updateSalesTotals = async (req, res) => {
   const { cCtrlNum_, nTotalQty, nTotalPrc, nTotalAmt, nNoOfItem } = req.body;

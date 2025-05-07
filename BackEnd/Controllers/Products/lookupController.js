@@ -1,4 +1,4 @@
-const { queryDatabase } = require('../DBConnect/dbConnect'); // Import the database connection
+const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
 
 const listLoca = async (req, res) => {
     const cLocation = req.query.Location;  
