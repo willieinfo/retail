@@ -1,17 +1,49 @@
 import { showReport} from '../FunctLib.js';
 
+
+async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
+    let data = null;
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/inventory/StockEndingByLocation');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cLocation) params.append('Location', cLocation);
+        if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        data = await response.json();
+        console.log(data)
+        setStockEndByLocationChart(data, dDateAsOf);
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
+}
+
+StockEndLocation('%', '%','12/31/2016')
+
 const cAsOfDate = '04/27/2025';
 
-const dataSourc1 = './data/DB_INVENSUM.json';
-setStockEndByLocationChart(dataSourc1, cAsOfDate);
+// const dataSourc1 = './data/DB_INVENSUM.json';
+// setStockEndByLocationChart(dataSourc1, cAsOfDate);
 
 const dataSourc2 = './data/DB_INVENBRN.json';
 setStockEndByBrandChart(dataSourc2, cAsOfDate);
 
-async function setStockEndByLocationChart(dataSource, cAsOfDate) {
+
+
+async function setStockEndByLocationChart(data, cAsOfDate) {
     try {
-        const response = await fetch(dataSource);
-        const data = await response.json();
 
         const locationChart1Element = document.getElementById('locaEndChart1');
         const locationChart2Element = document.getElementById('locaEndChart2');
@@ -20,15 +52,15 @@ async function setStockEndByLocationChart(dataSource, cAsOfDate) {
         if (window.myChart1) window.myChart1.destroy();
         if (window.myChart2) window.myChart2.destroy();
 
-        // === Sort all locations by totalsrp (descending) ===
-        // const sortedData = data.sort((a, b) => b.totalsrp - a.totalsrp);
-        const sortedData = [...data].sort((a, b) => b.totalsrp - a.totalsrp);
-        const totalSRP = sortedData.reduce((sum, loc) => sum + loc.totalsrp, 0);
+        // === Sort all locations by TotalPrc (descending) ===
+        // const sortedData = data.sort((a, b) => b.TotalPrc - a.TotalPrc);
+        const sortedData = [...data].sort((a, b) => b.TotalPrc - a.TotalPrc);
+        const totalSRP = sortedData.reduce((sum, loc) => sum + loc.TotalPrc, 0);
         
 
         // === Chart 1: Column chart for all locations ===
-        const allLabels = sortedData.map(loc => loc.locaname);
-        const allValues = sortedData.map(loc => loc.totalsrp);
+        const allLabels = sortedData.map(loc => loc.LocaName);
+        const allValues = sortedData.map(loc => loc.TotalPrc);
 
         const ctx1 = locationChart1Element.getContext('2d');
         window.myChart1 = new Chart(ctx1, {
