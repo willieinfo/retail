@@ -13,11 +13,11 @@ export function FiltrRec(cModules_) {
             <div id="inputSection">
                 <br>
                 <div id="inputDates" class="subTextDiv" style="flex-direction: row;">
-                    <div>
+                    <div id='txtFiltrRec_DateFrom'>
                         <label for="FiltrRec_DateFrom">From:</label>
                         <input type="date" id="FiltrRec_DateFrom">
                     </div>
-                    <div>
+                    <div id='txtFiltrRec_Date__To'>
                         <label for="FiltrRec_Date__To">To:</label>
                         <input type="date" id="FiltrRec_Date__To">
                     </div>
@@ -112,6 +112,12 @@ export function FiltrRec(cModules_) {
             document.getElementById('ProductFile').appendChild(overlay);
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
+        } else if (cModules_ === 'ListLoca') {
+            document.getElementById('LocationFile').appendChild(filterForm);
+            document.getElementById('LocationFile').appendChild(overlay);
+            document.getElementById('inputDates').style.display = 'none';
+            document.getElementById('inputDetails').style.display = 'none';
+            await populateLocation('', '', '','FiltrRec_Location');
         } else if (cModules_ === 'SalesLst') {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
@@ -139,6 +145,12 @@ export function FiltrRec(cModules_) {
             document.getElementById('PurchLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
             await populateLocation('', '', 'PurcArea','FiltrRec_Location');
+        } else if (cModules_ === 'StocEnd1') {
+            document.getElementById('StockEndLocation').appendChild(filterForm);
+            document.getElementById('StockEndLocation').appendChild(overlay);
+            document.getElementById('txtFiltrRec_DateFrom').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            await populateLocation('', '', '','FiltrRec_Location');
         }
 
         // Show the form by changing its display style

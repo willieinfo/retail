@@ -2,6 +2,134 @@ import { showReport, showNotification, formatter, formatDate, goMonth} from '../
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec } from "../FiltrRec.js"
 
+const dDateFrom = new Date(), dDateTo__ = new Date(), 
+    dMontFrom = goMonth(new Date(), -1), dMontTo__ = goMonth(new Date(), -1),
+    dYearFrom = goMonth(new Date(), -12), dYearTo__ = goMonth(new Date(), -12)
+
+const divRankStore = `
+    <div id="SalesRankStore" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Ranking Report by Location</span>
+            <button id="closeRepo1" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="salesRankStore" class="ReportBody">
+                <table id="salesRankTable1">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th rowspan="2">Location</th>
+                            <th colspan="7">
+                                Current
+                                <div class='thDateRange'">
+                                    ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Month
+                                <div class='thDateRange'">
+                                    ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Year
+                                <div class='thDateRange'">
+                                    ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>Cost</th>
+                            <th>Gross Profit</th>
+                            <th>GP %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="storeRankChart" class="chartContainer">
+                <div class="divChart70">
+                    <h5>Top 30 Stores</h5>
+                    <canvas id="storeChart1"></canvas>
+                </div>
+                <div class="divChart30">
+                    <h5>Contribution To Sales</h5>
+                    <canvas id="storeChart2"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="saleRank1Counter" class="recCounter"></span>
+                <button id="printStoreRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="saleRank1"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const divRankBrand =`
+    <div id="SalesRankBrand" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Ranking Report by Brand</span>
+            <button id="closeRepo2" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="salesRankBrand" class="ReportBody">
+                <table id="salesRankTable1">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th>Brand</th>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>Cost</th>
+                            <th>Gross Profit</th>
+                            <th>GP %</th>
+                            <th>CTS %</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="brandRankChart" class="chartContainer">
+                <div id="topBrands">
+                    <h5>Top 30 Brands</h5>
+                    <canvas id="brandChart1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="saleRank2Counter" class="recCounter"></span>
+                <button id="printBrandRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="saleRank2"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const fragment = document.createDocumentFragment();
+
+const div1 = document.createElement('div');
+div1.innerHTML = divRankStore;
+fragment.appendChild(div1);
+
+const div2 = document.createElement('div');
+div2.innerHTML = divRankBrand;
+fragment.appendChild(div2);
+
+document.body.appendChild(fragment);  // Only one reflow happens here
+
+
 async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
 
@@ -39,8 +167,10 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             throw new Error('Network response was not ok');
         }
 
+        const listCounter=document.getElementById('saleRank1Counter')
         data = await response.json();
-        // console.log(data)
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
 
         let nTotalQty = 0
         let nTotalPrc = 0
@@ -296,11 +426,9 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 }
 
-
-
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankLocationElements = document.querySelectorAll('.salesRankingByLocation');
+    const salesRankLocationElements = document.getElementById('salesRankingByLocation'); //<li>
     const rankRepoDiv = document.getElementById('SalesRankStore');
     const closeRepo = document.getElementById('closeRepo1');
     
@@ -309,10 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
         // Add event listener to each element with the necessary arguments
-    salesRankLocationElements.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('SalesRankStore')
-        });
+    salesRankLocationElements.addEventListener('click', () => {
+        showReport('SalesRankStore')
     });
 });
 
@@ -549,7 +675,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankLocationElements = document.querySelectorAll('.salesRankingByBrand');
+    const salesRankLocationElements = document.getElementById('salesRankingByBrand');
     const rankRepoDiv = document.getElementById('SalesRankBrand');
     const closeRepo = document.getElementById('closeRepo2');
     
@@ -558,10 +684,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
         // Add event listener to each element with the necessary arguments
-    salesRankLocationElements.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('SalesRankBrand')
-        });
+    salesRankLocationElements.addEventListener('click', () => {
+        showReport('SalesRankBrand')
     });
 });
 

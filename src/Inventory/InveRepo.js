@@ -1,7 +1,94 @@
-import { showReport} from '../FunctLib.js';
+import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
+// import {printReportExcel, generateTitleRows} from '../PrintRep.js'
+import { FiltrRec } from "../FiltrRec.js"
+
+const divStockEndLoca = `
+    <div id="StockEndLocation" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Ending By Location</span>
+            <button id="closeStockEndLoca" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="stockEndLocation" class="ReportBody">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Total Qty</th>
+                            <th>Total Cost</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="stockEndLocaChart">
+                <div id="locaEndBarChart">
+                    <h5>Inventory By SRP</h5>
+                    <canvas id="locaEndChart1"></canvas>
+                </div>
+                <div class="divPieChart">
+                    <h5>Contribution to Inventory</h5>
+                    <div class="pieContainer">
+                        <canvas id="locaEndChart2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="stockEndLocaCounter" class="recCounter"></span>
+                <button id="printStockEndLoca"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="stockEndLocaFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const divStockEndBrand = `
+<div id="StockEndBrand" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Ending By Brand</span>
+            <button id="closeStockEndBrand" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="stockEndBrand" class="ReportBody"></div>
+            <div id="stockEndBrandChart">
+                <div class="divPieChart">
+                    <h5>Contribution to Inventory</h5>
+                    <div class="pieContainer">
+                        <canvas id="brandEndChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="stockEndbrandCounter" class="recCounter"></span>
+                <button id="printStockEndBrand"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="stockEndBrandFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const fragment = document.createDocumentFragment();
+
+const div1 = document.createElement('div');
+div1.innerHTML = divStockEndLoca;
+fragment.appendChild(div1);
+
+const div2 = document.createElement('div');
+div2.innerHTML = divStockEndBrand;
+fragment.appendChild(div2);
+
+document.body.appendChild(fragment);  // Only one reflow happens here
 
 
 async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
+
+    cBrandNum = !cBrandNum ? '%' : cBrandNum
+    cLocation = !cLocation ? '%' : cLocation
     let data = null;
 
     document.getElementById('loadingIndicator').style.display = 'flex';
@@ -20,7 +107,45 @@ async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
         }
 
         data = await response.json();
+        const listCounter=document.getElementById('stockEndLocaCounter')
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
         console.log(data)
+        
+        if (data.length===0) return
+        const reportBody = document.getElementById('stockEndLocation');
+        reportBody.innerHTML = '';  // Clear previous content
+
+        const listReport = `
+            <div">
+            <table id="stockEndLocaTable">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Total Qty</th>
+                        <th>Total Cost</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody id="stockEndLocaBody">
+                    ${data.map((item, index) => `
+                        <tr data-index="${index}">
+                            <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                            <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(item.TotalCos) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(item.TotalPrc) || 'N/A'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            </div>
+        `;
+
+        reportBody.innerHTML = listReport
+
+        document.getElementById('stockEndLocaChart').style.display='flex';
+        document.getElementById('stockEndLocaChart').style.flexDirection='column';
+
         setStockEndByLocationChart(data, dDateAsOf);
 
     } catch (error) {
@@ -30,16 +155,60 @@ async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
     }
 }
 
-StockEndLocation('%', '%','12/31/2016')
+document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
+    try {
+        FiltrRec('StocEnd1').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            // const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            // const cUsersCde = filterData[3];
+            // const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            // const cCategNum = filterData[7];
+            // const cItemType = filterData[8];
+            // const cItemDept = filterData[9];
+    
+            StockEndLocation(cBrandNum, cLocation, dDate__To);
+    
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+    }
+})
 
-const cAsOfDate = '04/27/2025';
+document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
+    try {
+        // FiltrRec('StocEnd2').then(() => {
+        //     const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+        //     // const dDateFrom = filterData[0];
+        //     const dDate__To = filterData[1];
+        //     const cLocation = filterData[2];
+        //     // const cUsersCde = filterData[3];
+        //     // const cOtherCde = filterData[4];
+        //     // const cDescript = filterData[5];
+        //     const cBrandNum = filterData[6];
+        //     // const cCategNum = filterData[7];
+        //     // const cItemType = filterData[8];
+        //     // const cItemDept = filterData[9];
+    
+        //     StockEndLocation(cBrandNum, cLocation,dDate__To);
+    
+        // });
+        document.getElementById('stockEndBrandChart').style.display='flex';
 
-// const dataSourc1 = './data/DB_INVENSUM.json';
-// setStockEndByLocationChart(dataSourc1, cAsOfDate);
+        
+        const cAsOfDate = '04/27/2025';
+        const dataSourc2 = './data/DB_INVENBRN.json';
+        setStockEndByBrandChart(dataSourc2, cAsOfDate);
 
-const dataSourc2 = './data/DB_INVENBRN.json';
-setStockEndByBrandChart(dataSourc2, cAsOfDate);
-
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+    }
+})
 
 
 async function setStockEndByLocationChart(data, cAsOfDate) {
@@ -83,6 +252,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
                         text: `Inventory by SRP as of ${cAsOfDate}`
                     },
                     font: {
+                        family: 'Arial Narrow',
                         size: 14 // smaller title
                     },                    
                     legend: {
@@ -94,11 +264,26 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
                         ticks: {
                             autoSkip: false,
                             maxRotation: 90,
-                            minRotation: 45
+                            minRotation: 45,
+                            ticks: {
+                                font: {
+                                    family: 'Arial Narrow',
+                                    size: 12
+                                },
+                                color: 'black',  // y-axis tick labels color
+                            },
                         }
                     },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                family: 'Arial Narrow',
+                                size: 12
+                            },
+                            color: 'black',  // y-axis tick labels color
+                        },
+
                     }
                 }
             }
@@ -106,20 +291,20 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
 
         // === Chart 2: Pie chart for Top 20 locations' percentage ===
         const top20 = sortedData.slice(0, 20);
-        const rest = sortedData.slice(20);
-        const othersSRP = rest.reduce((sum, loc) => sum + loc.totalsrp, 0);
-        
         // Labels and values
-        const pieLabels = top20.map(loc => loc.locaname);
-        const pieData = top20.map(loc => loc.totalsrp);
-        
-        // Add "Others"
-        pieLabels.push('Others');
-        pieData.push(othersSRP);
+        const pieLabels = top20.map(loc => loc.LocaName);
+        const pieData = top20.map(loc => loc.TotalPrc);
+
+        if (data.length > 20) {
+            const rest = sortedData.slice(20);
+            const othersSRP = rest.reduce((sum, loc) => sum + loc.TotalPrc, 0);
+            // Add "Others"
+            pieLabels.push('Others');
+            pieData.push(othersSRP);
+        }
         
         // Recalculate percentages for all segments
         const piePercentages = pieData.map(val => ((val / totalSRP) * 100).toFixed(2));
-        
 
         const pieColors = pieLabels.map(() =>
             `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.6)`
@@ -191,7 +376,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
 }
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const stockEndingByLocation = document.getElementById('stockEndingByLocation');
+    const stockEndingByLocation = document.getElementById('stockEndingByLocation'); //<li>
     const rankRepoDiv = document.getElementById('StockEndLocation');
     const closeRepo = document.getElementById('closeStockEndLoca');
     
@@ -223,17 +408,20 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
         
 
         // === Chart 3: Pie chart for Top 30 brands' percentage ===
-        const top30 = sortedData.slice(0, 30);
-        const rest = sortedData.slice(30);
-        const othersSRP = rest.reduce((sum, loc) => sum + loc.totalsrp, 0);
-        
+        const top20 = sortedData.slice(0, 20);
         // Labels and values
-        const pieLabels = top30.map(loc => loc.brandnme);
-        const pieData = top30.map(loc => loc.totalsrp);
+        const pieLabels = top20.map(loc => loc.brandnme);
+        const pieData = top20.map(loc => loc.totalsrp);
+
+        if (data.length > 20) {
+            const rest = sortedData.slice(20);
+            const othersSRP = rest.reduce((sum, loc) => sum + loc.totalsrp, 0);
+            // Add "Others"
+            pieLabels.push('Others');
+            pieData.push(othersSRP);
+        }
         
-        // Add "Others"
-        pieLabels.push('Others');
-        pieData.push(othersSRP);
+        
         
         // Recalculate percentages for all segments
         const piePercentages = pieData.map(val => ((val / totalSRP) * 100).toFixed(2));
@@ -294,7 +482,7 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
                     },
                     title: {
                         display: true,
-                        text: 'Top 30 Brands – % CTI'
+                        text: 'Top 20 Brands – % CTI'
                     },
                     font: {
                         size: 14 // smaller title

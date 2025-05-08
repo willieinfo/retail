@@ -3,6 +3,86 @@ import { showReport, formatDate, populateLocation, populateSuppNum_, showNotific
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF } from "../PrintRep.js"
 
+const divPurchLst = `
+    <div id="PurchLst" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span><i class="fa fa-cart-arrow-down"></i> Stock Receiving List</span>
+            <button id="closePurchRec" class="closeForm">✖</button>
+        </div>
+        <div id="purchRecList" class="ReportBody">
+            <table id="ListPurchTable">
+                <thead id="Look_Up_Head">
+                    <tr>
+                        <th>Control No</th>
+                        <th>Ref. Doc</th>
+                        <th>Date</th>
+                        <th>Supplier</th>
+                        <th>DR No.</th>
+                        <th>DR Date</th>
+                        <th>PO No.</th>
+                        <th>PO Date</th>
+                        <th>Qty.</th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Remarks</th>
+                        <th>Location</th>
+                        <th>Encoder</th>
+                        <th>Log Date</th>
+                    </tr>
+                </thead>
+            </table>        
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addPurchRec"><i class="fa fa-add"></i> Add Stock Receiving</button>
+            </div>
+            <div class="footSegments">
+                <span id="purchLstCounter" class="recCounter"></span>
+                <button id="printPurchList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="purchFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+const divPurcForm = `
+    <div id="PurcForm" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Receiving Form</span>
+            <button id="closePurchDtl" class="closeForm">✖</button>
+        </div>
+       <div id="stockReceiving" class="DetailsForm"></div>
+        <div class="btnDiv">
+            <button type="submit" id="savePurchRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelPurchRecBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addPurchDtl"><i class="fa fa-add"></i> Add Item</button>
+                <input type="text" id="PurchRec_ScanCode" class="ScanCode" placeholder="Scan or Type Code to add" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="footSegments">
+                <button id="uploadItemsBtn"><i class="fa fa-download"></i> Download</button>
+            </div>
+            <div class="footSegments">
+                <span id="purchDtlCounter" class="recCounter"></span>
+                <button id="printStockReceiving"><i class="fa fa-print"></i> Print Stock Receiving</button>
+            </div>
+        </div>
+    </div>
+`
+const fragment = document.createDocumentFragment();
+
+const div1 = document.createElement('div');
+div1.innerHTML = divPurchLst;
+fragment.appendChild(div1);
+
+const div2 = document.createElement('div');
+div2.innerHTML = divPurcForm;
+fragment.appendChild(div2);
+
+document.body.appendChild(fragment);  // Only one reflow happens here
+
+
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of PURCHDTL
 let currentRec = [];    // Current selected PURCHREC record

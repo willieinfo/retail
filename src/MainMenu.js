@@ -18,8 +18,8 @@ const menuItems= `
     <ul class="dropdown submenu">
         <li id="SalesInvoice" class="data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
-        <li class="salesRankingByLocation">Sales Ranking by Location</li>
-        <li class="salesRankingByBrand">Sales Ranking by Brand</li>
+        <li id="salesRankingByLocation">Sales Ranking by Location</li>
+        <li id="salesRankingByBrand">Sales Ranking by Brand</li>
         <li>Daily Sales Summary</li>
     </ul>
 </li>

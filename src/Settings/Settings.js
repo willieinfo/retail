@@ -1,5 +1,32 @@
 import { showReport, showNotification } from '../FunctLib.js';
 
+const divSettings = `
+    <div id="ThemeColor" class="report-section">
+        <div id="colorsDiv">
+            <p>Choose Theme Color</p>
+            <div class="grpColorDivs">
+                <div id="blackDiv" class="circleClr"></div>
+                <div id="blueDiv" class="circleClr"></div>
+                <div id="greenDiv" class="circleClr"></div>
+                <div id="violetDiv" class="circleClr"></div>
+            </div>
+            <div class="grpColorDivs">
+                <div id="brownDiv" class="circleClr"></div>
+                <div id="maroonDiv" class="circleClr"></div>
+                <div id="redDiv" class="circleClr"></div>
+                <div id="tomatoDiv" class="circleClr"></div>
+            </div>
+            <div class="btnDiv">
+                <button type="submit" id="saveClrBtn" class="saveBtn">Save</button>
+                <button type="button" id="cancelClrBtn" class="cancelBtn">Close</button>
+            </div>
+        </div>
+    </div>
+`
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = divSettings;
+document.body.appendChild(tempDiv.firstElementChild);
+
 const themeColorDiv = document.getElementById('ThemeColor');
 
 // Variable to store the previous theme

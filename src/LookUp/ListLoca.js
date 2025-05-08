@@ -1,4 +1,44 @@
 import { showReport, showNotification, highlightRow } from "../FunctLib.js";
+import { FiltrRec } from "../FiltrRec.js"
+
+
+const divListLoca = `
+    <div id="LocationFile" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Location File</span>
+            <button id="closeLoca" class="closeForm">✖</button>
+        </div>
+        <div id="ListLoca" class="ReportBody">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Code</th>
+                        <th>Location Name</th>
+                        <th>Group</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>        
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addLoca"><i class="fa fa-add"></i> Add Location</button>
+            </div>
+            <div class="footSegments">
+                <span id="locaListCounter" class="recCounter"></span>
+                <button id="printLocaXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="filterLoca"><i class="fa fa-filter"></i> Filter List</button>
+
+            </div>
+        </div>
+    </div>
+`
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = divListLoca;
+document.body.appendChild(tempDiv.firstElementChild);
+
 
 let globalData = []; // Define a global array
 async function ListLoca(cLocation, cLocaName) {
@@ -427,4 +467,27 @@ function updateTable() {
 }
 
 
-ListLoca('','')
+document.getElementById('filterLoca').addEventListener('click', async () => {
+    try {
+        FiltrRec('ListLoca').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+
+            // const dDateFrom = filterData[0];
+            // const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            // const cUsersCde = filterData[3];
+            // const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            // const cBrandNum = filterData[6];
+            // const cCategNum = filterData[7];
+            // const cItemType = filterData[8];
+            // const cItemDept = filterData[9];
+
+            ListLoca(cLocation,'')
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+    }
+});
+
+

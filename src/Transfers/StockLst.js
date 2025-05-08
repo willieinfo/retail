@@ -3,6 +3,82 @@ import { showReport, formatDate, populateLocation, showNotification, debounce, M
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF } from "../PrintRep.js"
 
+const divStockLst = `
+    <div id="StockLst" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span><i class="fa fa-dollar-sign"></i> Stock Transfers List</span>
+            <button id="closeStockRec" class="closeForm">✖</button>
+        </div>
+        <div id="stockRecList" class="ReportBody">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Control No</th>
+                        <th>Ref. Doc</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Qty. Out</th>
+                        <th>Qty. In</th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Remarks</th>
+                        <th>Encoder</th>
+                        <th>Log Date</th>
+                    </tr>
+                </thead>
+            </table>        
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addStockRec"><i class="fa fa-add"></i> Add Stock Transfer</button>
+            </div>
+            <div class="footSegments">
+                <span id="stockLstCounter" class="recCounter"></span>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="stockFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+const divStocForm = `
+    <div id="StocForm" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Transfer Form</span>
+            <button id="closeStockDtl" class="closeForm">✖</button>
+        </div>
+       <div id="stockTransfer" class="DetailsForm"></div>
+        <div class="btnDiv">
+            <button type="submit" id="saveStockRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelStockRecBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addStockDtl"><i class="fa fa-add"></i> Add Item</button>
+                <input type="text" id="StockRec_ScanCode" class="ScanCode" placeholder="Scan or Type Code to add" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="footSegments">
+                <button id="uploadItemsBtn"><i class="fa fa-download"></i> Download</button>
+            </div>
+            <div class="footSegments">
+                <span id="stockDtlCounter" class="recCounter"></span>
+                <button id="printStockTransfer"><i class="fa fa-print"></i> Print Stock Transfer</button>
+            </div>
+        </div>
+    </div>
+`
+const fragment = document.createDocumentFragment();
+
+const div1 = document.createElement('div');
+div1.innerHTML = divStockLst;
+fragment.appendChild(div1);
+
+const div2 = document.createElement('div');
+div2.innerHTML = divStocForm;
+fragment.appendChild(div2);
+
+document.body.appendChild(fragment);  // Only one reflow happens here
+
+
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of STOCKDTL
 let currentRec = [];    // Current selected STOCKREC record

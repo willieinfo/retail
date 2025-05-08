@@ -14,7 +14,8 @@ canvas {
 
 /* Sales Ranking By Location / Brand SALEREPO */
 /* The first chart occupying 70% of the parent width */
-#storeRankChart, #brandRankChart {
+#storeRankChart, #brandRankChart, 
+#stockEndLocaChart, #stockEndBrandChart {
     display: none;
 }
 .divChart70, .divChart30{
@@ -23,13 +24,21 @@ canvas {
     padding: 10px;
     background-color: whitesmoke;
 }
-#locaEndBarChart, #locaEndPieChart, #brandEndPieChart{
+#locaEndBarChart {
     width: 100%;
     padding: 10px;
     background-color: whitesmoke;
 }
-#locaEndPieChart, #brandEndPieChart{
+.divPieChart{
     height: 700px;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px;
+}
+.pieContainer {
+    display: flex;
+    height: 90%;
+    justify-content: center;
 }
 
 #topBrands{

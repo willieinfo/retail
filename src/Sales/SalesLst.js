@@ -4,6 +4,86 @@ import { showReport, formatDate, populateLocation, showNotification, get24HrTime
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF } from "../PrintRep.js"
 
+const divSalesLst = `
+    <div id="SalesLst" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span><i class="fa fa-dollar-sign"></i> Sales Record List</span>
+            <button id="closeSalesRec" class="closeForm">✖</button>
+        </div>
+        <div id="salesRecList" class="ReportBody">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Control No</th>
+                        <th>Ref. Doc</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Qty.</th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Remarks</th>
+                        <th>Customer</th>
+                        <th>Encoder</th>
+                        <th>Log Date</th>
+                    </tr>
+                </thead>
+            </table>        
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addSalesRec"><i class="fa fa-add"></i> Add Invoice</button>
+            </div>
+            <div class="footSegments">
+                <span id="salesLstCounter" class="recCounter"></span>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const divSaleForm = `
+    <div id="SaleForm" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Record Form</span>
+            <button id="closeSalesDtl" class="closeForm">✖</button>
+        </div>
+       <div id="salesInvoice" class="DetailsForm"></div>
+        <div class="btnDiv">
+            <button type="submit" id="saveSalesRecBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+            <button type="button" id="cancelSalesRecBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addSalesDtl"><i class="fa fa-add"></i> Add Item</button>
+                <input type="text" id="SalesRec_ScanCode" class="ScanCode" placeholder="Scan or Type Code to add" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="footSegments">
+                <button id="uploadItemsBtn"><i class="fa fa-download"></i> Download</button>
+                <button id="salesItemsBtn" style="display: none"><i class="fa fa-shopping-cart"></i> Sale Items</button>
+                <button id="paymentsBtn"><i class="fa fa-coins"></i> Payments</button>
+            </div>
+            <div class="footSegments">
+                <span id="salesDtlCounter" class="recCounter"></span>
+                <button id="printSalesInvoice"><i class="fa fa-print"></i> Print Invoice</button>
+            </div>
+        </div>
+    </div>
+
+`
+const fragment = document.createDocumentFragment();
+
+const div1 = document.createElement('div');
+div1.innerHTML = divSalesLst;
+fragment.appendChild(div1);
+
+const div2 = document.createElement('div');
+div2.innerHTML = divSaleForm;
+fragment.appendChild(div2);
+
+document.body.appendChild(fragment);  // Only one reflow happens here
+
+
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of SALESDTL
 let currentRec = [];    // Current selected SALESREC record

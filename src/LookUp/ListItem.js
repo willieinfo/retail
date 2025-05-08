@@ -2,6 +2,42 @@ import { showReport, showNotification, formatter, validateField, checkEmptyValue
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec } from "../FiltrRec.js"
 
+const divListItem = `
+    <div id="ProductFile" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Product File</span>
+            <button id="closeList" class="closeForm">✖</button>
+        </div>
+        <div id="ListItem" class="ReportBody">
+            <table>
+                <thead id="Look_Up_Head">
+                    <tr>
+                        <th>Description</th>
+                        <th>Stock No</th>
+                        <th>Brand</th>
+                        <th>Category</th>
+                        <th>Item Price</th>
+                        <th>Cost</th>
+                        <th style="width: 25px"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="ReportFooter">
+            <div class="footSegments">
+                <button id="addItem"><i class="fa fa-add"></i> Add Product</button>
+            </div>
+            <div class="footSegments">
+                <span id="itemListCounter" class="recCounter"></span>
+                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = divListItem;
+document.body.appendChild(tempDiv.firstElementChild);
 
 let globalData = []; // Define a global array
 async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum, 

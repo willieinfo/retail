@@ -132,7 +132,7 @@ const StockEndingByLocation = async (req, res) => {
         GROUP BY LOCATION.LocaName
     ) AS SubResult
     GROUP BY LocaName
-    ORDER BY LocaName        
+    ORDER BY 4 DESC
     `
   
     // Parameters object
