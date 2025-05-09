@@ -38,7 +38,17 @@
     <div id="loadingIndicator" style="display:none;">
         <i class="fa fa-spinner fa-spin"></i> Loading data... Please wait
     </div>
-        
+
+    <!-- Error Message -->
+    <div id="error-message" class="error-message">
+        <div class="title-bar">Error Message</div>
+        <p id="error-text"></p>
+        <div class="button-container">
+            <button id="retry-btn" class="retry">Retry</button>
+            <button id="ignore-btn" class="ignore">Ignore</button>
+            <button id="abort-btn" class="abort">Abort</button>
+        </div>    
+    </div>
 
     <!-- Respective HTMLs are injected on each of JS files -->
     <script type="module" src="./src/FunctLib.js"></script>

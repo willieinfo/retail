@@ -21,6 +21,10 @@ export function FiltrRec(cModules_) {
                         <label for="FiltrRec_Date__To">To:</label>
                         <input type="date" id="FiltrRec_Date__To">
                     </div>
+                    <div id='txtFiltrRec_DateAsOf' style="display:none">
+                        <label for="FiltrRec_DateAsOf">As Of:</label>
+                        <input type="date" id="FiltrRec_DateAsOf">
+                    </div>
                     <div id="txtReferDoc">
                         <label for="FiltrRec_ReferDoc">Ref. No.:</label>
                         <input type="text" id="FiltrRec_ReferDoc" spellcheck="false">
@@ -149,7 +153,17 @@ export function FiltrRec(cModules_) {
             document.getElementById('StockEndLocation').appendChild(filterForm);
             document.getElementById('StockEndLocation').appendChild(overlay);
             document.getElementById('txtFiltrRec_DateFrom').style.display = 'none';
+            document.getElementById('txtFiltrRec_Date__To').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
+            await populateLocation('', '', '','FiltrRec_Location');
+        } else if (cModules_ === 'StocEnd2') {
+            document.getElementById('StockEndBrand').appendChild(filterForm);
+            document.getElementById('StockEndBrand').appendChild(overlay);
+            document.getElementById('txtFiltrRec_DateFrom').style.display = 'none';
+            document.getElementById('txtFiltrRec_Date__To').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location');
         }
 
@@ -161,17 +175,20 @@ export function FiltrRec(cModules_) {
             const currentDate = new Date();
             const dDateFrom = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); 
             const dDate__To = currentDate; 
+            const dDateAsOf = currentDate; 
 
             const formattedDateFrom = dDateFrom.toISOString().split('T')[0];
             const formattedDateTo = dDate__To.toISOString().split('T')[0];
+            const formattedDateAsOf = dDateAsOf.toISOString().split('T')[0];
 
-            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo]));
+            localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo, formattedDateAsOf]));
 
-            filterData = [formattedDateFrom, formattedDateTo];
+            filterData = [formattedDateFrom, formattedDateTo, formattedDateAsOf];
         }
 
         document.getElementById('FiltrRec_DateFrom').value = filterData[0];
         document.getElementById('FiltrRec_Date__To').value = filterData[1];
+        document.getElementById('FiltrRec_DateAsOf').value = filterData[11];
         
 
         // Wait for populate functions to finish
@@ -222,9 +239,10 @@ export function FiltrRec(cModules_) {
             const cCategNum = document.getElementById('FiltrRec_CategNum').value;
             const cItemType = document.getElementById('FiltrRec_ItemType').value;
             const cItemDept = document.getElementById('FiltrRec_ItemDept').value;
+            const dDateAsOf = document.getElementById('FiltrRec_DateAsOf').value;
 
             const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
-                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc];
+                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc, dDateAsOf];
             localStorage.setItem("filterData", JSON.stringify(filterData));
 
             document.getElementById('filter-form').remove(); 
@@ -235,4 +253,46 @@ export function FiltrRec(cModules_) {
 
         });
     });
+}
+
+export function displayErrorMsg(error) {
+    const errorMessageDiv = document.getElementById("error-message");
+    const errorText = document.getElementById("error-text");
+    const retryBtn = document.getElementById("retry-btn");
+    const ignoreBtn = document.getElementById("ignore-btn");
+    const abortBtn = document.getElementById("abort-btn");
+
+    // Customize error message based on error type
+    if (error.status === 404) {
+        errorText.textContent = "Resource not found. Would you like to retry?";
+        retryBtn.style.display = 'inline-block';
+        ignoreBtn.style.display = 'inline-block';
+        abortBtn.style.display = 'inline-block';
+    } else if (error.status === 500) {
+        errorText.textContent = "Server error. Please try again later.";
+        retryBtn.style.display = 'inline-block';
+        ignoreBtn.style.display = 'none';
+        abortBtn.style.display = 'inline-block';
+    } else {
+        errorText.textContent = "An unexpected error occurred. "+error;
+        retryBtn.style.display = 'none';
+        ignoreBtn.style.display = 'inline-block';
+        abortBtn.style.display = 'inline-block';
+    }
+
+    // Display the error message
+    errorMessageDiv.style.display = 'block';
+
+    // Button actions
+    retryBtn.onclick = function () {
+        location.reload(); // Retry logic here
+        errorMessageDiv.style.display = 'none';
+    };
+    ignoreBtn.onclick = function () {
+        errorMessageDiv.style.display = 'none'; // Close message without doing anything
+    };
+    abortBtn.onclick = function () {
+        window.location.href = '/'; // Abort by redirecting to home page (for example)
+        errorMessageDiv.style.display = 'none';
+    };
 }

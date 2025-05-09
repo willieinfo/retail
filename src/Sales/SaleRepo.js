@@ -214,6 +214,9 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         salesRankStoreDiv.classList.add('active');
 
         const reportBody = document.getElementById('salesRankStore');
+        if (data.length > 30) {
+            reportBody.style.height='700px'
+        }
         reportBody.innerHTML = '';  // Clear previous content
 
         // Define the table structure
@@ -499,6 +502,9 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         salesRankBrandDiv.classList.add('active');
 
         const reportBody = document.getElementById('salesRankBrand');
+        if (data.length > 30) {
+            reportBody.style.height='700px'
+        }
         reportBody.innerHTML = '';  // Clear previous content
 
         // Define the table structure

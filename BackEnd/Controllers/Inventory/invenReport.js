@@ -1,11 +1,55 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect');
 
 const StockEndingByLocation = async (req, res) => {
-    const cBrandNum = req.query.BrandNum;
-    const cLocation = req.query.Location;
     const dDateAsOf = req.query.DateAsOf;
+    const cLocation = req.query.Location;
+    const cBrandNum = req.query.BrandNum;
+    const cItemType = req.query.ItemType;
+    const cItemDept = req.query.ItemDept; 
+    const cCategNum = req.query.CategNum;
+    const cUsersCde = req.query.UsersCde;
+    const cOtherCde = req.query.OtherCde;
+    const cDescript = req.query.Descript;
 
-
+    // Parameters object
+    const params = {};
+    if (dDateAsOf) {
+        params.dDateAsOf = `${dDateAsOf}`;
+    }
+    let sqlFilters = ``
+    if (cLocation) {
+        sqlFilters += ` AND LOCATION.Location LIKE @cLocation `
+        params.cLocation = `%${cLocation}%`;
+    }
+    if (cBrandNum) {
+        sqlFilters += ` AND ITEMLIST.BrandNum LIKE @cBrandNum `
+        params.cBrandNum = `%${cBrandNum}%`;
+    }
+    if (cItemType) {
+        sqlFilters += ` AND ITEMLIST.ItemType LIKE @cItemType `
+        params.cItemType = `%${cItemType}%`;
+    }
+    if (cItemDept) {
+        sqlFilters += ` AND ITEMLIST.ItemDept LIKE @cItemDept `
+        params.cItemDept = `%${cItemDept}%`;
+    }
+    if (cCategNum) {
+        sqlFilters += ` AND ITEMLIST.CategNum LIKE @cCategNum `
+        params.cCategNum = `%${cCategNum}%`;
+    }
+    if (cUsersCde) {
+        sqlFilters += ` AND ITEMLIST.UsersCde LIKE @cUsersCde `
+        params.cUsersCde = `%${cUsersCde}%`;
+    }
+    if (cOtherCde) {
+        sqlFilters += ` AND ITEMLIST.OtherCde LIKE @cOtherCde `
+        params.cOtherCde = `%${cOtherCde}%`;
+    }
+    if (cDescript) {
+        sqlFilters += ` AND ITEMLIST.Descript LIKE @cDescript `
+        params.cDescript = `%${cDescript}%`;
+    }
+        
     let cSql = `SELECT 
         LocaName, 
         SUM(TotalQty) AS TotalQty,
@@ -19,10 +63,8 @@ const StockEndingByLocation = async (req, res) => {
         Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.ItemPrce) AS TotalPrc 
         FROM COUNTDTL,COUNTREC,LOCATION,ITEMLIST
         WHERE COUNTREC.CtrlNum_=COUNTDTL.CtrlNum_ 
-        AND COUNTDTL.ItemCode=ITEMLIST.ItemCode 
         AND COUNTREC.Location=LOCATION.Location 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND COUNTDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND LOCATION.Damaged_=0 
         AND COUNTREC.Date____ = LOCATION.BeginDte 
         AND COUNTREC.Disabled=0 
@@ -39,13 +81,11 @@ const StockEndingByLocation = async (req, res) => {
         FROM SALESDTL,SALESREC,LOCATION,ITEMLIST
         WHERE SALESREC.CtrlNum_=SALESDTL.CtrlNum_ 
         AND SALESREC.Location=LOCATION.Location 
-        AND SALESDTL.ItemCode=ITEMLIST.ItemCode 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND SALESDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND SALESDTL.Date____ >= LOCATION.BeginDte+1 
         AND SALESDTL.Date____ <= @dDateAsOf 
-        AND LOCATION.Damaged_=0 
         AND SALESREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
         AND LOCATION.Disabled=0 
         AND ITEMLIST.Services=0 
         AND ITEMLIST.Outright=1 
@@ -59,13 +99,11 @@ const StockEndingByLocation = async (req, res) => {
         FROM PURCHDTL,PURCHREC,LOCATION,ITEMLIST
         WHERE PURCHREC.CtrlNum_=PURCHDTL.CtrlNum_ 
         AND PURCHREC.Location=LOCATION.Location 
-        AND PURCHDTL.ItemCode=ITEMLIST.ItemCode 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND PURCHDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND PURCHREC.Date____ >= LOCATION.BeginDte+1 
         AND PURCHREC.Date____ <= @dDateAsOf 
-        AND LOCATION.Damaged_=0 
         AND PURCHREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
         AND LOCATION.Disabled=0 
         AND ITEMLIST.Services=0 
         AND ITEMLIST.Outright=1 
@@ -79,13 +117,11 @@ const StockEndingByLocation = async (req, res) => {
         FROM ITEMADJU,ADJUSREC,LOCATION,ITEMLIST
         WHERE ADJUSREC.Location=LOCATION.Location 
         AND ADJUSREC.CtrlNum_=ITEMADJU.CtrlNum_ 
-        AND ITEMADJU.ItemCode=ITEMLIST.ItemCode 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND ITEMADJU.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND ADJUSREC.Date____ >= LOCATION.BeginDte+1 
         AND ADJUSREC.Date____ <= @dDateAsOf 
-        AND LOCATION.Damaged_=0 
         AND ADJUSREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
         AND LOCATION.Disabled=0 
         AND ITEMLIST.Services=0 
         AND ITEMLIST.Outright=1 
@@ -99,13 +135,11 @@ const StockEndingByLocation = async (req, res) => {
         FROM STOCKDTL,STOCKREC,LOCATION,ITEMLIST
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseFrom=LOCATION.Location 
-        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND STOCKREC.Date____ >= LOCATION.BeginDte+1 
         AND STOCKREC.Date____ <= @dDateAsOf 
-        AND LOCATION.Damaged_=0 
         AND STOCKREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
         AND LOCATION.Disabled=0 
         AND ITEMLIST.Services=0 
         AND ITEMLIST.Outright=1 
@@ -119,13 +153,11 @@ const StockEndingByLocation = async (req, res) => {
         FROM STOCKDTL,STOCKREC,LOCATION,ITEMLIST
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseTo__=LOCATION.Location 
-        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode 
-        AND ITEMLIST.BrandNum LIKE @cBrandNum 
-        AND LOCATION.Location LIKE @cLocation 
+        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
         AND STOCKREC.Date____ >= LOCATION.BeginDte+1 
         AND STOCKREC.Date____ <= @dDateAsOf 
-        AND LOCATION.Damaged_=0 
         AND STOCKREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
         AND LOCATION.Disabled=0 
         AND ITEMLIST.Services=0 
         AND ITEMLIST.Outright=1 
@@ -134,21 +166,9 @@ const StockEndingByLocation = async (req, res) => {
     GROUP BY LocaName
     ORDER BY 4 DESC
     `
-  
-    // Parameters object
-    const params = {};
-    if (cBrandNum) {
-        params.cBrandNum = `%${cBrandNum}%`;
-    }
-    if (cLocation) {
-        params.cLocation = `%${cLocation}%`;
-    }
-    if (dDateAsOf) {
-        params.dDateAsOf = `${dDateAsOf}`;
-    }
-    
     
     console.log(params)
+  
     try {
       // Execute query
       const result = await queryDatabase(cSql, params);
@@ -158,6 +178,193 @@ const StockEndingByLocation = async (req, res) => {
       res.status(500).send('Error fetching inventory data');
     }
   };
+
   
-  module.exports = { StockEndingByLocation };
+
+  const StockEndingByBrand = async (req, res) => {
+    const dDateAsOf = req.query.DateAsOf;
+    const cLocation = req.query.Location;
+    const cBrandNum = req.query.BrandNum;
+    const cItemType = req.query.ItemType;
+    const cItemDept = req.query.ItemDept; 
+    const cCategNum = req.query.CategNum;
+    const cUsersCde = req.query.UsersCde;
+    const cOtherCde = req.query.OtherCde;
+    const cDescript = req.query.Descript;
+
+    // Parameters object
+    const params = {};
+    if (dDateAsOf) {
+        params.dDateAsOf = `${dDateAsOf}`;
+    }
+    let sqlFilters = ``
+    if (cLocation) {
+        sqlFilters += ` AND LOCATION.Location LIKE @cLocation `
+        params.cLocation = `%${cLocation}%`;
+    }
+    if (cBrandNum) {
+        sqlFilters += ` AND ITEMLIST.BrandNum LIKE @cBrandNum `
+        params.cBrandNum = `%${cBrandNum}%`;
+    }
+    if (cItemType) {
+        sqlFilters += ` AND ITEMLIST.ItemType LIKE @cItemType `
+        params.cItemType = `%${cItemType}%`;
+    }
+    if (cItemDept) {
+        sqlFilters += ` AND ITEMLIST.ItemDept LIKE @cItemDept `
+        params.cItemDept = `%${cItemDept}%`;
+    }
+    if (cCategNum) {
+        sqlFilters += ` AND ITEMLIST.CategNum LIKE @cCategNum `
+        params.cCategNum = `%${cCategNum}%`;
+    }
+    if (cUsersCde) {
+        sqlFilters += ` AND ITEMLIST.UsersCde LIKE @cUsersCde `
+        params.cUsersCde = `%${cUsersCde}%`;
+    }
+    if (cOtherCde) {
+        sqlFilters += ` AND ITEMLIST.OtherCde LIKE @cOtherCde `
+        params.cOtherCde = `%${cOtherCde}%`;
+    }
+    if (cDescript) {
+        sqlFilters += ` AND ITEMLIST.Descript LIKE @cDescript `
+        params.cDescript = `%${cDescript}%`;
+    }
+    
+    let cSql = `SELECT 
+        BrandNme, 
+        SUM(TotalQty) AS TotalQty,
+        SUM(TotalCos) AS TotalCos,
+        SUM(TotalPrc) AS TotalPrc
+    FROM (
+    SELECT 
+        BRAND___.BrandNme, 
+        Sum(COUNTDTL.Quantity+COUNTDTL.AdjusCnt) AS TotalQty, 
+        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.LandCost) AS TotalCos, 
+        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.ItemPrce) AS TotalPrc 
+        FROM COUNTDTL,COUNTREC,ITEMLIST,LOCATION,BRAND___
+        WHERE COUNTREC.CtrlNum_=COUNTDTL.CtrlNum_ 
+        AND COUNTREC.Location=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND COUNTDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND LOCATION.Damaged_=0 
+        AND COUNTREC.Date____ = LOCATION.BeginDte 
+        AND COUNTREC.Disabled=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    UNION ALL 
+    SELECT 
+        BRAND___.BrandNme,  
+        Sum(-SALESDTL.Quantity) AS TotalQty, 
+        Sum(-SALESDTL.Quantity*SALESDTL.LandCost) AS TotalCos, 
+        Sum(-SALESDTL.Quantity*SALESDTL.ItemPrce) AS TotalPrc 
+        FROM SALESDTL,SALESREC,ITEMLIST,LOCATION,BRAND___
+        WHERE SALESREC.CtrlNum_=SALESDTL.CtrlNum_ 
+        AND SALESREC.Location=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND SALESDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND SALESDTL.Date____ >= LOCATION.BeginDte+1 
+        AND SALESDTL.Date____ <= @dDateAsOf 
+        AND SALESREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    UNION ALL 
+    SELECT 
+        BRAND___.BrandNme, 
+        Sum(PURCHDTL.Quantity) AS TotalQty,
+        Sum(PURCHDTL.Quantity*PURCHDTL.LandCost) AS TotalCos, 
+        Sum(PURCHDTL.Quantity*PURCHDTL.SellPrce) AS TotalPrc 
+        FROM PURCHDTL,PURCHREC,ITEMLIST,LOCATION,BRAND___
+        WHERE PURCHREC.CtrlNum_=PURCHDTL.CtrlNum_ 
+        AND PURCHREC.Location=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND PURCHDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND PURCHREC.Date____ >= LOCATION.BeginDte+1 
+        AND PURCHREC.Date____ <= @dDateAsOf 
+        AND PURCHREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    UNION ALL 
+    SELECT 
+        BRAND___.BrandNme,  
+        Sum(ITEMADJU.Quantity) AS TotalQty,
+        Sum(ITEMADJU.Quantity*ITEMADJU.LandCost) AS TotalCos,
+        Sum(ITEMADJU.Quantity*ITEMADJU.ItemPrce) AS TotalPrc
+        FROM ITEMADJU,ADJUSREC,ITEMLIST,LOCATION,BRAND___
+        WHERE ADJUSREC.CtrlNum_=ITEMADJU.CtrlNum_ 
+        AND ADJUSREC.Location=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND ITEMADJU.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND ADJUSREC.Date____ >= LOCATION.BeginDte+1 
+        AND ADJUSREC.Date____ <= @dDateAsOf 
+        AND ADJUSREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    UNION ALL 
+    SELECT 
+        BRAND___.BrandNme,  
+        Sum(-STOCKDTL.Quantity) AS TotalQty,
+        Sum(-STOCKDTL.Quantity*STOCKDTL.LandCost) AS TotalCos,
+        Sum(-STOCKDTL.Quantity*STOCKDTL.Amount__) AS TotalPrc
+        FROM STOCKDTL,STOCKREC,ITEMLIST,LOCATION,BRAND___
+        WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
+        AND STOCKREC.WhseFrom=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND STOCKREC.Date____ >= LOCATION.BeginDte+1 
+        AND STOCKREC.Date____ <= @dDateAsOf 
+        AND STOCKREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    UNION ALL 
+    SELECT 
+        BRAND___.BrandNme, 
+        Sum(STOCKDTL.QtyRecvd) AS TotalQty, 
+        Sum(STOCKDTL.QtyRecvd*STOCKDTL.LandCost) AS TotalCos, 
+        Sum(STOCKDTL.QtyRecvd*STOCKDTL.Amount__) AS TotalPrc 
+        FROM STOCKDTL,STOCKREC,ITEMLIST,LOCATION,BRAND___
+        WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
+        AND STOCKREC.WhseTo__=LOCATION.Location
+        AND ITEMLIST.BrandNum=BRAND___.BrandNum
+        AND STOCKDTL.ItemCode=ITEMLIST.ItemCode `+sqlFilters+`
+        AND STOCKREC.Date____ >= LOCATION.BeginDte+1 
+        AND STOCKREC.Date____ <= @dDateAsOf 
+        AND STOCKREC.Disabled=0 
+        AND LOCATION.Damaged_=0 
+        AND LOCATION.Disabled=0 
+        AND ITEMLIST.Services=0 
+        AND ITEMLIST.Outright=1 
+        GROUP BY BRAND___.BrandNme
+    ) AS SubResult
+    GROUP BY BrandNme
+    ORDER BY 4 DESC
+    `
+    
+    console.log(params)
+  
+    try {
+      // Execute query
+      const result = await queryDatabase(cSql, params);
+      res.json(result);
+    } catch (err) {
+      console.error('Database query error:', err.message);  // Log the error message
+      res.status(500).send('Error fetching inventory data');
+    }
+  };
+
+  module.exports = { StockEndingByLocation, StockEndingByBrand };
   

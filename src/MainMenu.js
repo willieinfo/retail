@@ -56,7 +56,7 @@ const menuItems= `
         <hr class="menuLine">
         <li id='stockEndingByLocation'>Stock Ending By Location</li>
         <li id='stockEndingByBrand'>Stock Ending By Brand</li>
-        <li>Stock Position</li>
+        <li>Stock Movement</li>
         <li>Inventory Variance</li>
     </ul>
 </li>

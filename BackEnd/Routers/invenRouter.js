@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { StockEndingByLocation } = require('../Controllers/Inventory/invenReport');
+const { StockEndingByLocation, StockEndingByBrand } = require('../Controllers/Inventory/invenReport');
 
 router.get('/StockEndingByLocation', StockEndingByLocation);  
+router.get('/StockEndingByBrand', StockEndingByBrand);  
 
 module.exports = router;

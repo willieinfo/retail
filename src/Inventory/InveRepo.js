@@ -1,6 +1,6 @@
 import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
 // import {printReportExcel, generateTitleRows} from '../PrintRep.js'
-import { FiltrRec } from "../FiltrRec.js"
+import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 const divStockEndLoca = `
     <div id="StockEndLocation" class="report-section containerDiv">
@@ -52,7 +52,19 @@ const divStockEndBrand = `
             <button id="closeStockEndBrand" class="closeForm">✖</button>
         </div>
         <div class="ReportBody">
-            <div id="stockEndBrand" class="ReportBody"></div>
+            <div id="stockEndBrand" class="ReportBody">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Brand</th>
+                            <th>Total Qty</th>
+                            <th>Total Cost</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
             <div id="stockEndBrandChart">
                 <div class="divPieChart">
                     <h5>Contribution to Inventory</h5>
@@ -64,7 +76,7 @@ const divStockEndBrand = `
         </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
-                <span id="stockEndbrandCounter" class="recCounter"></span>
+                <span id="stockEndBrandCounter" class="recCounter"></span>
                 <button id="printStockEndBrand"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="stockEndBrandFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
@@ -85,20 +97,24 @@ fragment.appendChild(div2);
 document.body.appendChild(fragment);  // Only one reflow happens here
 
 
-async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
+async function StockEndLocation(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+    cUsersCde, cOtherCde, cDescript) {
 
-    cBrandNum = !cBrandNum ? '%' : cBrandNum
-    cLocation = !cLocation ? '%' : cLocation
     let data = null;
-
     document.getElementById('loadingIndicator').style.display = 'flex';
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/inventory/StockEndingByLocation');
         const params = new URLSearchParams();
-        if (cBrandNum) params.append('BrandNum', cBrandNum);
-        if (cLocation) params.append('Location', cLocation);
         if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
+        if (cLocation) params.append('Location', cLocation);
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cItemType) params.append('ItemType', cItemType); 
+        if (cItemDept) params.append('ItemDept', cItemDept); 
+        if (cCategNum) params.append('CategNum', cCategNum); 
+        if (cUsersCde) params.append('ItemDept', cUsersCde); 
+        if (cOtherCde) params.append('OtherCde', cOtherCde); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -114,30 +130,53 @@ async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
         
         if (data.length===0) return
         const reportBody = document.getElementById('stockEndLocation');
+        if (data.length > 30) {
+            reportBody.style.height='700px'
+        }
+
+        let nTotalQty = 0
+        let nTotalCos = 0
+        let nTotalPrc = 0
+
+        data.forEach(item => {
+            nTotalQty+=item.TotalQty
+            nTotalPrc+=item.TotalPrc
+            nTotalCos+=item.TotalCos
+        });
+
         reportBody.innerHTML = '';  // Clear previous content
 
         const listReport = `
-            <div">
-            <table id="stockEndLocaTable">
-                <thead>
-                    <tr>
-                        <th>Location</th>
-                        <th>Total Qty</th>
-                        <th>Total Cost</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody id="stockEndLocaBody">
-                    ${data.map((item, index) => `
-                        <tr data-index="${index}">
-                            <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
-                            <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.TotalCos) || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.TotalPrc) || 'N/A'}</td>
+            <div>
+                <table id="stockEndLocaTable">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Total Qty</th>
+                            <th>Total Cost</th>
+                            <th>Total Price</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="stockEndLocaBody">
+                        ${data.map((item, index) => `
+                            <tr data-index="${index}">
+                                <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                                <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.TotalCos) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.TotalPrc) || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr style="height: 2px"></tr>
+                        <tr style="font-weight: bold">
+                            <td style="text-align: right">Total</td>
+                            <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         `;
 
@@ -150,6 +189,8 @@ async function StockEndLocation(cBrandNum, cLocation, dDateAsOf) {
 
     } catch (error) {
         console.error('Fetch error:', error);
+        displayErrorMsg('Fetch error: '+error)
+
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
@@ -161,52 +202,26 @@ document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             // const dDateFrom = filterData[0];
-            const dDate__To = filterData[1];
+            // const dDate__To = filterData[1];
             const cLocation = filterData[2];
-            // const cUsersCde = filterData[3];
-            // const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
-            // const cCategNum = filterData[7];
-            // const cItemType = filterData[8];
-            // const cItemDept = filterData[9];
-    
-            StockEndLocation(cBrandNum, cLocation, dDate__To);
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            // const cReferDoc = filterData[10];
+            const dDateAsOf = filterData[11];
+
+            StockEndLocation(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+                cUsersCde, cOtherCde, cDescript );
     
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
-    }
-})
+        displayErrorMsg("Error processing the filter: "+error)
 
-document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
-    try {
-        // FiltrRec('StocEnd2').then(() => {
-        //     const filterData = JSON.parse(localStorage.getItem("filterData"));
-    
-        //     // const dDateFrom = filterData[0];
-        //     const dDate__To = filterData[1];
-        //     const cLocation = filterData[2];
-        //     // const cUsersCde = filterData[3];
-        //     // const cOtherCde = filterData[4];
-        //     // const cDescript = filterData[5];
-        //     const cBrandNum = filterData[6];
-        //     // const cCategNum = filterData[7];
-        //     // const cItemType = filterData[8];
-        //     // const cItemDept = filterData[9];
-    
-        //     StockEndLocation(cBrandNum, cLocation,dDate__To);
-    
-        // });
-        document.getElementById('stockEndBrandChart').style.display='flex';
-
-        
-        const cAsOfDate = '04/27/2025';
-        const dataSourc2 = './data/DB_INVENBRN.json';
-        setStockEndByBrandChart(dataSourc2, cAsOfDate);
-
-    } catch (error) {
-        console.error("Error processing the filter:", error);
     }
 })
 
@@ -372,6 +387,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
 
     } catch (error) {
         console.error('Error loading or processing chart data:', error);
+        displayErrorMsg('Error loading or processing chart data:'+error)
     }
 }
 // Wait for the DOM to fully load before adding the event listener
@@ -391,10 +407,139 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-async function setStockEndByBrandChart(dataSource, cAsOfDate) {
+
+
+document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
     try {
-        const response = await fetch(dataSource);
-        const data = await response.json();
+        FiltrRec('StocEnd2').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            // const dDateFrom = filterData[0];
+            // const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            // const cReferDoc = filterData[10];
+            const dDateAsOf = filterData[11];
+
+            StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+                cUsersCde, cOtherCde, cDescript );
+        });
+
+
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+    }
+})
+
+async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+    cUsersCde, cOtherCde, cDescript) {
+
+    let data = null;
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/inventory/StockEndingByBrand_s');
+        const params = new URLSearchParams();
+        if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
+        if (cLocation) params.append('Location', cLocation);
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cItemType) params.append('ItemType', cItemType); 
+        if (cItemDept) params.append('ItemDept', cItemDept); 
+        if (cCategNum) params.append('CategNum', cCategNum); 
+        if (cUsersCde) params.append('ItemDept', cUsersCde); 
+        if (cOtherCde) params.append('OtherCde', cOtherCde); 
+        if (cDescript) params.append('Descript', cDescript); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        data = await response.json();
+        const listCounter=document.getElementById('stockEndBrandCounter')
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+        console.log(data)
+        
+        if (data.length===0) return
+        const reportBody = document.getElementById('stockEndBrand');
+        if (data.length > 30) {
+            reportBody.style.height='700px'
+        }
+        reportBody.innerHTML = '';  // Clear previous content
+
+        let nTotalQty = 0
+        let nTotalCos = 0
+        let nTotalPrc = 0
+
+        data.forEach(item => {
+            nTotalQty+=item.TotalQty
+            nTotalPrc+=item.TotalPrc
+            nTotalCos+=item.TotalCos
+        });
+
+        const listReport = `
+            <div>
+                <table id="stockEndBrandTable">
+                    <thead>
+                        <tr>
+                            <th>Brand</th>
+                            <th>Total Qty</th>
+                            <th>Total Cost</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockEndBrandBody">
+                        ${data.map((item, index) => `
+                            <tr data-index="${index}">
+                                <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
+                                <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.TotalCos) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.TotalPrc) || 'N/A'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr style="height: 2px"></tr>
+                        <tr style="font-weight: bold">
+                            <td style="text-align: right">Total</td>
+                            <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        `;
+
+        reportBody.innerHTML = listReport
+
+        document.getElementById('stockEndBrandChart').style.display='flex';
+        document.getElementById('stockEndBrandChart').style.flexDirection='column';
+
+        setStockEndByBrandChart(data, dDateAsOf);
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg('Fetch error: '+error)
+
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
+}
+
+
+async function setStockEndByBrandChart(data, cAsOfDate) {
+    try {
+        // const response = await fetch(dataSource);
+        // const data = await response.json();
 
         const brandChartElement = document.getElementById('brandEndChart');
 
@@ -403,19 +548,19 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
 
         // === Sort all brands by totalsrp (descending) ===
         // const sortedData = data.sort((a, b) => b.totalsrp - a.totalsrp);
-        const sortedData = [...data].sort((a, b) => b.totalsrp - a.totalsrp);
-        const totalSRP = sortedData.reduce((sum, loc) => sum + loc.totalsrp, 0);
+        const sortedData = [...data].sort((a, b) => b.TotalPrc - a.TotalPrc);
+        const totalSRP = sortedData.reduce((sum, loc) => sum + loc.TotalPrc, 0);
         
 
         // === Chart 3: Pie chart for Top 30 brands' percentage ===
         const top20 = sortedData.slice(0, 20);
         // Labels and values
-        const pieLabels = top20.map(loc => loc.brandnme);
-        const pieData = top20.map(loc => loc.totalsrp);
+        const pieLabels = top20.map(loc => loc.BrandNme);
+        const pieData = top20.map(loc => loc.TotalPrc);
 
         if (data.length > 20) {
             const rest = sortedData.slice(20);
-            const othersSRP = rest.reduce((sum, loc) => sum + loc.totalsrp, 0);
+            const othersSRP = rest.reduce((sum, loc) => sum + loc.TotalPrc, 0);
             // Add "Others"
             pieLabels.push('Others');
             pieData.push(othersSRP);
@@ -425,7 +570,6 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
         
         // Recalculate percentages for all segments
         const piePercentages = pieData.map(val => ((val / totalSRP) * 100).toFixed(2));
-        
 
         const pieColors = pieLabels.map(() =>
             `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.6)`
@@ -482,7 +626,7 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
                     },
                     title: {
                         display: true,
-                        text: 'Top 20 Brands – % CTI'
+                        text: `Top 20 Brands – % CTI As of: ${cAsOfDate}`
                     },
                     font: {
                         size: 14 // smaller title
@@ -493,6 +637,7 @@ async function setStockEndByBrandChart(dataSource, cAsOfDate) {
 
     } catch (error) {
         console.error('Error loading or processing chart data:', error);
+        displayErrorMsg('Error loading or processing chart data: '+error)
     }
 }
 // Wait for the DOM to fully load before adding the event listener
