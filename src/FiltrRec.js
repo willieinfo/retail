@@ -126,23 +126,27 @@ export function FiltrRec(cModules_) {
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputDetails').style.display = 'none';
             await populateLocation('', '', '','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SalesLst') {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk1') {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
@@ -161,6 +165,7 @@ export function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'StocEnd2') {
             document.getElementById('StockEndBrand').appendChild(filterForm);
             document.getElementById('StockEndBrand').appendChild(overlay);
@@ -245,9 +250,10 @@ export function FiltrRec(cModules_) {
             const cItemType = document.getElementById('FiltrRec_ItemType').value;
             const cItemDept = document.getElementById('FiltrRec_ItemDept').value;
             const dDateAsOf = document.getElementById('FiltrRec_DateAsOf').value;
+            const cStoreGrp = document.getElementById('FiltrRec_StoreGrp').value;
 
             const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
-                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc, dDateAsOf];
+                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc, dDateAsOf, cStoreGrp];
             localStorage.setItem("filterData", JSON.stringify(filterData));
 
             document.getElementById('filter-form').remove(); 

@@ -93,7 +93,7 @@ let currentIndex = 0    // Index of the selected SALESREC record
 let cItemCode=null  
 let nLandCost=0
 
-async function SalesLst(dDateFrom, dDateTo__, cLocation, cReferDoc) {
+async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
     document.getElementById('loadingIndicator').style.display = 'flex';
@@ -105,6 +105,7 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cReferDoc) {
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
         if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (cReferDoc) params.append('ReferDoc', cReferDoc);
 
         // Send request with query parameters

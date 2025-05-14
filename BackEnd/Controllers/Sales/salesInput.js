@@ -226,6 +226,7 @@ const addSalesHeader = async (req, res) => {
 
 const SalesRecLst = async (req, res) => {
   const cLocation = req.query.Location;
+  const cStoreGrp = req.query.StoreGrp;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
   const cReferDoc = req.query.ReferDoc;
@@ -249,7 +250,6 @@ const SalesRecLst = async (req, res) => {
     WHERE SALESREC.Location = LOCATION.Location
     AND 1=1
   `
-
   // Parameters object
   const params = {};
 
@@ -257,6 +257,10 @@ const SalesRecLst = async (req, res) => {
   if (cLocation) {
     cSql += " AND SALESREC.Location LIKE @cLocation";
     params.cLocation = `%${cLocation}%`;
+  }
+  if (cStoreGrp) {
+    cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+    params.cStoreGrp = `%${cStoreGrp}%`;
   }
   if (dDateFrom) {
     cSql += " AND SALESREC.DateFrom >= @dDateFrom";
@@ -279,6 +283,7 @@ const SalesRecLst = async (req, res) => {
     // Execute query
     const result = await queryDatabase(cSql, params);
     res.json(result);
+    console.log(params)
   } catch (err) {
     console.error('Database query error:', err.message);  // Log the error message
     res.status(500).send('Error fetching sales data');

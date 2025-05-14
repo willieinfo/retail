@@ -3,6 +3,7 @@ const { queryDatabase } = require('../../DBConnect/dbConnect');
 const StockEndingByLocation = async (req, res) => {
     const dDateAsOf = req.query.DateAsOf;
     const cLocation = req.query.Location;
+    const cStoreGrp = req.query.StoreGrp;
     const cBrandNum = req.query.BrandNum;
     const cItemType = req.query.ItemType;
     const cItemDept = req.query.ItemDept; 
@@ -20,6 +21,10 @@ const StockEndingByLocation = async (req, res) => {
     if (cLocation) {
         sqlFilters += ` AND LOCATION.Location LIKE @cLocation `
         params.cLocation = `%${cLocation}%`;
+    }
+    if (cStoreGrp) {
+        sqlFilters += ` AND LOCATION.StoreGrp LIKE @cStoreGrp `
+        params.cStoreGrp = `%${cStoreGrp}%`;
     }
     if (cBrandNum) {
         sqlFilters += ` AND ITEMLIST.BrandNum LIKE @cBrandNum `
@@ -184,6 +189,7 @@ const StockEndingByLocation = async (req, res) => {
   const StockEndingByBrand = async (req, res) => {
     const dDateAsOf = req.query.DateAsOf;
     const cLocation = req.query.Location;
+    const cStoreGrp = req.query.StoreGrp;
     const cBrandNum = req.query.BrandNum;
     const cItemType = req.query.ItemType;
     const cItemDept = req.query.ItemDept; 
@@ -201,6 +207,10 @@ const StockEndingByLocation = async (req, res) => {
     if (cLocation) {
         sqlFilters += ` AND LOCATION.Location LIKE @cLocation `
         params.cLocation = `%${cLocation}%`;
+    }
+    if (cStoreGrp) {
+        sqlFilters += ` AND LOCATION.StoreGrp LIKE @cStoreGrp `
+        params.cStoreGrp = `%${cStoreGrp}%`;
     }
     if (cBrandNum) {
         sqlFilters += ` AND ITEMLIST.BrandNum LIKE @cBrandNum `

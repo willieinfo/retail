@@ -97,7 +97,7 @@ fragment.appendChild(div2);
 document.body.appendChild(fragment);  // Only one reflow happens here
 
 
-async function StockEndLocation(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
     cUsersCde, cOtherCde, cDescript) {
 
     let data = null;
@@ -108,6 +108,7 @@ async function StockEndLocation(cLocation, dDateAsOf , cBrandNum, cItemType, cIt
         const params = new URLSearchParams();
         if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
         if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cItemType) params.append('ItemType', cItemType); 
         if (cItemDept) params.append('ItemDept', cItemDept); 
@@ -213,8 +214,9 @@ document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
             const cItemDept = filterData[9];
             // const cReferDoc = filterData[10];
             const dDateAsOf = filterData[11];
+            const cStoreGrp = filterData[12];
 
-            StockEndLocation(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+            StockEndLocation(cLocation ,cStoreGrp, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
                 cUsersCde, cOtherCde, cDescript );
     
         });
@@ -426,8 +428,9 @@ document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
             const cItemDept = filterData[9];
             // const cReferDoc = filterData[10];
             const dDateAsOf = filterData[11];
+            const cStoreGrp = filterData[12];
 
-            StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+            StockEndBrand(cLocation ,cStoreGrp, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
                 cUsersCde, cOtherCde, cDescript );
         });
 
@@ -439,7 +442,7 @@ document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
     }
 })
 
-async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
+async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
     cUsersCde, cOtherCde, cDescript) {
 
     let data = null;
@@ -450,6 +453,7 @@ async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemD
         const params = new URLSearchParams();
         if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
         if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cItemType) params.append('ItemType', cItemType); 
         if (cItemDept) params.append('ItemDept', cItemDept); 

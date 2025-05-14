@@ -27,6 +27,7 @@ const listGrup = async (req, res) => {
 const listLoca = async (req, res) => {
     const cLocation = req.query.Location;  
     const cLocaName = req.query.LocaName;  
+    const cStoreGrp = req.query.StoreGrp;  
    
     let cSql = `SELECT 
       LOCATION.LocaName,
@@ -47,6 +48,10 @@ const listLoca = async (req, res) => {
       if (cLocaName) {
         cSql += " AND LOCATION.LocaName LIKE @cLocaName";
         params.cLocaName = `%${cLocaName}%`;
+      }
+      if (cStoreGrp) {
+        cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+        params.cStoreGrp = `%${cStoreGrp}%`;
       }
       cSql += ` ORDER BY 7`;
   
