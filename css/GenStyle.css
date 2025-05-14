@@ -79,32 +79,36 @@
 .error-message {
     background-color: whitesmoke;
     border: 1px solid black;
-    color: #721c24;
-    padding: 15px;
+    color: darkslategray;
+    /* padding: 15px; */
     width: 300px;
-    margin: 0 auto; /* Centers the div horizontally */
+    margin: 0; 
+    padding: 0;
     border-radius: 5px;
     display: none;
     position: fixed;
-    top: 50%;  /* Vertically center the div */
-    left: 50%; /* Horizontally center the div */
-    transform: translate(-50%, -50%); /* Adjust for exact centering */
-    z-index: 9999; /* Ensures the div is on top of other elements */
+    top: 50%;  
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 9999; 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .error-message .title-bar {
-    background-color: #721c24;
+    background-color: var(--main-bg-color);
     color: white;
     text-align: center;
     padding: 10px;
+    margin: 0;
     font-weight: bold;
     border-radius: 5px 5px 0 0; /* Rounded top corners */
 }
-
+#error-text, #error-otherMsg {
+    padding: 15px;
+}
 /* Flex container for buttons */
 .button-container {
     display: flex;
-    justify-content: space-between; /* Space out the buttons */
+    justify-content: space-between; 
     gap: 10px; /* Add some space between buttons */
 }
 
@@ -115,23 +119,29 @@
     font-size: 14px;
     border-radius: 3px;
     width: 100px; /* Fixed width for buttons */
+    margin: 10px;
+
 }
 
-/* .error-message button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-} */
 .error-message button.retry {
-    background-color: #007bff;
+    background-color: var(--main-bg-color);
     color: white;
 }
 .error-message button.ignore {
-    background-color: #28a745;
+    background-color: var(--main-bg-color);
     color: white;
 }
 .error-message button.abort {
     background-color: #dc3545;
     color: white;
+}
+#abort-btn:hover {
+    background-color: red;
+    animation: smallWiggle 0.6s ease;
+}
+#ignore-btn:hover {
+    background-color: #28a745;
+}
+#retry-btn:hover {
+    background-color: #007bff;
 }

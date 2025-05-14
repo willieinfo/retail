@@ -1,5 +1,5 @@
 import { showReport, showNotification, highlightRow } from "../FunctLib.js";
-import { FiltrRec } from "../FiltrRec.js"
+import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 
 const divListLoca = `
@@ -103,10 +103,10 @@ async function ListLoca(cLocation, cLocaName) {
         
     } catch (error) {
         if (error.message === 'Failed to fetch') {
-            alert('Connection to the server is not established. Please check your connection and try again later.');
-        } else {
-            alert('An error occurred while fetching data. Please try again later.');
+            console.log('Connection to the server is not established. Please check your connection and try again later.');
         }
+        displayErrorMsg(error,"Failed to fetch")
+
     } 
 
 }
@@ -159,7 +159,7 @@ async function updateTableRow(index , cLocation) {
         row.querySelector('td:nth-child(1)').textContent = item.Location || 'N/A';  
         row.querySelector('td:nth-child(2)').textContent = item.LocaCode || 'N/A';  
         row.querySelector('td:nth-child(3)').textContent = item.LocaName || 'N/A';  
-        row.querySelector('td:nth-child(4)').textContent = item.Vicinity || 'N/A';  
+        row.querySelector('td:nth-child(4)').textContent = item.StoreGrp || 'N/A';  
         row.querySelector('td:nth-child(5)').textContent = item.SellArea ? 'Selling Area' : 'Warehouse' || 'N/A';  
 
         if (item.Disabled) {
@@ -172,6 +172,8 @@ async function updateTableRow(index , cLocation) {
 
     } catch (error) {
         console.error('Error during fetch:', error);
+        displayErrorMsg(error,"Failed to fetch")
+
     }
     
 }
@@ -207,8 +209,8 @@ async function LocaForm(index, editMode) {
                     <input type="text" id="LocaCode" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="Vicinity">Group Location</label>
-                    <input type="text" id="Vicinity" spellcheck="false" required>
+                    <label for="StoreGrp">Group Location</label>
+                    <input type="text" id="StoreGrp" spellcheck="false" required>
                 </div>
             </div>
             <div class="textDiv">
@@ -251,7 +253,7 @@ async function LocaForm(index, editMode) {
         // If editing an existing record, show its details
         document.getElementById('LocaName').value = itemData.LocaName;
         document.getElementById('LocaCode').value = itemData.LocaCode;
-        document.getElementById('Vicinity').value = itemData.Vicinity;
+        document.getElementById('StoreGrp').value = itemData.StoreGrp;
         document.getElementById('SellArea').checked = itemData.SellArea ? true : false;
         document.getElementById('Disabled').checked = itemData.Disabled ? true : false;
 
@@ -260,7 +262,7 @@ async function LocaForm(index, editMode) {
         // If adding new, populate with default empty values
         document.getElementById('LocaName').value = '';
         document.getElementById('LocaCode').value = "";
-        document.getElementById('Vicinity').value = "";
+        document.getElementById('StoreGrp').value = "";
         document.getElementById('SellArea').checked = true;
         document.getElementById('Disabled').checked = false;
     }
@@ -277,29 +279,29 @@ async function LocaForm(index, editMode) {
         const cLocation= editMode ? itemData.Location : '0WPE'
         const cLocaName=document.getElementById('LocaName').value;
         const cLocaCode=document.getElementById('LocaCode').value;
-        const cVicinity=document.getElementById('Vicinity').value;
+        const cStoreGrp=document.getElementById('StoreGrp').value;
         const lSellArea=document.getElementById('SellArea').checked ? 1 : 0 // 1 if checked, 0 if unchecked
         const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
 
-        if (!cLocaName || !cVicinity) {
+        if (!cLocaName || !cStoreGrp) {
             e.preventDefault();
             if (!cLocaName) {
                 document.getElementById('LocaName').focus();
                 document.getElementById('LocaName').classList.add('invalid');  // Add a class to highlight
-            } else if (!cVicinity) {
-                document.getElementById('Vicinity').focus();
-                document.getElementById('Vicinity').classList.add('invalid');  // Add a class to highlight
+            } else if (!cStoreGrp) {
+                document.getElementById('StoreGrp').focus();
+                document.getElementById('StoreGrp').classList.add('invalid');  // Add a class to highlight
             }
             return;
         }
 
         if (editMode) {
             // Edit existing record
-            editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled)
+            editLocation(index, cLocation,cLocaName,cLocaCode,cStoreGrp,lSellArea,lDisabled)
         
         } else {
             // Add new record
-            addLocation(cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled)
+            addLocation(cLocation, cLocaName, cLocaCode, cStoreGrp, lSellArea, lDisabled)
                             
         }
         document.getElementById('stoc-form').remove(); // Remove the form from the DOM
@@ -307,7 +309,7 @@ async function LocaForm(index, editMode) {
     });
 }
 
-async function editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled) {
+async function editLocation(index, cLocation,cLocaName,cLocaCode,cStoreGrp,lSellArea,lDisabled) {
     try {
 
         lSellArea = document.getElementById("SellArea").checked ? '1' : '0';
@@ -322,7 +324,7 @@ async function editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSell
                 cLocation: cLocation, 
                 cLocaName: cLocaName,
                 cLocaCode: cLocaCode,
-                cVicinity: cVicinity,
+                cStoreGrp: cStoreGrp,
                 lSellArea: lSellArea,
                 lDisabled: lDisabled
                 
@@ -342,10 +344,12 @@ async function editLocation(index, cLocation,cLocaName,cLocaCode,cVicinity,lSell
         
     } catch (error) {
         console.error('Update Location error:', error);
+        displayErrorMsg(error,"Update Location error")
+
     }
 }
 
-async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled) {
+async function addLocation(cLocation,cLocaName,cLocaCode,cStoreGrp,lSellArea,lDisabled) {
     try {
 
         lSellArea = document.getElementById("SellArea").checked ? '1' : '0';
@@ -360,7 +364,7 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
                 cLocation: cLocation,
                 cLocaName: cLocaName,
                 cLocaCode: cLocaCode,
-                cVicinity: cVicinity,
+                cStoreGrp: cStoreGrp,
                 lSellArea: lSellArea,
                 lDisabled: lDisabled
             })
@@ -395,6 +399,8 @@ async function addLocation(cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDi
         
     } catch (error) {
         console.error('Insert Location error:', error);
+        displayErrorMsg(error,"Insert Location error")
+
     }
 }
 
@@ -421,7 +427,7 @@ async function deleteLocation(cLocation) {
         return true;
     } catch (error) {
         console.error('Delete Location error:', error);
-        alert('An error occurred while trying to delete the location.');
+        displayErrorMsg(error,"Deleted Location error")
         return false;
     }
 }
@@ -449,7 +455,7 @@ function updateTable() {
                         <td>${item.Location || 'N/A'}</td>
                         <td>${item.LocaCode || 'N/A'}</td>
                         <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
-                        <td>${item.Vicinity || 'N/A'}</td>
+                        <td>${item.StoreGrp || 'N/A'}</td>
                         <td>${item.SellArea ? 'Selling Area' : 'Warehouse'}</td>
                         <td class="action-icons">
                             <span class="spanDelItem colEditItem" data-index="${index}">
@@ -482,11 +488,14 @@ document.getElementById('filterLoca').addEventListener('click', async () => {
             // const cCategNum = filterData[7];
             // const cItemType = filterData[8];
             // const cItemDept = filterData[9];
+            // const dAsOfDate = filterData[10];
 
             ListLoca(cLocation,'')
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+
     }
 });
 

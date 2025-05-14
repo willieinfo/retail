@@ -1,6 +1,7 @@
 import { addSalesDtl } from './Sales/SalesLst.js';
 import { addStockDtl } from './Transfers/StockLst.js';
 import { addPurchDtl } from './Purchases/PurchLst.js';
+import { displayErrorMsg } from './FiltrRec.js';
 
 // Function to show the selected report and hide others
 export function showReport(reportType) {
@@ -180,6 +181,7 @@ export async function populateBrandNum(cBrandNum, cBrandNme, cModule='FiltrRec')
 
     } catch (error) {
         console.error('Fetch Brand error:', error);
+        displayErrorMsg(error,'Fetch Brand error')
     }
 }
 
@@ -214,6 +216,7 @@ export async function populateCategNum(cCategNum, cCategNme, cModule='FiltrRec')
 
     } catch (error) {
         console.error('Fetch Category error:', error);
+        displayErrorMsg(error,'Fetch Category error')
     }
 }
 
@@ -249,6 +252,7 @@ export async function populateItemDept(cItemDept, cDescript, cModule='FiltrRec')
 
     } catch (error) {
         console.error('Fetch Department error:', error);
+        displayErrorMsg(error,'Fetch Department error')
     }
 }
 
@@ -283,6 +287,41 @@ export async function populateItemType(cItemType, cDescript, cModule='FiltrRec')
 
     } catch (error) {
         console.error('Fetch Department error:', error);
+        displayErrorMsg(error,'Fetch Department error')
+    }
+}
+
+export async function populateStoreGrp(cStoreGrp, cModule='FiltrRec') {
+    const storegrpSelect = document.getElementById(cModule+'_StoreGrp');
+    storegrpSelect.innerHTML = '';
+
+    const emptyOption = document.createElement('option');
+    emptyOption.value = ''; 
+    emptyOption.textContent = 'Select a Location Group'; // You can set custom text here
+    storegrpSelect.appendChild(emptyOption);
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/lookup/storegrp');
+        const params = new URLSearchParams();
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const listGrup = await response.json();
+        listGrup.forEach(data => {
+            const option = document.createElement('option');
+            option.value = data.StoreGrp;
+            option.textContent = data.StoreGrp;
+            storegrpSelect.appendChild(option);
+            });
+
+    } catch (error) {
+        console.error('Fetch StoreGrp error:', error);
+        displayErrorMsg(error,'Fetch StoreGrp error')
     }
 }
 
@@ -320,6 +359,7 @@ export async function populateLocation(cLocation, cLocaName, cSellArea='', cLoca
 
     } catch (error) {
         console.error('Fetch Location error:', error);
+        displayErrorMsg(error,'Fetch Location error')
     }
 }
 
@@ -355,6 +395,7 @@ export async function populateSuppNum_(cSuppNum_, cSuppName, cModule='ItemList')
 
     } catch (error) {
         console.error('Fetch Supplier error:', error);
+        displayErrorMsg(error,'Fetch Supplier error')
     }
 }
 
@@ -385,6 +426,7 @@ export async function validateField(cModule, fieldId, url, alertMessage, editmod
         return false; // Return false (field does not exist)
     } catch (error) {
         console.error('Error during fetch:', error);
+        displayErrorMsg(error,'Fetch validate error')
         return false; // Optionally handle fetch error as failure (validation fails)
     }
 }
@@ -684,6 +726,7 @@ export async function chkUsersCde(editMode, cModule, otherDetails) {
 
     } catch (error) {
         console.error("Error fetching or processing data:", error);
+        displayErrorMsg(error,'Fetch error')
     }
 
 }
@@ -771,6 +814,7 @@ export async function addScanCode(cModule, currentRec) {
 
     } catch (error) {
         console.error("Error fetching or processing data:", error);
+        displayErrorMsg(error,'Fetch ScanCode error')
     }
 
 }

@@ -1,7 +1,7 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, debounce,
     MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 
-import { FiltrRec } from "../FiltrRec.js"
+import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import { printFormPDF } from "../PrintRep.js"
 
 const divSalesLst = `
@@ -120,6 +120,8 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cReferDoc) {
 
     } catch (error) {
         console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+        
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
@@ -328,6 +330,8 @@ async function SaleForm(index,editMode) {
     
         } catch (error) {
             console.error('Fetch error:', error);
+            displayErrorMsg(error,'Fetch error')
+
         } finally {
             document.getElementById('loadingIndicator').style.display = 'none';
         }
@@ -445,6 +449,7 @@ async function editSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cCustNam
         
     } catch (error) {
         console.error('Update SalesRec error:', error);
+        displayErrorMsg(error,'Update SalesRec error')
     }
 }
 
@@ -510,6 +515,7 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
         
     } catch (error) {
         console.error('Update SalesRec error:', error);
+        displayErrorMsg(error,'Update SalesRec error')
     }
 }
 
@@ -634,6 +640,7 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,'Error processing the filter')
     }
 });
 
@@ -873,6 +880,8 @@ async function editSalesDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
 
     } catch (error) {
         console.error("Error processing editSalesDetail:", error);
+        displayErrorMsg(error,'Error processing editSalesDetail')
+        
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
@@ -940,6 +949,8 @@ export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
 
     } catch (error) {
         console.error("Error processing addSalesDetail:", error);
+        displayErrorMsg(error,'Error processing addSalesDetail')
+        
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
@@ -1058,7 +1069,7 @@ async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
         return true;
     } catch (error) {
         console.error('Delete SalesDtl error:', error);
-        alert('An error occurred while trying to delete the record.');
+        displayErrorMsg(error,'Delete SalesDtl error')
         return false;
     }
 }

@@ -1,4 +1,4 @@
-import { populateBrandNum, populateItemDept, populateItemType, 
+import { populateBrandNum, populateItemDept, populateItemType, populateStoreGrp,
     populateCategNum, populateLocation, checkEmptyValue } from "./FunctLib.js";
 
 export function FiltrRec(cModules_) {
@@ -34,6 +34,10 @@ export function FiltrRec(cModules_) {
                     <div class="subTextDiv">
                         <label for="FiltrRec_Location">Location</label>
                         <select id="FiltrRec_Location"></select>
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="FiltrRec_StoreGrp">Location Group</label>
+                        <select id="FiltrRec_StoreGrp"></select>
                     </div>
                 </div>
 
@@ -165,6 +169,7 @@ export function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         }
 
         // Show the form by changing its display style
@@ -255,12 +260,14 @@ export function FiltrRec(cModules_) {
     });
 }
 
-export function displayErrorMsg(error) {
+export function displayErrorMsg(error,otherMsg = '') {
     const errorMessageDiv = document.getElementById("error-message");
     const errorText = document.getElementById("error-text");
     const retryBtn = document.getElementById("retry-btn");
     const ignoreBtn = document.getElementById("ignore-btn");
     const abortBtn = document.getElementById("abort-btn");
+    const errorOtherMsg = document.getElementById("error-otherMsg");
+    const titleBar = document.getElementById("title-bar");
 
     // Customize error message based on error type
     if (error.status === 404) {
@@ -268,17 +275,21 @@ export function displayErrorMsg(error) {
         retryBtn.style.display = 'inline-block';
         ignoreBtn.style.display = 'inline-block';
         abortBtn.style.display = 'inline-block';
+        titleBar.innerHTML = "Error Message - 404"
     } else if (error.status === 500) {
         errorText.textContent = "Server error. Please try again later.";
         retryBtn.style.display = 'inline-block';
         ignoreBtn.style.display = 'none';
         abortBtn.style.display = 'inline-block';
+        titleBar.innerHTML = "Error Message - 500"
     } else {
         errorText.textContent = "An unexpected error occurred. "+error;
         retryBtn.style.display = 'none';
         ignoreBtn.style.display = 'inline-block';
         abortBtn.style.display = 'inline-block';
+        titleBar.innerHTML = "Error Message"
     }
+    errorOtherMsg.textContent = otherMsg
 
     // Display the error message
     errorMessageDiv.style.display = 'block';

@@ -220,7 +220,7 @@ document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
-        displayErrorMsg("Error processing the filter: "+error)
+        displayErrorMsg(error,"Error processing the filter")
 
     }
 })
@@ -387,7 +387,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
 
     } catch (error) {
         console.error('Error loading or processing chart data:', error);
-        displayErrorMsg('Error loading or processing chart data:'+error)
+        displayErrorMsg(error,'Error loading or processing chart data')
     }
 }
 // Wait for the DOM to fully load before adding the event listener
@@ -434,6 +434,8 @@ document.getElementById('stockEndBrandFilter').addEventListener('click', () => {
 
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+
     }
 })
 
@@ -444,7 +446,7 @@ async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemD
     document.getElementById('loadingIndicator').style.display = 'flex';
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/inventory/StockEndingByBrand_s');
+        const url = new URL('http://localhost:3000/inventory/StockEndingByBrand');
         const params = new URLSearchParams();
         if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
         if (cLocation) params.append('Location', cLocation);
@@ -459,16 +461,16 @@ async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemD
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not ok.');
         }
 
         data = await response.json();
         const listCounter=document.getElementById('stockEndBrandCounter')
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
-        console.log(data)
         
         if (data.length===0) return
+
         const reportBody = document.getElementById('stockEndBrand');
         if (data.length > 30) {
             reportBody.style.height='700px'
@@ -528,7 +530,7 @@ async function StockEndBrand(cLocation, dDateAsOf , cBrandNum, cItemType, cItemD
 
     } catch (error) {
         console.error('Fetch error:', error);
-        displayErrorMsg('Fetch error: '+error)
+        displayErrorMsg(error,'Fetch error')
 
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';

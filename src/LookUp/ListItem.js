@@ -1,6 +1,6 @@
 import { showReport, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
-import { FiltrRec } from "../FiltrRec.js"
+import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 const divListItem = `
     <div id="ProductFile" class="report-section containerDiv">
@@ -126,6 +126,7 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         
     } catch (error) {
         console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
     } finally {
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
@@ -188,6 +189,7 @@ async function updateTableRow(index , cItemCode) {
 
     } catch (error) {
         console.error('Error during fetch:', error);
+        displayErrorMsg(error,'Error during fetch')
     }
     
 }
@@ -538,6 +540,7 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
         
     } catch (error) {
         console.error('Update ItemList error:', error);
+        displayErrorMsg(error,'Update ItemList error')        
     }
 }
 
@@ -603,6 +606,7 @@ async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
         
     } catch (error) {
         console.error('Update ItemList error:', error);
+        displayErrorMsg(error,'Update ItemList error')        
     }
 }
 
@@ -678,6 +682,7 @@ async function deleteItemList(cItemCode) {
 
     } catch (error) {
         console.error('Delete ItemList error:', error);
+        displayErrorMsg(error,'Delete ItemList error')        
         return false;
     }
 }
@@ -704,6 +709,7 @@ document.getElementById('filterList').addEventListener('click', async () => {
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,'Error processing the filter')        
     }
 });
 

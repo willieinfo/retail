@@ -1,6 +1,6 @@
 import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
-import { FiltrRec } from "../FiltrRec.js"
+import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 const dDateFrom = new Date(), dDateTo__ = new Date(), 
     dMontFrom = goMonth(new Date(), -1), dMontTo__ = goMonth(new Date(), -1),
@@ -315,6 +315,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         
     } catch (error) {
         console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
@@ -571,6 +572,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
        
     } catch (error) {
         console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
     } finally {
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
@@ -719,6 +721,7 @@ document.getElementById('saleRank1').addEventListener('click', () => {
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
     }
 })
 document.getElementById('saleRank2').addEventListener('click', () => {
@@ -743,6 +746,7 @@ document.getElementById('saleRank2').addEventListener('click', () => {
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
     }
 
 })
@@ -950,6 +954,7 @@ async function setStoreChart(chartData, dateRange) {
 
     } catch (error) {
         console.error('Error processing chart data:', error);
+        displayErrorMsg(error,"'Error processing chart data'")
     }
 }
 
@@ -1066,6 +1071,6 @@ async function rankBrandSales(data, dateRange) {
 
     } catch (error) {
         console.error('Error fetching data:', error);
-        // Add UI feedback here if needed
+        displayErrorMsg(error,'Error processing chart data')
     }
 }

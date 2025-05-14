@@ -1,5 +1,29 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
 
+const listGrup = async (req, res) => {
+    const cStoreGrp = req.query.StoreGrp;  
+   
+    let cSql = `SELECT DISTINCT
+      LOCATION.StoreGrp
+      FROM LOCATION
+      WHERE 1=1 `;
+  
+      const params = {};
+      if (cStoreGrp) {
+        cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+        params.cStoreGrp = `%${cStoreGrp}%`;
+      }
+      cSql += ` ORDER BY 1`;
+  
+    try {
+      const result = await queryDatabase(cSql, params);
+      res.json(result);  
+    } catch (err) {
+      console.error('StoreGrp query error:', err);
+      res.status(500).send('Error fetching StoreGrp');
+    }
+  }
+
 const listLoca = async (req, res) => {
     const cLocation = req.query.Location;  
     const cLocaName = req.query.LocaName;  
@@ -8,6 +32,7 @@ const listLoca = async (req, res) => {
       LOCATION.LocaName,
       LOCATION.LocaCode,
       LOCATION.Vicinity,
+      LOCATION.StoreGrp,
       LOCATION.SellArea,
       LOCATION.Disabled,
       LOCATION.Location
@@ -23,7 +48,7 @@ const listLoca = async (req, res) => {
         cSql += " AND LOCATION.LocaName LIKE @cLocaName";
         params.cLocaName = `%${cLocaName}%`;
       }
-      cSql += ` ORDER BY 6`;
+      cSql += ` ORDER BY 7`;
   
     try {
       const result = await queryDatabase(cSql, params);
@@ -35,21 +60,21 @@ const listLoca = async (req, res) => {
   }
   
   const editLocation = async (req, res) => {
-    const { cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled } = req.body;  // Extract from body
+    const { cLocation,cLocaName,cLocaCode,cStoreGrp,lSellArea,lDisabled } = req.body;  // Extract from body
   
-    if (!cLocation || !cLocaName || !cLocaCode || !cVicinity || !lSellArea || !lDisabled ) {
+    if (!cLocation || !cLocaName || !cLocaCode || !cStoreGrp || !lSellArea || !lDisabled ) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
   
     const cSql = `UPDATE LOCATION 
       SET LocaName=@cLocaName,
           LocaCode=@cLocaCode,
-          Vicinity=@cVicinity,
+          StoreGrp=@cStoreGrp,
           SellArea=@lSellArea,
           Disabled=@lDisabled
       WHERE Location=@cLocation`;
   
-    const params = { cLocation,cLocaName,cLocaCode,cVicinity,lSellArea,lDisabled };
+    const params = { cLocation,cLocaName,cLocaCode,cStoreGrp,lSellArea,lDisabled };
   
     try {
       const result = await queryDatabase(cSql, params);
@@ -65,18 +90,18 @@ const listLoca = async (req, res) => {
   
   
   const addLocation = async (req, res) => {
-    const { cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled } = req.body;
+    const { cLocation, cLocaName, cLocaCode, cStoreGrp, lSellArea, lDisabled } = req.body;
   
-    if (!cLocation || !cLocaName || !cLocaCode || !cVicinity || !lSellArea || !lDisabled) {
+    if (!cLocation || !cLocaName || !cLocaCode || !cStoreGrp || !lSellArea || !lDisabled) {
       return res.status(400).json({ error: 'Missing required parameters' });
     }
   
     const cSql = `
           -- Insert the new location and get the generated AutIncId
           INSERT INTO LOCATION 
-            (Location, LocaName, LocaCode, Vicinity, SellArea, Disabled)
+            (Location, LocaName, LocaCode, StoreGrp, SellArea, Disabled)
           VALUES
-            (@cLocation, @cLocaName, @cLocaCode, @cVicinity, @lSellArea, @lDisabled);
+            (@cLocation, @cLocaName, @cLocaCode, @cStoreGrp, @lSellArea, @lDisabled);
 
           -- Get the last inserted AutIncId
           DECLARE @AutIncId INT;
@@ -99,6 +124,7 @@ const listLoca = async (req, res) => {
           LOCATION.LocaName,
           LOCATION.LocaCode,
           LOCATION.Vicinity,
+          LOCATION.StoreGrp,
           LOCATION.SellArea,
           LOCATION.Disabled,
           LOCATION.Location
@@ -113,7 +139,7 @@ const listLoca = async (req, res) => {
     // SET @Location = RIGHT(REPLICATE('0', 10) + CAST(@AutIncId AS VARCHAR(10)), 10) + RTRIM(@cSuffixId);
     
     
-    const params = {cLocation, cLocaName, cLocaCode, cVicinity, lSellArea, lDisabled };
+    const params = {cLocation, cLocaName, cLocaCode, cStoreGrp, lSellArea, lDisabled };
     // console.log(params)
     try {
       const result = await queryDatabase(cSql, params);
@@ -209,6 +235,7 @@ const listSupp = async (req, res) => {
 }
 
   module.exports = { 
+    listGrup,
     listLoca,
     listSupp,
     addLocation,
