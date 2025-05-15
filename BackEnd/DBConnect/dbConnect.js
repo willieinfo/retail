@@ -16,7 +16,7 @@ const config = {
     enableArithAbort: true  
   },
   port: 1433,
-  requestTimeout: 60000  // <- Increase to 60 seconds  
+  requestTimeout: 120000  // <- Increase to 60 seconds  
 };
 
 // Connect to SQL Server and export the connection pool

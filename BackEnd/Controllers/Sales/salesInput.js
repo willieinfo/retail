@@ -225,10 +225,10 @@ const addSalesHeader = async (req, res) => {
 // ORDER BY AutIncId DESC;
 
 const SalesRecLst = async (req, res) => {
-  const cLocation = req.query.Location;
-  const cStoreGrp = req.query.StoreGrp;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
+  const cLocation = req.query.Location;
+  const cStoreGrp = req.query.StoreGrp;
   const cReferDoc = req.query.ReferDoc;
 
   let cSql = `SELECT 
@@ -254,14 +254,6 @@ const SalesRecLst = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
-  if (cLocation) {
-    cSql += " AND SALESREC.Location LIKE @cLocation";
-    params.cLocation = `%${cLocation}%`;
-  }
-  if (cStoreGrp) {
-    cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
-    params.cStoreGrp = `%${cStoreGrp}%`;
-  }
   if (dDateFrom) {
     cSql += " AND SALESREC.DateFrom >= @dDateFrom";
     params.dDateFrom = `${dDateFrom}`;
@@ -269,6 +261,14 @@ const SalesRecLst = async (req, res) => {
   if (dDateTo__) {
     cSql += " AND SALESREC.DateFrom <= @dDateTo__";
     params.dDateTo__ = `${dDateTo__}`;
+  }
+  if (cLocation) {
+    cSql += " AND SALESREC.Location LIKE @cLocation";
+    params.cLocation = `%${cLocation}%`;
+  }
+  if (cStoreGrp) {
+    cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+    params.cStoreGrp = `%${cStoreGrp}%`;
   }
   if (cReferDoc) {
     cSql += " AND SALESREC.ReferDoc LIKE @cReferDoc";
