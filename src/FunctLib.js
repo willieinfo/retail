@@ -38,6 +38,11 @@ export function showNotification(cMessage) {
     setTimeout(function() {
         notification.classList.remove("show");
     }, 3000); // 3000ms = 3 seconds
+
+    document.addEventListener('click', (e) => {
+        notification.classList.remove("show");
+    });
+
 }
 
 export function MessageBox(message, buttons, alertMessage='Alert Message', backColor='lightgrey', placeTop=false) {
@@ -1062,3 +1067,17 @@ export function goMonth(dateString, monthOffset) {
     // return `${month}/${day}/${year}`;
 }
   
+export function getCurrentTime() {
+    return new Date();
+}
+
+export function getTimeUsed(startTime) {
+    const endTime = new Date();
+    const timeDiff = endTime - startTime; // in milliseconds
+
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}

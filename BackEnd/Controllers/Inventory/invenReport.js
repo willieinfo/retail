@@ -65,7 +65,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(COUNTDTL.Quantity+COUNTDTL.AdjusCnt) AS TotalQty, 
         Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.LandCost) AS TotalCos, 
-        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.ItemPrce) AS TotalPrc 
+        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM COUNTDTL,COUNTREC,LOCATION,ITEMLIST
         WHERE COUNTREC.CtrlNum_=COUNTDTL.CtrlNum_ 
         AND COUNTREC.Location=LOCATION.Location 
@@ -82,7 +82,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(-SALESDTL.Quantity) AS TotalQty, 
         Sum(-SALESDTL.Quantity*SALESDTL.LandCost) AS TotalCos, 
-        Sum(-SALESDTL.Quantity*SALESDTL.ItemPrce) AS TotalPrc 
+        Sum(-SALESDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM SALESDTL,SALESREC,LOCATION,ITEMLIST
         WHERE SALESREC.CtrlNum_=SALESDTL.CtrlNum_ 
         AND SALESREC.Location=LOCATION.Location 
@@ -100,7 +100,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(PURCHDTL.Quantity) AS TotalQty,
         Sum(PURCHDTL.Quantity*PURCHDTL.LandCost) AS TotalCos, 
-        Sum(PURCHDTL.Quantity*PURCHDTL.SellPrce) AS TotalPrc 
+        Sum(PURCHDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM PURCHDTL,PURCHREC,LOCATION,ITEMLIST
         WHERE PURCHREC.CtrlNum_=PURCHDTL.CtrlNum_ 
         AND PURCHREC.Location=LOCATION.Location 
@@ -118,7 +118,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(ITEMADJU.Quantity) AS TotalQty,
         Sum(ITEMADJU.Quantity*ITEMADJU.LandCost) AS TotalCos,
-        Sum(ITEMADJU.Quantity*ITEMADJU.ItemPrce) AS TotalPrc
+        Sum(ITEMADJU.Quantity*ITEMLIST.ItemPrce) AS TotalPrc
         FROM ITEMADJU,ADJUSREC,LOCATION,ITEMLIST
         WHERE ADJUSREC.Location=LOCATION.Location 
         AND ADJUSREC.CtrlNum_=ITEMADJU.CtrlNum_ 
@@ -136,7 +136,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(-STOCKDTL.Quantity) AS TotalQty,
         Sum(-STOCKDTL.Quantity*STOCKDTL.LandCost) AS TotalCos,
-        Sum(-STOCKDTL.Quantity*STOCKDTL.Amount__) AS TotalPrc
+        Sum(-STOCKDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc
         FROM STOCKDTL,STOCKREC,LOCATION,ITEMLIST
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseFrom=LOCATION.Location 
@@ -154,7 +154,7 @@ const StockEndingByLocation = async (req, res) => {
         LOCATION.LocaName, 
         Sum(STOCKDTL.QtyRecvd) AS TotalQty, 
         Sum(STOCKDTL.QtyRecvd*STOCKDTL.LandCost) AS TotalCos, 
-        Sum(STOCKDTL.QtyRecvd*STOCKDTL.Amount__) AS TotalPrc 
+        Sum(STOCKDTL.QtyRecvd*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM STOCKDTL,STOCKREC,LOCATION,ITEMLIST
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseTo__=LOCATION.Location 
@@ -251,7 +251,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme, 
         Sum(COUNTDTL.Quantity+COUNTDTL.AdjusCnt) AS TotalQty, 
         Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.LandCost) AS TotalCos, 
-        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*COUNTDTL.ItemPrce) AS TotalPrc 
+        Sum((COUNTDTL.Quantity+COUNTDTL.AdjusCnt)*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM COUNTDTL,COUNTREC,ITEMLIST,LOCATION,BRAND___
         WHERE COUNTREC.CtrlNum_=COUNTDTL.CtrlNum_ 
         AND COUNTREC.Location=LOCATION.Location
@@ -269,7 +269,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme,  
         Sum(-SALESDTL.Quantity) AS TotalQty, 
         Sum(-SALESDTL.Quantity*SALESDTL.LandCost) AS TotalCos, 
-        Sum(-SALESDTL.Quantity*SALESDTL.ItemPrce) AS TotalPrc 
+        Sum(-SALESDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM SALESDTL,SALESREC,ITEMLIST,LOCATION,BRAND___
         WHERE SALESREC.CtrlNum_=SALESDTL.CtrlNum_ 
         AND SALESREC.Location=LOCATION.Location
@@ -288,7 +288,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme, 
         Sum(PURCHDTL.Quantity) AS TotalQty,
         Sum(PURCHDTL.Quantity*PURCHDTL.LandCost) AS TotalCos, 
-        Sum(PURCHDTL.Quantity*PURCHDTL.SellPrce) AS TotalPrc 
+        Sum(PURCHDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM PURCHDTL,PURCHREC,ITEMLIST,LOCATION,BRAND___
         WHERE PURCHREC.CtrlNum_=PURCHDTL.CtrlNum_ 
         AND PURCHREC.Location=LOCATION.Location
@@ -307,7 +307,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme,  
         Sum(ITEMADJU.Quantity) AS TotalQty,
         Sum(ITEMADJU.Quantity*ITEMADJU.LandCost) AS TotalCos,
-        Sum(ITEMADJU.Quantity*ITEMADJU.ItemPrce) AS TotalPrc
+        Sum(ITEMADJU.Quantity*ITEMLIST.ItemPrce) AS TotalPrc
         FROM ITEMADJU,ADJUSREC,ITEMLIST,LOCATION,BRAND___
         WHERE ADJUSREC.CtrlNum_=ITEMADJU.CtrlNum_ 
         AND ADJUSREC.Location=LOCATION.Location
@@ -326,7 +326,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme,  
         Sum(-STOCKDTL.Quantity) AS TotalQty,
         Sum(-STOCKDTL.Quantity*STOCKDTL.LandCost) AS TotalCos,
-        Sum(-STOCKDTL.Quantity*STOCKDTL.Amount__) AS TotalPrc
+        Sum(-STOCKDTL.Quantity*ITEMLIST.ItemPrce) AS TotalPrc
         FROM STOCKDTL,STOCKREC,ITEMLIST,LOCATION,BRAND___
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseFrom=LOCATION.Location
@@ -345,7 +345,7 @@ const StockEndingByLocation = async (req, res) => {
         BRAND___.BrandNme, 
         Sum(STOCKDTL.QtyRecvd) AS TotalQty, 
         Sum(STOCKDTL.QtyRecvd*STOCKDTL.LandCost) AS TotalCos, 
-        Sum(STOCKDTL.QtyRecvd*STOCKDTL.Amount__) AS TotalPrc 
+        Sum(STOCKDTL.QtyRecvd*ITEMLIST.ItemPrce) AS TotalPrc 
         FROM STOCKDTL,STOCKREC,ITEMLIST,LOCATION,BRAND___
         WHERE STOCKREC.CtrlNum_=STOCKDTL.CtrlNum_ 
         AND STOCKREC.WhseTo__=LOCATION.Location

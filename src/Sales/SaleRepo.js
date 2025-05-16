@@ -131,7 +131,7 @@ document.body.appendChild(fragment);  // Only one reflow happens here
 
 
 async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
     let data = null;
     const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
@@ -154,6 +154,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cItemDept) params.append('ItemDept', cItemDept);
         if (cItemType) params.append('ItemType', cItemType);
         if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
         if (dYearFrom) params.append('YearFrom', dYearFrom); 
@@ -447,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
     let data = null;
@@ -462,6 +463,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cItemDept) params.append('ItemDept', cItemDept);
         if (cItemType) params.append('ItemType', cItemType);
         if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
 
@@ -712,11 +714,12 @@ document.getElementById('saleRank1').addEventListener('click', () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
-    
+            const cStoreGrp = filterData[12];
+            
             // SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
             //     cItemType, cLocation, dDateFrom, dDate__To);
             SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
     
         });
     } catch (error) {
@@ -739,9 +742,10 @@ document.getElementById('saleRank2').addEventListener('click', () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
-    
+            const cStoreGrp = filterData[12];
+
             SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
 
         });
     } catch (error) {

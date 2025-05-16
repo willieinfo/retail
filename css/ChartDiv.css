@@ -17,6 +17,8 @@ canvas {
 #storeRankChart, #brandRankChart, 
 #stockEndLocaChart, #stockEndBrandChart {
     display: none;
+    background-color: whitesmoke;
+    padding: 15px;
 }
 .divChart70, .divChart30{
     width: 70%;

@@ -636,8 +636,10 @@ document.getElementById('salesFilter').addEventListener('click', async () => {
             // const cItemType = filterData[8];
             // const cItemDept = filterData[9];
             const cReferDoc = filterData[10];
+            // const dDateAsOf = filterData[11];
+            const cStoreGrp = filterData[12];
 
-            SalesLst(dDateFrom,dDate__To,cLocation,cReferDoc) //Calling Main SalesRec List
+            SalesLst(dDateFrom,dDate__To,cLocation,cStoreGrp,cReferDoc) //Calling Main SalesRec List
         });
     } catch (error) {
         console.error("Error processing the filter:", error);

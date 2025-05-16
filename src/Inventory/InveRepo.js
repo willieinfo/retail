@@ -1,4 +1,4 @@
-import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
+import { showReport, showNotification, formatter, getCurrentTime, getTimeUsed} from '../FunctLib.js';
 // import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
@@ -117,6 +117,8 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
         if (cOtherCde) params.append('OtherCde', cOtherCde); 
         if (cDescript) params.append('Descript', cDescript); 
 
+        const startTime = getCurrentTime();
+
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) {
@@ -126,8 +128,12 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
         data = await response.json();
         const listCounter=document.getElementById('stockEndLocaCounter')
         listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
-        console.log(data)
+
+        const timeUsed = getTimeUsed(startTime);
+
+        // showNotification(`${data.length} Records fetched`);
+        showNotification(`${data.length} Records fetched in ${timeUsed}`);
+
         
         if (data.length===0) return
         const reportBody = document.getElementById('stockEndLocation');
@@ -462,6 +468,8 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
         if (cOtherCde) params.append('OtherCde', cOtherCde); 
         if (cDescript) params.append('Descript', cDescript); 
 
+        const startTime = getCurrentTime();
+
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) {
@@ -471,7 +479,11 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
         data = await response.json();
         const listCounter=document.getElementById('stockEndBrandCounter')
         listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
+
+        const timeUsed = getTimeUsed(startTime);
+
+        // showNotification(`${data.length} Records fetched`);
+        showNotification(`${data.length} Records fetched in ${timeUsed}`);
         
         if (data.length===0) return
 
@@ -661,3 +673,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showReport('StockEndBrand')
     });
 });
+
+
+
