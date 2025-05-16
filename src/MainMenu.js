@@ -1,5 +1,6 @@
 import { formatDate } from "./FunctLib.js";
 import { setUserColor } from "../src/Settings/Settings.js";
+import { renderKeyboard } from "./Tools/Keyboard.js";
 
 // Background Image
 const img = document.getElementById('background-image');
@@ -78,6 +79,8 @@ const menuItems= `
     <ul class="dropdown submenu">
         <li class="ThemeColor">Theme Color</li>
         <li class="WallPaper">Wall Paper</li>
+        <hr class="menuLine">
+        <li id="OSKey">On Screen Keyboard</li>
     </ul>
 </li>
 <li class="exit"><i class="fa-solid fa-door-open"></i> Exit
@@ -90,7 +93,7 @@ const menuItems= `
 `;
 
 document.getElementById("menuNavBar").innerHTML = menuItems;
-document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar">✖</div>`+menuItems
+document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar"><span id="close-sidebar">✖</span></div>`+menuItems
 
 const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
@@ -123,6 +126,11 @@ async function applyColorsAndShowContent() {
     // Apply user color preferences
     setUserColor();
 }
+
+document.getElementById('OSKey').addEventListener('click', () =>{
+    // window.location.href = 'OSKey.html'
+    renderKeyboard()
+})
 
 // Run the function once the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {

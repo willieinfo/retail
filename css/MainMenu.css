@@ -177,6 +177,12 @@ html {
     background-image: linear-gradient(to right, rgba(169, 169, 169, 0.447), var(--main-bg-color)); 
 
 }
+#close-sidebar:hover {
+    background-color: red;
+    padding: 4px;
+    animation: wiggle 0.6s ease;
+
+}
 .menuLine {
     padding: 3px;
     margin: 0;

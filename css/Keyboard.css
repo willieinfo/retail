@@ -1,0 +1,86 @@
+.keyboard-wrapper {
+    z-index: 1000;
+    background: #f0f0f0;
+    border-radius: 10px;
+    border: 1px solid #aaa;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+}
+
+.keyboard-title {
+    background: var(--main-bg-color);
+    color: white;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    user-select: none;
+}
+
+.keyboard-close {
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px;
+}
+.keyboard-close:hover {
+    background-color: red;
+    animation: wiggle 0.6s ease;
+}
+
+.keyboard-done {
+    margin-left: auto;
+    margin-right: 10px;
+    background: #ccc;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.keyboard {
+    display: grid;
+    gap: 5px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+}
+
+.key {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+    user-select: none;
+}
+.key:hover {
+    background-color: #e0e0e0;
+}
+.key:active {
+    background-color: #d0d0d0;
+}
+.shift-active {
+    background-color: #cce0ff;
+}
+.space {
+    grid-column: span 3;
+}
+.backspace, .shift, .enter, .tab {
+    grid-column: span 2;
+}
+
+/* Responsive compact layout */
+@media (max-width: 600px) {
+    .key {
+        padding: 6px;
+        font-size: 16px;
+    }
+    .keyboard {
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    }
+}

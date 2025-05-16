@@ -208,8 +208,6 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             nTotYrPct = ((nTotalAmt-nTotPrvYr) / nTotalAmt) * 100; // Total Inc/Dec formula
         }
 
-        // console.log('Total Prev Year :',nTotPrvYr)
-        // console.log('Total Prev Month:',nTotPrvMo)
 
         const salesRankStoreDiv = document.getElementById('SalesRankStore');
         salesRankStoreDiv.classList.add('active');
@@ -441,7 +439,6 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-        // Add event listener to each element with the necessary arguments
     salesRankLocationElements.addEventListener('click', () => {
         showReport('SalesRankStore')
     });
@@ -716,8 +713,6 @@ document.getElementById('saleRank1').addEventListener('click', () => {
             const cItemDept = filterData[9];
             const cStoreGrp = filterData[12];
             
-            // SalesRankStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-            //     cItemType, cLocation, dDateFrom, dDate__To);
             SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
     
