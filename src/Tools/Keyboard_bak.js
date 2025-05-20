@@ -1,3 +1,5 @@
+import { makeDraggable } from '../FunctLib.js'; 
+
 let keyboardContainer = null;
 let lastFocusedElement = null;
 let shiftState = 'lowercase';
@@ -22,6 +24,10 @@ export function renderKeyboard() {
                 layoutMode = 'numeric';
             } else if (el.type === 'tel') {
                 layoutMode = 'tel';
+            } else if (el.type === 'password') {
+                layoutMode = 'password';
+            } else if (el.type === 'email') {
+                layoutMode = 'email';
             } else {
                 layoutMode = 'qwerty'; // default
             }
@@ -42,21 +48,19 @@ export function renderKeyboard() {
         keyboardContainer.style.left = `${left}px`;
         keyboardContainer.style.top = `${top}px`;
     } else {
-        keyboardContainer.style.left = '100px';
-        keyboardContainer.style.top = '100px';
+        keyboardContainer.style.left = '300px';
+        keyboardContainer.style.top = '300px';
     }
     keyboardContainer.style.position = 'absolute';
 
-    // Title bar (draggable)
+    // Title bar
     const titleBar = document.createElement('div');
     titleBar.classList.add('keyboard-title');
     titleBar.textContent = 'On-Screen Keyboard';
 
-    // Close button
     const closeButton = document.createElement('span');
     closeButton.classList.add('keyboard-close');
     closeButton.textContent = '✕';
-    closeButton.title = 'Close Keyboard';
     closeButton.onclick = () => keyboardContainer.remove();
     titleBar.appendChild(closeButton);
 
@@ -68,42 +72,18 @@ export function renderKeyboard() {
     keyboardContainer.appendChild(keyboard);
 
     document.body.appendChild(keyboardContainer);
-
-    // Make keyboard draggable
-    makeDraggable(keyboardContainer, titleBar);
+    
 
     // Layout definitions
     const keyboardLayouts = {
         qwerty: {
-            // lowercase: [
-            //     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-            //     ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-            //     ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-            //     ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-            //     ['shift', 'backspace', 'space', 'enter']
-            // ],
-            // uppercase: [
-            //     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-            //     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-            //     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-            //     ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
-            //     ['shift', 'backspace', 'space', 'enter']
-            // ],
-            // special: [
-            //     ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')'],
-            //     ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-            //     ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-            //     ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-            //     ['shift', 'backspace', 'space', 'enter']
-            // ]
-
-        lowercase: [
-                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-                ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-                ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-                ['backspace', 'space', 'enter', 'shift', 'tab', ',']
-            ],
+            lowercase: [
+                    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+                    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+                    ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+                    ['backspace', 'space', 'enter', 'shift', 'tab', ',']
+                ],
             uppercase: [
                 ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
                 ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -125,7 +105,7 @@ export function renderKeyboard() {
                 ['1', '2', '3'],
                 ['4', '5', '6'],
                 ['7', '8', '9'],
-                ['0', 'backspace', 'enter']
+                ['0', 'backspace', 'enter', 'tab', ',']
             ]
         },
         tel: {
@@ -133,10 +113,34 @@ export function renderKeyboard() {
                 ['1', '2', '3'],
                 ['4', '5', '6'],
                 ['7', '8', '9'],
-                ['+', '0', 'backspace']
+                ['+', '0', 'backspace', 'tab', ',']
+            ]
+        },
+        password: {
+            basic: [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+                ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+                ['backspace', 'space', 'enter', 'shift', 'tab', ',']
+            ]
+        },
+        email: {
+            basic: [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+                ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+                ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+                ['backspace', 'space', 'enter', 'shift', 'tab', ',']
             ]
         }
     };
+
+    document.body.appendChild(keyboardContainer);
+
+    // Make draggable
+    makeDraggable(keyboardContainer, titleBar, 'keyboardPosition');
+
 
     function buildKeyboard() {
         const layoutObj = keyboardLayouts[layoutMode];
@@ -152,8 +156,10 @@ export function renderKeyboard() {
                 button.textContent = key;
 
                 if (key === 'space') button.classList.add('space');
-                if (['backspace', 'shift', 'enter'].includes(key)) button.classList.add(key);
-                if (key === 'shift' && shiftState !== 'lowercase') button.classList.add('shift-active');
+                if (['backspace', 'shift', 'enter', 'tab', ','].includes(key)) button.classList.add(key);
+                if (key === 'shift' && shiftState !== 'lowercase') {
+                    button.classList.add('shift-active');
+                }
 
                 button.addEventListener('mousedown', e => {
                     e.preventDefault();
@@ -163,6 +169,7 @@ export function renderKeyboard() {
                 keyboard.appendChild(button);
             });
         });
+
     }
 
     function handleKeyClick(key) {
@@ -170,8 +177,9 @@ export function renderKeyboard() {
         if (!el) return;
 
         if (key === 'shift') {
-            shiftState = shiftState === 'lowercase' ? 'uppercase' :
-                         shiftState === 'uppercase' ? 'special' : 'lowercase';
+            shiftState = shiftState === 'lowercase' ? 'uppercase'
+                       : shiftState === 'uppercase' ? 'special'
+                       : 'lowercase';
             buildKeyboard();
         } else if (key === 'space') {
             insertToTarget(el, ' ');
@@ -181,6 +189,10 @@ export function renderKeyboard() {
             if (el.tagName === 'TEXTAREA') {
                 insertToTarget(el, '\n');
             }
+        } else if (key === 'tab') {
+            insertToTarget(el, '\t');
+        } else if (key === ',') {
+            insertToTarget(el, ',');
         } else {
             insertToTarget(el, key);
         }
@@ -192,8 +204,8 @@ export function renderKeyboard() {
         if (el.tagName === 'SELECT') {
             typedBuffer += char.toLowerCase();
             selectMatchingOption(el, typedBuffer);
-        } else if (el.type === 'number') {
-            if (!/\d/.test(char) && char !== '.' && char !== '-') return;
+        } else if (el.type === 'number' || el.type === 'tel') {
+            if (!/\d/.test(char) && char !== '.' && char !== '-' && char !== '+') return;
             el.value += char;
         } else {
             const [start, end] = [el.selectionStart, el.selectionEnd];
@@ -206,7 +218,7 @@ export function renderKeyboard() {
         if (el.tagName === 'SELECT') {
             typedBuffer = typedBuffer.slice(0, -1);
             selectMatchingOption(el, typedBuffer);
-        } else if (el.type === 'number') {
+        } else if (el.type === 'number' || el.type === 'tel') {
             el.value = el.value.slice(0, -1);
         } else {
             const [start, end] = [el.selectionStart, el.selectionEnd];
@@ -226,40 +238,6 @@ export function renderKeyboard() {
         );
         if (match) {
             selectEl.value = match.value;
-        }
-    }
-
-    function makeDraggable(container, handle) {
-        let offsetX = 0, offsetY = 0;
-        let isDragging = false;
-
-        handle.style.cursor = 'move';
-
-        handle.addEventListener('mousedown', e => {
-            isDragging = true;
-            offsetX = e.clientX - container.offsetLeft;
-            offsetY = e.clientY - container.offsetTop;
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
-
-        function onMouseMove(e) {
-            if (!isDragging) return;
-            const left = e.clientX - offsetX;
-            const top = e.clientY - offsetY;
-
-            container.style.left = `${left}px`;
-            container.style.top = `${top}px`;
-            container.style.position = 'absolute';
-
-            // Save position
-            localStorage.setItem('keyboardPosition', JSON.stringify({ left, top }));
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
         }
     }
 

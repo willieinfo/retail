@@ -121,9 +121,12 @@ label {
 }
 
 #chkDiv input[type="checkbox"] {
-    margin-right: 2px; /* Reduce the space between checkbox and label */
+    /* margin-right: 2px;  */
+    margin: 0px 2px 0px 2px;
+    padding: 0px 2px 0px 2px;
     width: 16px; /* Optional: adjust checkbox size */
     height: 16px; /* Optional: adjust checkbox size */
+    
 }
 
 .textDiv {

@@ -749,9 +749,12 @@ export async function addScanCode(cModule, currentRec) {
 
     try {
 
+        document.getElementById('loadingIndicator').style.display = 'flex';
+
         let cItemCode = '', nItemPrce = 0, nLandCost = 0, nItemCost = 0
         // Call to your backend to validate and get the list of items
         const dataItem = await validateField(cModule,'ScanCode', 'http://localhost:3000/product/checkUsersCde', '', true);
+        document.getElementById('loadingIndicator').style.display = 'none';
         
         if (!dataItem) {
             alert(`${ScanCode.value} is not found.`)
@@ -824,6 +827,43 @@ export async function addScanCode(cModule, currentRec) {
 
 }
 
+export function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        // Clear the timeout if it exists
+        clearTimeout(timeout);
+        // Set a new timeout to execute the function after the delay
+        timeout = setTimeout(() => func(...args), delay);
+    };
+}
+
+export function goMonth(dateString, monthOffset) {
+    const date = new Date(dateString);
+    date.setMonth(date.getMonth() + monthOffset);  // Adjust month by the offset
+    const month = String(date.getMonth() + 1).padStart(2, '0');  // Format month
+    const day = String(date.getDate()).padStart(2, '0');  // Format day
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+    // return `${month}/${day}/${year}`;
+}
+  
+export function getCurrentTime() {
+    return new Date();
+}
+
+export function getTimeUsed(startTime) {
+    const endTime = new Date();
+    const timeDiff = endTime - startTime; // in milliseconds
+
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+
+
 
 export function pickItem(dataItemList, inputElement) {
     return new Promise((resolve) => {
@@ -835,6 +875,16 @@ export function pickItem(dataItemList, inputElement) {
         // Create the pickItemDiv and dropdownList dynamically
         const pickItemDiv = document.createElement('div');
         pickItemDiv.id = 'pickItemDiv';
+
+        const savedPos = localStorage.getItem('pickItemDiv');
+        if (savedPos) {
+            const { left, top } = JSON.parse(savedPos);
+            pickItemDiv.style.left = `${left}px`;
+            pickItemDiv.style.top = `${top}px`;
+        } else {
+            pickItemDiv.style.left = '500px';
+            pickItemDiv.style.top = '500px';
+        }
 
         const dropdownList = document.createElement('table');
         dropdownList.classList.add('PickItemTable');
@@ -931,9 +981,6 @@ export function pickItem(dataItemList, inputElement) {
         dropdownList.style.display = 'block';  // Show the dropdown
 
         tbody.innerHTML = ''; // Clear previous items
-        // console.log("pickItemDiv height:", pickItemDiv.offsetHeight);
-        // console.log(pickItemDiv.scrollHeight, pickItemDiv.clientHeight);
-
 
         // Loop through dataItemList and create <tr> elements for the table
         dataItemList.forEach(item => {
@@ -1009,8 +1056,8 @@ export function pickItem(dataItemList, inputElement) {
             // console.log('keydown event triggered', e.key); 
             // e.preventDefault()
             const rows = tbody.querySelectorAll('tr');
-
             if (e.key === 'ArrowDown') {
+
                 // Move down in the list
                 if (highlightedIndex < rows.length - 1) {
                     highlightedIndex++;
@@ -1037,6 +1084,13 @@ export function pickItem(dataItemList, inputElement) {
             }
         });
 
+        makeDraggable(pickItemDiv, titleBar, 'pickItemDiv');
+        
+        // Re-focus dropdownList after drag ends
+        document.addEventListener('mouseup', () => {
+            dropdownList.focus();  // Re-focus after dragging
+        })
+
         // Close the dropdown if the user clicks outside of the input, dropdown, or pickItemDiv
         document.addEventListener('click', (e) => {
             if (!pickItemDiv.contains(e.target)) {
@@ -1047,37 +1101,48 @@ export function pickItem(dataItemList, inputElement) {
     });
 }
 
-export function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        // Clear the timeout if it exists
-        clearTimeout(timeout);
-        // Set a new timeout to execute the function after the delay
-        timeout = setTimeout(() => func(...args), delay);
-    };
-}
 
-export function goMonth(dateString, monthOffset) {
-    const date = new Date(dateString);
-    date.setMonth(date.getMonth() + monthOffset);  // Adjust month by the offset
-    const month = String(date.getMonth() + 1).padStart(2, '0');  // Format month
-    const day = String(date.getDate()).padStart(2, '0');  // Format day
-    const year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-    // return `${month}/${day}/${year}`;
-}
-  
-export function getCurrentTime() {
-    return new Date();
-}
 
-export function getTimeUsed(startTime) {
-    const endTime = new Date();
-    const timeDiff = endTime - startTime; // in milliseconds
+export function makeDraggable(container, handle, storageKey = null) {
+    let offsetX = 0, offsetY = 0;
+    let isDragging = false;
 
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    handle.style.cursor = 'move';
 
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    handle.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.clientX - container.offsetLeft;
+        offsetY = e.clientY - container.offsetTop;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+
+    function onMouseMove(e) {
+        if (!isDragging) return;
+        const newLeft = Math.max(0, e.clientX - offsetX);
+        const newTop = Math.max(0, e.clientY - offsetY);
+        container.style.left = `${newLeft}px`;
+        container.style.top = `${newTop}px`;
+        container.style.position = 'absolute';
+
+        if (storageKey) {
+            localStorage.setItem(storageKey, JSON.stringify({ left: newLeft, top: newTop }));
+        }
+    }
+
+    function onMouseUp() {
+        isDragging = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    // Restore previous position
+    if (storageKey) {
+        const savedPos = localStorage.getItem(storageKey);
+        if (savedPos) {
+            const { left, top } = JSON.parse(savedPos);
+            container.style.left = `${left}px`;
+            container.style.top = `${top}px`;
+        }
+    }
 }

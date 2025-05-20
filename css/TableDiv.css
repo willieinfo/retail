@@ -336,3 +336,32 @@ tr:hover td.action-icons i {
 /* .highlight {
     color: black; 
 } */
+
+
+/* .PickItemTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.PickItemTable thead,
+.PickItemTable tfoot {
+  display: table;
+  width: 100%;
+}
+
+.PickItemTable tbody {
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.PickItemTable tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.PickItemTable tr.highlight {
+  background-color: #e0f3ff;
+} */

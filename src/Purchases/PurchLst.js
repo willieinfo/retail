@@ -726,6 +726,8 @@ function PurchDtl(index,editMode) {
 
     document.getElementById('PurcForm').appendChild(itemsDtlForm);
     document.getElementById('PurcForm').appendChild(overlay);
+
+
     itemsDtlForm.style.display = 'flex'
 
 

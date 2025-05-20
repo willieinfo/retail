@@ -1,8 +1,12 @@
+import { makeDraggable } from '../FunctLib.js'; 
+
 let keyboardContainer = null;
 let lastFocusedElement = null;
 let shiftState = 'lowercase';
 let layoutMode = 'qwerty';
 let typedBuffer = '';
+let footerCheckbox = null;
+let autoPosition = false;
 
 export function renderKeyboard() {
     if (keyboardContainer) {
@@ -46,47 +50,21 @@ export function renderKeyboard() {
         keyboardContainer.style.left = `${left}px`;
         keyboardContainer.style.top = `${top}px`;
     } else {
-        keyboardContainer.style.left = '100px';
-        keyboardContainer.style.top = '100px';
+        keyboardContainer.style.left = '300px';
+        keyboardContainer.style.top = '300px';
     }
     keyboardContainer.style.position = 'absolute';
 
-    // Title bar (draggable)
+    // Title bar
     const titleBar = document.createElement('div');
     titleBar.classList.add('keyboard-title');
     titleBar.textContent = 'On-Screen Keyboard';
 
-    // Close button
     const closeButton = document.createElement('span');
     closeButton.classList.add('keyboard-close');
     closeButton.textContent = '✕';
-    closeButton.title = 'Close Keyboard';
     closeButton.onclick = () => keyboardContainer.remove();
     titleBar.appendChild(closeButton);
-
-    // Done/Hide button
-    // const doneButton = document.createElement('button');
-    // doneButton.classList.add('keyboard-done');
-    // doneButton.textContent = 'Done';
-    // doneButton.onclick = () => {
-    //     if (lastFocusedElement) {
-    //         lastFocusedElement.blur();
-    //     }
-    //     keyboardContainer.remove();
-    // };
-    // titleBar.appendChild(doneButton);
-
-    // Show Done only for non-numeric layouts
-    // if (!['numeric', 'tel'].includes(layoutMode)) {
-    //     const doneButton = document.createElement('button');
-    //     doneButton.classList.add('keyboard-done');
-    //     doneButton.textContent = 'Done';
-    //     doneButton.onclick = () => {
-    //         if (lastFocusedElement) lastFocusedElement.blur();
-    //         keyboardContainer.remove();
-    //     };
-    //     titleBar.appendChild(doneButton);
-    // }
 
     keyboardContainer.appendChild(titleBar);
 
@@ -95,10 +73,43 @@ export function renderKeyboard() {
     keyboard.classList.add('keyboard');
     keyboardContainer.appendChild(keyboard);
 
+    // Footer with checkbox (checkbox before label)
+    const footer = document.createElement('div');
+    footer.classList.add('keyboard-footer');
+    footerCheckbox = document.createElement('input');
+    footerCheckbox.type = 'checkbox';
+    const checkboxLabel = document.createElement('label');
+    checkboxLabel.textContent = 'Auto Position';
+    
+    // Add the checkbox before the label
+    footer.appendChild(footerCheckbox);
+    footer.appendChild(checkboxLabel);
+
+    // Apply CSS for horizontal layout
+    footer.style.display = 'inline-flex';  
+    footer.style.alignItems = 'center';    
+    footer.style.margin = '0';             
+    footer.style.padding = '0';            
+    footer.style.gap = '2px';              
+
+    // Reset margins and padding on checkbox and label
+    footerCheckbox.style.margin = '0px 10px 0px 10px';    
+    footerCheckbox.style.padding = '0px 10px 0px 10px';   
+    checkboxLabel.style.margin = '0';      
+    checkboxLabel.style.padding = '0';     
+
+    footerCheckbox.addEventListener('change', (e) => {
+        autoPosition = e.target.checked;
+        if (autoPosition && lastFocusedElement) {
+            adjustPosition();
+        }
+    });
+
+    keyboardContainer.appendChild(footer);
     document.body.appendChild(keyboardContainer);
 
-    // Make keyboard draggable
-    makeDraggable(keyboardContainer, titleBar);
+    // Make draggable
+    makeDraggable(keyboardContainer, titleBar, 'keyboardPosition');
 
     // Layout definitions
     const keyboardLayouts = {
@@ -162,7 +173,6 @@ export function renderKeyboard() {
         }
     };
 
-
     function buildKeyboard() {
         const layoutObj = keyboardLayouts[layoutMode];
         const layout = layoutObj[shiftState] || layoutObj.basic;
@@ -190,7 +200,6 @@ export function renderKeyboard() {
                 keyboard.appendChild(button);
             });
         });
-
     }
 
     function handleKeyClick(key) {
@@ -198,9 +207,7 @@ export function renderKeyboard() {
         if (!el) return;
 
         if (key === 'shift') {
-            shiftState = shiftState === 'lowercase' ? 'uppercase'
-                       : shiftState === 'uppercase' ? 'special'
-                       : 'lowercase';
+            shiftState = shiftState === 'lowercase' ? 'uppercase' : 'lowercase';
             buildKeyboard();
         } else if (key === 'space') {
             insertToTarget(el, ' ');
@@ -262,37 +269,34 @@ export function renderKeyboard() {
         }
     }
 
-    function makeDraggable(container, handle) {
-        let offsetX = 0, offsetY = 0;
-        let isDragging = false;
+    function adjustPosition() {
+        if (!lastFocusedElement) return;
 
-        handle.style.cursor = 'move';
+        const rect = lastFocusedElement.getBoundingClientRect();
+        const keyboardRect = keyboardContainer.getBoundingClientRect();
+        const titleBarHeight = titleBar.offsetHeight;
 
-        handle.addEventListener('mousedown', e => {
-            isDragging = true;
-            offsetX = e.clientX - container.offsetLeft;
-            offsetY = e.clientY - container.offsetTop;
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
+        // Horizontal positioning logic (newLeft)
+        let newLeft = rect.left + (rect.width - keyboardRect.width) / 2;  // Center the keyboard horizontally based on input element
+        const maxLeft = window.innerWidth - keyboardRect.width - 10; // Prevent going off-screen
+        if (newLeft < 10) newLeft = 10; // Ensure it doesn't go off the left side
+        if (newLeft > maxLeft) newLeft = maxLeft; // Ensure it doesn't go off the right side
+        keyboardContainer.style.left = `${newLeft}px`;
 
-        function onMouseMove(e) {
-            if (!isDragging) return;
-            const left = e.clientX - offsetX;
-            const top = e.clientY - offsetY;
-
-            container.style.left = `${left}px`;
-            container.style.top = `${top}px`;
-            container.style.position = 'absolute';
-
-            // Save position
-            localStorage.setItem('keyboardPosition', JSON.stringify({ left, top }));
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
+        // Vertical positioning logic (newTop)
+        if (rect.top > window.innerHeight / 2) {
+            let newTop = rect.bottom + 10;
+            // Ensure the title bar is always visible
+            if (newTop + keyboardRect.height > window.innerHeight) {
+                newTop = window.innerHeight - keyboardRect.height - titleBarHeight - 10;
+            }
+            keyboardContainer.style.top = `${newTop}px`;
+        } else {
+            let newTop = rect.top - keyboardRect.height - 10;
+            if (newTop < titleBarHeight) {
+                newTop = titleBarHeight;
+            }
+            keyboardContainer.style.top = `${newTop}px`;
         }
     }
 
