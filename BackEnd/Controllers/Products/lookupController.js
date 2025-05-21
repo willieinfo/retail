@@ -239,10 +239,136 @@ const listSupp = async (req, res) => {
   }
 }
 
+const listUser = async (req, res) => {
+  const cUserName = req.query.UserName;  
+ 
+  // Build SQL query with parameters
+  let cSql = `SELECT 
+    APPUSERS.UserCode,
+    APPUSERS.UserName,
+    APPUSERS.NickName,
+    APPUSERS.EmailAdd,
+    APPUSERS.Position,
+    APPUSERS.Tel_Num_,
+    APPUSERS.Password,
+    APPUSERS.Remarks_,
+    APPUSERS.AvailMnu,
+    APPUSERS.Disabled
+    FROM APPUSERS
+    WHERE 1=1`;
+
+    const params = {};
+    if (cUserName) {
+      cSql += " AND APPUSERS.UserName LIKE @cUserName";
+      params.cUserName = `%${cUserName}%`;  
+    }
+    cSql += ` ORDER BY 1`;
+  
+  try {
+    const result = await queryDatabase(cSql, params);
+    res.json(result);  
+  } catch (err) {
+    console.error('ListUser query error:', err);
+    res.status(500).send('Error fetching AppUsers');
+  }
+}
+
+const addAppUsers = async (req, res) => {
+    const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled } = req.body;
+  
+    if (!cUserName || !cEmailAdd || !cNickName) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+    const cUserCode=''
+
+    const cSql = `
+          -- Insert the new location and get the generated AutIncId
+          INSERT INTO APPUSERS 
+            (UserCode, UserName, EmailAdd, Position, Tel_Num_, Password, NickName, Remarks_, Disabled)
+          VALUES
+            (@cUserCode, @cUserName, @cEmailAdd, @cPosition, @cTel_Num_, @cPassword, @cNickName, @cRemarks_, @lDisabled);
+
+          -- Get the last inserted AutIncId
+          DECLARE @AutIncId INT;
+          SET @AutIncId = SCOPE_IDENTITY();
+
+          -- Dynamically pad AutIncId to a length of 3 digits and append cSuffixId
+          DECLARE @UserCode VARCHAR(4);  
+
+          -- Ensure zero-padding for numbers less than 100
+          SET @UserCode = RIGHT('0000' + CAST(@AutIncId AS VARCHAR(4)), 4)
+
+          -- Update the Location field
+          UPDATE APPUSERS
+          SET UserCode = @UserCode
+          WHERE AutIncId = @AutIncId;
+
+          -- Return the full record of the inserted location
+          SELECT
+            APPUSERS.UserCode,
+            APPUSERS.UserName,
+            APPUSERS.NickName,
+            APPUSERS.EmailAdd,
+            APPUSERS.Position,
+            APPUSERS.Tel_Num_,
+            APPUSERS.Password,
+            APPUSERS.Remarks_,
+            APPUSERS.AvailMnu,
+            APPUSERS.Disabled
+          FROM APPUSERS WHERE AutIncId = @AutIncId;
+    `;
+
+    
+    const params = {cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled };
+    // console.log(params)
+    try {
+      const result = await queryDatabase(cSql, params);
+      res.json(result);  
+    } catch (err) {
+      console.error('Insert APPUSERS error:', err);
+      res.status(500).json({ error: 'Error inserting APPUSERS' });
+    }
+  };
+  
+const editAppUsers = async (req, res) => {
+    const { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled } = req.body; 
+  
+    if (!cUserName || !cEmailAdd || !cNickName ) {
+      return res.status(400).json({ error: 'Missing required parameters' });
+    }
+  
+    const cSql = `UPDATE APPUSERS
+      SET UserName=@cUserName,
+          EmailAdd=@cEmailAdd,
+          Position=@cPosition,
+          Tel_Num_=@cTel_Num_,
+          Password=@cPassword,
+          NickName=@cNickName,
+          Remarks_=@cRemarks_,
+          Disabled=@lDisabled
+      WHERE UserCode=@cUserCode`;
+  
+    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled };
+  
+    try {
+      const result = await queryDatabase(cSql, params);
+      // res.json({ message: 'Update successful', rowsAffected: result });
+      res.json(result);  
+  
+    } catch (err) {
+      console.error('Update APPUSERS error:', err);
+      res.status(500).json({ error: 'Error updating APPUSERS' });
+    }
+  };
+  
+
   module.exports = { 
     listGrup,
-    listLoca,
     listSupp,
+    listUser,
+    addAppUsers,
+    editAppUsers,
+    listLoca,
     addLocation,
     editLocation,
     deleteLocation

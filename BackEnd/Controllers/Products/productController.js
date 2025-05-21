@@ -12,7 +12,8 @@ const listItem = async (req, res) => {
   const cCategNum = req.query.CategNum;  
 
   // Build SQL query with parameters
-  let cSql = `SELECT ITEMLIST.Descript, 
+  let cSql = `SELECT 
+    ITEMLIST.Descript, 
     ITEMLIST.UsersCde, 
     ITEMLIST.OtherCde, 
     ITEMLIST.ItemCode, 
@@ -28,8 +29,10 @@ const listItem = async (req, res) => {
     ITEMLIST.Disabled, 
     ITEMLIST.Services, 
     ITEMLIST.Outright, 
+    ITEMTYPE.Descript AS TypeDesc, 
     BRAND___.BrandNme
     FROM ITEMLIST
+    INNER JOIN ITEMTYPE ON ITEMLIST.ItemType = ITEMTYPE.ItemType
     INNER JOIN ITEMDEPT ON ITEMLIST.ItemDept = ITEMDEPT.ItemDept
     INNER JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
     WHERE 1=1`;

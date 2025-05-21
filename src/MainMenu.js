@@ -70,9 +70,9 @@ const menuItems= `
         <li class="Class data-entry">Class</li>
         <hr class="menuLine">
         <li class="Location data-entry"><i class="fa fa-th-list"></i> Location</li>
-        <li>Supplier</li>
-        <li>Customer</li>
-        <li class="SystemUsers data-entry">System Users</li>
+        <li class="data-entry">Supplier</li>
+        <li class="data-entry">Customer</li>
+        <li id="AppUsers" class="data-entry"><i class="fa fa-th-list"></i> App Users</li>
     </ul>
 </li>
 <li class="settings"><i class="fa fa-tools"></i> Settings

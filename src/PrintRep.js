@@ -1,6 +1,6 @@
 import {formatDate, get24HrTime, showNotification} from './FunctLib.js'
 
-export async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [], cRepoTitle = 'Report') {
+export async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [], cRepoTitle = 'Report', nCols = 1) {
     if (!jsonData || !jsonData.length) {
       alert("No data to export.");
       return;
@@ -86,7 +86,7 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
       fileName: filename,
       columns: colWidths,
       stickyRowsCount: titleRows.length + 1,
-      stickyColumnsCount: 1
+      stickyColumnsCount: nCols
     });
 }
 

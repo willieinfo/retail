@@ -59,7 +59,7 @@ export function FiltrRec(cModules_) {
                             <input type="text" id="FiltrRec_Descript" name="Descript" spellcheck="false">
                         </div>
                     </div>
-                    <div class="textDiv">
+                    <div id="inputList1" class="textDiv">
                         <div class="subTextDiv">
                             <label for="FiltrRec_BrandNum">Brand</label>
                             <select id="FiltrRec_BrandNum"></select>
@@ -69,7 +69,7 @@ export function FiltrRec(cModules_) {
                             <select id="FiltrRec_CategNum"></select>
                         </div>
                     </div>
-                    <div class="textDiv">
+                    <div id="inputList2" class="textDiv">
                         <div class="subTextDiv">
                             <label for="FiltrRec_ItemDept">Department</label>
                             <select id="FiltrRec_ItemDept"></select>
@@ -79,6 +79,13 @@ export function FiltrRec(cModules_) {
                             <select id="FiltrRec_ItemType"></select>
                         </div>
                     </div>
+                </div>
+                <div id="inputUserName" class="textDiv">
+                    <div class="subTextDiv" style="width:100%;">
+                        <label for="FiltrRec_UserName">App User Name</label>
+                        <input type="text" id="FiltrRec_UserName" name="UserName" spellcheck="false">
+                    </div>
+                    <br>
                 </div>
                 
                 <div class="btnDiv">
@@ -114,23 +121,28 @@ export function FiltrRec(cModules_) {
         filterForm.style.width = '80%';
         filterForm.style.maxWidth = '800px';
 
+        // document.getElementById('inputUserName').style.display = 'none';
+
         // Append the form to the container based on the module type
         if (cModules_ === 'ListItem') {
             document.getElementById('ProductFile').appendChild(filterForm);
             document.getElementById('ProductFile').appendChild(overlay);
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
         } else if (cModules_ === 'ListLoca') {
             document.getElementById('LocationFile').appendChild(filterForm);
             document.getElementById('LocationFile').appendChild(overlay);
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputDetails').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', '','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SalesLst') {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk1') {
@@ -138,6 +150,7 @@ export function FiltrRec(cModules_) {
             document.getElementById('SalesRankStore').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk2') {
@@ -145,17 +158,20 @@ export function FiltrRec(cModules_) {
             document.getElementById('SalesRankBrand').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'StocArea','FiltrRec_Location');
         } else if (cModules_ === 'PurchLst') {
             document.getElementById('PurchLst').appendChild(filterForm);
             document.getElementById('PurchLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'PurcArea','FiltrRec_Location');
         } else if (cModules_ === 'StocEnd1') {
             document.getElementById('StockEndLocation').appendChild(filterForm);
@@ -163,6 +179,7 @@ export function FiltrRec(cModules_) {
             document.getElementById('txtFiltrRec_DateFrom').style.display = 'none';
             document.getElementById('txtFiltrRec_Date__To').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
@@ -172,9 +189,19 @@ export function FiltrRec(cModules_) {
             document.getElementById('txtFiltrRec_DateFrom').style.display = 'none';
             document.getElementById('txtFiltrRec_Date__To').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
             document.getElementById('txtFiltrRec_DateAsOf').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
+        } else if (cModules_ === 'ListUser') {
+            document.getElementById('AppUsersFile').appendChild(filterForm);
+            document.getElementById('AppUsersFile').appendChild(overlay);
+            document.getElementById('inputDates').style.display = 'none';
+            document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputDetails').style.display = 'none';
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('inputList1').style.display = 'none';
+            document.getElementById('inputList2').style.display = 'none';
         }
 
         // Show the form by changing its display style
@@ -251,9 +278,10 @@ export function FiltrRec(cModules_) {
             const cItemDept = document.getElementById('FiltrRec_ItemDept').value;
             const dDateAsOf = document.getElementById('FiltrRec_DateAsOf').value;
             const cStoreGrp = document.getElementById('FiltrRec_StoreGrp').value;
+            const cUserName = document.getElementById('FiltrRec_UserName').value;
 
-            const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
-                cDescript, cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc, dDateAsOf, cStoreGrp];
+            const filterData = [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, cDescript,
+                 cBrandNum, cCategNum, cItemType, cItemDept, cReferDoc, dDateAsOf, cStoreGrp, cUserName];
             localStorage.setItem("filterData", JSON.stringify(filterData));
 
             document.getElementById('filter-form').remove(); 

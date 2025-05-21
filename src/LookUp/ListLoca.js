@@ -1,5 +1,6 @@
 import { showReport, showNotification, highlightRow } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
+import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 
 
 const divListLoca = `
@@ -503,3 +504,63 @@ document.getElementById('filterLoca').addEventListener('click', async () => {
 });
 
 
+document.getElementById('printLocaXLS').addEventListener('click', () => {
+
+    const titleRowsContent = [
+        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: 'Location List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+        { text: '' } // Spacer row
+    ];
+    
+    const colWidths = [
+        { width: 8 },  // Location
+        { width: 30 }, // LocaName
+        { width: 20 }, // LocaCode
+        { width: 30 }, // StoreGrp
+        { width: 20 }, // SellArea
+        { width: 10 }, // Disabled
+    ];
+
+    const columnConfig = [
+        {
+            label: 'Sys',
+            getValue: row => row.Location,
+            type: 'string',
+            align: 'left'
+        },
+        {
+            label: 'Location',
+            getValue: row => row.LocaName,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Code',
+            getValue: row => row.LocaCode,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Group Location',
+            getValue: row => row.StoreGrp,
+            type: 'string',
+            align: 'center',
+        },
+        {
+            label: 'Type',
+            getValue: row => row.SellArea ? 'Selling Area' : 'Warehouse',
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Status',
+            getValue: row => row.Disabled ? 'Disabled' : 'Active',
+            type: 'string',
+            align: 'left',
+        },
+    ];
+    
+    const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+    
+    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Location List', 2);
+})

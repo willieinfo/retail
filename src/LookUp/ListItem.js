@@ -1,6 +1,7 @@
 import { showReport, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
+import { printReportExcel, generateTitleRows } from '../PrintRep.js'
 
 const divListItem = `
     <div id="ProductFile" class="report-section containerDiv">
@@ -29,7 +30,7 @@ const divListItem = `
             </div>
             <div class="footSegments">
                 <span id="itemListCounter" class="recCounter"></span>
-                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printItemXLS"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -713,4 +714,80 @@ document.getElementById('filterList').addEventListener('click', async () => {
     }
 });
 
-// deleteItemList('0000208121G')
+document.getElementById('printItemXLS').addEventListener('click', () => {
+    const titleRowsContent = [
+        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: 'Product List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+        { text: '' } // Spacer row
+    ];
+
+
+    const colWidths = [
+        { width: 20 }, // UsersCde
+        { width: 20 }, // OtherCde
+        { width: 40 }, // Descript
+        { width: 20 }, // BrandNme
+        { width: 20 }, // DeptName
+        { width: 20 }, // TypeDesc
+        { width: 20 }, // ItemPrce
+        { width: 20 }, // LandCost
+        { width: 10 }, // Outright
+    ];
+
+    const columnConfig = [
+        {
+            label: 'Stock No.',
+            getValue: row => row.UsersCde,
+            type: 'string',
+            align: 'left'
+        },
+        {
+            label: 'Bar Code',
+            getValue: row => row.OtherCde,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Description',
+            getValue: row => row.Descript,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Brand',
+            getValue: row => row.BrandNme,
+            type: 'string',
+            align: 'center',
+        },
+        {
+            label: 'Class',
+            getValue: row => row.TypeDesc,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Department',
+            getValue: row => row.DeptName,
+            type: 'string',
+            align: 'left',
+        },
+        {
+            label: 'Item Price',
+            getValue: row => row.ItemPrce,
+            type: 'number',
+            align: 'right',
+            cellFormat: '#,##0.00' // changed format to cellFormat
+        },
+        {
+            label: 'Item LCost',
+            getValue: row => row.LandCost,
+            type: 'number',
+            align: 'right',
+            cellFormat: '#,##0.00' // changed format to cellFormat
+        },
+    ];
+    
+    const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+    
+    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Product List', 1);
+})
