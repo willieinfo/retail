@@ -283,7 +283,7 @@ const SalesRecLst = async (req, res) => {
     // Execute query
     const result = await queryDatabase(cSql, params);
     res.json(result);
-    console.log(params)
+    // console.log(params)
   } catch (err) {
     console.error('Database query error:', err.message);  // Log the error message
     res.status(500).send('Error fetching sales data');

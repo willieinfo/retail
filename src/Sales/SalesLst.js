@@ -86,8 +86,10 @@ document.body.appendChild(fragment);  // Only one reflow happens here
 
 let globalData = [];    // Define a global array
 let itemsDtl = [];      // RecordSet of SALESDTL
+let recptDtl = [];      // RecordSet of RECPTDTL
 let currentRec = [];    // Current selected SALESREC record
 let currentIndex = 0    // Index of the selected SALESREC record
+let cRcptCtrl=''        // Check to see if recptDtl has been fetched already
 
 // values wil be determined as user enters UsersCde and validateField()
 let cItemCode=null  
@@ -250,6 +252,7 @@ async function SaleForm(index,editMode) {
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
+                        <th>Record Id</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -258,14 +261,16 @@ async function SaleForm(index,editMode) {
         </div>  
         
         <div class="paymentTableDiv" id="paymentTableDiv";>
-            <table class="SalesDtlTable">
+            <table class="RecptDtlTable">
                 <thead id="ListPaymentHead">
                     <tr>
                         <th>Payment Mode</th>
-                        <th>Amount Paid</th>
                         <th>Account Name</th>
                         <th>Account No.</th>
                         <th>Authorization</th>
+                        <th>Tendered</th>
+                        <th>Amount Paid</th>
+                        <th>Record Id</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -289,7 +294,6 @@ async function SaleForm(index,editMode) {
     await populateLocation('', '','SellArea', 'SalesRec_Location');
 
     if (editMode) {
-        document.getElementById('loadingIndicator').style.display = 'flex';
 
         const cCtrlNum_=itemData.CtrlNum_
         document.getElementById('SalesRec_ReferDoc').value=itemData.ReferDoc
@@ -311,31 +315,35 @@ async function SaleForm(index,editMode) {
             }
         }
 
+
         try {
-            // Build query parameters
+            document.getElementById('loadingIndicator').style.display = 'flex';
+            // Build query parameters for the first request
             const url = new URL('http://localhost:3000/sales/SalesDtlLst');
             const params = new URLSearchParams();
             if (cCtrlNum_) params.append('CtrlNum_', cCtrlNum_);
-    
-            // Send request with query parameters
+
+            // Send the first request with query parameters
             const response = await fetch(`${url}?${params.toString()}`);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok for SalesDtlLst');
             }
-    
+
             itemsDtl = await response.json(); // Store full data array globally
-            salesDtlCounter.innerHTML=`${itemsDtl.length} Records`
+            salesDtlCounter.innerHTML = `${itemsDtl.length} Records`;
 
             updateItemTable();  // Render items using <tr>
 
-    
         } catch (error) {
-            console.error('Fetch error:', error);
-            displayErrorMsg(error,'Fetch error')
+            console.error('Fetch error for SalesDtlLst:', error);
+            displayErrorMsg(error, 'Fetch error for SalesDtlLst');
 
         } finally {
+            // Ensure the loading indicator is hidden for the first request
             document.getElementById('loadingIndicator').style.display = 'none';
         }
+
+
     } else {
         // Triggered from +Add button Footer
         const dNew_Date= new Date()
@@ -361,7 +369,8 @@ document.getElementById('salesItemsBtn').addEventListener('click', () => {
     document.getElementById('salesDtlCounter').style.display = "block";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Item`;
 })
-document.getElementById('paymentsBtn').addEventListener('click', () => {
+
+document.getElementById('paymentsBtn').addEventListener('click', async () => {
     document.getElementById('paymentTableDiv').style.display ="flex";
     document.getElementById('itemsTableDiv').style.display ="none" ;  
 
@@ -372,6 +381,38 @@ document.getElementById('paymentsBtn').addEventListener('click', () => {
     document.getElementById('SalesRec_ScanCode').style.display = "none";
     document.getElementById('salesDtlCounter').style.display = "none";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Payment`;
+
+    // updateRecptDtlTable(); // Update the receipt details table
+    if (cRcptCtrl===currentRec.CtrlNum_) return // no need to fetch
+    
+    try {
+        document.getElementById('loadingIndicator').style.display = 'flex';
+        // Build query parameters for the second request
+        const url2 = new URL('http://localhost:3000/sales/RecptDtlLst');
+        const params2 = new URLSearchParams();
+        const cCtrlNum_ = currentRec.CtrlNum_
+        if (cCtrlNum_) params2.append('CtrlNum_', cCtrlNum_);
+
+        // Send the second request with query parameters
+        const response2 = await fetch(`${url2}?${params2.toString()}`);
+        if (!response2.ok) {
+            throw new Error('Network response was not ok for RecptDtlLst');
+        }
+
+        recptDtl = await response2.json();  // Store full data array globally
+        cRcptCtrl = recptDtl[0].CtrlNum_    // record current CtrlNum_ 
+        updateRecptDtlTable(); // Update the receipt details table
+
+
+    } catch (error) {
+        console.error('Fetch error for RecptDtlLst:', error);
+        displayErrorMsg(error, 'Fetch error for RecptDtlLst');
+
+    } finally {
+        // Ensure the loading indicator is hidden for the second request
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
+
 })
 
 
@@ -544,6 +585,7 @@ function updateItemTable(refreshOnly=false) {
                 <td style="text-align: right">${formatter.format(item.Quantity * item.ItemPrce) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format((item.Quantity * item.ItemPrce) - (item.Quantity * item.Amount__)) || 'N/A'}</td>
                 <td style="text-align: right">${formatter.format(item.Quantity * item.Amount__) || 'N/A'}</td>
+                <td>${item.RecordId || 'N/A'}</td>
                 <td class="action-icons">
                     <span class="spanDelItem colEditItem" data-index="${index}">
                         <i class="fa fa-trash"></i>
@@ -564,6 +606,7 @@ function updateItemTable(refreshOnly=false) {
                     <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                     <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
                     <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                    <td></td>
                 </tr>
             </tfoot>
 `
@@ -608,9 +651,100 @@ function updateItemTable(refreshOnly=false) {
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                // && index < globalData.length
+                if (!isNaN(index) && index >= 0 ) {
                     if (refreshOnly) return;
                     SalesDtl(index, true); // Pass only the index to your form
+                }
+            }
+        }
+    });
+    
+}
+
+function updateRecptDtlTable(refreshOnly=false) {
+    let nTotalAmt = 0;
+    let nTotalTen = 0;
+
+    const ListPaymItem=document.getElementById('ListPaymItem')
+    // Map through itemsDtl and build rows while accumulating totals
+    const listTable = recptDtl.map((item, index) => {
+        // Accumulate totals inside the map
+        nTotalAmt += item.Amount__ || 0;
+        nTotalTen += item.Tender_D || 0;
+
+        return `
+            <tr data-index="${index}">
+                <td>${item.PaymForm || 'N/A'}</td>
+                <td class="colNoWrap">${item.AcctName || 'N/A'}</td>
+                <td>${item.Acct_Num || 'N/A'}</td>
+                <td>${item.Authorze || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.Tender_D) || 'N/A'}</td>
+                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                <td>${item.RecordId || 'N/A'}</td>
+                <td class="action-icons">
+                    <span class="spanDelItem colEditItem" data-index="${index}">
+                        <i class="fa fa-trash"></i>
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join(''); // Join all rows into a single string
+
+    const listFooter=`
+            <tfoot id="ListItemFoot">
+                <tr style="font-weight: bold;">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right">Totals: </td>
+                    <td style="text-align: right">${formatter.format(nTotalTen) || 'N/A'}</td>
+                    <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+`
+
+    ListPaymItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
+
+    document.getElementById('ListPaymItem').addEventListener('click', async (event) => {
+        const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
+        if (delBtn) {
+            const row = event.target.closest('tr');
+            const index = parseInt(delBtn.getAttribute('data-index')); // Get index
+
+            // check if SALESREC transaction is already Printed_
+            if (globalData[currentIndex].Printed_) {
+                alert('This transaction has been printed already.')
+                return
+            }
+
+            if (!isNaN(index) && index >= 0 && index < recptDtl.length) {
+                if (refreshOnly) return;
+
+                const confirmed = confirm(`Do you want to delete ${recptDtl[index].RecordId.trim()}?`)
+                if (confirmed) {
+                    const deleted_ = await deleteRecptDtl(recptDtl[index].RecordId,globalData[currentIndex].CtrlNum_,index)
+                    if (deleted_) {
+                        // Remove the row from the DOM
+                        row.remove(); // This will remove the <tr> element from the table
+                    }
+                }
+            }
+            event.stopPropagation(); // This stops the event from propagating to the parent (row click handler)
+        } else {
+            // If not a delete button, handle the row click
+            const row = event.target.closest('tr');
+            if (row) {
+
+                highlightRow(row, '.RecptDtlTable');
+    
+                // Optionally, call your edit function if needed
+                const index = parseInt(row.getAttribute('data-index'));
+                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                    if (refreshOnly) return;
+                    RecptDtl(index, true); // Pass only the index to your form
                 }
             }
         }
@@ -1044,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function deleteSalesDtl(cRecordId,cCtrlNum_,index) {
-    console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
+    // console.log('cRecordId',cRecordId,'cCtrlNum_',cCtrlNum_)
     const salesDtlCounter=document.getElementById('salesDtlCounter')
     try {
         const response = await fetch(`http://localhost:3000/sales/deleteSalesDetail/${encodeURIComponent(cRecordId)}`, {

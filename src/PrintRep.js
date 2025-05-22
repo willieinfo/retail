@@ -1,6 +1,6 @@
-import {formatDate, get24HrTime, showNotification} from './FunctLib.js'
+import {formatDate, get24HrTime, MessageBox, showNotification} from './FunctLib.js'
 
-export async function printReportExcel(jsonData, columnConfig, colWidths, titleRows = [], cRepoTitle = 'Report', nCols = 1) {
+export async function printReportExcel(jsonData, columnConfig, colWidths, titleRows=[] , cRepoTitle = 'Report', nCols = 1) {
     if (!jsonData || !jsonData.length) {
       alert("No data to export.");
       return;
@@ -88,42 +88,45 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
       stickyRowsCount: titleRows.length + 1,
       stickyColumnsCount: nCols
     });
+
+    MessageBox(// After the file is downloaded
+        `The file "${filename}" has been downloaded to your Downloads folder.\n 
+        Please open it in Excel to view.`,
+        'Ok'
+    )
 }
 
-export function generateTitleRows(columnConfig, titleRowsContent, visualStartIndex = 1) {
+export function generateTitleRows(columnConfig, titleRowsContent) {
     const totalCols = columnConfig.length;
-    const visualCols = totalCols - visualStartIndex;
-    const centerIndex = visualStartIndex + Math.floor(visualCols / 2) - 1;
-  
-    const buildCenteredRow = (text, style = {}) => {
-      return [
-        ...Array(centerIndex).fill({ value: '' }),
+
+    // Build the title rows with left alignment
+    const buildLeftAlignedRow = (text, style = {}) => {
+        return [
         {
-          value: text,
-          align: 'center',
-          ...style
+            value: text,
+            align: 'left', // Left-align all rows
+            ...style
         },
-        ...Array(totalCols - centerIndex - 1).fill({ value: '' })
-      ];
+        ...Array(totalCols - 1).fill({ value: '' }) // Fill remaining cells with empty values
+        ];
     };
-  
+
     return titleRowsContent.map(row =>
-      row.text === ''
+        row.text === ''
         ? Array(totalCols).fill({ value: '' }) // full-width spacer row
-        : buildCenteredRow(row.text, row.style)
+        : buildLeftAlignedRow(row.text, row.style)
     );
-  }
-  
+}
 
 
-  export function printFormPDF(headerData, detailData, itemFields, createTotals, colWidths, 
+export function printFormPDF(headerData, detailData, itemFields, createTotals, colWidths, 
     columnHeader, fieldTypes ,imgLogo, paperSetup, formatter, cFileName) {
-    
+
     // Initialize jsPDF
     const { jsPDF } = window.jspdf;
     // You can set format to 'letter', 'a4', or 'a3' and orientation to 'portrait' or 'landscape'
     const doc = new jsPDF({ unit: 'mm', format: paperSetup[0], orientation: paperSetup[1] }); 
-    
+
     const pageMargin = 10; // Page margin (left, top, right, bottom)
     const lineHeight = 6; // Line height for content - ideal 8
     const startY = 20; // Start Y position for the content
@@ -131,7 +134,7 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
 
     const reportFont='Helvetica'
     let currentY = startY;
-    
+
     doc.setFont("helvetica", "normal");
     doc.setLineWidth(0.2); // line thickness
 
@@ -144,7 +147,7 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
     const itemLineHeight = 5; // Line height for items
     const tableHeaderHeight = 6; // Row height - Header height
     let bottomMargin = 23; // Preferred bottom margin
-    
+
     // Total column widths dimensions based on colWidths array determines width of report
     const totalColWidth = colWidths.reduce((sum, width) => sum + width, pageMargin);
 
@@ -311,7 +314,7 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
     // doc.save('Sales Invoice.pdf');
 
     // document.querySelector('.pdfReport').src = doc.output('datauristring');
-    
+
     doc.output('dataurlnewwindow',cFileName);
 
 
@@ -347,19 +350,19 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
         doc.setFontSize(10);
         const cCompName = 'REGENT TRAVEL RETAIL GROUP';
         const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
-    
+
         doc.setFont(reportFont, "bold");
         doc.text(cCompName, (pageWidth - doc.getTextWidth(cCompName)) / 2, currentY);
         // doc.text(cCompName, 30, currentY);
         currentY += lineHeight;
         doc.text(cAddress_, (pageWidth - doc.getTextWidth(cAddress_)) / 2, currentY);
         // doc.text(cAddress_, 30, currentY);
-    
+
         const centerPosi = (pageWidth / 2) + pageMargin -10;
         const boxWidth = centerPosi - pageMargin;
         const padding = 2
         const headerHeight = lineHeight + 4; // Adjusted height for the header box
-    
+
         currentY += lineHeight -2 ;
         // Draw the background rectangle (Gray color) for cModule_
         doc.setFillColor(200, 200, 200); // RGB for gray
@@ -385,13 +388,13 @@ export function generateTitleRows(columnConfig, titleRowsContent, visualStartInd
         currentY += lineHeight
         doc.line(pageMargin, currentY + 2, totalColWidth, currentY +2); 
         // doc.line(dividerX, currentY - lineHeight , dividerX, currentY + lineHeight ); // 2nd vert line
-    
+
         currentY += lineHeight
         doc.setFont('Courier', "bold");
         doc.text(headerData[1], pageMargin + 2, currentY); // Location
         doc.text(headerData[2], centerPosi + padding, currentY); // OR Date
         // doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 3nd vert line
-    
+
         currentY += lineHeight;
         doc.text(headerData[3], pageMargin + 2, currentY); // Customer
         doc.text(headerData[4], centerPosi + padding, currentY); // Remarks

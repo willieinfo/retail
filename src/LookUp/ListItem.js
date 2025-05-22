@@ -723,15 +723,8 @@ document.getElementById('printItemXLS').addEventListener('click', () => {
 
 
     const colWidths = [
-        { width: 20 }, // UsersCde
-        { width: 20 }, // OtherCde
-        { width: 40 }, // Descript
-        { width: 20 }, // BrandNme
-        { width: 20 }, // DeptName
-        { width: 20 }, // TypeDesc
-        { width: 20 }, // ItemPrce
-        { width: 20 }, // LandCost
-        { width: 10 }, // Outright
+        { width: 20 }, { width: 20 }, { width: 40 }, { width: 20 }, { width: 20 }, 
+        { width: 20 }, { width: 20 }, { width: 20 }, { width: 10 }, 
     ];
 
     const columnConfig = [

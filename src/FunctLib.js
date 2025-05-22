@@ -45,7 +45,7 @@ export function showNotification(cMessage) {
 
 }
 
-export function MessageBox(message, buttons, alertMessage='Alert Message', backColor='lightgrey', placeTop=false) {
+export function MessageBox(message, buttons, alertMessage='Alert Message', backColor='whitesmoke', placeTop=false) {
     return new Promise((resolve) => {
         // Disable background scrolling
         document.body.style.overflow = 'hidden';        
@@ -77,7 +77,7 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
         // Create Title Bar
         const titleBar = document.createElement('div');
         titleBar.style.display = 'flex'; 
-        titleBar.style.justifyContent = 'center'; 
+        // titleBar.style.justifyContent = 'center'; 
         titleBar.style.alignItems = 'center'; 
         titleBar.style.width="auto" ;
         titleBar.style.height="30px" ;
@@ -145,6 +145,8 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
         // Append modal to overlay
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
+
+        makeDraggable(modal, titleBar)
 
         // Cleanup function to remove the modal
         function cleanup() {
@@ -659,8 +661,11 @@ export async function chkUsersCde(editMode, cModule, otherDetails) {
     }
 
     try {
+        document.getElementById('loadingIndicator').style.display = 'flex';
         // Call to your backend to validate and get the list of items
         let dataItemList = await validateField(cModule,'UsersCde', 'http://localhost:3000/product/checkUsersCde', '', true);
+
+        document.getElementById('loadingIndicator').style.display = 'none';
 
         if (dataItemList) {
             // If more than one item is returned, show the pick list
