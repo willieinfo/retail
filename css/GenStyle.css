@@ -2,7 +2,7 @@
 .notification {
     position: fixed;
     top: 80px;
-    right: -400px; /* Start offscreen */
+    right: -500px; /* Start offscreen */
     background-color: var(--darker-bg-color);
     padding: 10px;
     border-radius: 5px;
@@ -14,7 +14,7 @@
 
 /* For the notification when it's visible */
 .notification.show {
-    right: 20px; 
+    right: 30px; 
 }
 
 #notification-message{

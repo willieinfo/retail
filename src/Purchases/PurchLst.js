@@ -1,7 +1,7 @@
 import { showReport, formatDate, populateLocation, populateSuppNum_, showNotification, debounce, MessageBox, 
     formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
-import { printFormPDF } from "../PrintRep.js"
+import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 
 const divPurchLst = `
     <div id="PurchLst" class="report-section containerDiv">
@@ -38,7 +38,7 @@ const divPurchLst = `
             </div>
             <div class="footSegments">
                 <span id="purchLstCounter" class="recCounter"></span>
-                <button id="printPurchList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printPurcListXLS"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="purchFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -129,51 +129,78 @@ function updateTable() {
     const reportBody = document.getElementById('purchRecList');
     reportBody.innerHTML = ''; // Clear previous content
 
+    let nTotalQty = 0;
+    let nTotalAmt = 0;
+    let nTotalItm = 0;
 
     const listTable = `
         <div id="tableDiv">
-        <table id="ListPurchTable">
-            <thead id="Look_Up_Head">
-                <tr>
-                    <th>Control No</th>
-                    <th>Ref. Doc</th>
-                    <th>Date</th>
-                    <th>Supplier</th>
-                    <th>DR No.</th>
-                    <th>DR Date</th>
-                    <th>PO No.</th>
-                    <th>PO Date</th>
-                    <th>Qty.</th>
-                    <th>Amount</th>
-                    <th>Items</th>
-                    <th>Remarks</th>
-                    <th>Location</th>
-                    <th>Encoder</th>
-                    <th>Log Date</th>
-                </tr>
-            </thead>
-            <tbody id="ListPurchBody">
-                ${globalData.map((data, index) => `
-                    <tr id="trStocList" data-index="${index}" style="${data.Disabled ? 'color: darkgray;' : ''}">
-                        <td>${data.CtrlNum_ || 'N/A'}</td>
-                        <td class="colNoWrap">${data.ReferDoc || 'N/A'}</td>
-                        <td>${formatDate(data.Date____) || 'N/A'}</td>
-                        <td class="colNoWrap">${data.SuppName || 'N/A'}</td>
-                        <td class="colNoWrap">${data.DRNum___ || 'N/A'}</td>
-                        <td>${formatDate(data.DR__Date) || 'N/A'}</td>
-                        <td class="colNoWrap">${data.PONum___ || 'N/A'}</td>
-                        <td>${formatDate(data.PODate__) || 'N/A'}</td>
-                        <td style="text-align: center">${data.TotalQty.toFixed(0) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(data.Amount__) || 'N/A'}</td>
-                        <td style="text-align: center">${data.NoOfItem.toFixed(0) || 'N/A'}</td>
-                        <td class="colNoWrap">${data.Remarks_ || 'N/A'}</td>
-                        <td class="colNoWrap">${data.LocaName || 'N/A'}</td>
-                        <td>${data.Encoder_ || 'N/A'}</td>
-                        <td>${formatDate(data.Log_Date) || 'N/A'}</td>
+            <table id="ListPurchTable">
+                <thead id="Look_Up_Head">
+                    <tr>
+                        <th>Control No</th>
+                        <th>Ref. Doc</th>
+                        <th>Date</th>
+                        <th>Supplier</th>
+                        <th>DR No.</th>
+                        <th>DR Date</th>
+                        <th>PO No.</th>
+                        <th>PO Date</th>
+                        <th>Qty.</th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Remarks</th>
+                        <th>Location</th>
+                        <th>Encoder</th>
+                        <th>Log Date</th>
                     </tr>
-                `).join('')}
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="ListPurchBody">
+                    ${globalData.map((data, index) => {
+                        nTotalQty += data.TotalQty || 0;
+                        nTotalAmt += data.Amount__ || 0;
+                        nTotalItm += data.NoOfItem || 0;
+
+                        return`
+                        <tr id="trStocList" data-index="${index}" style="${data.Disabled ? 'color: darkgray;' : ''}">
+                            <td>${data.CtrlNum_ || 'N/A'}</td>
+                            <td class="colNoWrap">${data.ReferDoc || 'N/A'}</td>
+                            <td>${formatDate(data.Date____) || 'N/A'}</td>
+                            <td class="colNoWrap">${data.SuppName || 'N/A'}</td>
+                            <td class="colNoWrap">${data.DRNum___ || 'N/A'}</td>
+                            <td>${formatDate(data.DR__Date) || 'N/A'}</td>
+                            <td class="colNoWrap">${data.PONum___ || 'N/A'}</td>
+                            <td>${formatDate(data.PODate__) || 'N/A'}</td>
+                            <td style="text-align: center">${data.TotalQty.toFixed(0) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(data.Amount__) || 'N/A'}</td>
+                            <td style="text-align: center">${data.NoOfItem.toFixed(0) || 'N/A'}</td>
+                            <td class="colNoWrap">${data.Remarks_ || 'N/A'}</td>
+                            <td class="colNoWrap">${data.LocaName || 'N/A'}</td>
+                            <td>${data.Encoder_ || 'N/A'}</td>
+                            <td>${formatDate(data.Log_Date) || 'N/A'}</td>
+                        </tr>`
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Totals: </td>
+                        <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: center">${nTotalItm.toFixed(0) || 'N/A'}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     `;
 
@@ -1107,5 +1134,53 @@ document.getElementById('PurchRec_ScanCode').addEventListener('input', debounce(
     await addScanCode('PurchRec',currentRec);
 }, 300));  
 
+document.getElementById('printPurcListXLS').addEventListener('click', () => {
+    const filterData = JSON.parse(localStorage.getItem("filterData"));
 
+    const dDateFrom = filterData[0];
+    const dDate__To = filterData[1];
 
+    const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDate__To,'MM/DD/YYYY')}`
+    const titleRowsContent = [
+        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: 'Stock Receiving List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+        { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+        { text: '' } // Spacer row
+    ];
+
+    
+    const colWidths = [
+        { width: 12 },{ width: 12 },{ width: 12 },{ width: 24 },{ width: 20 },
+        { width: 12 },{ width: 16 },{ width: 12 },{ width: 10 },{ width: 20 },
+        { width: 10 },{ width: 20 },{ width: 20 },{ width: 10 },{ width: 12 },
+    ];
+
+    const columnConfig = [
+        {label: 'Ctrl. No,', getValue: row => row.CtrlNum_, type: 'string', align: 'left' },
+        {label: 'Ref. No.',getValue: row => row.ReferDoc,type: 'string', align: 'left'},
+        {label: 'Date',getValue: row => row.Date____,type: 'datetime',align: 'left'},
+        {label: 'Supplier',getValue: row => row.SuppName, type: 'string',align: 'left'},
+        {label: 'DR No.',getValue: row => row.DRNum___, type: 'string',align: 'left',},
+        {label: 'DR Date',getValue: row => row.DR__Date,type: 'datetime',align: 'left'},
+        {label: 'PO No.',getValue: row => row.PONum___, type: 'string',align: 'left'},
+        {label: 'PO Date',getValue: row => row.PODate__,type: 'datetime',align: 'left',totalLabel: 'TOTALS:'},
+        {label: 'Qty.',getValue: row => +row.TotalQty,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
+                align: 'center',type: 'integer',cellFormat: '#,##0'},
+        {label: 'Amount',getValue: row => +row.Amount__,
+            total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+        {label: 'Items',getValue: row => +row.NoOfItem,
+                total: rows => rows.reduce((sum, r) => sum + (+r.NoOfItem || 0), 0),
+                align: 'center',type: 'integer',cellFormat: '#,##0'},
+        {label: 'Remarks',getValue: row => row.Remarks_,type: 'string',align: 'left'},
+        {label: 'Location',getValue: row => row.LocaName, type: 'string',align: 'left'},
+        {label: 'Encoder',getValue: row => row.Encoder_, type: 'string',align: 'left'},
+        {label: 'Log Date',getValue: row => row.Log_Date,type: 'datetime',align: 'left'},
+
+    ];
+    
+    const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+    
+    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Stock Receiving List', 2);
+})

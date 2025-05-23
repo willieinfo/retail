@@ -2,7 +2,7 @@ import { showReport, formatDate, populateLocation, showNotification, get24HrTime
     MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
 
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
-import { printFormPDF } from "../PrintRep.js"
+import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 
 const divSalesLst = `
     <div id="SalesLst" class="report-section containerDiv">
@@ -35,7 +35,7 @@ const divSalesLst = `
             </div>
             <div class="footSegments">
                 <span id="salesLstCounter" class="recCounter"></span>
-                <button id="printList"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printSaleListXLS"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -132,44 +132,70 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
 
 function updateTable() {
     const reportBody = document.getElementById('salesRecList');
-    reportBody.innerHTML = ''; // Clear previous content
+    reportBody.innerHTML = ''; 
+
+    let nTotalQty = 0;
+    let nTotalAmt = 0;
+    let nTotalItm = 0;
 
     const listTable = `
         <div id="tableDiv">
-        <table id="ListSalesTable">
-            <thead id="Look_Up_Head">
-                <tr>
-                    <th>Control No</th>
-                    <th>Ref. Doc</th>
-                    <th>Date</th>
-                    <th>Location</th>
-                    <th>Qty.</th>
-                    <th>Amount</th>
-                    <th>Items</th>
-                    <th>Remarks</th>
-                    <th>Customer</th>
-                    <th>Encoder</th>
-                    <th>Log Date</th>
-                </tr>
-            </thead>
-            <tbody id="ListSalesBody">
-                ${globalData.map((item, index) => `
-                    <tr id="trSaleList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
-                        <td>${item.CtrlNum_ || 'N/A'}</td>
-                        <td>${item.ReferDoc || 'N/A'}</td>
-                        <td>${formatDate(item.DateFrom) || 'N/A'}</td>
-                        <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
-                        <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
-                        <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
-                        <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
-                        <td class="colNoWrap">${item.CustName || 'N/A'}</td>
-                        <td>${item.Encoder_ || 'N/A'}</td>
-                        <td>${formatDate(item.Log_Date) || 'N/A'}</td>
+            <table id="ListSalesTable">
+                <thead id="Look_Up_Head">
+                    <tr>
+                        <th>Control No</th>
+                        <th>Ref. Doc</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Qty.</th>
+                        <th>Amount</th>
+                        <th>Items</th>
+                        <th>Remarks</th>
+                        <th>Customer</th>
+                        <th>Encoder</th>
+                        <th>Log Date</th>
                     </tr>
-                `).join('')}
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="ListSalesBody">
+                    ${globalData.map((item, index) => {
+                        nTotalQty += item.TotalQty || 0;
+                        nTotalAmt += item.Amount__ || 0;
+                        nTotalItm += item.NoOfItem || 0;
+
+                        return `
+                        <tr id="trSaleList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
+                            <td>${item.CtrlNum_ || 'N/A'}</td>
+                            <td>${item.ReferDoc || 'N/A'}</td>
+                            <td>${formatDate(item.DateFrom) || 'N/A'}</td>
+                            <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                            <td style="text-align: center">${item.TotalQty.toFixed(0) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                            <td style="text-align: center">${item.NoOfItem.toFixed(0) || 'N/A'}</td>
+                            <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
+                            <td class="colNoWrap">${item.CustName || 'N/A'}</td>
+                            <td>${item.Encoder_ || 'N/A'}</td>
+                            <td>${formatDate(item.Log_Date) || 'N/A'}</td>
+                        </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+
+                <tfoot>
+                    <tr style="font-weight: bold;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Totals: </td>
+                        <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: center">${nTotalItm.toFixed(0) || 'N/A'}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     `;
 
@@ -382,7 +408,7 @@ document.getElementById('paymentsBtn').addEventListener('click', async () => {
     document.getElementById('salesDtlCounter').style.display = "none";
     document.getElementById('addSalesDtl').innerHTML=`<i class="fa fa-add"></i> Add Payment`;
 
-    // updateRecptDtlTable(); // Update the receipt details table
+    
     if (cRcptCtrl===currentRec.CtrlNum_) return // no need to fetch
     
     try {
@@ -1260,4 +1286,49 @@ document.getElementById('SalesRec_ScanCode').addEventListener('input', debounce(
 }, 300));  
 
 
+document.getElementById('printSaleListXLS').addEventListener('click', () => {
+    const filterData = JSON.parse(localStorage.getItem("filterData"));
 
+    const dDateFrom = filterData[0];
+    const dDate__To = filterData[1];
+
+    const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDate__To,'MM/DD/YYYY')}`
+    const titleRowsContent = [
+        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: 'Sales Record List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+        { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+        { text: '' } // Spacer row
+    ];
+
+    
+    const colWidths = [
+        { width: 12 },{ width: 12 },{ width: 12 },{ width: 24 },{ width: 8 },
+        { width: 12 },{ width: 8 },{ width: 30 },{ width: 20 },{ width: 10 },
+        { width: 12 },
+    ];
+
+    const columnConfig = [
+        {label: 'Ctrl. No,', getValue: row => row.CtrlNum_, type: 'string', align: 'left' },
+        {label: 'Ref. No.',getValue: row => row.ReferDoc,type: 'string', align: 'left'},
+        {label: 'Date',getValue: row => row.DateFrom,type: 'datetime',align: 'left'},
+        {label: 'Location',getValue: row => row.LocaName, type: 'string',align: 'left'},
+        {label: 'Qty.',getValue: row => +row.TotalQty,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
+                align: 'center',type: 'integer',cellFormat: '#,##0'},
+        {label: 'Amount',getValue: row => +row.Amount__,
+            total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+        {label: 'Items',getValue: row => +row.NoOfItem,
+                total: rows => rows.reduce((sum, r) => sum + (+r.NoOfItem || 0), 0),
+                align: 'center',type: 'integer',cellFormat: '#,##0'},
+        {label: 'Remarks',getValue: row => row.Remarks_,type: 'string',align: 'left'},
+        {label: 'Customer',getValue: row => row.CustName, type: 'string',align: 'left'},
+        {label: 'Encoder',getValue: row => row.Encoder_, type: 'string',align: 'left'},
+        {label: 'Log Date',getValue: row => row.Log_Date,type: 'datetime',align: 'left'},
+
+    ];
+    
+    const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+    
+    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Sales Record List', 2);
+})

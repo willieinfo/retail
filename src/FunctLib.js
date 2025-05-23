@@ -1151,3 +1151,35 @@ export function makeDraggable(container, handle, storageKey = null) {
         }
     }
 }
+
+
+// Function to disable an <li> based on its data-ref attribute
+export function disableLiByRef(refValue) {
+    // Find all <li> elements
+    const liElements = document.querySelectorAll('li');
+
+    // Loop through each <li> and check its data-ref attribute
+    liElements.forEach(li => {
+        if (li.getAttribute('data-ref') === refValue) {
+            // Add the 'disabled' class to the matching <li> element
+            li.classList.add('disabled');
+        }
+    });
+}
+
+// Example: Disable the <li> with data-ref="101"
+// disableLiByRef('101');
+
+
+
+export function disableMultipleLis(refValues) {
+    const liElements = document.querySelectorAll('li');
+    liElements.forEach(li => {
+        if (refValues.includes(li.getAttribute('data-ref'))) {
+            li.classList.add('disabled');
+        }
+    });
+}
+
+// Example: Disable <li> elements with data-ref "101" and "102"
+// disableMultipleLis(['101', '102']);

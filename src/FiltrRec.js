@@ -1,5 +1,5 @@
 import { populateBrandNum, populateItemDept, populateItemType, populateStoreGrp,
-    populateCategNum, populateLocation, checkEmptyValue } from "./FunctLib.js";
+    populateCategNum, populateLocation, checkEmptyValue, makeDraggable } from "./FunctLib.js";
 
 export function FiltrRec(cModules_) {
     return new Promise(async (resolve) => {
@@ -89,7 +89,7 @@ export function FiltrRec(cModules_) {
                 </div>
                 
                 <div class="btnDiv">
-                    <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-filter"></i>  Filter</button>
+                    <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-list"></i>  List</button>
                     <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
                 </div>
             </div>
@@ -206,6 +206,7 @@ export function FiltrRec(cModules_) {
 
         // Show the form by changing its display style
         filterForm.style.display = 'flex';
+        makeDraggable(filterForm,titleBar)
 
         let filterData = JSON.parse(localStorage.getItem("filterData"));
         if (!filterData || filterData.length === 0) {
@@ -327,6 +328,7 @@ export function displayErrorMsg(error,otherMsg = '') {
 
     // Display the error message
     errorMessageDiv.style.display = 'block';
+    makeDraggable(errorMessageDiv,titleBar)
 
     // Button actions
     retryBtn.onclick = function () {

@@ -1,4 +1,4 @@
-import { formatDate } from "./FunctLib.js";
+import { formatDate, disableMultipleLis } from "./FunctLib.js";
 import { setUserColor } from "../src/Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
@@ -19,9 +19,12 @@ const menuItems= `
     <ul class="dropdown submenu">
         <li id="SalesInvoice" class="data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
-        <li id="salesRankingByLocation">Sales Ranking by Location</li>
-        <li id="salesRankingByBrand">Sales Ranking by Brand</li>
+        <li data-ref="101" id="salesRankingByLocation">Sales Ranking by Location</li>
+        <li data-ref="102" id="salesRankingByBrand">Sales Ranking by Brand</li>
+        <li data-ref="103" id="salesRankingByCategory">Sales Ranking by Category</li>
         <li>Daily Sales Summary</li>
+        <hr class="menuLine">
+        <li>Sales By SKU</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -29,9 +32,9 @@ const menuItems= `
         <li class="PurchaseOrder data-entry">Purchase Order</li>
         <li id="StockReceiving" class="data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
-        <li>By SKU</li>
-        <li>By Category</li>
-        <li>By Supplier</li>
+        <li>Stock Receiving By SKU</li>
+        <li>Stock Receiving By Category</li>
+        <li>Stock Receiving By Supplier</li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
@@ -41,6 +44,7 @@ const menuItems= `
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
         <li>Stock Transfer by Category</li>
+        <li>Stock Transfer by Brand</li>
     </ul>
 </li>
 <li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
@@ -49,6 +53,7 @@ const menuItems= `
         <hr class="menuLine">
         <li>Adjustments by SKU</li>
         <li>Adjustments by Category</li>
+        <li>Adjustments by Brand</li>
     </ul>
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
@@ -137,3 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyColorsAndShowContent();
 });
 
+const menuOpts = "101,102,104,103";
+// Step 1: Split the string into an array
+const menuArray = menuOpts.split(',');
+// disableMultipleLis(menuArray)

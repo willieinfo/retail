@@ -245,28 +245,53 @@ const StockRecLst = async (req, res) => {
   const dDateTo__ = req.query.DateTo__;
   const cReferDoc = req.query.ReferDoc;
 
-  let cSql = `SELECT 
-      STOCKREC.CtrlNum_,
-      STOCKREC.ReferDoc,
-      STOCKREC.Date____,
-      STOCKREC.DateRcvd,
-      LOCATION.LocaName,
-      STOCKREC.TotalQty,
-      STOCKREC.TotalRcv,
-      STOCKREC.Amount__,
-      STOCKREC.NoOfItem,
-      STOCKREC.Remarks_,
-      STOCKREC.Encoder_,
-      STOCKREC.WhseFrom,
-      STOCKREC.WhseTo__,
-      STOCKREC.Printed_,
-      STOCKREC.Prepared,
-      STOCKREC.Received,
-      STOCKREC.Disabled,
-      STOCKREC.Log_Date
-    FROM STOCKREC, LOCATION
-    WHERE STOCKREC.WhseFrom = LOCATION.Location
-    AND 1=1
+  // let cSql = `SELECT 
+  //     STOCKREC.CtrlNum_,
+  //     STOCKREC.ReferDoc,
+  //     STOCKREC.Date____,
+  //     STOCKREC.DateRcvd,
+  //     LOCATION.LocaName,
+  //     STOCKREC.TotalQty,
+  //     STOCKREC.TotalRcv,
+  //     STOCKREC.Amount__,
+  //     STOCKREC.NoOfItem,
+  //     STOCKREC.Remarks_,
+  //     STOCKREC.Encoder_,
+  //     STOCKREC.WhseFrom,
+  //     STOCKREC.WhseTo__,
+  //     STOCKREC.Printed_,
+  //     STOCKREC.Prepared,
+  //     STOCKREC.Received,
+  //     STOCKREC.Disabled,
+  //     STOCKREC.Log_Date
+  //   FROM STOCKREC, LOCATION
+  //   WHERE STOCKREC.WhseFrom = LOCATION.Location
+  //   AND 1=1
+  // `
+  let cSql=`SELECT
+        STOCKREC.CtrlNum_,
+        STOCKREC.ReferDoc,
+        STOCKREC.Date____,
+        STOCKREC.DateRcvd,
+        LOC1.LocaName AS LocaFrom,
+        LOC2.LocaName AS LocaTo__,
+        STOCKREC.TotalQty,
+        STOCKREC.TotalRcv,
+        STOCKREC.Amount__,
+        STOCKREC.NoOfItem,
+        STOCKREC.Remarks_,
+        STOCKREC.Encoder_,
+        STOCKREC.WhseFrom,
+        STOCKREC.WhseTo__,
+        STOCKREC.Printed_,
+        STOCKREC.Prepared,
+        STOCKREC.Received,
+        STOCKREC.Disabled,
+        STOCKREC.Log_Date
+    FROM STOCKREC
+    FULL JOIN LOCATION LOC1 ON STOCKREC.WhseFrom = LOC1.Location
+    FULL JOIN LOCATION LOC2 ON STOCKREC.WhseTo__ = LOC2.Location
+    WHERE 1=1
   `
 
   // Parameters object

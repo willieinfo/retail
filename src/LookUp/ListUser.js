@@ -540,60 +540,19 @@ document.getElementById('printUserXLS').addEventListener('click', () => {
         { text: 'App Users List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
         { text: '' } // Spacer row
     ];
-    
     const colWidths = [
-        { width: 8 },  // User Code
-        { width: 30 }, // User Name
-        { width: 10 }, // Nick Name
-        { width: 30 }, // Email
-        { width: 20 }, // Position
-        { width: 25 }, // Mobile No
-        { width: 30 }, // Remarks
+        { width: 8 },{ width: 30 },{ width: 10 },{ width: 30 },
+        { width: 20 },{ width: 25 },{ width: 30 }, // Remarks
     ];
 
     const columnConfig = [
-        {
-            label: 'Code',
-            getValue: row => row.UserCode,
-            type: 'string',
-            align: 'left'
-        },
-        {
-            label: 'User Name',
-            getValue: row => row.UserName,
-            type: 'string',
-            align: 'left',
-        },
-        {
-            label: 'Nick Name',
-            getValue: row => row.NickName,
-            type: 'string',
-            align: 'left',
-        },
-        {
-            label: 'Email Address',
-            getValue: row => row.EmailAdd,
-            type: 'string',
-            align: 'left',
-        },
-        {
-            label: 'Position',
-            getValue: row => row.Position,
-            type: 'string',
-            align: 'left',
-        },
-        {
-            label: 'Mobile No.',
-            getValue: row => row.Tel_Num_,
-            type: 'string',
-            align: 'left',
-        },
-        {
-            label: 'Remarks',
-            getValue: row => row.Remarks_,
-            type: 'string',
-            align: 'left',
-        },
+        {label: 'Code', getValue: row => row.UserCode, type: 'string', align: 'left' },
+        {label: 'User Name',getValue: row => row.UserName,type: 'string', align: 'left'},
+        {label: 'Nick Name',getValue: row => row.NickName,type: 'string',align: 'left'},
+        {label: 'Email Address',getValue: row => row.EmailAdd, type: 'string',align: 'left'},
+        {label: 'Position',getValue: row => row.Position,type: 'string',align: 'left'},
+        {label: 'Mobile No.',getValue: row => row.Tel_Num_,type: 'string',align: 'left'},
+        {label: 'Remarks',getValue: row => row.Remarks_,type: 'string',align: 'left'},
     ];
     
     const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);

@@ -9,19 +9,29 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
     // Build header row
     const headers = columnConfig.map(col => ({ value: col.label, fontWeight: 'bold', align: 'center' }));
   
+
     // Build data rows
     const rows = jsonData.map(row =>
-      columnConfig.map(col => {
-        let value = col.getValue(row, jsonData); // pass full data for % columns
-        const isPercent = col.cellFormat === 'percent'; // changed format to cellFormat
-        return {
-          value: isPercent ? `${value.toFixed(2)}%` : value,
-          align: col.align || 'left',
-          format: isPercent ? undefined : col.cellFormat // changed format to cellFormat
-        };
-      })
+        columnConfig.map(col => {
+            let value = col.getValue(row, jsonData); // pass full data for % columns
+            const isPercent = col.cellFormat === 'percent'; // changed format to cellFormat
+
+            // Check if the column type is datetime
+            if (col.type === 'datetime') {
+                // Assuming the value is a valid Date object, format it to a string (you can customize the format here)
+                value = formatDate(new Date(value).toLocaleDateString(),'MM/DD/YYYY'); // You can change this to `toLocaleDateString()` or other formats if needed
+                
+            }
+
+            return {
+            value: isPercent ? `${value.toFixed(2)}%` : value,
+            align: col.align || 'left',
+            format: isPercent ? undefined : col.cellFormat // changed format to cellFormat
+            };
+        })
     );
-  
+
+    
     const totalsRow = columnConfig.map(col => {
       if (typeof col.total === 'function') {
           const totalValue = col.total(jsonData);
@@ -80,8 +90,6 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
     const date = new Date().toISOString().slice(0, 10);
     const filename = `${cRepoTitle}_Report_${date}.xlsx`;
   
-    showNotification(`${filename} in Excel`);
-
     await writeXlsxFile(data, {
       fileName: filename,
       columns: colWidths,
@@ -94,6 +102,8 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
         Please open it in Excel to view.`,
         'Ok'
     )
+    showNotification(`${filename} in Excel`);
+
 }
 
 export function generateTitleRows(columnConfig, titleRowsContent) {
