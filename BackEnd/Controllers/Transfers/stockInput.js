@@ -23,27 +23,29 @@ const updateStockTotals = async (req, res) => {
 
     -- Return the full record
     SELECT
-      STOCKREC.CtrlNum_,
-      STOCKREC.ReferDoc,
-      STOCKREC.Date____,
-      STOCKREC.DateRcvd,
-      LOCATION.LocaName,
-      STOCKREC.TotalQty,
-      STOCKREC.TotalRcv,
-      STOCKREC.Amount__,
-      STOCKREC.NoOfItem,
-      STOCKREC.Remarks_,
-      STOCKREC.Encoder_,
-      STOCKREC.WhseFrom,
-      STOCKREC.WhseTo__,
-      STOCKREC.Printed_,
-      STOCKREC.Prepared,
-      STOCKREC.Received,
-      STOCKREC.Disabled,
-      STOCKREC.Log_Date
-    FROM STOCKREC, LOCATION
-    WHERE STOCKREC.WhseFrom = LOCATION.Location
-    AND STOCKREC.CtrlNum_=@cCtrlNum_
+        STOCKREC.CtrlNum_,
+        STOCKREC.ReferDoc,
+        STOCKREC.Date____,
+        STOCKREC.DateRcvd,
+        LOC1.LocaName AS LocaFrom,
+        LOC2.LocaName AS LocaTo__,
+        STOCKREC.TotalQty,
+        STOCKREC.TotalRcv,
+        STOCKREC.Amount__,
+        STOCKREC.NoOfItem,
+        STOCKREC.Remarks_,
+        STOCKREC.Encoder_,
+        STOCKREC.WhseFrom,
+        STOCKREC.WhseTo__,
+        STOCKREC.Printed_,
+        STOCKREC.Prepared,
+        STOCKREC.Received,
+        STOCKREC.Disabled,
+        STOCKREC.Log_Date
+    FROM STOCKREC
+    FULL JOIN LOCATION LOC1 ON STOCKREC.WhseFrom = LOC1.Location
+    FULL JOIN LOCATION LOC2 ON STOCKREC.WhseTo__ = LOC2.Location
+    WHERE STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
   const params = { cCtrlNum_, nTotalQty, nTotalRcv, nTotalAmt, nNoOfItem };
@@ -90,27 +92,29 @@ const editStockHeader = async (req, res) => {
     
     -- Return the full record
     SELECT
-      STOCKREC.CtrlNum_,
-      STOCKREC.ReferDoc,
-      STOCKREC.Date____,
-      STOCKREC.DateRcvd,
-      LOCATION.LocaName,
-      STOCKREC.TotalQty,
-      STOCKREC.TotalRcv,
-      STOCKREC.Amount__,
-      STOCKREC.NoOfItem,
-      STOCKREC.Remarks_,
-      STOCKREC.Encoder_,
-      STOCKREC.WhseFrom,
-      STOCKREC.WhseTo__,
-      STOCKREC.Printed_,
-      STOCKREC.Prepared,
-      STOCKREC.Received,
-      STOCKREC.Disabled,
-      STOCKREC.Log_Date
-    FROM STOCKREC, LOCATION
-    WHERE STOCKREC.WhseFrom = LOCATION.Location
-    AND STOCKREC.CtrlNum_=@cCtrlNum_
+        STOCKREC.CtrlNum_,
+        STOCKREC.ReferDoc,
+        STOCKREC.Date____,
+        STOCKREC.DateRcvd,
+        LOC1.LocaName AS LocaFrom,
+        LOC2.LocaName AS LocaTo__,
+        STOCKREC.TotalQty,
+        STOCKREC.TotalRcv,
+        STOCKREC.Amount__,
+        STOCKREC.NoOfItem,
+        STOCKREC.Remarks_,
+        STOCKREC.Encoder_,
+        STOCKREC.WhseFrom,
+        STOCKREC.WhseTo__,
+        STOCKREC.Printed_,
+        STOCKREC.Prepared,
+        STOCKREC.Received,
+        STOCKREC.Disabled,
+        STOCKREC.Log_Date
+    FROM STOCKREC
+    FULL JOIN LOCATION LOC1 ON STOCKREC.WhseFrom = LOC1.Location
+    FULL JOIN LOCATION LOC2 ON STOCKREC.WhseTo__ = LOC2.Location
+    WHERE STOCKREC.CtrlNum_=@cCtrlNum_
   `;
 
   const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cPrepared, cReceived, lDisabled };
@@ -191,28 +195,30 @@ const addStockHeader = async (req, res) => {
 
     -- Return the full record
     SELECT
-      STOCKREC.CtrlNum_,
-      STOCKREC.ReferDoc,
-      STOCKREC.Date____,
-      STOCKREC.DateRcvd,
-      LOCATION.LocaName,
-      STOCKREC.TotalQty,
-      STOCKREC.TotalRcv,
-      STOCKREC.Amount__,
-      STOCKREC.NoOfItem,
-      STOCKREC.Remarks_,
-      STOCKREC.Encoder_,
-      STOCKREC.WhseFrom,
-      STOCKREC.WhseTo__,
-      STOCKREC.Printed_,
-      STOCKREC.Prepared,
-      STOCKREC.Received,
-      STOCKREC.Disabled,
-      STOCKREC.Log_Date
-    FROM STOCKREC, LOCATION
-    WHERE STOCKREC.WhseFrom = LOCATION.Location
-    AND STOCKREC.AutIncId = @AutIncId
-    ORDER BY LOCATION.LocaName, STOCKREC.CtrlNum_, STOCKREC.Date____
+        STOCKREC.CtrlNum_,
+        STOCKREC.ReferDoc,
+        STOCKREC.Date____,
+        STOCKREC.DateRcvd,
+        LOC1.LocaName AS LocaFrom,
+        LOC2.LocaName AS LocaTo__,
+        STOCKREC.TotalQty,
+        STOCKREC.TotalRcv,
+        STOCKREC.Amount__,
+        STOCKREC.NoOfItem,
+        STOCKREC.Remarks_,
+        STOCKREC.Encoder_,
+        STOCKREC.WhseFrom,
+        STOCKREC.WhseTo__,
+        STOCKREC.Printed_,
+        STOCKREC.Prepared,
+        STOCKREC.Received,
+        STOCKREC.Disabled,
+        STOCKREC.Log_Date
+    FROM STOCKREC
+    FULL JOIN LOCATION LOC1 ON STOCKREC.WhseFrom = LOC1.Location
+    FULL JOIN LOCATION LOC2 ON STOCKREC.WhseTo__ = LOC2.Location
+    WHERE STOCKREC.AutIncId = @AutIncId
+    ORDER BY 5, 1, 3
   `;
 
   const params = { cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,

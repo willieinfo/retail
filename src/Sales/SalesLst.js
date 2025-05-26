@@ -1161,8 +1161,8 @@ async function updateSalesTotals(cCtrlNum_) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
-    const liSalesLstMenu = document.getElementById('SalesInvoice');
+    const liSalesLstMenu = document.querySelectorAll('.SalesInvoice');
+    // const liSalesLstMenu = document.getElementById('SalesInvoice');
     const salesLstFileDiv = document.getElementById('SalesLst');
     const saleFormFileDiv = document.getElementById('SaleForm');
     const closeSalesRec = document.getElementById('closeSalesRec');
@@ -1192,14 +1192,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add event listener to each element with the necessary arguments
-    // liSalesLstMenu.forEach(element => {
-    //     element.addEventListener('click', () => {
-    //         showReport('SalesLst')
-    //     });
-    // });
-    liSalesLstMenu.addEventListener('click', () => {
-        showReport('SalesLst')
-    })
+    liSalesLstMenu.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesLst')
+        });
+    });
+    // liSalesLstMenu.addEventListener('click', () => {
+    //     showReport('SalesLst')
+    // })
 
 });
 

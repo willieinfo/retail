@@ -1160,7 +1160,7 @@ export function disableLiByRef(refValue) {
 
     // Loop through each <li> and check its data-ref attribute
     liElements.forEach(li => {
-        if (li.getAttribute('data-ref') === refValue) {
+        if (li.getAttribute('menu-ref') === refValue) {
             // Add the 'disabled' class to the matching <li> element
             li.classList.add('disabled');
         }
@@ -1175,7 +1175,7 @@ export function disableLiByRef(refValue) {
 export function disableMultipleLis(refValues) {
     const liElements = document.querySelectorAll('li');
     liElements.forEach(li => {
-        if (refValues.includes(li.getAttribute('data-ref'))) {
+        if (refValues.includes(li.getAttribute('menu-ref'))) {
             li.classList.add('disabled');
         }
     });

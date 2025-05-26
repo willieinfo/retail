@@ -17,29 +17,29 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
-        <li id="SalesInvoice" class="data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
+        <li menu-ref="A01" class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
-        <li data-ref="101" id="salesRankingByLocation">Sales Ranking by Location</li>
-        <li data-ref="102" id="salesRankingByBrand">Sales Ranking by Brand</li>
-        <li data-ref="103" id="salesRankingByCategory">Sales Ranking by Category</li>
-        <li>Daily Sales Summary</li>
+        <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
+        <li menu-ref="A03" class="salesRankingByBrand">Sales Ranking by Brand</li>
+        <li menu-ref="A04" id="salesRankingByCategory">Sales Ranking by Category</li>
+        <li menu-ref="A05" id="dailySalesSum">Daily Sales Summary</li>
         <hr class="menuLine">
-        <li>Sales By SKU</li>
+        <li menu-ref="A06" >Sales By SKU</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
-        <li class="PurchaseOrder data-entry">Purchase Order</li>
-        <li id="StockReceiving" class="data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
+        <li menu-ref="B01" class="PurchaseOrder data-entry">Purchase Order</li>
+        <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
-        <li>Stock Receiving By SKU</li>
-        <li>Stock Receiving By Category</li>
-        <li>Stock Receiving By Supplier</li>
+        <li menu-ref="B03" >Stock Receiving By SKU</li>
+        <li menu-ref="B04" >Stock Receiving By Category</li>
+        <li menu-ref="B05" >Stock Receiving By Supplier</li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li id="StockTransfer" class="data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
+        <li class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
         <li class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li>Stock Transfer by SKU</li>
@@ -77,7 +77,7 @@ const menuItems= `
         <li class="Location data-entry"><i class="fa fa-th-list"></i> Location</li>
         <li class="data-entry">Supplier</li>
         <li class="data-entry">Customer</li>
-        <li id="AppUsers" class="data-entry"><i class="fa fa-th-list"></i> App Users</li>
+        <li class="AppUsers data-entry"><i class="fa fa-th-list"></i> App Users</li>
     </ul>
 </li>
 <li class="settings"><i class="fa fa-tools"></i> Settings
@@ -85,7 +85,7 @@ const menuItems= `
         <li class="ThemeColor">Theme Color</li>
         <li class="WallPaper">Wall Paper</li>
         <hr class="menuLine">
-        <li id="OSKey">On Screen Keyboard</li>
+        <li class="OSKey">On Screen Keyboard</li>
     </ul>
 </li>
 <li class="exit"><i class="fa-solid fa-door-open"></i> Exit
@@ -132,9 +132,11 @@ async function applyColorsAndShowContent() {
     setUserColor();
 }
 
-document.getElementById('OSKey').addEventListener('click', () =>{
-    // window.location.href = 'OSKey.html'
-    renderKeyboard()
+const liOSKey=document.querySelectorAll('.OSKey')
+liOSKey.forEach(element => {
+    element.addEventListener('click', () =>{
+        renderKeyboard()
+    })
 })
 
 // Run the function once the DOM is fully loaded
@@ -142,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     applyColorsAndShowContent();
 });
 
-const menuOpts = "101,102,104,103";
-// Step 1: Split the string into an array
+const menuOpts = "A02,A04,B03,B04,B05";
+// const menuOpts = "";
+// Split the string into an array
 const menuArray = menuOpts.split(',');
-// disableMultipleLis(menuArray)
+disableMultipleLis(menuArray)

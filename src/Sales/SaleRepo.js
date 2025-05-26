@@ -431,7 +431,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankLocationElements = document.getElementById('salesRankingByLocation'); //<li>
+    const salesRankLocationElements = document.querySelectorAll('.salesRankingByLocation'); //<li>
     const rankRepoDiv = document.getElementById('SalesRankStore');
     const closeRepo = document.getElementById('closeRepo1');
     
@@ -439,9 +439,12 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-    salesRankLocationElements.addEventListener('click', () => {
-        showReport('SalesRankStore')
+    salesRankLocationElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesRankStore')
+        });
     });
+
 });
 
 async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -682,7 +685,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankLocationElements = document.getElementById('salesRankingByBrand');
+    const salesRankBrandElements = document.querySelectorAll('.salesRankingByBrand');
     const rankRepoDiv = document.getElementById('SalesRankBrand');
     const closeRepo = document.getElementById('closeRepo2');
     
@@ -691,9 +694,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
         // Add event listener to each element with the necessary arguments
-    salesRankLocationElements.addEventListener('click', () => {
-        showReport('SalesRankBrand')
+    salesRankBrandElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesRankBrand')
+        });
     });
+
 });
 
 document.getElementById('saleRank1').addEventListener('click', () => {

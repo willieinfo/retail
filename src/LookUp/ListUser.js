@@ -109,7 +109,7 @@ async function ListUser(cUserName) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const liAppUsersMenu = document.getElementById('AppUsers');
+    const liAppUsersMenu = document.querySelectorAll('.AppUsers');
     const appusersFileDiv = document.getElementById('AppUsersFile');
     const closeList = document.getElementById('closeUser');
     const addItem = document.getElementById('addUser');
@@ -122,10 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
         appusersFileDiv.classList.remove('active');
     });
 
-    // Add event listener to each element with the necessary arguments
-    liAppUsersMenu.addEventListener('click', () => {
-        showReport('AppUsersFile')
-    });
+    liAppUsersMenu.forEach((element) => {
+        element.addEventListener('click', ()=> {
+            showReport('AppUsersFile')
+        })
+    })
 });
 
 

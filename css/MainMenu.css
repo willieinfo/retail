@@ -191,7 +191,14 @@ html {
 .disabled {
     pointer-events:none; 
     opacity:0.6;         
+    cursor:not-allowed ;
 }
+
+/* .menu li.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;  
+} */
 
 /* Responsive Design */
 @media (max-width: 1020px) {
