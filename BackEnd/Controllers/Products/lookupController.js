@@ -252,6 +252,7 @@ const listUser = async (req, res) => {
     APPUSERS.Tel_Num_,
     APPUSERS.Password,
     APPUSERS.Remarks_,
+    APPUSERS.MenuOpts,
     APPUSERS.AvailMnu,
     APPUSERS.Disabled
     FROM APPUSERS
@@ -313,6 +314,7 @@ const addAppUsers = async (req, res) => {
             APPUSERS.Tel_Num_,
             APPUSERS.Password,
             APPUSERS.Remarks_,
+            APPUSERS.MenuOpts,
             APPUSERS.AvailMnu,
             APPUSERS.Disabled
           FROM APPUSERS WHERE AutIncId = @AutIncId;

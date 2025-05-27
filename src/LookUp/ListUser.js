@@ -197,44 +197,50 @@ async function UserForm(index, editMode) {
             <br>        
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="UserName">App User Name</label>
-                    <input type="text" style="width: 100%" id="UserName" spellcheck="false" required>
+                    <label for="AppUsers_UserName">App User Name</label>
+                    <input type="text" style="width: 100%" id="AppUsers_UserName" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="EmailAdd">Email Address</label>
-                    <input type="text" id="EmailAdd" spellcheck="false" required>
+                    <label for="AppUsers_EmailAdd">Email Address</label>
+                    <input type="text" id="AppUsers_EmailAdd" spellcheck="false" required>
                 </div>
             </div>
             <div class="textDiv" style="display: flex; justify-content: space-between">
                 <div class="subTextDiv">
-                    <label for="UserCode">Code</label>
-                    <input type="text" id="UserCode" spellcheck="false" required readonly>
+                    <label for="AppUsers_UserCode">Code</label>
+                    <input type="text" id="AppUsers_UserCode" spellcheck="false" required readonly>
                 </div>
                 <div class="subTextDiv">
-                    <label for="Tel_Num_">Mobile Number</label>
-                    <input type="text" id="Tel_Num_" spellcheck="false" required>
+                    <label for="AppUsers_Tel_Num_">Mobile Number</label>
+                    <input type="text" id="AppUsers_Tel_Num_" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="Position">Position</label>
-                    <input type="text" id="Position" spellcheck="false" required>
+                    <label for="AppUsers_Position">Position</label>
+                    <input type="text" id="AppUsers_Position" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="Password">Password</label>
-                    <input type="password" id="Password" spellcheck="false" required>
+                    <label for="AppUsers_Password">Password</label>
+                    <input type="password" id="AppUsers_Password" spellcheck="false" required>
                 </div>
             </div>
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <label for="NickName">Nick Name</label>
-                    <input type="text" id="NickName" spellcheck="false" required>
+                    <label for="AppUsers_NickName">Nick Name</label>
+                    <input type="text" id="AppUsers_NickName" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
-                    <label for="Remarks_">Remarks</label>
-                    <input type="text" id="Remarks_" spellcheck="false" required>
+                    <label for="AppUsers_Remarks_">Remarks</label>
+                    <input type="text" id="AppUsers_Remarks_" spellcheck="false" required>
+                </div>
+            </div>
+                <br>
+            <div class="textDiv">
+                <div class="subTextDiv">
+                    <button type="button" id="menuItemBtn" ><i class="fa fa-menu"></i>  Menu Permissions</button>                
                 </div>
                 <div id="chkDiv">
-                    <input type="checkbox" id="Disabled" >
-                    <label for="Disabled">Disabled</label>
+                    <input type="checkbox" id="AppUsers_Disabled" >
+                    <label for="AppUsers_Disabled">Disabled</label>
                 </div>
             </div>
             <div class="btnDiv">
@@ -265,28 +271,31 @@ async function UserForm(index, editMode) {
 
     if (editMode) {
         // If editing an existing record, show its details
-        document.getElementById('UserCode').value = itemData.UserCode;
-        document.getElementById('UserName').value = itemData.UserName;
-        document.getElementById('EmailAdd').value = itemData.EmailAdd;
-        document.getElementById('Position').value = itemData.Position;
-        document.getElementById('Tel_Num_').value = itemData.Tel_Num_;
-        document.getElementById('Password').value = itemData.Password;
-        document.getElementById('NickName').value = itemData.NickName;
-        document.getElementById('Remarks_').value = itemData.Remarks_;
-        document.getElementById('Disabled').checked = itemData.Disabled ? true : false;
+        document.getElementById('AppUsers_UserCode').value = itemData.UserCode;
+        document.getElementById('AppUsers_UserName').value = itemData.UserName;
+        document.getElementById('AppUsers_EmailAdd').value = itemData.EmailAdd;
+        document.getElementById('AppUsers_Position').value = itemData.Position;
+        document.getElementById('AppUsers_Tel_Num_').value = itemData.Tel_Num_;
+        document.getElementById('AppUsers_Password').value = itemData.Password;
+        document.getElementById('AppUsers_NickName').value = itemData.NickName;
+        document.getElementById('AppUsers_Remarks_').value = itemData.Remarks_;
+        document.getElementById('AppUsers_Disabled').checked = itemData.Disabled ? true : false;
 
 
     } else {
         // If adding new, populate with default empty values
-        document.getElementById('UserName').value = '';
-        document.getElementById('EmailAdd').value = '';
-        document.getElementById('Position').value = '';
-        document.getElementById('Tel_Num_').value = '';
-        document.getElementById('Password').value = '';
-        document.getElementById('NickName').value = '';
-        document.getElementById('Remarks_').value = '';
-        document.getElementById('Disabled').checked = false;
+        document.getElementById('AppUsers_UserName').value = '';
+        document.getElementById('AppUsers_EmailAdd').value = '';
+        document.getElementById('AppUsers_Position').value = '';
+        document.getElementById('AppUsers_Tel_Num_').value = '';
+        document.getElementById('AppUsers_Password').value = '';
+        document.getElementById('AppUsers_NickName').value = '';
+        document.getElementById('AppUsers_Remarks_').value = '';
+        document.getElementById('AppUsers_Disabled').checked = false;
     }
+
+    // Event listener for users Menu Permissions
+    document.getElementById('menuItemBtn').addEventListener('click',() => MenuOpts())
 
     // Event listener for Cancel button to close the modal
     document.getElementById('cancelAppUsersBtn').addEventListener('click', () => {
@@ -297,24 +306,24 @@ async function UserForm(index, editMode) {
     // Event listener for Save button to edit or add data and close the modal
     document.getElementById('saveAppUsersBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        const cUserCode=document.getElementById('UserCode').value;
-        const cUserName=document.getElementById('UserName').value;
-        const cEmailAdd=document.getElementById('EmailAdd').value;
-        const cPosition=document.getElementById('Position').value;
-        const cTel_Num_=document.getElementById('Tel_Num_').value;
-        const cPassword=document.getElementById('Password').value;
-        const cNickName=document.getElementById('NickName').value;
-        const cRemarks_=document.getElementById('Remarks_').value;
-        const lDisabled=document.getElementById('Disabled').checked ? 1 : 0 
+        const cUserCode=document.getElementById('AppUsers_UserCode').value;
+        const cUserName=document.getElementById('AppUsers_UserName').value;
+        const cEmailAdd=document.getElementById('AppUsers_EmailAdd').value;
+        const cPosition=document.getElementById('AppUsers_Position').value;
+        const cTel_Num_=document.getElementById('AppUsers_Tel_Num_').value;
+        const cPassword=document.getElementById('AppUsers_Password').value;
+        const cNickName=document.getElementById('AppUsers_NickName').value;
+        const cRemarks_=document.getElementById('AppUsers_Remarks_').value;
+        const lDisabled=document.getElementById('AppUsers_Disabled').checked ? 1 : 0 
 
         if (!cUserName) {
             e.preventDefault();
             if (!cUserName || !cEmailAdd) {
-                document.getElementById('UserName').focus();
-                document.getElementById('UserName').classList.add('invalid');  
+                document.getElementById('AppUsers_UserName').focus();
+                document.getElementById('AppUsers_UserName').classList.add('invalid');  
             } else if (!cEmailAdd) {
-                document.getElementById('EmailAdd').focus();
-                document.getElementById('EmailAdd').classList.add('invalid');  // Add a class to highlight
+                document.getElementById('AppUsers_EmailAdd').focus();
+                document.getElementById('AppUsers_EmailAdd').classList.add('invalid');  // Add a class to highlight
             }
             return;
         }
@@ -336,7 +345,7 @@ async function UserForm(index, editMode) {
 async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled) {
     try {
 
-        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+        lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
 
         const response = await fetch('http://localhost:3000/lookup/editAppUsers', {
             method: 'PUT',  // Use PUT method
@@ -379,7 +388,7 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
 async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled) {
     try {
 
-        lDisabled = document.getElementById("Disabled").checked ? '1' : '0';
+        lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
 
         const response = await fetch('http://localhost:3000/lookup/addAppUsers', {
             method: 'POST',  // Use PUT method
@@ -560,3 +569,232 @@ document.getElementById('printUserXLS').addEventListener('click', () => {
     
     printReportExcel(globalData, columnConfig, colWidths, titleRows, 'App Users', 2);
 })
+
+
+
+function MenuOpts() {
+    
+    const menuItems = localStorage.getItem('menuItems');
+
+        // Define the HTML template literal for the menu container
+    // const menuContainer = `
+    //     <div id="menuOptDiv">
+    //         <div id="menuSelect"></div>
+    //         <div id="selectMenu">
+    //             <!-- This is where the dynamic menu will be inserted -->
+    //         </div>
+    //     </div>
+    // `;
+
+    // // Inject the menu container 
+    // document.body.innerHTML += menuContainer; // Appending to the body or to a specific container
+
+    const menuOptDiv = document.getElementById("menuOptDiv");
+    // Style the container dynamically (you can also apply styles directly in CSS)
+    menuOptDiv.style.display = 'flex';
+    menuOptDiv.style.flexDirection = 'column';
+    // menuOptDiv.style.padding = '20px';
+    menuOptDiv.style.backgroundColor = 'white';
+    menuOptDiv.style.height = '600px';
+    menuOptDiv.style.width = '400px';
+    menuOptDiv.style.overflowY = 'auto';
+    menuOptDiv.style.zIndex = '800';
+    menuOptDiv.style.border = '1px solid #ddd';
+    menuOptDiv.style.position = 'absolute';
+    menuOptDiv.style.top = '50%';
+    menuOptDiv.style.left = '50%';
+    menuOptDiv.style.transform = 'translate(-50%, -50%)';
+    menuOptDiv.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+
+    const titleBar = document.getElementById("menuSelect");
+    titleBar.style.display = 'flex';
+    titleBar.style.width = '100%';
+    titleBar.style.position = "sticky";
+    titleBar.style.top = "0px";
+    titleBar.style.justifyContent = "space-between";
+    titleBar.style.alignItems = "center";
+    titleBar.style.padding = "10px";
+    titleBar.style.zIndex = "1";
+    titleBar.style.borderBottom = "1px solid #ccc";
+    titleBar.style.backgroundColor = "var(--main-bg-color)";
+    titleBar.style.color = "white";
+    
+    // Create title text
+    const titleText = document.createElement('p');
+    titleText.textContent = "Click menu items to disable";
+    titleText.style.margin = "0";
+    titleText.style.flex = "1";  
+    titleText.style.whiteSpace = "nowrap";  
+    titleText.style.overflow = "hidden";
+    titleText.style.textOverflow = "ellipsis";
+
+    // Create close button
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'closeForm';
+    closeBtn.innerHTML = '<i class="fa fa-close"></i>';
+    closeBtn.style.cursor = "pointer";
+    closeBtn.style.flex = "0";  
+    closeBtn.style.marginLeft = "10px";
+    closeBtn.style.display = 'flex';
+    closeBtn.style.alignItems = 'center';
+    closeBtn.style.justifyContent = 'center';
+    closeBtn.style.height = '100%'; 
+    closeBtn.classList.add('wiggle-on-hover');
+    closeBtn.addEventListener('mouseenter', () => {
+        closeBtn.style.backgroundColor = 'red';
+    });
+    closeBtn.addEventListener('mouseleave', () => {
+        closeBtn.style.backgroundColor = ''; // or restore original color
+    });
+    closeBtn.addEventListener('click', () => {
+        menuOptDiv.style.display = 'none';
+    });
+        
+    // Append both to titleBar
+    titleBar.appendChild(titleText);
+    titleBar.appendChild(closeBtn);
+
+    // Now get the menu container div where we will render the menu items
+    const menuSelectDiv = document.getElementById("selectMenu");
+
+    // // Function to parse menu items and create an array structure
+    function parseMenuItems(menuHTML) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(menuHTML, 'text/html');
+
+        const menuList = Array.from(doc.querySelectorAll('li')).map(parent => {
+            const submenu = parent.querySelector('.submenu');
+            
+            if (submenu) {
+                const categoryName = parent.textContent.trim().split('\n')[0].trim();
+
+                const subMenuItems = Array.from(submenu.querySelectorAll('li')).map(item => {
+                    return {
+                        name: item.textContent.trim(),
+                        ref: item.getAttribute('menu-ref'),
+                        id: item.id || null,
+                        selected: false // Initially, not selected
+                    };
+                });
+
+                return { category: categoryName, items: subMenuItems };
+            }
+        }).filter(Boolean); // Filter out any null or undefined entries (in case no submenu exists)
+
+        return menuList;
+    }
+
+
+    // Function to render the menu with checkboxes
+    let menu = [];
+    function renderMenu() {
+        menuSelectDiv.innerHTML = ''; // Clear the container before rendering
+
+        menu.forEach(category => {
+            const categoryElement = document.createElement('div');
+            const categoryHeader = document.createElement('h5');
+            categoryHeader.textContent = category.category;
+            categoryElement.appendChild(categoryHeader);
+
+            const submenu = document.createElement('ul');
+            category.items.forEach(item => {
+                const menuItem = document.createElement('li');
+
+                // Create div for checkbox and label
+                const checkboxDiv = document.createElement('div');
+                const labelDiv = document.createElement('div');
+                
+                // Create checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = item.ref;  // Set a unique id for each checkbox
+                checkbox.checked = item.selected; // Check if the item is selected
+                checkbox.addEventListener('change', () => toggleMenuItem(item.ref));
+                
+                // Create label
+                const label = document.createElement('label');
+                label.setAttribute('for', item.ref);  // Associate the label with the checkbox by setting 'for' to the checkbox's id
+                label.textContent = item.name;
+                
+                // Append checkbox and label to their respective divs
+                checkboxDiv.appendChild(checkbox);
+                labelDiv.appendChild(label);
+
+                // Style the divs to have fixed widths and align them
+                checkboxDiv.style.width = '30px'; // Set a fixed width for the checkbox
+                checkboxDiv.style.textAlign = 'center'; // Align the checkbox in the center
+                
+                labelDiv.style.flex = '1'; // Take the remaining space
+                labelDiv.style.textAlign = 'left'; // Align the label text to the left
+
+                // Append the divs to the menuItem
+                menuItem.appendChild(checkboxDiv);
+                menuItem.appendChild(labelDiv);
+
+                // Use flexbox to align the divs horizontally
+                menuItem.style.display = 'flex';
+                menuItem.style.alignItems = 'center';  
+                menuItem.style.marginBottom = '5px';   
+                menuItem.style.paddingRight = '10px';  
+                menuItem.style.paddingLeft = '10px';  
+
+
+                submenu.appendChild(menuItem);
+            });
+            
+            categoryElement.appendChild(submenu);
+            menuSelectDiv.appendChild(categoryElement);
+        });
+    }
+
+    // Function to toggle a menu item (update its selection state)
+    function toggleMenuItem(ref) {
+        // Find the item by its reference and toggle its selection state
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                if (item.ref === ref) {
+                    item.selected = !item.selected; // Toggle selection
+                }
+            });
+        });
+
+        updateMenuOpts(); // Update the menuOpts string after toggle
+    }
+
+    // Function to update the menuOpts string
+    function updateMenuOpts() {
+        // Generate a comma-separated string of selected menu refs
+        const selectedItems = [];
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                if (item.selected) {
+                    selectedItems.push(item.ref); // Push the reference of selected items
+                }
+            });
+        });
+
+        const menuOpts = selectedItems.join(','); // Create the menuOpts string
+        console.log('menuOpts:', menuOpts); // You can send this to the backend or use it elsewhere
+    }
+
+    // Function to initialize the menu based on selected options
+    function initializeMenu(menuOpts) {
+        const selectedRefs = menuOpts.split(',');
+
+        menu.forEach(category => {
+            category.items.forEach(item => {
+                if (selectedRefs.includes(item.ref)) {
+                    item.selected = true; // Mark as selected (crossed out)
+                }
+            });
+        });
+
+        renderMenu(); // Re-render the menu after initialization
+    }
+
+    // Simulate fetching menuOpts from backend and initializing the menu
+    const menuOpts = "A02,A04,B03,B04,B05"; // Simulated value from backend
+    menu = parseMenuItems(menuItems); // Parse the menu structure
+    initializeMenu(menuOpts);  // Initialize the menu with the selected options
+
+}

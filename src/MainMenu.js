@@ -39,31 +39,31 @@ const menuItems= `
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
-        <li class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
+        <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
+        <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
-        <li>Stock Transfer by SKU</li>
-        <li>Stock Transfer by Category</li>
-        <li>Stock Transfer by Brand</li>
+        <li menu-ref="C03" >Stock Transfer by SKU</li>
+        <li menu-ref="C04" >Stock Transfer by Category</li>
+        <li menu-ref="C05" >Stock Transfer by Brand</li>
     </ul>
 </li>
 <li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
     <ul class="dropdown submenu">
-        <li class="StockAdjustment data-entry">Stock Adjustment</li>
+        <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment</li>
         <hr class="menuLine">
-        <li>Adjustments by SKU</li>
-        <li>Adjustments by Category</li>
-        <li>Adjustments by Brand</li>
+        <li menu-ref="D02" >Adjustments by SKU</li>
+        <li menu-ref="D03" >Adjustments by Category</li>
+        <li menu-ref="D04" >Adjustments by Brand</li>
     </ul>
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
-        <li class="PhysicalCount data-entry">Physical Count</li>
+        <li menu-ref="E01" class="PhysicalCount data-entry">Physical Count</li>
         <hr class="menuLine">
-        <li id='stockEndingByLocation'>Stock Ending By Location</li>
-        <li id='stockEndingByBrand'>Stock Ending By Brand</li>
-        <li>Stock Movement</li>
-        <li>Inventory Variance</li>
+        <li menu-ref="E02"  id='stockEndingByLocation'>Stock Ending By Location</li>
+        <li menu-ref="E03"  id='stockEndingByBrand'>Stock Ending By Brand</li>
+        <li menu-ref="E04" >Stock Movement</li>
+        <li menu-ref="E05" >Inventory Variance</li>
     </ul>
 </li>
 <li class="lookup"><i class="fa fa-table"></i> Lookup Tables
@@ -97,6 +97,11 @@ const menuItems= `
 
 `;
 
+// Check if the stored value exists and if it needs updating
+if (!localStorage.getItem('menuItems') || localStorage.getItem('menuItems') !== menuItems) {
+    // Only update if the value has changed
+    localStorage.setItem('menuItems', menuItems);
+}
 document.getElementById("menuNavBar").innerHTML = menuItems;
 document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar"><span id="close-sidebar">✖</span></div>`+menuItems
 
@@ -144,8 +149,165 @@ document.addEventListener('DOMContentLoaded', () => {
     applyColorsAndShowContent();
 });
 
-const menuOpts = "A02,A04,B03,B04,B05";
-// const menuOpts = "";
-// Split the string into an array
-const menuArray = menuOpts.split(',');
-disableMultipleLis(menuArray)
+// // Define the HTML template literal for the menu container
+// const menuContainer = `
+//     <div id="selectMenu">
+//         <!-- This is where the dynamic menu will be inserted -->
+//     </div>
+// `;
+
+// // Inject the menu container into the body or another element
+// document.body.innerHTML += menuContainer; // Appending to the body or to a specific container
+
+// // Now get the menu container div where we will render the menu items
+// const menuSelectDiv = document.getElementById("selectMenu");
+// // Style the container dynamically (you can also apply styles directly in CSS)
+// menuSelectDiv.style.display = 'flex';
+// menuSelectDiv.style.flexDirection = 'column';
+// menuSelectDiv.style.padding = '20px';
+// menuSelectDiv.style.backgroundColor = 'white';
+// menuSelectDiv.style.height = '400px';
+// menuSelectDiv.style.width = '600px';
+// menuSelectDiv.style.overflowY = 'auto';
+// menuSelectDiv.style.zIndex = '800';
+// menuSelectDiv.style.border = '1px solid #ddd';
+
+// // // Function to parse menu items and create an array structure
+// function parseMenuItems(menuHTML) {
+//     const parser = new DOMParser();
+//     const doc = parser.parseFromString(menuHTML, 'text/html');
+
+//     const menuList = Array.from(doc.querySelectorAll('li')).map(parent => {
+//         const submenu = parent.querySelector('.submenu');
+        
+//         if (submenu) {
+//             const categoryName = parent.textContent.trim().split('\n')[0].trim();
+
+//             const subMenuItems = Array.from(submenu.querySelectorAll('li')).map(item => {
+//                 return {
+//                     name: item.textContent.trim(),
+//                     ref: item.getAttribute('menu-ref'),
+//                     id: item.id || null,
+//                     selected: false // Initially, not selected
+//                 };
+//             });
+
+//             return { category: categoryName, items: subMenuItems };
+//         }
+//     }).filter(Boolean); // Filter out any null or undefined entries (in case no submenu exists)
+
+//     return menuList;
+// }
+
+
+// // Function to render the menu with checkboxes
+// let menu = [];
+// function renderMenu() {
+//     // const menuSelectDiv = document.getElementById('menu-container');
+//     menuSelectDiv.innerHTML = ''; // Clear the container before rendering
+
+//     menu.forEach(category => {
+//         const categoryElement = document.createElement('div');
+//         const categoryHeader = document.createElement('h4');
+//         categoryHeader.textContent = category.category;
+//         categoryElement.appendChild(categoryHeader);
+
+//         const submenu = document.createElement('ul');
+//         category.items.forEach(item => {
+//             const menuItem = document.createElement('li');
+
+//             // Create div for checkbox and label
+//             const checkboxDiv = document.createElement('div');
+//             const labelDiv = document.createElement('div');
+            
+//             // Create checkbox
+//             const checkbox = document.createElement('input');
+//             checkbox.type = 'checkbox';
+//             checkbox.id = item.ref;  // Set a unique id for each checkbox
+//             checkbox.checked = item.selected; // Check if the item is selected
+//             checkbox.addEventListener('change', () => toggleMenuItem(item.ref));
+            
+//             // Create label
+//             const label = document.createElement('label');
+//             label.setAttribute('for', item.ref);  // Associate the label with the checkbox by setting 'for' to the checkbox's id
+//             label.textContent = item.name;
+            
+//             // Append checkbox and label to their respective divs
+//             checkboxDiv.appendChild(checkbox);
+//             labelDiv.appendChild(label);
+
+//             // Style the divs to have fixed widths and align them
+//             checkboxDiv.style.width = '30px'; // Set a fixed width for the checkbox
+//             checkboxDiv.style.textAlign = 'center'; // Align the checkbox in the center
+            
+//             labelDiv.style.flex = '1'; // Take the remaining space
+//             labelDiv.style.textAlign = 'left'; // Align the label text to the left
+
+//             // Append the divs to the menuItem
+//             menuItem.appendChild(checkboxDiv);
+//             menuItem.appendChild(labelDiv);
+
+//             // Use flexbox to align the divs horizontally
+//             menuItem.style.display = 'flex';
+//             menuItem.style.alignItems = 'center';  // Vertically center the items
+//             menuItem.style.marginBottom = '5px';   // Optional: adds spacing between items
+//             menuItem.style.paddingRight = '10px';  // Optional: adds space between the checkbox and the edge
+
+
+//             submenu.appendChild(menuItem);
+//         });
+        
+//         categoryElement.appendChild(submenu);
+//         menuSelectDiv.appendChild(categoryElement);
+//     });
+// }
+
+// // Function to toggle a menu item (update its selection state)
+// function toggleMenuItem(ref) {
+//     // Find the item by its reference and toggle its selection state
+//     menu.forEach(category => {
+//         category.items.forEach(item => {
+//             if (item.ref === ref) {
+//                 item.selected = !item.selected; // Toggle selection
+//             }
+//         });
+//     });
+
+//     updateMenuOpts(); // Update the menuOpts string after toggle
+// }
+
+// // Function to update the menuOpts string
+// function updateMenuOpts() {
+//     // Generate a comma-separated string of selected menu refs
+//     const selectedItems = [];
+//     menu.forEach(category => {
+//         category.items.forEach(item => {
+//             if (item.selected) {
+//                 selectedItems.push(item.ref); // Push the reference of selected items
+//             }
+//         });
+//     });
+
+//     const menuOpts = selectedItems.join(','); // Create the menuOpts string
+//     console.log('menuOpts:', menuOpts); // You can send this to the backend or use it elsewhere
+// }
+
+// // Function to initialize the menu based on selected options
+// function initializeMenu(menuOpts) {
+//     const selectedRefs = menuOpts.split(',');
+
+//     menu.forEach(category => {
+//         category.items.forEach(item => {
+//             if (selectedRefs.includes(item.ref)) {
+//                 item.selected = true; // Mark as selected (crossed out)
+//             }
+//         });
+//     });
+
+//     renderMenu(); // Re-render the menu after initialization
+// }
+
+// // Simulate fetching menuOpts from backend and initializing the menu
+// const menuOpts = "A02,A04,B03,B04,B05"; // Simulated value from backend
+// menu = parseMenuItems(menuItems); // Parse the menu structure
+// initializeMenu(menuOpts);  // Initialize the menu with the selected options

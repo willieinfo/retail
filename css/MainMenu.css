@@ -193,7 +193,31 @@ html {
     opacity:0.6;         
     cursor:not-allowed ;
 }
+#menu-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    padding: 0;
+    background-color: white;
+    height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    border: 1px solid #ddd;
+}
+input[type="checkbox"] {
+            margin-right: 4px;
+}
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
 
+li {
+    list-style-type: none; /* Ensure no bullets on individual list items */
+    margin: 5px 0;
+    /* display: flex; Flexbox to align checkbox and text horizontally */
+    /* align-items: center; Align items vertically centered in the flex row */
+}
 /* .menu li.disabled {
     pointer-events: none;
     opacity: 0.6;
