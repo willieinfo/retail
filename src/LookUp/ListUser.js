@@ -1,4 +1,4 @@
-import { showReport, showNotification, highlightRow } from "../FunctLib.js";
+import { showReport, showNotification, highlightRow, makeDraggable } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 
@@ -44,6 +44,7 @@ document.body.appendChild(tempDiv.firstElementChild);
 
 
 let globalData = []; // Define a global array
+
 async function ListUser(cUserName) {
     const listCounter=document.getElementById('userListCounter')
     
@@ -184,6 +185,7 @@ async function UserForm(index, editMode) {
     }
 
     const itemData = globalData[index];
+    let cMenuOpts = ''
 
     // Create the form element
     const itemForm = document.createElement('form');
@@ -216,7 +218,7 @@ async function UserForm(index, editMode) {
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Position">Position</label>
-                    <input type="text" id="AppUsers_Position" spellcheck="false" required>
+                    <input type="text" id="AppUsers_Position" spellcheck="false" >
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Password">Password</label>
@@ -230,13 +232,20 @@ async function UserForm(index, editMode) {
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Remarks_">Remarks</label>
-                    <input type="text" id="AppUsers_Remarks_" spellcheck="false" required>
+                    <input type="text" id="AppUsers_Remarks_" spellcheck="false" >
                 </div>
             </div>
-                <br>
             <div class="textDiv">
                 <div class="subTextDiv">
-                    <button type="button" id="menuItemBtn" ><i class="fa fa-menu"></i>  Menu Permissions</button>                
+                    <label for="AppUsers_Address_">Address</label>
+                    <input type="text" id="AppUsers_Address_" spellcheck="false" >
+                </div>
+            </div>
+
+            <br>
+            <div class="textDiv">
+                <div class="subTextDiv">
+                    <button type="button" id="menuItemBtn" ><i class="fa fa-cancel"></i>  Menu Permissions</button>                
                 </div>
                 <div id="chkDiv">
                     <input type="checkbox" id="AppUsers_Disabled" >
@@ -244,7 +253,7 @@ async function UserForm(index, editMode) {
                 </div>
             </div>
             <div class="btnDiv">
-                <button type="submit" id="saveAppUsersBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+                <button type="button" id="saveAppUsersBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
                 <button type="button" id="cancelAppUsersBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
@@ -268,6 +277,7 @@ async function UserForm(index, editMode) {
 
     // Show the form by changing its display style
     itemForm.style.display='flex'
+    cMenuOpts = editMode ?itemData.MenuOpts : ''
 
     if (editMode) {
         // If editing an existing record, show its details
@@ -279,11 +289,12 @@ async function UserForm(index, editMode) {
         document.getElementById('AppUsers_Password').value = itemData.Password;
         document.getElementById('AppUsers_NickName').value = itemData.NickName;
         document.getElementById('AppUsers_Remarks_').value = itemData.Remarks_;
+        document.getElementById('AppUsers_Address_').value = itemData.Address_;
         document.getElementById('AppUsers_Disabled').checked = itemData.Disabled ? true : false;
-
 
     } else {
         // If adding new, populate with default empty values
+        document.getElementById('AppUsers_UserCode').value = 'New Record';
         document.getElementById('AppUsers_UserName').value = '';
         document.getElementById('AppUsers_EmailAdd').value = '';
         document.getElementById('AppUsers_Position').value = '';
@@ -291,58 +302,81 @@ async function UserForm(index, editMode) {
         document.getElementById('AppUsers_Password').value = '';
         document.getElementById('AppUsers_NickName').value = '';
         document.getElementById('AppUsers_Remarks_').value = '';
+        document.getElementById('AppUsers_Address_').value = '';
         document.getElementById('AppUsers_Disabled').checked = false;
+        document.getElementById('menuItemBtn').disabled = true
     }
 
     // Event listener for users Menu Permissions
-    document.getElementById('menuItemBtn').addEventListener('click',() => MenuOpts())
+    document.getElementById('menuItemBtn').addEventListener('click',() => MenuOpts(index))
+    document.getElementById('cancelAppUsersBtn').addEventListener('click',() => {
+        document.getElementById('menuOptDiv').style.display = 'none';
+    })
 
     // Event listener for Cancel button to close the modal
     document.getElementById('cancelAppUsersBtn').addEventListener('click', () => {
         document.getElementById('user-form').remove(); // Remove the form from the DOM
         document.getElementById('modal-overlay').remove();  // Remove overlay
+        document.getElementById('menuOptDiv').style.display = 'none';
+
     });
 
-    // Event listener for Save button to edit or add data and close the modal
+    
     document.getElementById('saveAppUsersBtn').addEventListener('click', (e) => {
         e.preventDefault();
-        const cUserCode=document.getElementById('AppUsers_UserCode').value;
-        const cUserName=document.getElementById('AppUsers_UserName').value;
-        const cEmailAdd=document.getElementById('AppUsers_EmailAdd').value;
-        const cPosition=document.getElementById('AppUsers_Position').value;
-        const cTel_Num_=document.getElementById('AppUsers_Tel_Num_').value;
-        const cPassword=document.getElementById('AppUsers_Password').value;
-        const cNickName=document.getElementById('AppUsers_NickName').value;
-        const cRemarks_=document.getElementById('AppUsers_Remarks_').value;
-        const lDisabled=document.getElementById('AppUsers_Disabled').checked ? 1 : 0 
+        
+        const cUserCode = document.getElementById('AppUsers_UserCode').value;
+        const cUserName = document.getElementById('AppUsers_UserName').value.trim();
+        const cEmailAdd = document.getElementById('AppUsers_EmailAdd').value.trim();
+        const cPosition = document.getElementById('AppUsers_Position').value.trim();
+        const cTel_Num_ = document.getElementById('AppUsers_Tel_Num_').value.trim();
+        const cPassword = document.getElementById('AppUsers_Password').value.trim();
+        const cNickName = document.getElementById('AppUsers_NickName').value.trim();
+        const cRemarks_ = document.getElementById('AppUsers_Remarks_').value.trim();
+        const cAddress_ = document.getElementById('AppUsers_Address_').value.trim();
+        const lDisabled = document.getElementById('AppUsers_Disabled').checked ? 1 : 0;
+        const cMenuOpts = !globalData[index] ? '' : globalData[index].MenuOpts.trim()
 
-        if (!cUserName) {
-            e.preventDefault();
-            if (!cUserName || !cEmailAdd) {
+        // Reset any previous invalid styling
+        document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+
+        // Validation check for empty fields
+        if (!cUserName || !cEmailAdd || !cPassword || !cNickName) {
+            if (!cUserName) {
                 document.getElementById('AppUsers_UserName').focus();
-                document.getElementById('AppUsers_UserName').classList.add('invalid');  
+                document.getElementById('AppUsers_UserName').classList.add('invalid');
             } else if (!cEmailAdd) {
                 document.getElementById('AppUsers_EmailAdd').focus();
-                document.getElementById('AppUsers_EmailAdd').classList.add('invalid');  // Add a class to highlight
+                document.getElementById('AppUsers_EmailAdd').classList.add('invalid');
+            } else if (!cPassword) {
+                document.getElementById('AppUsers_Password').focus();
+                document.getElementById('AppUsers_Password').classList.add('invalid');
+            } else if (!cNickName) {
+                document.getElementById('AppUsers_NickName').focus();
+                document.getElementById('AppUsers_NickName').classList.add('invalid');
             }
-            return;
+            return; // Exit if validation fails
         }
 
+        // Proceed with add or edit logic based on editMode
         if (editMode) {
             // Edit existing record
-            editAppUsers(index,cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled)
-        
+            // console.log('editMode',cMenuOpts)
+            editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled);
         } else {
             // Add new record
-            addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled)
-                            
+            addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled);
         }
+
+        // Remove form and modal overlay
         document.getElementById('user-form').remove(); 
-        document.getElementById('modal-overlay').remove();  // Remove overlay
+        document.getElementById('modal-overlay').remove(); 
+        document.getElementById('menuOptDiv').style.display = 'none';
     });
+
 }
 
-async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled) {
+async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
     try {
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
@@ -360,7 +394,9 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
                 cTel_Num_: cTel_Num_,
                 cPassword: cPassword,
                 cNickName: cNickName,
+                cMenuOpts: cMenuOpts,
                 cRemarks_: cRemarks_,
+                cAddress_: cAddress_,
                 lDisabled: lDisabled
                 
             })
@@ -385,7 +421,7 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
     }
 }
 
-async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled) {
+async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
     try {
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
@@ -403,6 +439,8 @@ async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword
                 cPassword: cPassword,
                 cNickName: cNickName,
                 cRemarks_: cRemarks_,
+                cMenuOpts: cMenuOpts,
+                cAddress_: cAddress_,
                 lDisabled: lDisabled
             })
         });
@@ -572,29 +610,16 @@ document.getElementById('printUserXLS').addEventListener('click', () => {
 
 
 
-function MenuOpts() {
-    
-    const menuItems = localStorage.getItem('menuItems');
-
-        // Define the HTML template literal for the menu container
-    // const menuContainer = `
-    //     <div id="menuOptDiv">
-    //         <div id="menuSelect"></div>
-    //         <div id="selectMenu">
-    //             <!-- This is where the dynamic menu will be inserted -->
-    //         </div>
-    //     </div>
-    // `;
-
-    // // Inject the menu container 
-    // document.body.innerHTML += menuContainer; // Appending to the body or to a specific container
+function MenuOpts(index) {
+    let nIndex = index
+    const cNickName =  !globalData[index] ? 'New User' :globalData[index].NickName.trim()
+    const menuItems = localStorage.getItem('menuItems'); // HTML menu Nav Bar template literal
 
     const menuOptDiv = document.getElementById("menuOptDiv");
-    // Style the container dynamically (you can also apply styles directly in CSS)
     menuOptDiv.style.display = 'flex';
     menuOptDiv.style.flexDirection = 'column';
     // menuOptDiv.style.padding = '20px';
-    menuOptDiv.style.backgroundColor = 'white';
+    // menuOptDiv.style.backgroundColor = 'var(--main-bg-color)';
     menuOptDiv.style.height = '600px';
     menuOptDiv.style.width = '400px';
     menuOptDiv.style.overflowY = 'auto';
@@ -605,8 +630,11 @@ function MenuOpts() {
     menuOptDiv.style.left = '50%';
     menuOptDiv.style.transform = 'translate(-50%, -50%)';
     menuOptDiv.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+    menuOptDiv.style.backgroundImage = 'linear-gradient(to right, #ffff, var(--main-bg-color))'; 
+
 
     const titleBar = document.getElementById("menuSelect");
+    titleBar.innerHTML = ''
     titleBar.style.display = 'flex';
     titleBar.style.width = '100%';
     titleBar.style.position = "sticky";
@@ -621,7 +649,7 @@ function MenuOpts() {
     
     // Create title text
     const titleText = document.createElement('p');
-    titleText.textContent = "Click menu items to disable";
+    titleText.textContent = `Click menu items to disable for ${cNickName}`;
     titleText.style.margin = "0";
     titleText.style.flex = "1";  
     titleText.style.whiteSpace = "nowrap";  
@@ -654,10 +682,13 @@ function MenuOpts() {
     titleBar.appendChild(titleText);
     titleBar.appendChild(closeBtn);
 
+    // Make window draggable
+    makeDraggable(menuOptDiv,titleBar)
+
     // Now get the menu container div where we will render the menu items
     const menuSelectDiv = document.getElementById("selectMenu");
 
-    // // Function to parse menu items and create an array structure
+    // Function to parse menu items and create an array structure
     function parseMenuItems(menuHTML) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(menuHTML, 'text/html');
@@ -667,7 +698,6 @@ function MenuOpts() {
             
             if (submenu) {
                 const categoryName = parent.textContent.trim().split('\n')[0].trim();
-
                 const subMenuItems = Array.from(submenu.querySelectorAll('li')).map(item => {
                     return {
                         name: item.textContent.trim(),
@@ -694,6 +724,7 @@ function MenuOpts() {
             const categoryElement = document.createElement('div');
             const categoryHeader = document.createElement('h5');
             categoryHeader.textContent = category.category;
+            categoryHeader.style.paddingLeft = '10px';  
             categoryElement.appendChild(categoryHeader);
 
             const submenu = document.createElement('ul');
@@ -737,6 +768,9 @@ function MenuOpts() {
                 menuItem.style.marginBottom = '5px';   
                 menuItem.style.paddingRight = '10px';  
                 menuItem.style.paddingLeft = '10px';  
+                if (item.selected) {
+                    labelDiv.style.opacity = '0.6';         
+                }
 
 
                 submenu.appendChild(menuItem);
@@ -759,6 +793,8 @@ function MenuOpts() {
         });
 
         updateMenuOpts(); // Update the menuOpts string after toggle
+        // Update the UI (render the menu again) to reflect the new state
+        renderMenu();
     }
 
     // Function to update the menuOpts string
@@ -774,7 +810,7 @@ function MenuOpts() {
         });
 
         const menuOpts = selectedItems.join(','); // Create the menuOpts string
-        console.log('menuOpts:', menuOpts); // You can send this to the backend or use it elsewhere
+        globalData[nIndex].MenuOpts = menuOpts  // You can send this to the backend or use it elsewhere
     }
 
     // Function to initialize the menu based on selected options
@@ -793,8 +829,14 @@ function MenuOpts() {
     }
 
     // Simulate fetching menuOpts from backend and initializing the menu
-    const menuOpts = "A02,A04,B03,B04,B05"; // Simulated value from backend
+    // const menuOpts = "A02,A04,B03,B04,B05"; 
+    const menuOpts = !globalData[index] ? '': globalData[index].MenuOpts.trim(); 
+
     menu = parseMenuItems(menuItems); // Parse the menu structure
     initializeMenu(menuOpts);  // Initialize the menu with the selected options
+
+    document.getElementById('cancelMenuOptsBtn').addEventListener('click', () => {
+        document.getElementById('menuOptDiv').style.display = 'none';
+    })
 
 }

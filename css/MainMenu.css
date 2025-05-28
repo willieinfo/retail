@@ -10,6 +10,7 @@
 }
 
 html, body {
+    visibility: hidden;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -181,8 +182,13 @@ html {
     background-color: red;
     padding: 4px;
     animation: wiggle 0.6s ease;
-
 }
+#closeSidebar:hover {
+    background-color: red;
+    padding: 4px;
+    animation: wiggle 0.6s ease;
+}
+
 .menuLine {
     padding: 3px;
     margin: 0;
@@ -205,7 +211,7 @@ html {
     border: 1px solid #ddd;
 }
 input[type="checkbox"] {
-            margin-right: 4px;
+    margin-right: 4px;
 }
 ul {
     list-style-type: none;
@@ -215,14 +221,10 @@ ul {
 li {
     list-style-type: none; /* Ensure no bullets on individual list items */
     margin: 5px 0;
-    /* display: flex; Flexbox to align checkbox and text horizontally */
-    /* align-items: center; Align items vertically centered in the flex row */
 }
-/* .menu li.disabled {
-    pointer-events: none;
-    opacity: 0.6;
+.menu li.disabled {
     cursor: not-allowed;  
-} */
+}
 
 /* Responsive Design */
 @media (max-width: 1020px) {

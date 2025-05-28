@@ -85,6 +85,7 @@ export function MessageBox(message, buttons, alertMessage='Alert Message', backC
         titleBar.style.backgroundColor = 'var(--main-bg-color)' ;
         titleBar.style.margin="0" ;
         titleBar.style.padding="0" ;
+        titleBar.style.paddingLeft="10px" ;
         titleBar.style.borderTopLeftRadius = '5px';
         titleBar.style.borderTopRightRadius = '5px';
         modal.appendChild(titleBar);
@@ -629,7 +630,7 @@ window.base64Image = null;
 
 export function loadImageToBase64() {
     const img = new Image();
-    img.src = '/images/regent.png';  // Path to your logo image
+    img.src = '/images/complogo.png';  // Path to your logo image
 
     img.onload = function() {
         const canvas = document.createElement('canvas');
@@ -1183,3 +1184,18 @@ export function disableMultipleLis(refValues) {
 
 // Example: Disable <li> elements with data-ref "101" and "102"
 // disableMultipleLis(['101', '102']);
+
+export function greetTime(timeNow) {
+    let greeting = '';
+    const hour = parseInt(timeNow, 10); // Convert the input to an integer
+
+    if (hour >= 0 && hour <= 11) {
+        greeting = 'Good morning';
+    } else if (hour >= 12 && hour <= 18) {
+        greeting = 'Good afternoon';
+    } else {
+        greeting = 'Good evening';
+    }            
+
+    return greeting;
+}

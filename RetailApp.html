@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WInfoPlus Retail App</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/write-excel-file@1.x/bundle/write-excel-file.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script> -->
-
+    
     <link rel="stylesheet" href="./css/MainMenu.css">
     <link rel="stylesheet" href="./css/TableDiv.css">
     <link rel="stylesheet" href="./css/GenStyle.css">
@@ -22,20 +20,23 @@
 </head>
 <body>
     <img alt="Retail Shop" id="background-image" />
-    <!-- MainMenu -->
-        <div id="menuOptDiv">
-            <div id="menuSelect"></div>
-            <div id="selectMenu">
-                <!-- This is where the dynamic menu will be inserted -->
-            </div>
-        </div>
 
+    <!-- MainMenu -->
+    <div id="menuOptDiv" style="display: none;">
+        <div id="menuSelect"></div> <!-- TitleBar and Close button -->
+        <div id="selectMenu">
+            <!-- This is where the dynamic menu will be inserted -->
+        </div>
+        <div class="btnDiv">
+            <button type="button" id="cancelMenuOptsBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
+        </div> 
+    </div>
     <div id="headerDiv">
         <div id="headerCaption">
             <span style="font-weight: bold;">Fashion Retail App</span>
             <span id="spanToday"></span>
         </div>
-        <ul id="menuNavBar" class="menu"></ul>
+        <ul id="menuNavBar" class="menu"></ul> <!-- MainMenu Nav Bar -->
     </div>
     <div class="hamburger">☰</div>
     <div id="menuSideBar" class="sidebar"></div>
@@ -61,8 +62,8 @@
     </div>
 
     <!-- Respective HTMLs are injected on each of JS files -->
-    <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/MainMenu.js"></script>
+    <script type="module" src="./src/FunctLib.js"></script>
     <script type="module" src="./src/FiltrRec.js"></script>
     <script type="module" src="./src/PrintRep.js"></script>
 

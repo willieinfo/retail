@@ -253,7 +253,7 @@ const listUser = async (req, res) => {
     APPUSERS.Password,
     APPUSERS.Remarks_,
     APPUSERS.MenuOpts,
-    APPUSERS.AvailMnu,
+    APPUSERS.Address_,
     APPUSERS.Disabled
     FROM APPUSERS
     WHERE 1=1`;
@@ -275,7 +275,7 @@ const listUser = async (req, res) => {
 }
 
 const addAppUsers = async (req, res) => {
-    const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled } = req.body;
+    const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, lDisabled } = req.body;
   
     if (!cUserName || !cEmailAdd || !cNickName) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -285,9 +285,9 @@ const addAppUsers = async (req, res) => {
     const cSql = `
           -- Insert the new location and get the generated AutIncId
           INSERT INTO APPUSERS 
-            (UserCode, UserName, EmailAdd, Position, Tel_Num_, Password, NickName, Remarks_, Disabled)
+            (UserCode, UserName, EmailAdd, Position, Tel_Num_, Password, NickName, Remarks_, MenuOpts, Disabled)
           VALUES
-            (@cUserCode, @cUserName, @cEmailAdd, @cPosition, @cTel_Num_, @cPassword, @cNickName, @cRemarks_, @lDisabled);
+            (@cUserCode, @cUserName, @cEmailAdd, @cPosition, @cTel_Num_, @cPassword, @cNickName, @cRemarks_, @cMenuOpts, @lDisabled);
 
           -- Get the last inserted AutIncId
           DECLARE @AutIncId INT;
@@ -315,13 +315,13 @@ const addAppUsers = async (req, res) => {
             APPUSERS.Password,
             APPUSERS.Remarks_,
             APPUSERS.MenuOpts,
-            APPUSERS.AvailMnu,
+            APPUSERS.Address_,
             APPUSERS.Disabled
           FROM APPUSERS WHERE AutIncId = @AutIncId;
     `;
 
     
-    const params = {cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled };
+    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_ , cMenuOpts , lDisabled };
     // console.log(params)
     try {
       const result = await queryDatabase(cSql, params);
@@ -333,7 +333,7 @@ const addAppUsers = async (req, res) => {
   };
   
 const editAppUsers = async (req, res) => {
-    const { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled } = req.body; 
+    const { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled } = req.body; 
   
     if (!cUserName || !cEmailAdd || !cNickName ) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -347,10 +347,12 @@ const editAppUsers = async (req, res) => {
           Password=@cPassword,
           NickName=@cNickName,
           Remarks_=@cRemarks_,
+          MenuOpts=@cMenuOpts,
+          Address_=@cAddress_,
           Disabled=@lDisabled
       WHERE UserCode=@cUserCode`;
   
-    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, lDisabled };
+    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled };
   
     try {
       const result = await queryDatabase(cSql, params);

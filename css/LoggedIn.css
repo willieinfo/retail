@@ -1,0 +1,220 @@
+:root {
+    --main-bg-color:rgb(0,64,128);
+    --second-bg-color: rgb(91, 147, 193); 
+    --darker-bg-color: rgb(0,0,139); 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.imageSection {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.imageCompany {
+    position: relative;
+    color: white;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(128, 128, 128);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.companyPic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+h3 {
+    position: relative;
+    z-index: 2;
+    font-size: 20px;
+    margin: 0;
+    padding: 0px;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+}
+h2 {
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+    font-size: 60px;
+    margin: 0;
+    padding: 0px 0px 0px 0px;
+    text-align: center;
+}
+
+.imageBrands {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 14%;
+    background-color: rgb(83,83,83);
+}
+
+.greetings {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    font-size: 20px;
+    color: rgb(77,77,77);
+}
+
+/* #todayIs {
+    font-style: normal;
+    font-family :Arial, Helvetica, sans-serif;
+} */
+
+.loginSection {
+    width: 20%;
+    min-width: 300px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-image: linear-gradient(to right, #f0f8ff, var(--main-bg-color)); 
+}
+
+/* .loginForm {
+    width: 100%;
+    max-width: 300px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+} */
+
+.loginForm {
+    width: 100%;
+    max-width: 300px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px; 
+    backdrop-filter: blur(10px); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+
+/* Checkbox styling */
+.show-password {
+    margin-top: 0px; /* Space between input and checkbox */
+}
+.show-password-label {
+    font-size: 10px; /* Adjust the font size as needed */
+}
+
+    
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.password-container {
+    position: relative;
+}
+input[type=password] {
+    padding-right: 40px; /* Space for the icon */
+}
+.toggle-visibility {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+
+
+/* Set a style for all buttons */
+button {
+    background-color: var(--main-bg-color);
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+}
+
+button i {
+    margin-right: 0; 
+}        
+
+button:hover {
+    opacity: 0.8;
+    background-color: var(--darker-bg-color) ;
+    border: 1px solid #f1f1f1;     /* Border on hover */    
+}
+
+.brandLogo {
+    color: white;
+    width: 12%;
+    height: 80%;
+    border: 1px solid;
+    /* background-color: brown; */
+    margin: 1px;
+}
+
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .imageSection {
+        display: none;
+    }
+
+    .loginSection {
+        width: 100%;
+        min-width: auto;
+        height: auto;
+        padding: 20px;
+        box-shadow: none;
+    }
+    .imageCompany {
+        padding: 10px; /* Adjust padding if needed */
+    }
+
+    .companyPic {
+        height: auto; /* Adjust height for smaller viewports if necessary */
+        width: auto;
+    }            
+}
