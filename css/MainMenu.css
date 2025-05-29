@@ -10,7 +10,7 @@
 }
 
 html, body {
-    visibility: hidden;
+    /* visibility: hidden; */
     margin: 0;
     display: flex;
     flex-direction: column;

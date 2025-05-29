@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { listGrup, listSupp, 
-    listUser, addAppUsers, editAppUsers,
+    listUser, addAppUsers, editAppUsers, checkLogIn,
     listLoca, editLocation, addLocation, deleteLocation } = require('../Controllers//Products/lookupController');
 
 router.get('/storegrp', listGrup);  
@@ -10,6 +10,7 @@ router.get('/supplier', listSupp);
 router.get('/appusers', listUser);  
 router.post('/addAppUsers', addAppUsers);  
 router.put('/editAppUsers', editAppUsers);  
+router.get('/loggedin', checkLogIn);  
 
 router.get('/location', listLoca);  
 router.post('/addLocation', addLocation);  

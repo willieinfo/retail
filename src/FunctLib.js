@@ -1,7 +1,3 @@
-import { addSalesDtl } from './Sales/SalesLst.js';
-import { addStockDtl } from './Transfers/StockLst.js';
-import { addPurchDtl } from './Purchases/PurchLst.js';
-import { displayErrorMsg } from './FiltrRec.js';
 
 // Function to show the selected report and hide others
 export function showReport(reportType) {
@@ -742,7 +738,13 @@ export async function chkUsersCde(editMode, cModule, otherDetails) {
 
 }
 
+
 export async function addScanCode(cModule, currentRec) {
+
+    const { addSalesDtl } = await import('./Sales/SalesLst.js');
+    const { addStockDtl } = await import('./Transfers/StockLst.js');
+    const { addPurchDtl } = await import('./Purchases/PurchLst.js');
+
     const ScanCode = document.getElementById(cModule+'_ScanCode')
     if (!ScanCode.value) {
         ScanCode.focus();

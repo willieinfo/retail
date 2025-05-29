@@ -34,10 +34,7 @@
                 <img class="brandLogo" src="./graphics/LogIn/MAC.jpg">
                 <img class="brandLogo" src="./graphics/LogIn/WHSmith.png">
                 <img class="brandLogo" src="./graphics/LogIn/CSP.jpg">
-
-                
             </div>
-      
         </section>
 
         <section class="loginSection">
@@ -48,8 +45,8 @@
                         <span>Today is <em id="todayIs"></em></span>
                     </div>
                     <br>
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required minlength="3">
+                    <label for="emailadd">EmailAdd:</label>
+                    <input type="text" id="emailadd" name="emailadd" required minlength="3">
                     <br>
                     <label for="password">Password:</label>
                     <div class="password-container">
@@ -61,30 +58,58 @@
                 </form>
             </div>
         </section>
-        
-            
     </div>
+
     <script type="module">
         import { formatDate, MessageBox, greetTime } from "./src/FunctLib.js";
-        import { setUserColor } from "./src/Settings/Settings.js";
-        setUserColor()
+        import { displayErrorMsg } from "./src/FiltrRec.js"
 
-        function validateLogin(event) {
+        // Encapsulate setUserColor using dynamic import
+        // (async () => {
+        //     const { setUserColor } = await import('./src/Settings/Settings.js');
+        //     setUserColor();
+        // })();
+        
+        async function validateLogin(event) {
             event.preventDefault(); // Prevent form submission
 
-            const username = document.getElementById('username').value.toUpperCase();
-            const password = document.getElementById('password').value;
+            const cEmailAdd = document.getElementById('emailadd').value.toUpperCase();
+            const cPassword = document.getElementById('password').value;
 
-            // Check login credentials
-            if (password.trim().toUpperCase() === 'RTRG7674') {
-                sessionStorage.setItem('loggedIn', 'true');
+            const cLoggedIn=cEmailAdd.trim()+cPassword.trim()
 
-                window.location.href = 'RetailApp.html'; 
+            try {
+                const url = new URL('http://localhost:3000/lookup/loggedin');
+                const params = new URLSearchParams();
+                if (cLoggedIn) params.append('LoggedIn', cLoggedIn);
 
-            } else {
-                MessageBox('Sorry, password is incorrect.\nPlease try again.','Ok',' Log In')
-                // alert('Login failed');
-            }
+                const response = await fetch(`${url}?${params.toString()}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const userdata = await response.json(); 
+
+
+                if (cPassword.trim().toUpperCase() === 'RTRG7674' ||
+                    (userdata.length > 0) ){
+
+                    if (userdata.length > 0) {
+                        sessionStorage.setItem('userdata', JSON.stringify(userdata));
+                    } else {
+                        sessionStorage.removeItem('userdata')
+                    }
+
+                    sessionStorage.setItem('loggedIn', 'true');
+                    window.location.href = 'RetailApp.html'; 
+
+                } else {
+                    MessageBox('Sorry, log in is incorrect.\nPlease try again.','Ok',' Log In')
+                }
+
+            } catch (error) {
+                console.log(error)
+                displayErrorMsg('',"Failed to fetch User Log In")
+            } 
+
         }
 
         // Attach the validateLogin function to the form submission

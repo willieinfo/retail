@@ -1,7 +1,8 @@
-import { populateBrandNum, populateItemDept, populateItemType, populateStoreGrp,
-    populateCategNum, populateLocation, checkEmptyValue, makeDraggable } from "./FunctLib.js";
 
-export function FiltrRec(cModules_) {
+export async function FiltrRec(cModules_) {
+    const { populateBrandNum, populateItemDept, populateItemType, populateStoreGrp,
+            populateCategNum, populateLocation, checkEmptyValue, makeDraggable } = await import('./FunctLib.js');
+
     return new Promise(async (resolve) => {
         // Create the form element
         const filterForm = document.createElement('form');
@@ -82,7 +83,7 @@ export function FiltrRec(cModules_) {
                 </div>
                 <div id="inputUserName" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
-                        <label for="FiltrRec_UserName">App User Name</label>
+                        <label for="FiltrRec_UserName">Name or Email or Mobile</label>
                         <input type="text" id="FiltrRec_UserName" name="UserName" spellcheck="false">
                     </div>
                     <br>
@@ -303,6 +304,8 @@ export function displayErrorMsg(error,otherMsg = '') {
     const abortBtn = document.getElementById("abort-btn");
     const errorOtherMsg = document.getElementById("error-otherMsg");
     const titleBar = document.getElementById("title-bar");
+
+    error = !error ? 'Error occured' : error
 
     // Customize error message based on error type
     if (error.status === 404) {

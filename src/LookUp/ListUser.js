@@ -48,9 +48,12 @@ let globalData = []; // Define a global array
 async function ListUser(cUserName) {
     const listCounter=document.getElementById('userListCounter')
     
+    cUserName = !cUserName ? '%' : cUserName
+
     try {
         const url = new URL('http://localhost:3000/lookup/appusers');
         const params = new URLSearchParams();
+        // if (cUserName) params.append('UserName', cUserName?.trim() || '');
         if (cUserName) params.append('UserName', cUserName);
 
         const response = await fetch(`${url}?${params.toString()}`);
@@ -131,10 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-async function updateTableRow(index , cUserCode) {
+async function updateTableRow(index , cUserName) {
+    
+    cUserName = !cUserName ? '%' : cUserName
+    
     const url = new URL('http://localhost:3000/lookup/appusers');
     const params = new URLSearchParams();
-    params.append('UserCode', cUserCode);
+    params.append('UserName', cUserName);
 
     try {
         const response = await fetch(`${url}?${params.toString()}`);
@@ -408,8 +414,7 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
 
         const updatedItem = await response.json();
         if (updatedItem) {
-            // updateTableRow(index, cLocation);
-            updateTableRow(index, cUserCode);
+            updateTableRow(index, cUserName);
             showNotification('App Users record update successful!')
         }
 
@@ -618,7 +623,6 @@ function MenuOpts(index) {
     const menuOptDiv = document.getElementById("menuOptDiv");
     menuOptDiv.style.display = 'flex';
     menuOptDiv.style.flexDirection = 'column';
-    // menuOptDiv.style.padding = '20px';
     // menuOptDiv.style.backgroundColor = 'var(--main-bg-color)';
     menuOptDiv.style.height = '600px';
     menuOptDiv.style.width = '400px';
@@ -741,11 +745,13 @@ function MenuOpts(index) {
                 checkbox.id = item.ref;  // Set a unique id for each checkbox
                 checkbox.checked = item.selected; // Check if the item is selected
                 checkbox.addEventListener('change', () => toggleMenuItem(item.ref));
+                checkbox.style.cursor = 'pointer';
                 
                 // Create label
                 const label = document.createElement('label');
                 label.setAttribute('for', item.ref);  // Associate the label with the checkbox by setting 'for' to the checkbox's id
                 label.textContent = item.name;
+                label.style.cursor = 'pointer';
                 
                 // Append checkbox and label to their respective divs
                 checkboxDiv.appendChild(checkbox);
@@ -761,6 +767,15 @@ function MenuOpts(index) {
                 // Append the divs to the menuItem
                 menuItem.appendChild(checkboxDiv);
                 menuItem.appendChild(labelDiv);
+                menuItem.addEventListener('mouseenter', () => {
+                    menuItem.style.backgroundColor = '#333';
+                    label.style.color = 'white';
+                });
+                menuItem.addEventListener('mouseleave', () => {
+                    menuItem.style.backgroundColor = ''; // or restore original color
+                    label.style.color = '';
+                });
+
 
                 // Use flexbox to align the divs horizontally
                 menuItem.style.display = 'flex';

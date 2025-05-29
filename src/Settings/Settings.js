@@ -1,31 +1,29 @@
-import { showReport, showNotification } from '../FunctLib.js';
-
-const divSettings = `
-    <div id="ThemeColor" class="report-section">
-        <div id="colorsDiv">
-            <p>Choose Theme Color</p>
-            <div class="grpColorDivs">
-                <div id="blackDiv" class="circleClr"></div>
-                <div id="blueDiv" class="circleClr"></div>
-                <div id="greenDiv" class="circleClr"></div>
-                <div id="violetDiv" class="circleClr"></div>
-            </div>
-            <div class="grpColorDivs">
-                <div id="brownDiv" class="circleClr"></div>
-                <div id="maroonDiv" class="circleClr"></div>
-                <div id="redDiv" class="circleClr"></div>
-                <div id="tomatoDiv" class="circleClr"></div>
-            </div>
-            <div class="btnDiv">
-                <button type="submit" id="saveClrBtn" class="saveBtn">Save</button>
-                <button type="button" id="cancelClrBtn" class="cancelBtn">Close</button>
-            </div>
-        </div>
-    </div>
-`
-const tempDiv = document.createElement('div');
-tempDiv.innerHTML = divSettings;
-document.body.appendChild(tempDiv.firstElementChild);
+// const divSettings = `
+// <div id="ThemeColor" class="report-section">
+//     <div id="colorsDiv">
+//         <p>Choose Theme Color</p>
+//         <div class="grpColorDivs">
+//             <div id="blackDiv" class="circleClr"></div>
+//             <div id="blueDiv" class="circleClr"></div>
+//             <div id="greenDiv" class="circleClr"></div>
+//             <div id="violetDiv" class="circleClr"></div>
+//         </div>
+//         <div class="grpColorDivs">
+//             <div id="brownDiv" class="circleClr"></div>
+//             <div id="maroonDiv" class="circleClr"></div>
+//             <div id="redDiv" class="circleClr"></div>
+//             <div id="tomatoDiv" class="circleClr"></div>
+//         </div>
+//         <div class="btnDiv">
+//             <button type="submit" id="saveClrBtn" class="saveBtn">Save</button>
+//             <button type="button" id="cancelClrBtn" class="cancelBtn">Close</button>
+//         </div>
+//     </div>
+// </div>
+// `
+// const tempDiv = document.createElement('div');
+// tempDiv.innerHTML = divSettings;
+// document.body.appendChild(tempDiv.firstElementChild);
 
 const themeColorDiv = document.getElementById('ThemeColor');
 
@@ -45,6 +43,8 @@ document.getElementById('cancelClrBtn').addEventListener('click', () => {
 
 // Event listener for the save button
 document.getElementById('saveClrBtn').addEventListener('click', async () => {
+    const { showNotification } = await import('./FunctLib.js');
+
     // Capture the current theme colors
     const currentTheme = {
         mainBgColor: getComputedStyle(document.documentElement).getPropertyValue('--main-bg-color').trim(),
@@ -151,7 +151,9 @@ export function setUserColor() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    const { showReport } = await import('../FunctLib.js');
+
     const liThemeColorMenu = document.querySelectorAll('.ThemeColor');
     liThemeColorMenu.forEach(element => {
         element.addEventListener('click', () => {

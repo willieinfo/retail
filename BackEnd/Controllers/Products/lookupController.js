@@ -239,8 +239,8 @@ const listSupp = async (req, res) => {
   }
 }
 
-const listUser = async (req, res) => {
-  const cUserName = req.query.UserName;  
+const checkLogIn = async (req, res) => {
+  const cLoggedIn = req.query.LoggedIn;  
  
   // Build SQL query with parameters
   let cSql = `SELECT 
@@ -248,31 +248,67 @@ const listUser = async (req, res) => {
     APPUSERS.UserName,
     APPUSERS.NickName,
     APPUSERS.EmailAdd,
-    APPUSERS.Position,
-    APPUSERS.Tel_Num_,
     APPUSERS.Password,
-    APPUSERS.Remarks_,
     APPUSERS.MenuOpts,
-    APPUSERS.Address_,
     APPUSERS.Disabled
     FROM APPUSERS
     WHERE 1=1`;
 
     const params = {};
-    if (cUserName) {
-      cSql += " AND APPUSERS.UserName LIKE @cUserName";
-      params.cUserName = `%${cUserName}%`;  
+    if (cLoggedIn) {
+      cSql += " AND RTrim(APPUSERS.EmailAdd)+LTrim(APPUSERS.Password) LIKE @cLoggedIn";
+      params.cLoggedIn = `%${cLoggedIn}%`;  
     }
     cSql += ` ORDER BY 1`;
   
   try {
     const result = await queryDatabase(cSql, params);
+    // console.log(result)
     res.json(result);  
+  } catch (err) {
+    console.error('LogIn query error:', err);
+    res.status(500).send('Error fetching Log In');
+  }
+}
+
+const listUser = async (req, res) => {
+  const cUserName = req.query.UserName;
+
+  if (!cUserName) {
+    return res.status(400).send("UserName parameter is required.");
+  }
+
+ const cSql = `
+    SELECT 
+      APPUSERS.UserCode,
+      APPUSERS.UserName,
+      APPUSERS.NickName,
+      APPUSERS.EmailAdd,
+      APPUSERS.Position,
+      APPUSERS.Tel_Num_,
+      APPUSERS.Password,
+      APPUSERS.Remarks_,
+      APPUSERS.MenuOpts,
+      APPUSERS.Address_,
+      APPUSERS.Disabled
+    FROM APPUSERS
+    WHERE 
+      APPUSERS.UserName LIKE @cUserName
+      OR APPUSERS.EmailAdd LIKE @cUserName
+      OR APPUSERS.NickName LIKE @cUserName
+      OR APPUSERS.Tel_Num_ LIKE @cUserName
+    ORDER BY APPUSERS.UserCode`;
+
+  const params = { cUserName: `%${cUserName}%` };
+
+  try {
+    const result = await queryDatabase(cSql, params);
+    res.json(result);
   } catch (err) {
     console.error('ListUser query error:', err);
     res.status(500).send('Error fetching AppUsers');
   }
-}
+};
 
 const addAppUsers = async (req, res) => {
     const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, lDisabled } = req.body;
@@ -370,6 +406,7 @@ const editAppUsers = async (req, res) => {
     listGrup,
     listSupp,
     listUser,
+    checkLogIn,
     addAppUsers,
     editAppUsers,
     listLoca,

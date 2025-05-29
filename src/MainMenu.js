@@ -1,6 +1,6 @@
 
 import { formatDate, disableMultipleLis } from "./FunctLib.js";
-import { setUserColor } from "../src/Settings/Settings.js";
+import { setUserColor } from "./Settings/Settings_2.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
 window.onload = function() {
@@ -167,3 +167,8 @@ document.querySelectorAll('.LogOut').forEach( el =>{
     })
 })
 
+const cMenuOpts = JSON.parse(sessionStorage.getItem('userdata'));
+if (cMenuOpts) {
+    console.log(cMenuOpts);
+    disableMultipleLis(cMenuOpts[0].MenuOpts.trim());
+}
