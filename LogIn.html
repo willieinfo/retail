@@ -46,7 +46,7 @@
                     </div>
                     <br>
                     <label for="emailadd">EmailAdd:</label>
-                    <input type="text" id="emailadd" name="emailadd" required minlength="3">
+                    <input type="text" id="emailadd" name="emailadd" required minlength="3" autofocus spellcheck="off" autocomplete="on">
                     <br>
                     <label for="password">Password:</label>
                     <div class="password-container">
@@ -64,11 +64,12 @@
         import { formatDate, MessageBox, greetTime } from "./src/FunctLib.js";
         import { displayErrorMsg } from "./src/FiltrRec.js"
 
-        // Encapsulate setUserColor using dynamic import
-        // (async () => {
-        //     const { setUserColor } = await import('./src/Settings/Settings.js');
-        //     setUserColor();
-        // })();
+        const setColors = JSON.parse(localStorage.getItem('setColors'));  
+        if (setColors) {
+            document.documentElement.style.setProperty('--main-bg-color', setColors.mainBgColor.trim());
+            document.documentElement.style.setProperty('--second-bg-color', setColors.secondBgColor.trim());
+            document.documentElement.style.setProperty('--darker-bg-color', setColors.darkerBgColor.trim());
+        }
         
         async function validateLogin(event) {
             event.preventDefault(); // Prevent form submission
@@ -103,6 +104,7 @@
 
                 } else {
                     MessageBox('Sorry, log in is incorrect.\nPlease try again.','Ok',' Log In')
+                    document.getElementById('emailadd').focus()
                 }
 
             } catch (error) {

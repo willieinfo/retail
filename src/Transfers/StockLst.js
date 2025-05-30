@@ -397,10 +397,12 @@ document.getElementById('saveStockRecBtn').addEventListener('click', () => {
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
-        const cEncoder_='Willie'
-        const cSuffixId='S'
         const dLog_Date=new Date()
         const nNoOfItem=0
+
+        const cUserData = JSON.parse(sessionStorage.getItem('userdata')); 
+        const cSuffixId = (cUserData && cUserData[0]) ? cUserData[0].SuffixId : 'ID';
+        const cEncoder_ = (cUserData && cUserData[0]) ? cUserData[0].NickName : 'Sys_User';
         
         if (addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd, cRemarks_, cEncoder_,
             dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId)) {

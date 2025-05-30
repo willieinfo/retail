@@ -422,10 +422,12 @@ document.getElementById('savePurchRecBtn').addEventListener('click', () => {
 
     } else {
         const cCtrlNum_='NEW_CTRLID'
-        const cEncoder_='Willie'
-        const cSuffixId='S'
         const dLog_Date=new Date()
         const nNoOfItem=0
+
+        const cUserData = JSON.parse(sessionStorage.getItem('userdata')); 
+        const cSuffixId = (cUserData && cUserData[0]) ? cUserData[0].SuffixId : 'ID';
+        const cEncoder_ = (cUserData && cUserData[0]) ? cUserData[0].NickName : 'Sys_User';
         
         if (addPurchRec(cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___, dDR__Date,
             cPONum___, dPODate__, cRemarks_, nNoOfItem, cEncoder_, dLog_Date, cSuffixId)) {

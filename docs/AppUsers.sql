@@ -1,7 +1,7 @@
 USE [FRDOI]
 GO
 
-/****** Object:  Table [dbo].[appusers]    Script Date: 05/23/2025 3:09:35 PM ******/
+/****** Object:  Table [dbo].[appusers]    Script Date: 05/30/2025 8:53:27 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -22,7 +22,8 @@ CREATE TABLE [dbo].[appusers](
 	[Remarks_] [char](50) NULL,
 	[EmailAdd] [char](50) NULL,
 	[AvailMnu] [char](100) NULL,
-	[MenuOpts] [char](100) NULL,
+	[Suffix__] [char](2) NULL,
+	[MenuOpts] [char](200) NULL,
 	[Disabled] [bit] NULL,
 	[AutIncId] [int] IDENTITY(1,1) NOT NULL,
  CONSTRAINT [PK__APPUSERS__1DF52D0D1FF18E38] PRIMARY KEY CLUSTERED 
@@ -66,7 +67,9 @@ GO
 ALTER TABLE [dbo].[appusers] ADD  CONSTRAINT [DF_APPUSERS_AvailMnu]  DEFAULT ('') FOR [AvailMnu]
 GO
 
-ALTER TABLE [dbo].[appusers] ADD  CONSTRAINT [DF_APPUSERS_MenuOpts]  DEFAULT ('') FOR [MenuOpts]
+ALTER TABLE [dbo].[appusers] ADD  CONSTRAINT [DF_appusers_Suffix__]  DEFAULT ('') FOR [Suffix__]
 GO
 
+ALTER TABLE [dbo].[appusers] ADD  CONSTRAINT [DF_APPUSERS_MenuOpts]  DEFAULT ('') FOR [MenuOpts]
+GO
 

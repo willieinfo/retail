@@ -16,6 +16,7 @@ const divListUser = `
                         <th>Code</th>
                         <th>User Name</th>
                         <th>Nick Name</th>
+                        <th>Suffix</th>
                         <th>Email</th>
                         <th>Position</th>
                         <th>Tel No</th>
@@ -162,10 +163,11 @@ async function updateTableRow(index , cUserName) {
         row.querySelector('td:nth-child(1)').textContent = item.UserCode || 'N/A';  
         row.querySelector('td:nth-child(2)').textContent = item.UserName || 'N/A';  
         row.querySelector('td:nth-child(3)').textContent = item.NickName || 'N/A';  
-        row.querySelector('td:nth-child(4)').textContent = item.EmailAdd || 'N/A';  
-        row.querySelector('td:nth-child(5)').textContent = item.Position || 'N/A';  
-        row.querySelector('td:nth-child(6)').textContent = item.Tel_Num_ || 'N/A';  
-        row.querySelector('td:nth-child(7)').textContent = item.Remarks_ || 'N/A';  
+        row.querySelector('td:nth-child(4)').textContent = item.SuffixId || 'N/A';  
+        row.querySelector('td:nth-child(5)').textContent = item.EmailAdd || 'N/A';  
+        row.querySelector('td:nth-child(6)').textContent = item.Position || 'N/A';  
+        row.querySelector('td:nth-child(7)').textContent = item.Tel_Num_ || 'N/A';  
+        row.querySelector('td:nth-child(8)').textContent = item.Remarks_ || 'N/A';  
 
         if (item.Disabled) {
             row.style.color = 'darkgrey'; // Set background color to dark grey if Disabled is true
@@ -232,10 +234,17 @@ async function UserForm(index, editMode) {
                 </div>
             </div>
             <div class="textDiv">
-                <div class="subTextDiv">
-                    <label for="AppUsers_NickName">Nick Name</label>
-                    <input type="text" id="AppUsers_NickName" spellcheck="false" required>
+                <div class="textDiv">
+                    <div class="subTextDiv">
+                        <label for="AppUsers_NickName">Nick Name</label>
+                        <input type="text" id="AppUsers_NickName" spellcheck="false" required>
+                    </div>
+                    <div class="subTextDiv">
+                        <label for="AppUsers_SuffixId">Data Suffix</label>
+                        <input type="text" id="AppUsers_SuffixId" spellcheck="false" required autocapitalize="on">
+                    </div>
                 </div>
+
                 <div class="subTextDiv">
                     <label for="AppUsers_Remarks_">Remarks</label>
                     <input type="text" id="AppUsers_Remarks_" spellcheck="false" >
@@ -259,7 +268,7 @@ async function UserForm(index, editMode) {
                 </div>
             </div>
             <div class="btnDiv">
-                <button type="button" id="saveAppUsersBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
+                <button type="submit" id="saveAppUsersBtn" class="saveBtn"><i class="fa fa-save"></i>  Save</button>
                 <button type="button" id="cancelAppUsersBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
             </div>
         </div>
@@ -294,6 +303,7 @@ async function UserForm(index, editMode) {
         document.getElementById('AppUsers_Tel_Num_').value = itemData.Tel_Num_;
         document.getElementById('AppUsers_Password').value = itemData.Password;
         document.getElementById('AppUsers_NickName').value = itemData.NickName;
+        document.getElementById('AppUsers_SuffixId').value = itemData.SuffixId;
         document.getElementById('AppUsers_Remarks_').value = itemData.Remarks_;
         document.getElementById('AppUsers_Address_').value = itemData.Address_;
         document.getElementById('AppUsers_Disabled').checked = itemData.Disabled ? true : false;
@@ -307,6 +317,7 @@ async function UserForm(index, editMode) {
         document.getElementById('AppUsers_Tel_Num_').value = '';
         document.getElementById('AppUsers_Password').value = '';
         document.getElementById('AppUsers_NickName').value = '';
+        document.getElementById('AppUsers_SuffixId').value = '';
         document.getElementById('AppUsers_Remarks_').value = '';
         document.getElementById('AppUsers_Address_').value = '';
         document.getElementById('AppUsers_Disabled').checked = false;
@@ -315,6 +326,7 @@ async function UserForm(index, editMode) {
 
     // Event listener for users Menu Permissions
     document.getElementById('menuItemBtn').addEventListener('click',() => MenuOpts(index))
+
     document.getElementById('cancelAppUsersBtn').addEventListener('click',() => {
         document.getElementById('menuOptDiv').style.display = 'none';
     })
@@ -327,6 +339,13 @@ async function UserForm(index, editMode) {
 
     });
 
+    // document.addEventListener('click', (e) => {
+    //     const menuOptDiv = document.getElementById('menuOptDiv')
+    //     if (!menuOptDiv.contains(e.target)) {
+    //         menuOptDiv.style.display = 'none';  // Hide if clicked outside
+    //     }
+    // });
+
     
     document.getElementById('saveAppUsersBtn').addEventListener('click', (e) => {
         e.preventDefault();
@@ -338,6 +357,7 @@ async function UserForm(index, editMode) {
         const cTel_Num_ = document.getElementById('AppUsers_Tel_Num_').value.trim();
         const cPassword = document.getElementById('AppUsers_Password').value.trim();
         const cNickName = document.getElementById('AppUsers_NickName').value.trim();
+        const cSuffixId = document.getElementById('AppUsers_SuffixId').value.trim();
         const cRemarks_ = document.getElementById('AppUsers_Remarks_').value.trim();
         const cAddress_ = document.getElementById('AppUsers_Address_').value.trim();
         const lDisabled = document.getElementById('AppUsers_Disabled').checked ? 1 : 0;
@@ -347,7 +367,7 @@ async function UserForm(index, editMode) {
         document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
 
         // Validation check for empty fields
-        if (!cUserName || !cEmailAdd || !cPassword || !cNickName) {
+        if (!cUserName || !cEmailAdd || !cPassword || !cNickName || !cSuffixId) {
             if (!cUserName) {
                 document.getElementById('AppUsers_UserName').focus();
                 document.getElementById('AppUsers_UserName').classList.add('invalid');
@@ -360,6 +380,9 @@ async function UserForm(index, editMode) {
             } else if (!cNickName) {
                 document.getElementById('AppUsers_NickName').focus();
                 document.getElementById('AppUsers_NickName').classList.add('invalid');
+            } else if (!cSuffixId) {
+                document.getElementById('AppUsers_SuffixId').focus();
+                document.getElementById('AppUsers_SuffixId').classList.add('invalid');
             }
             return; // Exit if validation fails
         }
@@ -368,10 +391,10 @@ async function UserForm(index, editMode) {
         if (editMode) {
             // Edit existing record
             // console.log('editMode',cMenuOpts)
-            editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled);
+            editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled);
         } else {
             // Add new record
-            addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled);
+            addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled);
         }
 
         // Remove form and modal overlay
@@ -382,10 +405,11 @@ async function UserForm(index, editMode) {
 
 }
 
-async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
+async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
     try {
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
+        cSuffixId = cSuffixId.toUpperCase()
 
         const response = await fetch('http://localhost:3000/lookup/editAppUsers', {
             method: 'PUT',  // Use PUT method
@@ -400,6 +424,7 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
                 cTel_Num_: cTel_Num_,
                 cPassword: cPassword,
                 cNickName: cNickName,
+                cSuffixId: cSuffixId,
                 cMenuOpts: cMenuOpts,
                 cRemarks_: cRemarks_,
                 cAddress_: cAddress_,
@@ -426,10 +451,11 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
     }
 }
 
-async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
+async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled) {
     try {
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
+        cSuffixId = cSuffixId.toUpperCase()
 
         const response = await fetch('http://localhost:3000/lookup/addAppUsers', {
             method: 'POST',  // Use PUT method
@@ -443,6 +469,7 @@ async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword
                 cTel_Num_: cTel_Num_,
                 cPassword: cPassword,
                 cNickName: cNickName,
+                cSuffixId: cSuffixId,
                 cRemarks_: cRemarks_,
                 cMenuOpts: cMenuOpts,
                 cAddress_: cAddress_,
@@ -524,6 +551,7 @@ function updateTable() {
                     <th>Code</th>
                     <th>User Name</th>
                     <th>Nick Name</th>
+                    <th>Suffix</th>
                     <th>Email</th>
                     <th>Position</th>
                     <th>Tel No</th>
@@ -537,6 +565,7 @@ function updateTable() {
                         <td>${item.UserCode || 'N/A'}</td>
                         <td class="colNoWrap">${item.UserName || 'N/A'}</td>
                         <td>${item.NickName || 'N/A'}</td>
+                        <td>${item.SuffixId || 'N/A'}</td>
                         <td>${item.EmailAdd || 'N/A'}</td>
                         <td>${item.Position || 'N/A'}</td>
                         <td>${item.Tel_Num_ || 'N/A'}</td>

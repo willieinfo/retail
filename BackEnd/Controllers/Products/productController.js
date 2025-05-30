@@ -29,6 +29,8 @@ const listItem = async (req, res) => {
     ITEMLIST.Disabled, 
     ITEMLIST.Services, 
     ITEMLIST.Outright, 
+    ITEMLIST.Encoder_, 
+    ITEMLIST.DateCost, 
     ITEMTYPE.Descript AS TypeDesc, 
     BRAND___.BrandNme
     FROM ITEMLIST
@@ -266,7 +268,7 @@ const addItemList = async (req, res) => {
   const { cItemCode,cUsersCde,cOtherCde,cDescript,
     cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
-    nOutright,lDisabled,lServices,cSuffixId } = req.body;  // Extract from body
+    nOutright,lDisabled,lServices,cSuffixId,cEncoder_ } = req.body;  // Extract from body
 
   if (!cItemCode || !cUsersCde || !cOtherCde || !cDescript
     ||!cBrandNum || !cItemType || !cItemDept || !cCategNum || !cSuppNum_
@@ -283,12 +285,12 @@ const addItemList = async (req, res) => {
         INSERT INTO ITEMLIST
           ( ItemCode,UsersCde,OtherCde,Descript,
           BrandNum,ItemType,ItemDept,CategNum,SuppNum_,
-          ItemPrce,ItemCost,LandCost,
+          ItemPrce,ItemCost,LandCost,Encoder_,
           Outright,Disabled,Services,DateCost )
         VALUES
           ( @cItemCode,@cUsersCde,@cOtherCde,@cDescript,
           @cBrandNum,@cItemType,@cItemDept,@cCategNum,@cSuppNum_,
-          @nItemPrce,@nItemCost,@nLandCost,
+          @nItemPrce,@nItemCost,@nLandCost,@cEncoder_,
           @nOutright,@lDisabled,@lServices,@dDateCost )
 ;
 
@@ -322,6 +324,8 @@ const addItemList = async (req, res) => {
             ITEMLIST.SuppNum_, 
             ITEMLIST.CategNum, 
             ITEMLIST.Outright, 
+            ITEMLIST.Encoder_, 
+            ITEMLIST.DateCost, 
             ITEMLIST.Disabled, 
             ITEMLIST.Services, 
             BRAND___.BrandNme
@@ -342,7 +346,7 @@ const addItemList = async (req, res) => {
   const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
     cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
-    nOutright,lDisabled,lServices,cSuffixId,dDateCost }
+    nOutright,lDisabled,lServices,cSuffixId,cEncoder_,dDateCost }
 
     // console.log(params)
   try {
@@ -471,6 +475,8 @@ const getItemReco = async (req, res) => {
     ITEMLIST.SuppNum_, 
     ITEMLIST.CategNum, 
     ITEMLIST.Outright, 
+    ITEMLIST.Encoder_, 
+    ITEMLIST.DateCost, 
     ITEMLIST.Disabled, 
     ITEMLIST.Services, 
     BRAND___.BrandNme

@@ -18,7 +18,7 @@ const divRankStore = `
                     <thead id="rankTHead1">
                         <tr>
                             <th rowspan="2">Location</th>
-                            <th colspan="7">
+                            <th colspan="8">
                                 Current
                                 <div class='thDateRange'">
                                     ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
@@ -38,6 +38,7 @@ const divRankStore = `
                             </th>
                         </tr>
                         <tr>
+                            <th>Rank</th>
                             <th>Quantity</th>
                             <th>Gross</th>
                             <th>Discount</th>
@@ -86,6 +87,7 @@ const divRankBrand =`
                 <table id="salesRankTable1">
                     <thead id="rankTHead1">
                         <tr>
+                            <th>Rank</th>
                             <th>Brand</th>
                             <th>Quantity</th>
                             <th>Gross</th>
@@ -116,6 +118,49 @@ const divRankBrand =`
         </div>
     </div>
 `
+const divRankStock =`
+    <div id="SalesRankStock" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Ranking Report by Stock No</span>
+            <button id="closeRepo3" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="salesRankStock" class="ReportBody">
+                <table id="salesRankTable1">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Stock No</th>
+                            <th>Bar Code</th>
+                            <th>Description</th>
+                            <th>Brand</th>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="stockRankChart" class="chartContainer">
+                <div id="topStock">
+                    <h5>Top 30 SKU's</h5>
+                    <canvas id="stockChart1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="saleRank3Counter" class="recCounter"></span>
+                <button id="printStockRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="saleRank3"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
+
 
 const fragment = document.createDocumentFragment();
 
@@ -126,6 +171,10 @@ fragment.appendChild(div1);
 const div2 = document.createElement('div');
 div2.innerHTML = divRankBrand;
 fragment.appendChild(div2);
+
+const div3 = document.createElement('div');
+div3.innerHTML = divRankStock;
+fragment.appendChild(div3);
 
 document.body.appendChild(fragment);  // Only one reflow happens here
 
@@ -142,7 +191,22 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     // console.log('Prev Year ',dYearFrom,dYearTo__)
     // console.log('Prev Month',dMontFrom,dMontTo__)
 
+    let timerInterval;
+    let elapsedTime = 0;
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            elapsedTime++;
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            document.getElementById('runningTime').textContent = 
+                `Elapsed Time: ${minutes}m ${seconds}s`;
+        }, 1000);
+    }
+
     document.getElementById('loadingIndicator').style.display = 'flex';
+    startTimer();
+
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/sales/SalesCompStore');
@@ -172,6 +236,9 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
+
+        // Clear the timer once data is fetched
+        clearInterval(timerInterval);        
 
         let nTotalQty = 0
         let nTotalPrc = 0
@@ -213,9 +280,8 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         salesRankStoreDiv.classList.add('active');
 
         const reportBody = document.getElementById('salesRankStore');
-        if (data.length > 30) {
-            reportBody.style.height='700px'
-        }
+        reportBody.style.maxHeight = "80%";
+
         reportBody.innerHTML = '';  // Clear previous content
 
         // Define the table structure
@@ -224,7 +290,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <thead id="rankTHead1">
                     <tr>
                         <th rowspan="2">Location</th>
-                        <th colspan="7">
+                        <th colspan="8">
                             Current
                             <div class='thDateRange'">
                                 ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
@@ -244,6 +310,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         </th>
                     </tr>
                     <tr>
+                        <th>Rank</th>
                         <th>Quantity</th>
                         <th>Gross</th>
                         <th>Discount</th>
@@ -258,7 +325,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     </tr>
                 </thead>
                 <tbody id="rankTBody">
-                    ${data.map(item => {
+                    ${data.map((item,index) => {
                         nGP_Prcnt = 0;
                         nPrvYrPct = 0
                         nPrvMoPct = 0
@@ -270,6 +337,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         return `
                             <tr>
                                 <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
+                                <td style="text-align: center">${index+1 || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
@@ -287,6 +355,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 </tbody>
                 <tfoot>
                     <tr style="font-weight: bold">
+                        <td></td>
                         <td style="text-align: right">Total</td>
                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
@@ -317,6 +386,9 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         displayErrorMsg(error,'Fetch error')
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
+        // Clear the timer once data is fetched
+        clearInterval(timerInterval);        
+
     }
 
     document.getElementById('printStoreRank').addEventListener('click', () => {
@@ -505,9 +577,10 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         salesRankBrandDiv.classList.add('active');
 
         const reportBody = document.getElementById('salesRankBrand');
-        if (data.length > 30) {
-            reportBody.style.height='700px'
-        }
+        reportBody.style.maxHeight = "80%";
+        // if (data.length > 30) {
+        //     reportBody.style.height='700px'
+        // }
         reportBody.innerHTML = '';  // Clear previous content
 
         // Define the table structure
@@ -515,6 +588,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             <table id="salesRankTable1">
                 <thead id="rankTHead1">
                     <tr>
+                        <th>Rank</th>
                         <th>Brand</th>
                         <th>Quantity</th>
                         <th>Gross</th>
@@ -527,13 +601,14 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     </tr>
                 </thead>
                 <tbody id="rankTBody">
-                    ${data.map(item => {
+                    ${data.map((item,index) => {
                         nGP_Prcnt = 0;
                         if (item.Amount__ !== 0) {
                             nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
                         }
                         return `
-                            <tr>
+                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
+                                <td style="text-align: center">${index+1 || 'N/A'}</td>
                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
@@ -550,6 +625,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <tfoot>
                     <tr style="height: 2px"></tr>
                     <tr style="font-weight: bold">
+                        <td></td>
                         <td style="text-align: right">Total</td>
                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
@@ -975,7 +1051,7 @@ async function rankBrandSales(data, dateRange) {
         // Build brandMap without filling background colors yet
         brandData.forEach(item => {
             if (!brandMap[item.BrandNme]) {
-                brandMap[item.BrandNme] = { Amount__: 0};
+                brandMap[item.BrandNme] = { Amount__: 0, Outright: item.Outright};
             }
             brandMap[item.BrandNme].Amount__ += Math.round(item.Amount__);
         });
@@ -987,7 +1063,7 @@ async function rankBrandSales(data, dateRange) {
 
         // Now assign background colors after sorting
         const backgroundColors = sortedBrands.map(item => 
-            item.Outright === 'Outright' ? 'rgba(54, 162, 235, 0.6)' : 'rgba(75, 192, 192, 0.2)'
+            item.Outright === 1 ? 'rgba(54, 162, 235, 0.6)' : 'rgba(75, 192, 192, 0.2)'
         );
 
         const labels = sortedBrands.map(item => item.BrandNme.substring(0, 15).trim());
@@ -1079,3 +1155,345 @@ async function rankBrandSales(data, dateRange) {
         displayErrorMsg(error,'Error processing chart data')
     }
 }
+
+
+
+async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let data = null;
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/sales/SalesRankStock');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let nTotalQty = 0
+        let nTotalPrc = 0
+        let nTotalDsc = 0
+        let nTotalAmt = 0
+        let nTotalCos = 0
+        // let nTotalGro = 0
+        // let nGP_Prcnt = 0
+        // let nGP_Total = 0
+    
+        const listCounter=document.getElementById('saleRank3Counter')
+        data = await response.json();
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalQty+=item.Quantity
+                nTotalPrc+=item.ItemPrce
+                nTotalDsc+=(item.ItemPrce-item.Amount__)
+                nTotalAmt+=item.Amount__
+                nTotalCos+=item.LandCost
+            });
+        }
+        // if (nTotalAmt !== 0) {
+        //     nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+        // }
+
+        const salesRankBrandDiv = document.getElementById('SalesRankStock');
+        salesRankBrandDiv.classList.add('active');
+
+        const reportBody = document.getElementById('salesRankStock');
+        reportBody.style.maxHeight = "80%";
+        // if (data.length > 30) {
+        //     reportBody.style.height='700px'
+        // }
+        reportBody.innerHTML = '';  // Clear previous content
+
+        // Define the table structure
+        const rankTable = `
+            <table id="salesRankTable1">
+                <thead id="rankTHead1">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Stock No</th>
+                        <th>Bar Code</th>
+                        <th>Description</th>
+                        <th>Brand</th>
+                        <th>Quantity</th>
+                        <th>Gross</th>
+                        <th>Discount</th>
+                        <th>Net</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="rankTBody">
+                    ${data.map((item,index) => {
+                        return `
+                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
+                                <td style="text-align: center">${index+1 || 'N/A'}</td>
+                                <td style="text-align: left">${item.UsersCde || 'N/A'}</td>
+                                <td style="text-align: left">${item.OtherCde || 'N/A'}</td>
+                                <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
+                                <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="height: 2px"></tr>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = rankTable;
+
+        // Show store ranking chart
+        document.getElementById('stockRankChart').style.display='flex';
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        rankStockSales(data, dateRange)
+       
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        // Hide loading spinner once data is fetched or an error occurs
+        document.getElementById('loadingIndicator').style.display = 'none';
+    }
+
+    document.getElementById('printStockRank').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Sales Ranking by SKU', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+            ];
+
+            const colWidths = [
+                { width: 20 },{ width: 20 },{ width: 30 },{ width: 25 },{ width: 10 },
+                { width: 15 },{ width: 15 },{ width: 15 },{ width: 15 },
+            ];
+        
+            const columnConfig = [
+                { label: 'Stock No.',getValue: row => row.UsersCde,type: 'string',align: 'left'},
+                { label: 'Bar Code',getValue: row => row.OtherCde,type: 'string',align: 'left'},
+                { label: 'Description',getValue: row => row.Descript.substring(0,30),type: 'string',align: 'left'},
+                { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Quantity',getValue: row => +row.Quantity,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                align: 'right',type: 'integer',cellFormat: '#,##0'},
+                { label: 'Gross',getValue: row => +row.ItemPrce,
+                total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Net',getValue: row => +row.Amount__,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Cost',getValue: row => +row.LandCost,
+                total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'}
+            ];
+            
+            const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking by SKU');
+    })
+
+}
+
+// Wait for the DOM to fully load before adding the event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const salesRankStockElements = document.querySelectorAll('.salesRankingByStock');
+    const rankRepoDiv = document.getElementById('SalesRankStock');
+    const closeRepo = document.getElementById('closeRepo3');
+    
+    closeRepo.addEventListener('click', () => {
+        rankRepoDiv.classList.remove('active');
+    });
+
+        // Add event listener to each element with the necessary arguments
+    salesRankStockElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesRankStock')
+        });
+    });
+
+});
+
+document.getElementById('saleRank3').addEventListener('click', () => {
+    try {
+        FiltrRec('SaleRnk3').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cStoreGrp = filterData[12];
+
+            SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+
+})
+
+async function rankStockSales(data, dateRange) {
+   
+    let myChart4 = window.myChart4 || null;
+
+    try {
+        const stockData = data;
+        const stockMap = {};
+        
+        stockData.forEach(item => {
+            if (!stockMap[item.UsersCde]) {
+                stockMap[item.UsersCde] = { Amount__: 0, Outright: item.Outright }; // Include Outright here
+            }
+            stockMap[item.UsersCde].Amount__ += Math.round(item.Amount__);
+        });            
+
+        // Sort the stockMap by amount
+        let sortedStocks = Object.entries(stockMap)
+            .map(([UsersCde, values]) => ({ UsersCde, ...values }))
+            .slice(0, 30);
+
+
+        // Now assign background colors after sorting
+        const backgroundColors = sortedStocks.map(item => 
+            item.Outright === 1 ? 'rgba(54, 162, 235, 0.6)' : 'rgb(7, 130, 130, 0.6)'
+        );
+
+        const labels = sortedStocks.map(item => item.UsersCde.substring(0, 15).trim());
+        const curreamtData = sortedStocks.map(item => item.Amount__);
+
+        // Function to round up to the nearest multiple of step
+        const getMagnitudeStep = (value) => {
+            const magnitude = Math.floor(Math.log10(value));
+            return Math.pow(10, magnitude); // Returns the nearest power of 10
+        };
+
+        // Function to round up to the nearest appropriate step
+        const roundUpToDynamicStep = (value) => {
+            const step = getMagnitudeStep(value);
+            return Math.ceil(value / step) * step;
+        };
+
+        // Calculate the maximum value for the x-axis
+        const maxCurreamt = Math.max(...curreamtData);
+        // Round up maxValue to the nearest appropriate step
+        const roundedMaxValue = roundUpToDynamicStep(maxCurreamt);
+
+        if (myChart4) myChart4.destroy();
+
+        const getChartOptions = () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: roundedMaxValue, // Use the dynamically rounded max value
+                    ticks: {
+                        font: { family: 'Arial Narrow', size: 12 },
+                        color: 'white',  
+                        padding: 5, 
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: false },
+                    ticks: {
+                        autoSkip: false,
+                        font: { family: 'Arial Narrow', size: 12 }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: dateRange,  // Your desired title text here
+                    font: {
+                        family: 'Arial',
+                        size: 16
+                    },
+                    color: 'black',  // Title text color
+                    padding: {
+                        top: 20,  // Space between title and chart
+                        bottom: 10
+                    }
+                }
+                }
+
+        });
+
+        const ctx = document.getElementById('stockChart1').getContext('2d');
+        myChart4 = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: dateRange,
+                    data: curreamtData,
+                    backgroundColor: backgroundColors, 
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: getChartOptions(),
+        });
+
+        window.myChart4 = myChart4;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        displayErrorMsg(error,'Error processing chart data')
+    }
+}
+

@@ -1,6 +1,6 @@
 
 import { formatDate, disableMultipleLis } from "./FunctLib.js";
-import { setUserColor } from "./Settings/Settings_2.js";
+import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
 window.onload = function() {
@@ -31,10 +31,10 @@ const menuItems= `
         <hr class="menuLine">
         <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
         <li menu-ref="A03" class="salesRankingByBrand">Sales Ranking by Brand</li>
-        <li menu-ref="A04" id="salesRankingByCategory">Sales Ranking by Category</li>
-        <li menu-ref="A05" id="dailySalesSum">Daily Sales Summary</li>
+        <li menu-ref="A04" class="salesRankingByCategory">Sales Ranking by Category</li>
+        <li menu-ref="A05" class="dailySalesSum">Daily Sales Summary</li>
         <hr class="menuLine">
-        <li menu-ref="A06" >Sales By SKU</li>
+        <li menu-ref="A06" class="salesRankingByStock">Sales By SKU</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -104,7 +104,6 @@ const menuItems= `
         <li menu-ref="H02" class="About">About</li>
     </ul>
 </li>
-
 `;
 
 // Check if the stored value exists and if it needs updating
@@ -167,8 +166,8 @@ document.querySelectorAll('.LogOut').forEach( el =>{
     })
 })
 
-const cMenuOpts = JSON.parse(sessionStorage.getItem('userdata'));
-if (cMenuOpts) {
-    console.log(cMenuOpts);
-    disableMultipleLis(cMenuOpts[0].MenuOpts.trim());
+const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
+if (cUserData) {
+    disableMultipleLis(cUserData[0].MenuOpts.trim());
+    if (cUserData[0].NickName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
 }

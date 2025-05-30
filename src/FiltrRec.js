@@ -162,6 +162,14 @@ export async function FiltrRec(cModules_) {
             document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
+        } else if (cModules_ === 'SaleRnk3') {
+            document.getElementById('SalesRankStock').appendChild(filterForm);
+            document.getElementById('SalesRankStock').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
+            await populateLocation('', '', 'SellArea','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);

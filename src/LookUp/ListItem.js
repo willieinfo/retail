@@ -1,4 +1,4 @@
-import { showReport, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
+import { showReport, formatDate, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import { printReportExcel, generateTitleRows } from '../PrintRep.js'
@@ -13,12 +13,15 @@ const divListItem = `
             <table>
                 <thead id="Look_Up_Head">
                     <tr>
+                        <th>System Id</th>
                         <th>Description</th>
                         <th>Stock No</th>
                         <th>Brand</th>
                         <th>Category</th>
                         <th>Item Price</th>
                         <th>Cost</th>
+                        <th>Encoder</th>
+                        <th>Date Created</th>
                         <th style="width: 25px"></th>
                     </tr>
                 </thead>
@@ -179,12 +182,16 @@ async function updateTableRow(index , cItemCode) {
     const row = document.querySelector(`#ListItemTable tbody tr[data-index="${index}"]`);
     if (row) {
         // Update the row's content with the new item data
-        row.querySelector('td:nth-child(1)').textContent = item.Descript.trim().substring(0, 50) || 'N/A';  // Description
-        row.querySelector('td:nth-child(2)').textContent = item.UsersCde || 'N/A';  // Stock No
-        row.querySelector('td:nth-child(3)').textContent = item.BrandNme || 'N/A';  // Brand
-        row.querySelector('td:nth-child(4)').textContent = item.DeptName.trim() || 'N/A';  // Category
-        row.querySelector('td:nth-child(5)').textContent = formatter.format(item.ItemPrce) || 'N/A';  // Item Price
-        row.querySelector('td:nth-child(6)').textContent = formatter.format(item.LandCost) || 'N/A';  // Cost
+        row.querySelector('td:nth-child(1)').textContent = item.ItemCode || 'N/A';  // ItemCode
+        row.querySelector('td:nth-child(2)').textContent = item.Descript.trim().substring(0, 50) || 'N/A';  // Description
+        row.querySelector('td:nth-child(3)').textContent = item.UsersCde || 'N/A';  // Stock No
+        row.querySelector('td:nth-child(4)').textContent = item.BrandNme || 'N/A';  // Brand
+        row.querySelector('td:nth-child(5)').textContent = item.DeptName.trim() || 'N/A';  // Category
+        row.querySelector('td:nth-child(6)').textContent = formatter.format(item.ItemPrce) || 'N/A';  // Item Price
+        row.querySelector('td:nth-child(7)').textContent = formatter.format(item.LandCost) || 'N/A';  // Cost
+        row.querySelector('td:nth-child(8)').textContent = item.Encoder_ || 'N/A';  
+        row.querySelector('td:nth-child(9)').textContent = item.DateCost || 'N/A';  
+
     }
     globalData[index] = item;
 
@@ -202,7 +209,10 @@ async function ItemForm(index, editMode) {
     }
 
     const itemData = globalData[index];
-
+    const cUserData = JSON.parse(sessionStorage.getItem('userdata')); 
+    const cSuffixId = (cUserData && cUserData[0]) ? cUserData[0].SuffixId : 'ID';
+    const cEncoder_ = (cUserData && cUserData[0]) ? cUserData[0].NickName : 'Sys_User';
+    
     // Create the form element
     const itemForm = document.createElement('form');
     itemForm.id = "item-form";
@@ -482,11 +492,10 @@ async function ItemForm(index, editMode) {
                 return;
             }
     
-            const cSuffixId='E'
             addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
                 cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
                 nItemPrce,nItemCost,nLandCost,
-                nOutright,lDisabled,lServices,cSuffixId
+                nOutright,lDisabled,lServices,cSuffixId,cEncoder_
             )
                         
         }
@@ -548,7 +557,7 @@ async function editItemList(index, cItemCode,cUsersCde,cOtherCde,cDescript,
 async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
     cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
-    nOutright,lDisabled,lServices,cSuffixId) {
+    nOutright,lDisabled,lServices,cSuffixId,cEncoder_) {
     try {
         nOutright = document.getElementById("ItemList_Outright").checked ? '1' : '2';
         lDisabled = document.getElementById("ItemList_Disabled").checked ? '1' : '0';
@@ -575,7 +584,8 @@ async function addItemList(cItemCode,cUsersCde,cOtherCde,cDescript,
                 nOutright: nOutright,
                 lDisabled: lDisabled,
                 lServices: lServices,
-                cSuffixId: cSuffixId
+                cSuffixId: cSuffixId,
+                cEncoder_: cEncoder_
             })
         });
 
@@ -621,24 +631,30 @@ function updateTable() {
         <table id="ListItemTable">
             <thead id="Look_Up_Head">
                 <tr>
+                    <th>System Id</th>
                     <th>Description</th>
                     <th>Stock No</th>
                     <th>Brand</th>
                     <th>Category</th>
                     <th>Item Price</th>
                     <th>Cost</th>
+                    <th>Encoder</th>
+                    <th>Date Created</th>
                     <th style="width: 25px"></th>
                 </tr>
             </thead>
             <tbody id="ListItemBody">
                 ${globalData.map((item, index) => `
                     <tr id="trItemList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
+                        <td>${item.ItemCode || 'N/A'}</td>
                         <td class="colNoWrap">${item.Descript.trim().substring(0, 50) || 'N/A'}</td>
                         <td>${item.UsersCde || 'N/A'}</td>
                         <td>${item.BrandNme || 'N/A'}</td>
                         <td class="colNoWrap">${item.DeptName.trim() || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                        <td>${item.Encoder_ || 'N/A'}</td>
+                        <td>${formatDate(item.DateCost) || 'N/A'}</td>
                         <td class="action-icons">
                             <span class="spanDelItem colEditItem" data-index="${index}">
                                 <i class="fa fa-trash"></i>
@@ -723,11 +739,17 @@ document.getElementById('printItemXLS').addEventListener('click', () => {
 
 
     const colWidths = [
-        { width: 20 }, { width: 20 }, { width: 40 }, { width: 20 }, { width: 20 }, 
+        { width: 14 },{ width: 20 }, { width: 20 }, { width: 40 }, { width: 20 }, { width: 20 }, 
         { width: 20 }, { width: 20 }, { width: 20 }, { width: 10 }, 
     ];
 
     const columnConfig = [
+        {
+            label: 'System Id',
+            getValue: row => row.ItemCode,
+            type: 'string',
+            align: 'left'
+        },
         {
             label: 'Stock No.',
             getValue: row => row.UsersCde,
@@ -782,5 +804,5 @@ document.getElementById('printItemXLS').addEventListener('click', () => {
     
     const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
     
-    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Product List', 1);
+    printReportExcel(globalData, columnConfig, colWidths, titleRows, 'Product List', 2);
 })

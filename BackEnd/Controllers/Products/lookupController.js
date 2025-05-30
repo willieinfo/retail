@@ -250,6 +250,7 @@ const checkLogIn = async (req, res) => {
     APPUSERS.EmailAdd,
     APPUSERS.Password,
     APPUSERS.MenuOpts,
+    APPUSERS.SuffixId,
     APPUSERS.Disabled
     FROM APPUSERS
     WHERE 1=1`;
@@ -288,6 +289,7 @@ const listUser = async (req, res) => {
       APPUSERS.Tel_Num_,
       APPUSERS.Password,
       APPUSERS.Remarks_,
+      APPUSERS.SuffixId,
       APPUSERS.MenuOpts,
       APPUSERS.Address_,
       APPUSERS.Disabled
@@ -311,7 +313,7 @@ const listUser = async (req, res) => {
 };
 
 const addAppUsers = async (req, res) => {
-    const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, lDisabled } = req.body;
+    const { cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, lDisabled } = req.body;
   
     if (!cUserName || !cEmailAdd || !cNickName) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -350,6 +352,7 @@ const addAppUsers = async (req, res) => {
             APPUSERS.Tel_Num_,
             APPUSERS.Password,
             APPUSERS.Remarks_,
+            APPUSERS.SuffixId,
             APPUSERS.MenuOpts,
             APPUSERS.Address_,
             APPUSERS.Disabled
@@ -357,7 +360,7 @@ const addAppUsers = async (req, res) => {
     `;
 
     
-    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_ , cMenuOpts , lDisabled };
+    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_ , cMenuOpts , lDisabled };
     // console.log(params)
     try {
       const result = await queryDatabase(cSql, params);
@@ -369,7 +372,7 @@ const addAppUsers = async (req, res) => {
   };
   
 const editAppUsers = async (req, res) => {
-    const { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled } = req.body; 
+    const { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled } = req.body; 
   
     if (!cUserName || !cEmailAdd || !cNickName ) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -383,12 +386,13 @@ const editAppUsers = async (req, res) => {
           Password=@cPassword,
           NickName=@cNickName,
           Remarks_=@cRemarks_,
+          SuffixId=@cSuffixId,
           MenuOpts=@cMenuOpts,
           Address_=@cAddress_,
           Disabled=@lDisabled
       WHERE UserCode=@cUserCode`;
   
-    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cRemarks_, cMenuOpts, cAddress_, lDisabled };
+    const params = { cUserCode, cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword, cNickName, cSuffixId, cRemarks_, cMenuOpts, cAddress_, lDisabled };
   
     try {
       const result = await queryDatabase(cSql, params);
@@ -401,6 +405,45 @@ const editAppUsers = async (req, res) => {
     }
   };
   
+const deleteAppUsers = async (req, res) => {
+  const { id } = req.params;  // Read id from URL params
+
+  if (!id) {
+    return res.status(400).json({ error: 'Missing required parameter: id' });
+  }
+
+  // Check if location is used in any transactions
+  let cSql = `
+    SELECT TOP 1 UserCode FROM SALESREC WHERE UserCode=@id
+  `;
+  const params = { id };
+
+  try {
+    const result = await queryDatabase(cSql, params);
+
+    // If any row is found, location cannot be deleted
+    if (result && result.length > 0) {
+      return res.status(409).json({
+        message: 'Delete cannot be performed. The App User is referenced in transactions.'
+      });
+    }
+
+    // Proceed with the deletion if no references were found
+    cSql = `DELETE FROM APPUSERS WHERE UserCode=@id`;
+
+    try {
+      const deleteResult = await queryDatabase(cSql, params);
+      return res.json({ message: 'App User deleted successfully', rowsAffected: deleteResult });
+    } catch (err) {
+      console.error('Delete APPUSERS error:', err);
+      return res.status(500).json({ error: 'Error deleting App User' });
+    }
+
+  } catch (err) {
+    console.error('Error checking app user usage:', err);
+    return res.status(500).json({ error: 'Error checking app user usage' });
+  }
+};
 
   module.exports = { 
     listGrup,
@@ -409,6 +452,7 @@ const editAppUsers = async (req, res) => {
     checkLogIn,
     addAppUsers,
     editAppUsers,
+    deleteAppUsers,
     listLoca,
     addLocation,
     editLocation,
