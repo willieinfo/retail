@@ -1,4 +1,4 @@
-import { showReport, showNotification, formatter, formatDate, goMonth} from '../FunctLib.js';
+import { showReport, showNotification, formatter, formatDate, goMonth, startTimer} from '../FunctLib.js';
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
@@ -188,24 +188,8 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     const dMontFrom = goMonth(dDateFrom, -1)    // Previous Month
     const dMontTo__ = goMonth(dDateTo__, -1)
 
-    // console.log('Prev Year ',dYearFrom,dYearTo__)
-    // console.log('Prev Month',dMontFrom,dMontTo__)
-
-    let timerInterval;
-    let elapsedTime = 0;
-
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            elapsedTime++;
-            const minutes = Math.floor(elapsedTime / 60);
-            const seconds = elapsedTime % 60;
-            document.getElementById('runningTime').textContent = 
-                `Elapsed Time: ${minutes}m ${seconds}s`;
-        }, 1000);
-    }
-
     document.getElementById('loadingIndicator').style.display = 'flex';
-    startTimer();
+    let { timerInterval, elapsedTime } = startTimer(); 
 
     try {
         // Build query parameters
@@ -239,6 +223,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         // Clear the timer once data is fetched
         clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
 
         let nTotalQty = 0
         let nTotalPrc = 0
@@ -388,6 +373,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         document.getElementById('loadingIndicator').style.display = 'none';
         // Clear the timer once data is fetched
         clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
 
     }
 
@@ -523,6 +509,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
     let data = null;
     try {
         // Build query parameters
@@ -558,6 +545,8 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
 
         if (Array.isArray(data)) {
             data.forEach(item => {
@@ -654,6 +643,9 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     } finally {
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
     }
 
     document.getElementById('printBrandRank').addEventListener('click', () => {
@@ -1162,6 +1154,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
     let data = null;
     try {
         // Build query parameters
@@ -1197,6 +1190,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
 
         if (Array.isArray(data)) {
             data.forEach(item => {
@@ -1288,6 +1283,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     } finally {
         // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
     }
 
     document.getElementById('printStockRank').addEventListener('click', () => {

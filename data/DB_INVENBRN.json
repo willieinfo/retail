@@ -1,2454 +1,2544 @@
 [{
-"brandnme": "VICTORIA'S SECRET",
-"totalqty":78739.00,
-"totalsrp":127791284,
-"totalcos":41791592.2
+"BrandNme": "VICTORIA'S SECRET",
+"TotalQty":68159.00,
+"TotalCos":36290826.6,
+"TotalPrc":112021164
 },
 {
-"brandnme": "BATH  BODY WORKS",
-"totalqty":85870.00,
-"totalsrp":89602848.0,
-"totalcos":27524996.7
+"BrandNme": "BATH  BODY WORKS",
+"TotalQty":74544.00,
+"TotalCos":23888883.5,
+"TotalPrc":77774378.0
 },
 {
-"brandnme": "USPA",
-"totalqty":3521.00,
-"totalsrp":17477100.0,
-"totalcos":5867028.46
+"BrandNme": "MINISO",
+"TotalQty":49477.00,
+"TotalCos":7955604.46,
+"TotalPrc":17176302.0
 },
 {
-"brandnme": "MINISO",
-"totalqty":47489.00,
-"totalsrp":17020518.0,
-"totalcos":7848442.84
+"BrandNme": "NIKE",
+"TotalQty":7279.00,
+"TotalCos":7710599.28,
+"TotalPrc":12787099.0
 },
 {
-"brandnme": "JO MALONE",
-"totalqty":2047.00,
-"totalsrp":15227465.0,
-"totalcos":6174282.44
+"BrandNme": "MAC",
+"TotalQty":6419.00,
+"TotalCos":6344038.58,
+"TotalPrc":12265680.0
 },
 {
-"brandnme": "NIKE",
-"totalqty":8959.00,
-"totalsrp":15192911.5,
-"totalcos":9017021.55
+"BrandNme": "VERSACE",
+"TotalQty":2021.00,
+"TotalCos":6039274.61,
+"TotalPrc":14387175.0
 },
 {
-"brandnme": "VERSACE",
-"totalqty":2122.00,
-"totalsrp":15074330.0,
-"totalcos":6391107.63
+"BrandNme": "USPA",
+"TotalQty":3021.00,
+"TotalCos":5042455.17,
+"TotalPrc":15022294.0
 },
 {
-"brandnme": "MAC",
-"totalqty":7678.00,
-"totalsrp":13906330.0,
-"totalcos":7396922.65
+"BrandNme": "JO MALONE",
+"TotalQty":1685.00,
+"TotalCos":4900179.26,
+"TotalPrc":12050440.0
 },
 {
-"brandnme": "ADIDAS",
-"totalqty":5111.00,
-"totalsrp":9902882.00,
-"totalcos":6295300.88
+"BrandNme": "ADIDAS",
+"TotalQty":3617.00,
+"TotalCos":4704394.47,
+"TotalPrc":7303951.00
 },
 {
-"brandnme": "TRAVEL BLUE",
-"totalqty":6032.00,
-"totalsrp":7452550.25,
-"totalcos":2754564.44
+"BrandNme": "TRAVEL BLUE",
+"TotalQty":6712.00,
+"TotalCos":3208373.25,
+"TotalPrc":8532022.25
 },
 {
-"brandnme": "BURBERRY",
-"totalqty":1428.00,
-"totalsrp":7408290.00,
-"totalcos":3444296.04
+"BrandNme": "BURBERRY",
+"TotalQty":1233.00,
+"TotalCos":3016397.39,
+"TotalPrc":6532150.00
 },
 {
-"brandnme": "CALVIN KLEIN",
-"totalqty":1293.00,
-"totalsrp":7246350.00,
-"totalcos":3035858.49
+"BrandNme": "CALVIN KLEIN",
+"TotalQty":1191.00,
+"TotalCos":2868354.21,
+"TotalPrc":6851055.00
 },
 {
-"brandnme": "CLINIQUE",
-"totalqty":2206.00,
-"totalsrp":6870860.00,
-"totalcos":2589186.91
+"BrandNme": "YVES SAINT LAURENT",
+"TotalQty":697.00,
+"TotalCos":2759390.72,
+"TotalPrc":6189815.00
 },
 {
-"brandnme": "SKECHERS",
-"totalqty":1389.00,
-"totalsrp":6128240.60,
-"totalcos":1718985.35
+"BrandNme": "CLINIQUE",
+"TotalQty":2119.00,
+"TotalCos":2584060.37,
+"TotalPrc":6628405.00
 },
 {
-"brandnme": "FLAMINGO",
-"totalqty":14196.00,
-"totalsrp":5034800.00,
-"totalcos":1046127.75
+"BrandNme": "GIORGIO ARMANI",
+"TotalQty":547.00,
+"TotalCos":1884106.95,
+"TotalPrc":3998140.00
 },
 {
-"brandnme": "YVES SAINT LAURENT",
-"totalqty":595.00,
-"totalsrp":4964995.00,
-"totalcos":2299808.28
+"BrandNme": "BEACH HUT",
+"TotalQty":1593.00,
+"TotalCos":1856713.57,
+"TotalPrc":1708339.00
 },
 {
-"brandnme": "SWAROVSKI",
-"totalqty":475.00,
-"totalsrp":4863010.00,
-"totalcos":2596492.57
+"BrandNme": "SWAROVSKI",
+"TotalQty":362.00,
+"TotalCos":1616040.78,
+"TotalPrc":3472360.00
 },
 {
-"brandnme": "GIFT BUSINESS",
-"totalqty":15663.00,
-"totalsrp":4410929.00,
-"totalcos":1549348.87
+"BrandNme": "GIFT BUSINESS",
+"TotalQty":16621.00,
+"TotalCos":1589520.84,
+"TotalPrc":4616788.00
 },
 {
-"brandnme": "GIORGIO ARMANI",
-"totalqty":506.00,
-"totalsrp":4084830.00,
-"totalcos":1730041.76
+"BrandNme": "HUGO BOSS",
+"TotalQty":507.00,
+"TotalCos":1503646.65,
+"TotalPrc":3376100.00
 },
 {
-"brandnme": "HUGO BOSS",
-"totalqty":539.00,
-"totalsrp":3591000.00,
-"totalcos":1603407.15
+"BrandNme": "RALPH LAUREN",
+"TotalQty":438.00,
+"TotalCos":1334777.17,
+"TotalPrc":2838770.00
 },
 {
-"brandnme": "GOLDILOCKS OUTRIGHT",
-"totalqty":12238.00,
-"totalsrp":3248030.00,
-"totalcos":1119429.46
+"BrandNme": "ELIZABETH ARDEN",
+"TotalQty":880.00,
+"TotalCos":1169388.06,
+"TotalPrc":2405939.00
 },
 {
-"brandnme": "ADIDAS-B4U",
-"totalqty":3142.00,
-"totalsrp":3060720.00,
-"totalcos":1124189.85
+"BrandNme": "SKECHERS",
+"TotalQty":974.00,
+"TotalCos":1141517.25,
+"TotalPrc":4243435.05
 },
 {
-"brandnme": "GROOVY",
-"totalqty":13231.00,
-"totalsrp":2853490.00,
-"totalcos":630758.47
+"BrandNme": "FLAMINGO",
+"TotalQty":13994.00,
+"TotalCos":1035568.30,
+"TotalPrc":4978500.00
 },
 {
-"brandnme": "NESTI DANTE",
-"totalqty":9305.00,
-"totalsrp":2560855.00,
-"totalcos":939022.43
+"BrandNme": "SKETCHBOOKS",
+"TotalQty":1604.00,
+"TotalCos":919923.10,
+"TotalPrc":2092295.00
 },
 {
-"brandnme": "RALPH LAUREN",
-"totalqty":342.00,
-"totalsrp":2410800.00,
-"totalcos":1091494.98
+"BrandNme": "GOLDILOCKS OUTRIGHT",
+"TotalQty":9227.00,
+"TotalCos":918044.37,
+"TotalPrc":2660350.00
 },
 {
-"brandnme": "ELIZABETH ARDEN",
-"totalqty":871.00,
-"totalsrp":2360409.00,
-"totalcos":1145488.12
+"BrandNme": "ADIDAS-B4U",
+"TotalQty":2634.00,
+"TotalCos":905397.65,
+"TotalPrc":2473383.00
 },
 {
-"brandnme": "ESTEE LAUDER",
-"totalqty":452.00,
-"totalsrp":2335431.20,
-"totalcos":1452407.41
+"BrandNme": "TOMFORD",
+"TotalQty":202.00,
+"TotalCos":883470.66,
+"TotalPrc":1914327.00
 },
 {
-"brandnme": "PREMIER",
-"totalqty":26974.00,
-"totalsrp":2172570.00,
-"totalcos":271176.58
+"BrandNme": "ESTEE LAUDER",
+"TotalQty":265.00,
+"TotalCos":876106.12,
+"TotalPrc":1445340.80
 },
 {
-"brandnme": "TOMFORD",
-"totalqty":213.00,
-"totalsrp":2028187.00,
-"totalcos":936053.55
+"BrandNme": "ALL CHOCOLATES FUNSIZE",
+"TotalQty":538.00,
+"TotalCos":874642.00,
+"TotalPrc":1878000.00
 },
 {
-"brandnme": "MARC JACOBS",
-"totalqty":302.00,
-"totalsrp":1973972.00,
-"totalcos":752205.91
+"BrandNme": "DELSEY",
+"TotalQty":114.00,
+"TotalCos":758192.60,
+"TotalPrc":1329350.00
 },
 {
-"brandnme": "DAVIDOFF",
-"totalqty":389.00,
-"totalsrp":1946040.00,
-"totalcos":685042.56
+"BrandNme": "KIEHL'S",
+"TotalQty":511.00,
+"TotalCos":729874.18,
+"TotalPrc":1779780.00
 },
 {
-"brandnme": "CANDY CORNER",
-"totalqty":8375.00,
-"totalsrp":1878300.00,
-"totalcos":650493.21
+"BrandNme": "MARC JACOBS",
+"TotalQty":272.00,
+"TotalCos":682601.45,
+"TotalPrc":1783472.00
 },
 {
-"brandnme": "EVIAN",
-"totalqty":8680.00,
-"totalsrp":1862400.00,
-"totalcos":576041.77
+"BrandNme": "MARS",
+"TotalQty":5302.00,
+"TotalCos":667898.44,
+"TotalPrc":1738910.00
 },
 {
-"brandnme": "KIEHL'S",
-"totalqty":522.00,
-"totalsrp":1862250.00,
-"totalcos":841403.05
+"BrandNme": "LEXINGHAM",
+"TotalQty":1364.00,
+"TotalCos":655712.48,
+"TotalPrc":1669470.00
 },
 {
-"brandnme": "DELSEY",
-"totalqty":132.00,
-"totalsrp":1662124.00,
-"totalcos":876253.95
+"BrandNme": "CHLOE",
+"TotalQty":203.00,
+"TotalCos":643912.52,
+"TotalPrc":1657131.00
 },
 {
-"brandnme": "BEACH HUT",
-"totalqty":1548.00,
-"totalsrp":1643919.00,
-"totalcos":2643179.13
+"BrandNme": "LOCCITANE",
+"TotalQty":674.00,
+"TotalCos":640904.11,
+"TotalPrc":1394069.00
 },
 {
-"brandnme": "CHLOE",
-"totalqty":201.00,
-"totalsrp":1586771.00,
-"totalcos":627047.85
+"BrandNme": "DAVIDOFF",
+"TotalQty":353.00,
+"TotalCos":625998.23,
+"TotalPrc":1778450.00
 },
 {
-"brandnme": "THE BALM",
-"totalqty":1079.00,
-"totalsrp":1569375.00,
-"totalcos":518966.69
+"BrandNme": "GROOVY",
+"TotalQty":13004.00,
+"TotalCos":618668.41,
+"TotalPrc":2803810.00
 },
 {
-"brandnme": "LEXINGHAM",
-"totalqty":1282.00,
-"totalsrp":1565280.00,
-"totalcos":598096.47
+"BrandNme": "TOBLERONE",
+"TotalQty":4055.00,
+"TotalCos":607466.87,
+"TotalPrc":1385800.00
 },
 {
-"brandnme": "SKETCHBOOKS",
-"totalqty":1118.00,
-"totalsrp":1531345.00,
-"totalcos":679261.95
+"BrandNme": "EVIAN",
+"TotalQty":8398.00,
+"TotalCos":555157.04,
+"TotalPrc":1791250.00
 },
 {
-"brandnme": "TOBLERONE",
-"totalqty":4385.00,
-"totalsrp":1523750.00,
-"totalcos":656980.15
+"BrandNme": "THE BALM",
+"TotalQty":1078.00,
+"TotalCos":519048.01,
+"TotalPrc":1569225.00
 },
 {
-"brandnme": "LOCCITANE",
-"totalqty":709.00,
-"totalsrp":1451069.00,
-"totalcos":668353.88
+"BrandNme": "SPEEDO",
+"TotalQty":658.00,
+"TotalCos":511796.44,
+"TotalPrc":903763.00
 },
 {
-"brandnme": "VANS-SL",
-"totalqty":498.00,
-"totalsrp":1385950.00,
-"totalcos":379321.35
+"BrandNme": "CANDY CORNER",
+"TotalQty":6482.00,
+"TotalCos":511175.61,
+"TotalPrc":1479400.00
 },
 {
-"brandnme": "MARS",
-"totalqty":3349.00,
-"totalsrp":1229750.00,
-"totalcos":478384.81
+"BrandNme": "MOSCHINO",
+"TotalQty":157.00,
+"TotalCos":504316.47,
+"TotalPrc":1061035.00
 },
 {
-"brandnme": "JANSPORT",
-"totalqty":467.00,
-"totalsrp":1157455.00,
-"totalcos":362535.74
+"BrandNme": "LAMER",
+"TotalQty":80.00,
+"TotalCos":477313.24,
+"TotalPrc":985050.00
 },
 {
-"brandnme": "CHAMPION",
-"totalqty":737.00,
-"totalsrp":1118404.00,
-"totalcos":338977.05
+"BrandNme": "BIOFLU",
+"TotalQty":5693.00,
+"TotalCos":460563.70,
+"TotalPrc":1024740.00
 },
 {
-"brandnme": "SPEEDO",
-"totalqty":750.00,
-"totalsrp":1079618.00,
-"totalcos":615066.91
+"BrandNme": "L'OREAL",
+"TotalQty":445.00,
+"TotalCos":434509.24,
+"TotalPrc":627386.00
 },
 {
-"brandnme": "MENTOS",
-"totalqty":11299.00,
-"totalsrp":1037525.00,
-"totalcos":299519.76
+"BrandNme": "BONAMINE",
+"TotalQty":3140.00,
+"TotalCos":427040.00,
+"TotalPrc":942000.00
 },
 {
-"brandnme": "LAMER",
-"totalqty":83.00,
-"totalsrp":1029300.00,
-"totalcos":499042.74
+"BrandNme": "GUCCI",
+"TotalQty":103.00,
+"TotalCos":411962.50,
+"TotalPrc":768610.00
 },
 {
-"brandnme": "MOSCHINO",
-"totalqty":149.00,
-"totalsrp":1012300.00,
-"totalcos":480837.53
+"BrandNme": "VANS-SL",
+"TotalQty":482.00,
+"TotalCos":367156.33,
+"TotalPrc":1342081.00
 },
 {
-"brandnme": "ALL CHOCOLATES FUNSIZE",
-"totalqty":285.00,
-"totalsrp":997500.00,
-"totalcos":311230.06
+"BrandNme": "BVLGARI",
+"TotalQty":61.00,
+"TotalCos":365830.00,
+"TotalPrc":530050.00
 },
 {
-"brandnme": "ADIDAS PH",
-"totalqty":660.00,
-"totalsrp":928456.00,
-"totalcos":341747.08
+"BrandNme": "NESTI DANTE",
+"TotalQty":3206.00,
+"TotalCos":346559.97,
+"TotalPrc":958465.00
 },
 {
-"brandnme": "JOHNNIE WALKER",
-"totalqty":194.00,
-"totalsrp":927280.00,
-"totalcos":361597.52
+"BrandNme": "JOHNNIE WALKER",
+"TotalQty":208.00,
+"TotalCos":346328.05,
+"TotalPrc":881510.00
 },
 {
-"brandnme": "NESTLE",
-"totalqty":4487.00,
-"totalsrp":871290.00,
-"totalcos":288185.20
+"BrandNme": "CHAMPION",
+"TotalQty":729.00,
+"TotalCos":334113.80,
+"TotalPrc":1069843.00
 },
 {
-"brandnme": "QUIKSILVER",
-"totalqty":127.00,
-"totalsrp":871230.00,
-"totalcos":128566.94
+"BrandNme": "BOBBI BROWN",
+"TotalQty":222.00,
+"TotalCos":321279.28,
+"TotalPrc":672850.00
 },
 {
-"brandnme": "L'OREAL",
-"totalqty":373.00,
-"totalsrp":866181.00,
-"totalcos":454363.81
+"BrandNme": "PREMIER",
+"TotalQty":30125.00,
+"TotalCos":295727.18,
+"TotalPrc":2417870.00
 },
 {
-"brandnme": "FITFLOP-SL",
-"totalqty":147.00,
-"totalsrp":816915.00,
-"totalcos":261596.13
+"BrandNme": "NESTLE",
+"TotalQty":3840.00,
+"TotalCos":291282.89,
+"TotalPrc":869000.00
 },
 {
-"brandnme": "GUCCI",
-"totalqty":116.00,
-"totalsrp":806800.00,
-"totalcos":427985.71
+"BrandNme": "JANSPORT",
+"TotalQty":372.00,
+"TotalCos":290299.06,
+"TotalPrc":921405.00
 },
 {
-"brandnme": "HERSHEY'S",
-"totalqty":3076.00,
-"totalsrp":784775.00,
-"totalcos":299202.92
+"BrandNme": "ORIGINS",
+"TotalQty":220.00,
+"TotalCos":269068.89,
+"TotalPrc":640750.00
 },
 {
-"brandnme": "HAPPY HEARTS-O",
-"totalqty":1619.00,
-"totalsrp":779760.00,
-"totalcos":326600.84
+"BrandNme": "HERSHEY'S",
+"TotalQty":2845.00,
+"TotalCos":268039.75,
+"TotalPrc":692265.00
 },
 {
-"brandnme": "DAVID BECKHAM",
-"totalqty":302.00,
-"totalsrp":754445.00,
-"totalcos":280889.06
+"BrandNme": "HERMES",
+"TotalQty":41.00,
+"TotalCos":266638.47,
+"TotalPrc":420800.00
 },
 {
-"brandnme": "BOBBI BROWN",
-"totalqty":240.00,
-"totalsrp":727500.00,
-"totalcos":358141.23
+"BrandNme": "ADIDAS PH",
+"TotalQty":504.00,
+"TotalCos":262832.18,
+"TotalPrc":715429.00
 },
 {
-"brandnme": "WILKINS",
-"totalqty":7372.00,
-"totalsrp":694620.00,
-"totalcos":101609.37
+"BrandNme": "CADBURY",
+"TotalQty":1888.00,
+"TotalCos":257002.43,
+"TotalPrc":706165.00
 },
 {
-"brandnme": "EVERLAST",
-"totalqty":365.00,
-"totalsrp":685920.00,
-"totalcos":171638.18
+"BrandNme": "HAPPY HEARTS-O",
+"TotalQty":1281.00,
+"TotalCos":249255.03,
+"TotalPrc":610766.00
 },
 {
-"brandnme": "KISSNY",
-"totalqty":1688.00,
-"totalsrp":660176.00,
-"totalcos":208453.68
+"BrandNme": "MENTOS",
+"TotalQty":9020.00,
+"TotalCos":248889.66,
+"TotalPrc":845925.00
 },
 {
-"brandnme": "KEDS",
-"totalqty":188.00,
-"totalsrp":650290.00,
-"totalcos":232259.83
+"BrandNme": "7D",
+"TotalQty":1660.00,
+"TotalCos":238409.14,
+"TotalPrc":548320.00
 },
 {
-"brandnme": "ORIGINS",
-"totalqty":222.00,
-"totalsrp":644350.00,
-"totalcos":270718.68
+"BrandNme": "HAVAIANAS",
+"TotalQty":362.00,
+"TotalCos":232833.37,
+"TotalPrc":401838.00
 },
 {
-"brandnme": "LOCAL SCARF",
-"totalqty":1037.00,
-"totalsrp":622217.00,
-"totalcos":180503.82
+"BrandNme": "IPANEMA-O",
+"TotalQty":720.00,
+"TotalCos":227487.00,
+"TotalPrc":462681.00
 },
 {
-"brandnme": "BVLGARI",
-"totalqty":70.00,
-"totalsrp":602850.00,
-"totalcos":412081.87
+"BrandNme": "NON-MERCH",
+"TotalQty":12190.00,
+"TotalCos":226375.00,
+"TotalPrc":0.00
 },
 {
-"brandnme": "COCA COLA",
-"totalqty":5454.00,
-"totalsrp":593140.00,
-"totalcos":157983.09
+"BrandNme": "KEDS",
+"TotalQty":178.00,
+"TotalCos":220993.30,
+"TotalPrc":618750.00
 },
 {
-"brandnme": "IPANEMA-O",
-"totalqty":887.00,
-"totalsrp":553274.00,
-"totalcos":272322.00
+"BrandNme": "HUGO",
+"TotalQty":84.00,
+"TotalCos":213389.77,
+"TotalPrc":562970.00
 },
 {
-"brandnme": "KATINKO",
-"totalqty":2757.00,
-"totalsrp":545190.00,
-"totalcos":145229.13
+"BrandNme": "KISSNY",
+"TotalQty":1685.00,
+"TotalCos":208165.36,
+"TotalPrc":659276.00
 },
 {
-"brandnme": "LCTI",
-"totalqty":2380.00,
-"totalsrp":524290.00,
-"totalcos":202037.73
+"BrandNme": "FITFLOP-SL",
+"TotalQty":113.00,
+"TotalCos":208005.46,
+"TotalPrc":638145.00
 },
 {
-"brandnme": "7D",
-"totalqty":1605.00,
-"totalsrp":517600.00,
-"totalcos":202954.34
+"BrandNme": "NEOZEP",
+"TotalQty":3146.00,
+"TotalCos":195893.61,
+"TotalPrc":408980.00
 },
 {
-"brandnme": "CADBURY",
-"totalqty":1512.00,
-"totalsrp":506155.00,
-"totalcos":179135.49
+"BrandNme": "BIOGESIC",
+"TotalQty":4814.00,
+"TotalCos":194967.00,
+"TotalPrc":481400.00
 },
 {
-"brandnme": "SBS",
-"totalqty":252.00,
-"totalsrp":495800.00,
-"totalcos":166586.17
+"BrandNme": "JACK  JILL",
+"TotalQty":7439.00,
+"TotalCos":184114.02,
+"TotalPrc":536440.00
 },
 {
-"brandnme": "POCARI",
-"totalqty":3254.00,
-"totalsrp":488100.00,
-"totalcos":110408.22
+"BrandNme": "SWATCH",
+"TotalQty":63.00,
+"TotalCos":181415.25,
+"TotalPrc":407740.00
 },
 {
-"brandnme": "STANLEY",
-"totalqty":186.00,
-"totalsrp":479370.00,
-"totalcos":275959.71
+"BrandNme": "DAVID BECKHAM",
+"TotalQty":190.00,
+"TotalCos":178171.45,
+"TotalPrc":479625.00
 },
 {
-"brandnme": "GATORADE",
-"totalqty":4806.00,
-"totalsrp":478915.00,
-"totalcos":164382.07
+"BrandNme": "PASALUBONG PACK",
+"TotalQty":127.00,
+"TotalCos":176145.20,
+"TotalPrc":284435.00
 },
 {
-"brandnme": "FRITO LAY",
-"totalqty":2922.00,
-"totalsrp":457130.00,
-"totalcos":161748.72
+"BrandNme": "COCA COLA",
+"TotalQty":5718.00,
+"TotalCos":172990.02,
+"TotalPrc":612860.00
 },
 {
-"brandnme": "TROLLI",
-"totalqty":2515.00,
-"totalsrp":448640.00,
-"totalcos":142242.06
+"BrandNme": "EVERLAST",
+"TotalQty":359.00,
+"TotalCos":169073.93,
+"TotalPrc":676038.00
 },
 {
-"brandnme": "HERMES",
-"totalqty":43.00,
-"totalsrp":445100.00,
-"totalcos":280018.27
+"BrandNme": "SBS",
+"TotalQty":253.00,
+"TotalCos":168206.55,
+"TotalPrc":499700.00
 },
 {
-"brandnme": "NAUTICA",
-"totalqty":125.00,
-"totalsrp":436500.00,
-"totalcos":81814.75
+"BrandNme": "LOCAL SCARF",
+"TotalQty":938.00,
+"TotalCos":166683.57,
+"TotalPrc":582775.00
 },
 {
-"brandnme": "SAN MIGUEL",
-"totalqty":3432.00,
-"totalsrp":409680.00,
-"totalcos":150054.04
+"BrandNme": "FRITO LAY",
+"TotalQty":2978.00,
+"TotalCos":165088.55,
+"TotalPrc":457180.00
 },
 {
-"brandnme": "SWATCH",
-"totalqty":63.00,
-"totalsrp":407740.00,
-"totalcos":181415.25
+"BrandNme": "NIKE-SWIM",
+"TotalQty":129.00,
+"TotalCos":157569.75,
+"TotalPrc":350155.00
 },
 {
-"brandnme": "ANKER",
-"totalqty":206.00,
-"totalsrp":383863.00,
-"totalcos":198832.91
+"BrandNme": "LANEIGE",
+"TotalQty":123.00,
+"TotalCos":157076.65,
+"TotalPrc":315485.00
 },
 {
-"brandnme": "MARLBORO",
-"totalqty":1061.00,
-"totalsrp":371350.00,
-"totalcos":120159.00
+"BrandNme": "LCTI",
+"TotalQty":1681.00,
+"TotalCos":149121.24,
+"TotalPrc":361340.00
 },
 {
-"brandnme": "UNDER ARMOUR",
-"totalqty":57.00,
-"totalsrp":368315.00,
-"totalcos":139662.44
+"BrandNme": "POCARI",
+"TotalQty":3266.00,
+"TotalCos":146124.75,
+"TotalPrc":484765.00
 },
 {
-"brandnme": "HAVAIANAS",
-"totalqty":323.00,
-"totalsrp":356577.00,
-"totalcos":206764.30
+"BrandNme": "GATORADE",
+"TotalQty":4494.00,
+"TotalCos":144343.74,
+"TotalPrc":446755.00
 },
 {
-"brandnme": "EMY'S",
-"totalqty":1009.00,
-"totalsrp":353150.00,
-"totalcos":126949.21
+"BrandNme": "UNDER ARMOUR",
+"TotalQty":57.00,
+"TotalCos":139662.44,
+"TotalPrc":368315.00
 },
 {
-"brandnme": "RICOLA",
-"totalqty":2130.00,
-"totalsrp":319500.00,
-"totalcos":128360.92
+"BrandNme": "STANLEY",
+"TotalQty":89.00,
+"TotalCos":134956.25,
+"TotalPrc":229730.00
 },
 {
-"brandnme": "LANEIGE",
-"totalqty":123.00,
-"totalsrp":315485.00,
-"totalcos":157076.65
+"BrandNme": "QUIKSILVER",
+"TotalQty":127.00,
+"TotalCos":128566.94,
+"TotalPrc":871230.00
 },
 {
-"brandnme": "PATRON",
-"totalqty":40.00,
-"totalsrp":310030.00,
-"totalcos":99296.88
+"BrandNme": "KATINKO",
+"TotalQty":2472.00,
+"TotalCos":127565.63,
+"TotalPrc":482090.00
 },
 {
-"brandnme": "JACK  JILL",
-"totalqty":3698.00,
-"totalsrp":303680.00,
-"totalcos":111486.62
+"BrandNme": "SAN MIGUEL",
+"TotalQty":3784.00,
+"TotalCos":127368.21,
+"TotalPrc":453225.00
 },
 {
-"brandnme": "ACCEL",
-"totalqty":137.00,
-"totalsrp":301367.00,
-"totalcos":133519.90
+"BrandNme": "OGON",
+"TotalQty":69.00,
+"TotalCos":125477.40,
+"TotalPrc":271200.00
 },
 {
-"brandnme": "MISHMASH",
-"totalqty":717.00,
-"totalsrp":301272.00,
-"totalcos":122718.10
+"BrandNme": "RICOLA",
+"TotalQty":2061.00,
+"TotalCos":124236.06,
+"TotalPrc":309150.00
 },
 {
-"brandnme": "BILLABONG-SL",
-"totalqty":123.00,
-"totalsrp":282210.00,
-"totalcos":30276.41
+"BrandNme": "CEBU DRIED MANGOES-O",
+"TotalQty":869.00,
+"TotalCos":123667.50,
+"TotalPrc":324250.00
 },
 {
-"brandnme": "THE NORTH FACE-O",
-"totalqty":36.00,
-"totalsrp":276340.00,
-"totalcos":79808.00
+"BrandNme": "MISHMASH",
+"TotalQty":710.00,
+"TotalCos":121767.21,
+"TotalPrc":298981.00
 },
 {
-"brandnme": "TUMI",
-"totalqty":7.00,
-"totalsrp":274930.00,
-"totalcos":108850.56
+"BrandNme": "KATE SPADE",
+"TotalQty":15.00,
+"TotalCos":119971.65,
+"TotalPrc":246062.00
 },
 {
-"brandnme": "OGON",
-"totalqty":69.00,
-"totalsrp":271800.00,
-"totalcos":125641.01
+"BrandNme": "ANKER",
+"TotalQty":110.00,
+"TotalCos":118131.06,
+"TotalPrc":219500.00
 },
 {
-"brandnme": "FRUITELLA",
-"totalqty":2839.00,
-"totalsrp":257760.00,
-"totalcos":71213.80
+"BrandNme": "MARLBORO",
+"TotalQty":956.00,
+"TotalCos":107199.05,
+"TotalPrc":334600.00
 },
 {
-"brandnme": "KATE SPADE",
-"totalqty":16.00,
-"totalsrp":254762.00,
-"totalcos":122323.65
+"BrandNme": "WILKINS",
+"TotalQty":6995.00,
+"TotalCos":105326.04,
+"TotalPrc":795570.00
 },
 {
-"brandnme": "PEPE JEANS",
-"totalqty":166.00,
-"totalsrp":253638.00,
-"totalcos":57354.95
+"BrandNme": "PRINGLES",
+"TotalQty":1022.00,
+"TotalCos":101239.79,
+"TotalPrc":224140.00
 },
 {
-"brandnme": "MICHELLE'S OUTRIGHT",
-"totalqty":975.00,
-"totalsrp":252738.00,
-"totalcos":71231.25
+"BrandNme": "TROLLI",
+"TotalQty":1829.00,
+"TotalCos":98747.17,
+"TotalPrc":319490.00
 },
 {
-"brandnme": "HUGO",
-"totalqty":39.00,
-"totalsrp":252025.00,
-"totalcos":111971.54
+"BrandNme": "REDBULL",
+"TotalQty":1261.00,
+"TotalCos":97037.20,
+"TotalPrc":201760.00
 },
 {
-"brandnme": "HARIBO",
-"totalqty":1781.00,
-"totalsrp":250650.00,
-"totalcos":88001.09
+"BrandNme": "PATRON",
+"TotalQty":38.00,
+"TotalCos":94916.10,
+"TotalPrc":294140.00
 },
 {
-"brandnme": "COOL  CLEAN",
-"totalqty":2502.00,
-"totalsrp":250200.00,
-"totalcos":74243.51
+"BrandNme": "ACCEL",
+"TotalQty":96.00,
+"TotalCos":93756.40,
+"TotalPrc":211176.50
 },
 {
-"brandnme": "DALMORE",
-"totalqty":17.00,
-"totalsrp":220830.00,
-"totalcos":88383.00
+"BrandNme": "JBL",
+"TotalQty":37.00,
+"TotalCos":93597.17,
+"TotalPrc":166820.00
 },
 {
-"brandnme": "HENNESSY",
-"totalqty":37.00,
-"totalsrp":217440.00,
-"totalcos":86061.20
+"BrandNme": "VANS",
+"TotalQty":87.00,
+"TotalCos":88419.37,
+"TotalPrc":156292.00
 },
 {
-"brandnme": "EASTPAK-SL",
-"totalqty":77.00,
-"totalsrp":214776.00,
-"totalcos":58021.81
+"BrandNme": "DALMORE",
+"TotalQty":17.00,
+"TotalCos":88383.00,
+"TotalPrc":220830.00
 },
 {
-"brandnme": "FISHERMAN'S FRIEND",
-"totalqty":1757.00,
-"totalsrp":210840.00,
-"totalcos":78521.09
+"BrandNme": "HENNESSY",
+"TotalQty":35.00,
+"TotalCos":81140.09,
+"TotalPrc":204450.00
 },
 {
-"brandnme": "LUXOTTICA",
-"totalqty":18.00,
-"totalsrp":210000.00,
-"totalcos":100341.90
+"BrandNme": "MICHELLE'S OUTRIGHT",
+"TotalQty":1104.00,
+"TotalCos":80133.75,
+"TotalPrc":288733.00
 },
 {
-"brandnme": "PASALUBONG PACK",
-"totalqty":83.00,
-"totalsrp":206785.00,
-"totalcos":93285.05
+"BrandNme": "APPLE",
+"TotalQty":68.00,
+"TotalCos":79448.17,
+"TotalPrc":135328.00
 },
 {
-"brandnme": "JBL",
-"totalqty":43.00,
-"totalsrp":202045.00,
-"totalcos":112781.62
+"BrandNme": "COOL  CLEAN",
+"TotalQty":2651.00,
+"TotalCos":79252.80,
+"TotalPrc":265100.00
 },
 {
-"brandnme": "OISHI",
-"totalqty":2081.00,
-"totalsrp":200130.00,
-"totalcos":47855.49
+"BrandNme": "SONY",
+"TotalQty":73.00,
+"TotalCos":78493.53,
+"TotalPrc":152343.00
 },
 {
-"brandnme": "SANICARE",
-"totalqty":2087.00,
-"totalsrp":199225.00,
-"totalcos":69417.58
+"BrandNme": "HARIBO",
+"TotalQty":1574.00,
+"TotalCos":77897.86,
+"TotalPrc":222150.00
 },
 {
-"brandnme": "ABSOLUTE",
-"totalqty":1588.00,
-"totalsrp":190880.00,
-"totalcos":27167.44
+"BrandNme": "GIORGIO ARMANI-B4U",
+"TotalQty":24.00,
+"TotalCos":74964.45,
+"TotalPrc":168960.00
 },
 {
-"brandnme": "SMART C",
-"totalqty":1881.00,
-"totalsrp":188100.00,
-"totalcos":48431.94
+"BrandNme": "EMY'S",
+"TotalQty":586.00,
+"TotalCos":73825.83,
+"TotalPrc":205100.00
 },
 {
-"brandnme": "BRIC'S-SL",
-"totalqty":33.00,
-"totalsrp":188002.00,
-"totalcos":68155.24
+"BrandNme": "CONVERSE",
+"TotalQty":36.00,
+"TotalCos":69998.00,
+"TotalPrc":118017.50
 },
 {
-"brandnme": "BE RELAX",
-"totalqty":62.00,
-"totalsrp":185900.00,
-"totalcos":53295.55
+"BrandNme": "VOLVIC",
+"TotalQty":1802.00,
+"TotalCos":69377.00,
+"TotalPrc":216240.00
 },
 {
-"brandnme": "ES",
-"totalqty":446.00,
-"totalsrp":183010.00,
-"totalcos":67747.50
+"BrandNme": "INSTA360-TRI",
+"TotalQty":2.00,
+"TotalCos":69098.80,
+"TotalPrc":77980.00
 },
 {
-"brandnme": "RED RIBBON",
-"totalqty":1868.00,
-"totalsrp":182330.00,
-"totalcos":57085.81
+"BrandNme": "SANICARE",
+"TotalQty":1726.00,
+"TotalCos":68355.38,
+"TotalPrc":189090.00
 },
 {
-"brandnme": "DESTINATION TRAVEL",
-"totalqty":210.00,
-"totalsrp":180340.00,
-"totalcos":39118.86
+"BrandNme": "FILIPINIANA",
+"TotalQty":209.00,
+"TotalCos":67372.88,
+"TotalPrc":139218.00
 },
 {
-"brandnme": "VOLVIC",
-"totalqty":1481.00,
-"totalsrp":177720.00,
-"totalcos":53241.95
+"BrandNme": "LEMON DOU",
+"TotalQty":941.00,
+"TotalCos":66935.40,
+"TotalPrc":138960.00
 },
 {
-"brandnme": "FERRERO ROCHER",
-"totalqty":287.00,
-"totalsrp":176820.00,
-"totalcos":71773.79
+"BrandNme": "DIATABS",
+"TotalQty":2131.00,
+"TotalCos":65123.36,
+"TotalPrc":170480.00
 },
 {
-"brandnme": "SKROSS",
-"totalqty":84.00,
-"totalsrp":173600.00,
-"totalcos":61401.99
+"BrandNme": "VITA COCO",
+"TotalQty":1886.00,
+"TotalCos":64931.34,
+"TotalPrc":188600.00
 },
 {
-"brandnme": "SONY",
-"totalqty":66.00,
-"totalsrp":172959.00,
-"totalcos":94209.13
+"BrandNme": "OPI",
+"TotalQty":185.00,
+"TotalCos":64691.13,
+"TotalPrc":143970.00
 },
 {
-"brandnme": "VANS",
-"totalqty":91.00,
-"totalsrp":170784.00,
-"totalcos":95535.98
+"BrandNme": "CABEAU",
+"TotalQty":100.00,
+"TotalCos":62763.57,
+"TotalPrc":166070.00
 },
 {
-"brandnme": "VOLCOM-SL",
-"totalqty":66.00,
-"totalsrp":164500.00,
-"totalcos":12976.69
+"BrandNme": "WORLD TRAVELER",
+"TotalQty":24.00,
+"TotalCos":62351.63,
+"TotalPrc":134160.00
 },
 {
-"brandnme": "GIORGIO ARMANI-B4U",
-"totalqty":24.00,
-"totalsrp":163790.00,
-"totalcos":73273.20
+"BrandNme": "FERRERO ROCHER",
+"TotalQty":265.00,
+"TotalCos":61612.08,
+"TotalPrc":153660.00
 },
 {
-"brandnme": "CABEAU",
-"totalqty":99.00,
-"totalsrp":163270.00,
-"totalcos":62005.38
+"BrandNme": "DOUBLEMINT",
+"TotalQty":2638.00,
+"TotalCos":59947.90,
+"TotalPrc":159960.00
 },
 {
-"brandnme": "GLENLIVET",
-"totalqty":30.00,
-"totalsrp":162000.00,
-"totalcos":53544.60
+"BrandNme": "BRIC'S-SL",
+"TotalQty":29.00,
+"TotalCos":56928.96,
+"TotalPrc":160309.00
 },
 {
-"brandnme": "B  D",
-"totalqty":145.00,
-"totalsrp":159750.00,
-"totalcos":76229.46
+"BrandNme": "AUKEY",
+"TotalQty":72.00,
+"TotalCos":56871.95,
+"TotalPrc":115484.00
 },
 {
-"brandnme": "REDBULL",
-"totalqty":984.00,
-"totalsrp":157440.00,
-"totalcos":70255.82
+"BrandNme": "TUMI",
+"TotalQty":4.00,
+"TotalCos":56259.84,
+"TotalPrc":142260.00
 },
 {
-"brandnme": "LEMON DOU",
-"totalqty":998.00,
-"totalsrp":148110.00,
-"totalcos":71388.40
+"BrandNme": "OISHI",
+"TotalQty":2205.00,
+"TotalCos":55688.41,
+"TotalPrc":215760.00
 },
 {
-"brandnme": "FILIPINIANA",
-"totalqty":221.00,
-"totalsrp":147544.00,
-"totalcos":71614.26
+"BrandNme": "MAGWAI",
+"TotalQty":129.00,
+"TotalCos":55235.80,
+"TotalPrc":90300.00
 },
 {
-"brandnme": "WHITEFLOWER",
-"totalqty":766.00,
-"totalsrp":146000.00,
-"totalcos":53897.42
+"BrandNme": "THE NORTH FACE-O",
+"TotalQty":26.00,
+"TotalCos":55128.00,
+"TotalPrc":196340.00
 },
 {
-"brandnme": "ANTHILL",
-"totalqty":105.00,
-"totalsrp":144625.00,
-"totalcos":33371.58
+"BrandNme": "EASTPAK-SL",
+"TotalQty":72.00,
+"TotalCos":53535.21,
+"TotalPrc":198026.00
 },
 {
-"brandnme": "OPI",
-"totalqty":185.00,
-"totalsrp":143970.00,
-"totalcos":64691.13
+"BrandNme": "BE RELAX",
+"TotalQty":62.00,
+"TotalCos":53295.55,
+"TotalPrc":185900.00
 },
 {
-"brandnme": "DOUBLEMINT",
-"totalqty":2562.00,
-"totalsrp":143940.00,
-"totalcos":54782.47
+"BrandNme": "SKROSS",
+"TotalQty":76.00,
+"TotalCos":53200.71,
+"TotalPrc":155200.00
 },
 {
-"brandnme": "GLENFIDDICH",
-"totalqty":24.00,
-"totalsrp":141590.00,
-"totalcos":54495.36
+"BrandNme": "COACH",
+"TotalQty":5.00,
+"TotalCos":53044.50,
+"TotalPrc":102615.00
 },
 {
-"brandnme": "CONVERSE",
-"totalqty":43.00,
-"totalsrp":138895.00,
-"totalcos":82386.30
+"BrandNme": "NAUTICA",
+"TotalQty":82.00,
+"TotalCos":53025.45,
+"TotalPrc":282900.00
 },
 {
-"brandnme": "APPLE",
-"totalqty":68.00,
-"totalsrp":136819.00,
-"totalcos":79806.94
+"BrandNme": "CHEETOS",
+"TotalQty":382.00,
+"TotalCos":52718.10,
+"TotalPrc":118450.00
 },
 {
-"brandnme": "WORLD TRAVELER",
-"totalqty":24.00,
-"totalsrp":134160.00,
-"totalcos":62351.63
+"BrandNme": "FRUITELLA",
+"TotalQty":2245.00,
+"TotalCos":51889.96,
+"TotalPrc":186760.00
 },
 {
-"brandnme": "REMY MARTIN",
-"totalqty":15.00,
-"totalsrp":131640.00,
-"totalcos":44011.20
+"BrandNme": "GLENLIVET",
+"TotalQty":28.00,
+"TotalCos":50510.68,
+"TotalPrc":154000.00
 },
 {
-"brandnme": "DOUGHNUT-SL",
-"totalqty":37.00,
-"totalsrp":131340.00,
-"totalcos":37095.14
+"BrandNme": "GLENFIDDICH",
+"TotalQty":22.00,
+"TotalCos":49866.86,
+"TotalPrc":128590.00
 },
 {
-"brandnme": "AUKEY",
-"totalqty":77.00,
-"totalsrp":130788.00,
-"totalcos":64016.19
+"BrandNme": "PENFOLDS",
+"TotalQty":32.00,
+"TotalCos":49597.33,
+"TotalPrc":106480.00
 },
 {
-"brandnme": "ROYAL",
-"totalqty":1279.00,
-"totalsrp":127900.00,
-"totalcos":27723.33
+"BrandNme": "WHSMITH BAGS",
+"TotalQty":102.00,
+"TotalCos":49568.22,
+"TotalPrc":79472.00
 },
 {
-"brandnme": "VITA COCO",
-"totalqty":1277.00,
-"totalsrp":127700.00,
-"totalcos":43959.96
+"BrandNme": "MERBA",
+"TotalQty":475.00,
+"TotalCos":48926.92,
+"TotalPrc":135750.00
 },
 {
-"brandnme": "SPRAYGROUND",
-"totalqty":39.00,
-"totalsrp":126750.00,
-"totalcos":32263.44
+"BrandNme": "PHIL BRAND DRIED MANGO",
+"TotalQty":294.00,
+"TotalCos":46435.80,
+"TotalPrc":107160.00
 },
 {
-"brandnme": "POCKY",
-"totalqty":1135.00,
-"totalsrp":123660.00,
-"totalcos":43679.29
+"BrandNme": "LUXOTTICA",
+"TotalQty":8.00,
+"TotalCos":45453.91,
+"TotalPrc":95100.00
 },
 {
-"brandnme": "CHEETOS",
-"totalqty":393.00,
-"totalsrp":122750.00,
-"totalcos":52897.92
+"BrandNme": "ABSOLUTE",
+"TotalQty":2856.00,
+"TotalCos":45401.28,
+"TotalPrc":292320.00
 },
 {
-"brandnme": "PRINGLES",
-"totalqty":538.00,
-"totalsrp":117520.00,
-"totalcos":53086.66
+"BrandNme": "SMART C",
+"TotalQty":1811.00,
+"TotalCos":45055.15,
+"TotalPrc":181100.00
 },
 {
-"brandnme": "POLAROID",
-"totalqty":59.00,
-"totalsrp":117500.00,
-"totalcos":41600.50
+"BrandNme": "JOCKEY",
+"TotalQty":148.00,
+"TotalCos":44948.87,
+"TotalPrc":85735.00
 },
 {
-"brandnme": "ROXY",
-"totalqty":16.00,
-"totalsrp":116840.00,
-"totalcos":16186.20
+"BrandNme": "FISHERMAN'S FRIEND",
+"TotalQty":1222.00,
+"TotalCos":44547.46,
+"TotalPrc":146640.00
 },
 {
-"brandnme": "KIPLING",
-"totalqty":28.00,
-"totalsrp":113654.00,
-"totalcos":48908.57
+"BrandNme": "REMY MARTIN",
+"TotalQty":15.00,
+"TotalCos":44011.20,
+"TotalPrc":131640.00
 },
 {
-"brandnme": "MOGU MOGU",
-"totalqty":1112.00,
-"totalsrp":111320.00,
-"totalcos":29790.48
+"BrandNme": "PEPE JEANS",
+"TotalQty":134.00,
+"TotalCos":41756.01,
+"TotalPrc":189846.00
 },
 {
-"brandnme": "LOTTE",
-"totalqty":1055.00,
-"totalsrp":109780.00,
-"totalcos":41624.31
+"BrandNme": "ES",
+"TotalQty":277.00,
+"TotalCos":41612.50,
+"TotalPrc":112160.00
 },
 {
-"brandnme": "GATTINONI ROMA",
-"totalqty":24.00,
-"totalsrp":108160.00,
-"totalcos":30194.10
+"BrandNme": "POLAROID",
+"TotalQty":59.00,
+"TotalCos":41600.50,
+"TotalPrc":117500.00
 },
 {
-"brandnme": "AGATHA",
-"totalqty":30.00,
-"totalsrp":106100.00,
-"totalcos":39065.04
+"BrandNme": "B  D",
+"TotalQty":76.00,
+"TotalCos":39647.04,
+"TotalPrc":79520.00
 },
 {
-"brandnme": "TRUNKI",
-"totalqty":17.00,
-"totalsrp":105920.00,
-"totalcos":37276.80
+"BrandNme": "DESTINATION TRAVEL",
+"TotalQty":216.00,
+"TotalCos":39384.42,
+"TotalPrc":181935.00
 },
 {
-"brandnme": "STANCE",
-"totalqty":77.00,
-"totalsrp":102730.00,
-"totalcos":29106.35
+"BrandNme": "AGATHA",
+"TotalQty":30.00,
+"TotalCos":39065.04,
+"TotalPrc":106100.00
 },
 {
-"brandnme": "MERBA",
-"totalqty":367.00,
-"totalsrp":102700.00,
-"totalcos":37444.92
+"BrandNme": "ROYAL",
+"TotalQty":1591.00,
+"TotalCos":38616.31,
+"TotalPrc":159100.00
 },
 {
-"brandnme": "COACH",
-"totalqty":5.00,
-"totalsrp":102615.00,
-"totalcos":53044.50
+"BrandNme": "SENNHEISER",
+"TotalQty":18.00,
+"TotalCos":37648.21,
+"TotalPrc":92820.00
 },
 {
-"brandnme": "STARBUCKS",
-"totalqty":411.00,
-"totalsrp":102450.00,
-"totalcos":31236.00
+"BrandNme": "TRUNKI",
+"TotalQty":17.00,
+"TotalCos":37276.80,
+"TotalPrc":105920.00
 },
 {
-"brandnme": "NUTELLA",
-"totalqty":291.00,
-"totalsrp":101850.00,
-"totalcos":41292.90
+"BrandNme": "JOSE CUERVO",
+"TotalQty":47.00,
+"TotalCos":37218.50,
+"TotalPrc":106800.00
 },
 {
-"brandnme": "GREY GOOSE",
-"totalqty":21.00,
-"totalsrp":99670.00,
-"totalcos":36427.62
+"BrandNme": "CEBU DRIED MANGOES",
+"TotalQty":238.00,
+"TotalCos":37195.00,
+"TotalPrc":88300.00
 },
 {
-"brandnme": "JOSE CUERVO",
-"totalqty":44.00,
-"totalsrp":98400.00,
-"totalcos":35528.36
+"BrandNme": "BILLABONG",
+"TotalQty":170.00,
+"TotalCos":35997.50,
+"TotalPrc":56100.00
 },
 {
-"brandnme": "CEBU DRIED MANGOES-O",
-"totalqty":279.00,
-"totalsrp":97650.00,
-"totalcos":34875.00
+"BrandNme": "SAUCONY",
+"TotalQty":23.00,
+"TotalCos":35711.42,
+"TotalPrc":91851.00
 },
 {
-"brandnme": "BRIC'S",
-"totalqty":15.00,
-"totalsrp":94150.00,
-"totalcos":32899.72
+"BrandNme": "FERRAGAMO",
+"TotalQty":19.00,
+"TotalCos":35472.05,
+"TotalPrc":79042.00
 },
 {
-"brandnme": "SAUCONY",
-"totalqty":23.00,
-"totalsrp":91851.00,
-"totalcos":35711.42
+"BrandNme": "LOTTE",
+"TotalQty":641.00,
+"TotalCos":35366.96,
+"TotalPrc":93960.00
 },
 {
-"brandnme": "PACSAFE",
-"totalqty":9.00,
-"totalsrp":91110.00,
-"totalcos":24404.47
+"BrandNme": "GREY GOOSE",
+"TotalQty":20.00,
+"TotalCos":34919.58,
+"TotalPrc":94670.00
 },
 {
-"brandnme": "SPRITE",
-"totalqty":911.00,
-"totalsrp":91100.00,
-"totalcos":19896.37
+"BrandNme": "ISLAND GIRL-O",
+"TotalQty":131.00,
+"TotalCos":34850.95,
+"TotalPrc":87845.00
 },
 {
-"brandnme": "JOCKEY",
-"totalqty":159.00,
-"totalsrp":91005.00,
-"totalcos":47898.12
+"BrandNme": "POCKY",
+"TotalQty":880.00,
+"TotalCos":34335.51,
+"TotalPrc":97500.00
 },
 {
-"brandnme": "PENFOLDS",
-"totalqty":28.00,
-"totalsrp":89920.00,
-"totalcos":42465.19
+"BrandNme": "NUTELLA",
+"TotalQty":241.00,
+"TotalCos":34197.90,
+"TotalPrc":84350.00
 },
 {
-"brandnme": "ADG",
-"totalqty":214.00,
-"totalsrp":87340.00,
-"totalcos":30807.66
+"BrandNme": "SULWHASOO",
+"TotalQty":15.00,
+"TotalCos":34182.58,
+"TotalPrc":64180.00
 },
 {
-"brandnme": "TIC TAC",
-"totalqty":1474.00,
-"totalsrp":87290.00,
-"totalcos":35222.57
+"BrandNme": "COLGATE",
+"TotalQty":557.00,
+"TotalCos":34075.55,
+"TotalPrc":75670.00
 },
 {
-"brandnme": "DINGDONG",
-"totalqty":1745.00,
-"totalsrp":87250.00,
-"totalcos":32197.26
+"BrandNme": "DOUGHNUT-SL",
+"TotalQty":34.00,
+"TotalCos":33883.84,
+"TotalPrc":119655.00
 },
 {
-"brandnme": "ICE BREAKER",
-"totalqty":438.00,
-"totalsrp":85800.00,
-"totalcos":30217.44
+"BrandNme": "BRIC'S",
+"TotalQty":15.00,
+"TotalCos":32899.72,
+"TotalPrc":94150.00
 },
 {
-"brandnme": "CH",
-"totalqty":317.00,
-"totalsrp":85350.00,
-"totalcos":34847.05
+"BrandNme": "DINGDONG",
+"TotalQty":1728.00,
+"TotalCos":32390.65,
+"TotalPrc":86400.00
 },
 {
-"brandnme": "HAPPY",
-"totalqty":851.00,
-"totalsrp":85100.00,
-"totalcos":21786.16
+"BrandNme": "WHITEFLOWER",
+"TotalQty":459.00,
+"TotalCos":31758.85,
+"TotalPrc":86350.00
 },
 {
-"brandnme": "ALFONSO",
-"totalqty":90.00,
-"totalsrp":82140.00,
-"totalcos":31279.63
+"BrandNme": "SPRAYGROUND",
+"TotalQty":38.00,
+"TotalCos":31451.44,
+"TotalPrc":123460.00
 },
 {
-"brandnme": "THE BODY SHOP",
-"totalqty":16.00,
-"totalsrp":81455.00,
-"totalcos":29737.38
+"BrandNme": "SPERRY",
+"TotalQty":10.00,
+"TotalCos":31240.31,
+"TotalPrc":60550.00
 },
 {
-"brandnme": "FERRAGAMO",
-"totalqty":19.00,
-"totalsrp":79042.00,
-"totalcos":35472.05
+"BrandNme": "GATTINONI ROMA",
+"TotalQty":24.00,
+"TotalCos":30194.10,
+"TotalPrc":108160.00
 },
 {
-"brandnme": "WHSMITH BAGS",
-"totalqty":101.00,
-"totalsrp":78782.00,
-"totalcos":49400.62
+"BrandNme": "TIC TAC",
+"TotalQty":1268.00,
+"TotalCos":30065.39,
+"TotalPrc":75220.00
 },
 {
-"brandnme": "JACK DANIELS",
-"totalqty":24.00,
-"totalsrp":76300.00,
-"totalcos":30889.13
+"BrandNme": "THE BODY SHOP",
+"TotalQty":16.00,
+"TotalCos":29737.38,
+"TotalPrc":81455.00
 },
 {
-"brandnme": "LINDT",
-"totalqty":209.00,
-"totalsrp":75800.00,
-"totalcos":26693.58
+"BrandNme": "CHIPS AHOY",
+"TotalQty":555.00,
+"TotalCos":29434.61,
+"TotalPrc":69810.00
 },
 {
-"brandnme": "YELLOW TAIL",
-"totalqty":67.00,
-"totalsrp":72080.00,
-"totalcos":25971.54
+"BrandNme": "ALL CHOCOLATES",
+"TotalQty":18.00,
+"TotalCos":29412.00,
+"TotalPrc":72000.00
 },
 {
-"brandnme": "ALL CHOCOLATES",
-"totalqty":18.00,
-"totalsrp":72000.00,
-"totalcos":29412.00
+"BrandNme": "ALFONSO",
+"TotalQty":85.00,
+"TotalCos":28575.99,
+"TotalPrc":75840.00
 },
 {
-"brandnme": "MOET  CHANDON",
-"totalqty":8.00,
-"totalsrp":71920.00,
-"totalcos":25707.12
+"BrandNme": "BILLABONG-SL",
+"TotalQty":116.00,
+"TotalCos":28458.80,
+"TotalPrc":265280.00
 },
 {
-"brandnme": "JACK DANIEL'S",
-"totalqty":20.00,
-"totalsrp":69800.00,
-"totalcos":27480.00
+"BrandNme": "LOQI",
+"TotalQty":73.00,
+"TotalCos":27860.75,
+"TotalPrc":66100.00
 },
 {
-"brandnme": "NISSIN",
-"totalqty":1103.00,
-"totalsrp":66180.00,
-"totalcos":19855.27
+"BrandNme": "CH",
+"TotalQty":258.00,
+"TotalCos":27846.52,
+"TotalPrc":69580.00
 },
 {
-"brandnme": "LOQI",
-"totalqty":73.00,
-"totalsrp":66100.00,
-"totalcos":27860.75
+"BrandNme": "SPRITE",
+"TotalQty":1038.00,
+"TotalCos":27489.60,
+"TotalPrc":103800.00
 },
 {
-"brandnme": "BAYONGCIAGA",
-"totalqty":57.00,
-"totalsrp":64615.00,
-"totalcos":25465.77
+"BrandNme": "ADG",
+"TotalQty":164.00,
+"TotalCos":27138.75,
+"TotalPrc":66250.00
 },
 {
-"brandnme": "SULWHASOO",
-"totalqty":15.00,
-"totalsrp":64180.00,
-"totalcos":34182.58
+"BrandNme": "NIKE-SL",
+"TotalQty":18.00,
+"TotalCos":26856.70,
+"TotalPrc":66110.00
 },
 {
-"brandnme": "CHIPS AHOY",
-"totalqty":508.00,
-"totalsrp":63560.00,
-"totalcos":28056.46
+"BrandNme": "STANCE",
+"TotalQty":70.00,
+"TotalCos":26782.92,
+"TotalPrc":94500.00
 },
 {
-"brandnme": "MARSHALL",
-"totalqty":13.00,
-"totalsrp":62187.00,
-"totalcos":22761.23
+"BrandNme": "EVITA PERONI",
+"TotalQty":42.00,
+"TotalCos":25960.85,
+"TotalPrc":57850.00
 },
 {
-"brandnme": "BACARDI",
-"totalqty":37.00,
-"totalsrp":62100.00,
-"totalcos":14377.69
+"BrandNme": "YELLOW TAIL",
+"TotalQty":65.00,
+"TotalCos":25837.30,
+"TotalPrc":70460.00
 },
 {
-"brandnme": "STREPSILS",
-"totalqty":338.00,
-"totalsrp":60840.00,
-"totalcos":22223.50
+"BrandNme": "MOET  CHANDON",
+"TotalQty":8.00,
+"TotalCos":25707.12,
+"TotalPrc":71920.00
 },
 {
-"brandnme": "LOACKER",
-"totalqty":299.00,
-"totalsrp":60390.00,
-"totalcos":26050.83
+"BrandNme": "ICE BREAKER",
+"TotalQty":402.00,
+"TotalCos":25617.12,
+"TotalPrc":79600.00
 },
 {
-"brandnme": "OFF",
-"totalqty":199.00,
-"totalsrp":59700.00,
-"totalcos":18351.93
+"BrandNme": "BLOOM  GROW",
+"TotalQty":21.00,
+"TotalCos":25522.35,
+"TotalPrc":56700.00
 },
 {
-"brandnme": "EVITA PERONI",
-"totalqty":42.00,
-"totalsrp":57850.00,
-"totalcos":25960.85
+"BrandNme": "REVLON-B4U",
+"TotalQty":71.00,
+"TotalCos":25260.20,
+"TotalPrc":53314.00
 },
 {
-"brandnme": "BLOOM  GROW",
-"totalqty":21.00,
-"totalsrp":56700.00,
-"totalcos":25522.35
+"BrandNme": "CHIQUILIN",
+"TotalQty":409.00,
+"TotalCos":24934.14,
+"TotalPrc":49950.00
 },
 {
-"brandnme": "BILLABONG",
-"totalqty":170.00,
-"totalsrp":56100.00,
-"totalcos":35997.50
+"BrandNme": "MARSHALL",
+"TotalQty":14.00,
+"TotalCos":24835.79,
+"TotalPrc":67886.00
 },
 {
-"brandnme": "JBL-TRI",
-"totalqty":8.00,
-"totalsrp":54772.00,
-"totalcos":30611.13
+"BrandNme": "ANTHILL",
+"TotalQty":72.00,
+"TotalCos":24002.58,
+"TotalPrc":102075.00
 },
 {
-"brandnme": "REVLON-B4U",
-"totalqty":71.00,
-"totalsrp":53314.00,
-"totalcos":25260.20
+"BrandNme": "BELKIN",
+"TotalQty":23.00,
+"TotalCos":23206.62,
+"TotalPrc":44550.00
 },
 {
-"brandnme": "ZAINI",
-"totalqty":133.00,
-"totalsrp":53200.00,
-"totalcos":20650.91
+"BrandNme": "BAYONGCIAGA",
+"TotalQty":53.00,
+"TotalCos":22575.04,
+"TotalPrc":57735.00
 },
 {
-"brandnme": "KINDER JOY",
-"totalqty":492.00,
-"totalsrp":51600.00,
-"totalcos":20985.66
+"BrandNme": "HAPPY",
+"TotalQty":803.00,
+"TotalCos":21713.12,
+"TotalPrc":80300.00
 },
 {
-"brandnme": "TIFFANY  CO.",
-"totalqty":6.00,
-"totalsrp":51000.00,
-"totalcos":19834.32
+"BrandNme": "JACK DANIELS",
+"TotalQty":17.00,
+"TotalCos":21600.79,
+"TotalPrc":52900.00
 },
 {
-"brandnme": "HAVAIANAS EYEWEAR",
-"totalqty":15.00,
-"totalsrp":49100.00,
-"totalcos":19096.00
+"BrandNme": "LINDT",
+"TotalQty":166.00,
+"TotalCos":21525.93,
+"TotalPrc":61100.00
 },
 {
-"brandnme": "TANQUERAY",
-"totalqty":14.00,
-"totalsrp":48860.00,
-"totalcos":20986.00
+"BrandNme": "STARBUCKS",
+"TotalQty":283.00,
+"TotalCos":21508.00,
+"TotalPrc":69900.00
 },
 {
-"brandnme": "ANOMEO",
-"totalqty":126.00,
-"totalsrp":48200.00,
-"totalcos":17214.11
+"BrandNme": "LISTERINE",
+"TotalQty":314.00,
+"TotalCos":21060.75,
+"TotalPrc":52100.00
 },
 {
-"brandnme": "SENNHEISER-O",
-"totalqty":2.00,
-"totalsrp":48000.00,
-"totalcos":20694.75
+"BrandNme": "TANQUERAY",
+"TotalQty":14.00,
+"TotalCos":20986.00,
+"TotalPrc":48860.00
 },
 {
-"brandnme": "MAGWAI",
-"totalqty":68.00,
-"totalsrp":47600.00,
-"totalcos":27769.60
+"BrandNme": "ZAINI",
+"TotalQty":134.00,
+"TotalCos":20806.18,
+"TotalPrc":53600.00
 },
 {
-"brandnme": "VEUVE CLICQUOT",
-"totalqty":5.00,
-"totalsrp":47500.00,
-"totalcos":16290.20
+"BrandNme": "INITIAL ART",
+"TotalQty":600.00,
+"TotalCos":20677.50,
+"TotalPrc":115700.00
 },
 {
-"brandnme": "CHIVAS REGAL",
-"totalqty":16.00,
-"totalsrp":46825.00,
-"totalcos":21229.40
+"BrandNme": "JACK DANIEL'S",
+"TotalQty":15.00,
+"TotalCos":20610.00,
+"TotalPrc":52350.00
 },
 {
-"brandnme": "ISLAND GIRL-O",
-"totalqty":71.00,
-"totalsrp":46125.00,
-"totalcos":18420.56
+"BrandNme": "TIFFANY  CO.",
+"TotalQty":6.00,
+"TotalCos":19834.32,
+"TotalPrc":51000.00
 },
 {
-"brandnme": "ARIZONA",
-"totalqty":300.00,
-"totalsrp":45000.00,
-"totalcos":14700.00
+"BrandNme": "KINDER JOY",
+"TotalQty":457.00,
+"TotalCos":19550.90,
+"TotalPrc":45700.00
 },
 {
-"brandnme": "KATE SPADE-MC",
-"totalqty":2.00,
-"totalsrp":43700.00,
-"totalcos":13929.50
+"BrandNme": "SISTER",
+"TotalQty":874.00,
+"TotalCos":19323.00,
+"TotalPrc":87400.00
 },
 {
-"brandnme": "MONDE",
-"totalqty":1077.00,
-"totalsrp":43080.00,
-"totalcos":18702.75
+"BrandNme": "HAVAIANAS EYEWEAR",
+"TotalQty":15.00,
+"TotalCos":19096.00,
+"TotalPrc":49100.00
 },
 {
-"brandnme": "LULU BLANC",
-"totalqty":14.00,
-"totalsrp":40586.00,
-"totalcos":7386.26
+"BrandNme": "LOACKER",
+"TotalQty":218.00,
+"TotalCos":19005.85,
+"TotalPrc":43550.00
 },
 {
-"brandnme": "CROCO",
-"totalqty":269.00,
-"totalsrp":40350.00,
-"totalcos":9336.25
+"BrandNme": "RED RIBBON",
+"TotalQty":619.00,
+"TotalCos":18935.44,
+"TotalPrc":61860.00
 },
 {
-"brandnme": "RUFFLES",
-"totalqty":129.00,
-"totalsrp":39660.00,
-"totalcos":16796.22
+"BrandNme": "CHIVAS REGAL",
+"TotalQty":14.00,
+"TotalCos":18437.44,
+"TotalPrc":42000.00
 },
 {
-"brandnme": "NIKE-SL",
-"totalqty":9.00,
-"totalsrp":39655.00,
-"totalcos":14672.35
+"BrandNme": "STREPSILS",
+"TotalQty":275.00,
+"TotalCos":18081.25,
+"TotalPrc":49500.00
 },
 {
-"brandnme": "INSTA360",
-"totalqty":1.00,
-"totalsrp":38990.00,
-"totalcos":34549.49
+"BrandNme": "ANOMEO",
+"TotalQty":121.00,
+"TotalCos":16931.98,
+"TotalPrc":46150.00
 },
 {
-"brandnme": "NERDS",
-"totalqty":387.00,
-"totalsrp":38700.00,
-"totalcos":16598.43
+"BrandNme": "LIBBEY",
+"TotalQty":422.00,
+"TotalCos":16227.00,
+"TotalPrc":38580.00
 },
 {
-"brandnme": "LIBBEY",
-"totalqty":422.00,
-"totalsrp":38580.00,
-"totalcos":16227.00
+"BrandNme": "ROXY",
+"TotalQty":16.00,
+"TotalCos":16186.20,
+"TotalPrc":116840.00
 },
 {
-"brandnme": "CRK",
-"totalqty":480.00,
-"totalsrp":38400.00,
-"totalcos":6542.40
+"BrandNme": "CHUPA CHUPS",
+"TotalQty":565.00,
+"TotalCos":16129.33,
+"TotalPrc":35620.00
 },
 {
-"brandnme": "CHIVAS",
-"totalqty":14.00,
-"totalsrp":37660.00,
-"totalcos":16786.00
+"BrandNme": "MOGU MOGU",
+"TotalQty":601.00,
+"TotalCos":16059.74,
+"TotalPrc":60300.00
 },
 {
-"brandnme": "MOLIABAL",
-"totalqty":15.00,
-"totalsrp":37050.00,
-"totalcos":15726.89
+"BrandNme": "KIPLING",
+"TotalQty":7.00,
+"TotalCos":15813.07,
+"TotalPrc":25595.00
 },
 {
-"brandnme": "PANDORA",
-"totalqty":10.00,
-"totalsrp":37000.00,
-"totalcos":13660.29
+"BrandNme": "MOLIABAL",
+"TotalQty":15.00,
+"TotalCos":15726.89,
+"TotalPrc":37050.00
 },
 {
-"brandnme": "SKITTLES",
-"totalqty":361.00,
-"totalsrp":36100.00,
-"totalcos":13554.90
+"BrandNme": "SKITTLES",
+"TotalQty":407.00,
+"TotalCos":15570.21,
+"TotalPrc":40700.00
 },
 {
-"brandnme": "COMBOS",
-"totalqty":227.00,
-"totalsrp":34050.00,
-"totalcos":16382.59
+"BrandNme": "MONDE",
+"TotalQty":890.00,
+"TotalCos":15365.50,
+"TotalPrc":35600.00
 },
 {
-"brandnme": "TOMMY HILFIGER",
-"totalqty":12.00,
-"totalsrp":33750.00,
-"totalcos":14500.15
+"BrandNme": "OFF",
+"TotalQty":164.00,
+"TotalCos":15091.28,
+"TotalPrc":49200.00
 },
 {
-"brandnme": "MACALLAN",
-"totalqty":3.00,
-"totalsrp":32970.00,
-"totalcos":15265.17
+"BrandNme": "CELLULAR",
+"TotalQty":27.00,
+"TotalCos":15071.61,
+"TotalPrc":37010.00
 },
 {
-"brandnme": "FILIPINIANA-O",
-"totalqty":45.00,
-"totalsrp":31655.00,
-"totalcos":13015.22
+"BrandNme": "NISSIN",
+"TotalQty":840.00,
+"TotalCos":14726.00,
+"TotalPrc":50400.00
 },
 {
-"brandnme": "HAWAIIAN HOST",
-"totalqty":45.00,
-"totalsrp":31500.00,
-"totalcos":8141.72
+"BrandNme": "RUFFLES",
+"TotalQty":111.00,
+"TotalCos":14568.99,
+"TotalPrc":34260.00
 },
 {
-"brandnme": "SPERRY",
-"totalqty":6.00,
-"totalsrp":30770.00,
-"totalcos":13515.22
+"BrandNme": "TOMMY HILFIGER",
+"TotalQty":12.00,
+"TotalCos":14500.15,
+"TotalPrc":33750.00
 },
 {
-"brandnme": "THE GADGET SHOP",
-"totalqty":39.00,
-"totalsrp":30700.00,
-"totalcos":5166.43
+"BrandNme": "DELICO",
+"TotalQty":145.00,
+"TotalCos":14427.50,
+"TotalPrc":26100.00
 },
 {
-"brandnme": "GO TRAVEL",
-"totalqty":42.00,
-"totalsrp":30249.00,
-"totalcos":13393.41
+"BrandNme": "CHIVAS",
+"TotalQty":12.00,
+"TotalCos":14388.00,
+"TotalPrc":32280.00
 },
 {
-"brandnme": "LIFETRONS",
-"totalqty":10.00,
-"totalsrp":30000.00,
-"totalcos":8574.00
+"BrandNme": "APPLE-TRI",
+"TotalQty":9.00,
+"TotalCos":14004.04,
+"TotalPrc":21991.00
 },
 {
-"brandnme": "SISTER",
-"totalqty":296.00,
-"totalsrp":29600.00,
-"totalcos":5521.46
+"BrandNme": "INNISFREE",
+"TotalQty":40.00,
+"TotalCos":13820.73,
+"TotalPrc":28630.00
 },
 {
-"brandnme": "SOL DE JANEIRO",
-"totalqty":9.00,
-"totalsrp":28800.00,
-"totalcos":15793.40
+"BrandNme": "KINDER BUENO",
+"TotalQty":261.00,
+"TotalCos":13739.11,
+"TotalPrc":31320.00
 },
 {
-"brandnme": "PITX PURIFIED WATER",
-"totalqty":1151.00,
-"totalsrp":28775.00,
-"totalcos":12465.33
+"BrandNme": "PANDORA",
+"TotalQty":10.00,
+"TotalCos":13660.29,
+"TotalPrc":37000.00
 },
 {
-"brandnme": "INNISFREE",
-"totalqty":40.00,
-"totalsrp":28630.00,
-"totalcos":13820.73
+"BrandNme": "NERDS",
+"TotalQty":314.00,
+"TotalCos":13467.46,
+"TotalPrc":31400.00
 },
 {
-"brandnme": "INDOPLAS",
-"totalqty":567.00,
-"totalsrp":28350.00,
-"totalcos":5103.00
+"BrandNme": "GO TRAVEL",
+"TotalQty":42.00,
+"TotalCos":13393.41,
+"TotalPrc":30249.00
 },
 {
-"brandnme": "HOMI",
-"totalqty":277.00,
-"totalsrp":27700.00,
-"totalcos":4853.04
+"BrandNme": "PITX PURIFIED WATER",
+"TotalQty":1225.00,
+"TotalCos":13266.75,
+"TotalPrc":30625.00
 },
 {
-"brandnme": "GREEN CROSS",
-"totalqty":370.00,
-"totalsrp":27650.00,
-"totalcos":8710.10
+"BrandNme": "BACARDI",
+"TotalQty":35.00,
+"TotalCos":13236.63,
+"TotalPrc":57900.00
 },
 {
-"brandnme": "FILA",
-"totalqty":10.00,
-"totalsrp":27580.00,
-"totalcos":6776.80
+"BrandNme": "VEUVE CLICQUOT",
+"TotalQty":4.00,
+"TotalCos":13032.16,
+"TotalPrc":38000.00
 },
 {
-"brandnme": "KIRKLAND",
-"totalqty":11.00,
-"totalsrp":27500.00,
-"totalcos":10065.00
+"BrandNme": "VOLCOM-SL",
+"TotalQty":66.00,
+"TotalCos":12976.69,
+"TotalPrc":164500.00
 },
 {
-"brandnme": "O'NEILL",
-"totalqty":6.00,
-"totalsrp":26940.00,
-"totalcos":2666.95
+"BrandNme": "FILIPINIANA-O",
+"TotalQty":44.00,
+"TotalCos":12855.04,
+"TotalPrc":31275.00
 },
 {
-"brandnme": "DON PAPA",
-"totalqty":9.00,
-"totalsrp":26800.00,
-"totalcos":9879.96
+"BrandNme": "COMBOS",
+"TotalQty":178.00,
+"TotalCos":12846.26,
+"TotalPrc":26700.00
 },
 {
-"brandnme": "INITIAL ART",
-"totalqty":173.00,
-"totalsrp":25950.00,
-"totalcos":5406.25
+"BrandNme": "ARIZONA",
+"TotalQty":241.00,
+"TotalCos":11809.00,
+"TotalPrc":36150.00
 },
 {
-"brandnme": "REVLON",
-"totalqty":30.00,
-"totalsrp":24775.00,
-"totalcos":10528.21
+"BrandNme": "SEA TO SUMMIT-O",
+"TotalQty":11.00,
+"TotalCos":10914.00,
+"TotalPrc":18190.00
 },
 {
-"brandnme": "YANYAN",
-"totalqty":246.00,
-"totalsrp":24600.00,
-"totalcos":10782.18
+"BrandNme": "REVLON",
+"TotalQty":30.00,
+"TotalCos":10528.21,
+"TotalPrc":24775.00
 },
 {
-"brandnme": "ROCKET DOG",
-"totalqty":8.00,
-"totalsrp":23760.00,
-"totalcos":9012.84
+"BrandNme": "VOORTMAN",
+"TotalQty":54.00,
+"TotalCos":10476.00,
+"TotalPrc":21600.00
 },
 {
-"brandnme": "HELLO GORGEOUS",
-"totalqty":44.00,
-"totalsrp":23300.00,
-"totalcos":9728.60
+"BrandNme": "INNERGIE",
+"TotalQty":9.00,
+"TotalCos":10355.77,
+"TotalPrc":18225.00
 },
 {
-"brandnme": "FUNDADOR",
-"totalqty":19.00,
-"totalsrp":23100.00,
-"totalcos":9098.81
+"BrandNme": "YANYAN",
+"TotalQty":228.00,
+"TotalCos":9993.24,
+"TotalPrc":22800.00
 },
 {
-"brandnme": "OMEGA",
-"totalqty":115.00,
-"totalsrp":23000.00,
-"totalcos":5691.35
+"BrandNme": "HELLO GORGEOUS",
+"TotalQty":44.00,
+"TotalCos":9728.60,
+"TotalPrc":23300.00
 },
 {
-"brandnme": "COCO CABANA",
-"totalqty":22.00,
-"totalsrp":22778.00,
-"totalcos":5517.82
+"BrandNme": "ANESSA",
+"TotalQty":7.00,
+"TotalCos":9576.00,
+"TotalPrc":16000.00
 },
 {
-"brandnme": "VOORTMAN",
-"totalqty":56.00,
-"totalsrp":22400.00,
-"totalcos":10864.00
+"BrandNme": "SOL DE JANEIRO",
+"TotalQty":5.00,
+"TotalCos":9338.00,
+"TotalPrc":17000.00
 },
 {
-"brandnme": "LAMPEIN",
-"totalqty":147.00,
-"totalsrp":22050.00,
-"totalcos":3558.48
+"BrandNme": "FUNDADOR",
+"TotalQty":20.00,
+"TotalCos":9266.08,
+"TotalPrc":23600.00
 },
 {
-"brandnme": "APPLE-TRI",
-"totalqty":9.00,
-"totalsrp":21991.00,
-"totalcos":14004.04
+"BrandNme": "MASSIMO",
+"TotalQty":88.00,
+"TotalCos":9196.00,
+"TotalPrc":17600.00
 },
 {
-"brandnme": "LACOSTE",
-"totalqty":4.00,
-"totalsrp":21650.00,
-"totalcos":7277.10
+"BrandNme": "VASELINE",
+"TotalQty":156.00,
+"TotalCos":9158.76,
+"TotalPrc":23400.00
 },
 {
-"brandnme": "SMIRNOFF",
-"totalqty":18.00,
-"totalsrp":21600.00,
-"totalcos":6662.85
+"BrandNme": "CROCO",
+"TotalQty":263.00,
+"TotalCos":9130.00,
+"TotalPrc":39450.00
 },
 {
-"brandnme": "LASPLASH",
-"totalqty":37.00,
-"totalsrp":21220.00,
-"totalcos":7791.26
+"BrandNme": "SABROSO",
+"TotalQty":14.00,
+"TotalCos":9100.00,
+"TotalPrc":21000.00
 },
 {
-"brandnme": "OAKLEY",
-"totalqty":12.00,
-"totalsrp":21141.00,
-"totalcos":12183.07
+"BrandNme": "RAYBAN",
+"TotalQty":6.00,
+"TotalCos":9048.65,
+"TotalPrc":21100.00
 },
 {
-"brandnme": "RAYBAN",
-"totalqty":6.00,
-"totalsrp":21100.00,
-"totalcos":9048.65
+"BrandNme": "ROCKET DOG",
+"TotalQty":8.00,
+"TotalCos":9012.84,
+"TotalPrc":23760.00
 },
 {
-"brandnme": "SABROSO",
-"totalqty":14.00,
-"totalsrp":21000.00,
-"totalcos":9100.00
+"BrandNme": "JBL-TRI",
+"TotalQty":2.00,
+"TotalCos":8809.33,
+"TotalPrc":14898.00
 },
 {
-"brandnme": "CALBEE",
-"totalqty":254.00,
-"totalsrp":20320.00,
-"totalcos":10196.48
+"BrandNme": "CASINO",
+"TotalQty":347.00,
+"TotalCos":8454.39,
+"TotalPrc":25535.00
 },
 {
-"brandnme": "KINDER BUENO",
-"totalqty":168.00,
-"totalsrp":20160.00,
-"totalcos":8509.71
+"BrandNme": "ORIGINS-O",
+"TotalQty":8.00,
+"TotalCos":8203.40,
+"TotalPrc":18450.00
 },
 {
-"brandnme": "SENNHEISER",
-"totalqty":5.00,
-"totalsrp":19990.00,
-"totalcos":7686.39
+"BrandNme": "NALGENE-O",
+"TotalQty":15.00,
+"TotalCos":8010.00,
+"TotalPrc":13350.00
 },
 {
-"brandnme": "CIROC",
-"totalqty":4.00,
-"totalsrp":19960.00,
-"totalcos":7960.72
+"BrandNme": "SALONPAS",
+"TotalQty":137.00,
+"TotalCos":8000.80,
+"TotalPrc":20550.00
 },
 {
-"brandnme": "CHUPA CHUPS",
-"totalqty":1029.00,
-"totalsrp":19440.00,
-"totalcos":14009.75
+"BrandNme": "CIROC",
+"TotalQty":4.00,
+"TotalCos":7960.72,
+"TotalPrc":19960.00
 },
 {
-"brandnme": "MANTYX",
-"totalqty":94.00,
-"totalsrp":19227.00,
-"totalcos":3574.06
+"BrandNme": "LASPLASH",
+"TotalQty":37.00,
+"TotalCos":7791.26,
+"TotalPrc":21220.00
 },
 {
-"brandnme": "PERRIER WATER",
-"totalqty":96.00,
-"totalsrp":19200.00,
-"totalcos":5328.00
+"BrandNme": "LIFETRONS",
+"TotalQty":9.00,
+"TotalCos":7716.60,
+"TotalPrc":27000.00
 },
 {
-"brandnme": "RUBBERMAID",
-"totalqty":7.00,
-"totalsrp":18575.00,
-"totalcos":7580.00
+"BrandNme": "DON PAPA",
+"TotalQty":7.00,
+"TotalCos":7674.60,
+"TotalPrc":20900.00
 },
 {
-"brandnme": "ORIGINS-O",
-"totalqty":8.00,
-"totalsrp":18450.00,
-"totalcos":8203.40
+"BrandNme": "RUBBERMAID",
+"TotalQty":7.00,
+"TotalCos":7580.00,
+"TotalPrc":18575.00
 },
 {
-"brandnme": "INNERGIE",
-"totalqty":9.00,
-"totalsrp":18225.00,
-"totalcos":10355.77
+"BrandNme": "KIPLING-SL",
+"TotalQty":11.00,
+"TotalCos":7554.80,
+"TotalPrc":5637.50
 },
 {
-"brandnme": "SEA TO SUMMIT-O",
-"totalqty":11.00,
-"totalsrp":18190.00,
-"totalcos":10914.00
+"BrandNme": "LULU BLANC",
+"TotalQty":14.00,
+"TotalCos":7386.26,
+"TotalPrc":40586.00
 },
 {
-"brandnme": "COCCINELLE-SL",
-"totalqty":1.00,
-"totalsrp":18100.00,
-"totalcos":5371.78
+"BrandNme": "PACSAFE",
+"TotalQty":3.00,
+"TotalCos":7331.25,
+"TotalPrc":27370.00
 },
 {
-"brandnme": "ADIDAS-P",
-"totalqty":10.00,
-"totalsrp":18000.00,
-"totalcos":6869.50
+"BrandNme": "JAGERMEISTER",
+"TotalQty":11.00,
+"TotalCos":7315.00,
+"TotalPrc":16500.00
 },
 {
-"brandnme": "JAGERMEISTER",
-"totalqty":12.00,
-"totalsrp":18000.00,
-"totalcos":7980.00
+"BrandNme": "LACOSTE",
+"TotalQty":4.00,
+"TotalCos":7277.10,
+"TotalPrc":21650.00
 },
 {
-"brandnme": "KETELONE",
-"totalqty":6.00,
-"totalsrp":17940.00,
-"totalcos":6691.08
+"BrandNme": "REXONA",
+"TotalQty":59.00,
+"TotalCos":7201.67,
+"TotalPrc":18800.00
 },
 {
-"brandnme": "COCCINELLE",
-"totalqty":1.00,
-"totalsrp":16700.00,
-"totalcos":7060.93
+"BrandNme": "HAWAIIAN HOST",
+"TotalQty":40.00,
+"TotalCos":7125.20,
+"TotalPrc":28000.00
 },
 {
-"brandnme": "HI-HO",
-"totalqty":334.00,
-"totalsrp":16700.00,
-"totalcos":4168.32
+"BrandNme": "COCCINELLE",
+"TotalQty":1.00,
+"TotalCos":7060.93,
+"TotalPrc":16700.00
 },
 {
-"brandnme": "TY",
-"totalqty":33.00,
-"totalsrp":16235.00,
-"totalcos":6240.00
+"BrandNme": "FILA",
+"TotalQty":10.00,
+"TotalCos":6776.80,
+"TotalPrc":27580.00
 },
 {
-"brandnme": "ANESSA",
-"totalqty":7.00,
-"totalsrp":16000.00,
-"totalcos":9576.00
+"BrandNme": "GENERIC MERCHANDISE",
+"TotalQty":71.00,
+"TotalCos":6685.62,
+"TotalPrc":18000.00
 },
 {
-"brandnme": "M.Y. SAN",
-"totalqty":266.00,
-"totalsrp":15960.00,
-"totalcos":5577.24
+"BrandNme": "FERRARI",
+"TotalQty":3.00,
+"TotalCos":6445.45,
+"TotalPrc":14850.00
 },
 {
-"brandnme": "TCFS",
-"totalqty":7.00,
-"totalsrp":15750.00,
-"totalcos":5270.72
+"BrandNme": "OMEGA",
+"TotalQty":103.00,
+"TotalCos":5891.60,
+"TotalPrc":20600.00
 },
 {
-"brandnme": "NOTTAGE HILLS",
-"totalqty":13.00,
-"totalsrp":15600.00,
-"totalcos":4596.41
+"BrandNme": "ENERGIZER",
+"TotalQty":11.00,
+"TotalCos":5885.44,
+"TotalPrc":13475.00
 },
 {
-"brandnme": "MEIJI",
-"totalqty":51.00,
-"totalsrp":15300.00,
-"totalcos":4963.32
+"BrandNme": "EFFICASCENT",
+"TotalQty":137.00,
+"TotalCos":5780.25,
+"TotalPrc":19950.00
 },
 {
-"brandnme": "LOCAL HEADWRAP",
-"totalqty":38.00,
-"totalsrp":15200.00,
-"totalcos":2342.79
+"BrandNme": "BELGIAN",
+"TotalQty":87.00,
+"TotalCos":5667.84,
+"TotalPrc":9900.00
 },
 {
-"brandnme": "JUICY COUTURE",
-"totalqty":2.00,
-"totalsrp":14998.00,
-"totalcos":4865.94
+"BrandNme": "KETELONE",
+"TotalQty":5.00,
+"TotalCos":5575.90,
+"TotalPrc":14950.00
 },
 {
-"brandnme": "FERRARI",
-"totalqty":3.00,
-"totalsrp":14850.00,
-"totalcos":6445.45
+"BrandNme": "BIJOUX TERNER",
+"TotalQty":20.00,
+"TotalCos":5353.61,
+"TotalPrc":11900.00
 },
 {
-"brandnme": "NALGENE-O",
-"totalqty":17.00,
-"totalsrp":14730.00,
-"totalcos":8838.00
+"BrandNme": "PERRIER WATER",
+"TotalQty":96.00,
+"TotalCos":5328.00,
+"TotalPrc":19200.00
 },
 {
-"brandnme": "CANADA DRY",
-"totalqty":96.00,
-"totalsrp":14400.00,
-"totalcos":2100.48
+"BrandNme": "TCFS",
+"TotalQty":7.00,
+"TotalCos":5270.72,
+"TotalPrc":15750.00
 },
 {
-"brandnme": "WONKA",
-"totalqty":40.00,
-"totalsrp":14000.00,
-"totalcos":4112.29
+"BrandNme": "THE GADGET SHOP",
+"TotalQty":39.00,
+"TotalCos":5166.43,
+"TotalPrc":30700.00
 },
 {
-"brandnme": "ENERGIZER",
-"totalqty":11.00,
-"totalsrp":13475.00,
-"totalcos":5885.44
+"BrandNme": "TOMMY HILFIGER-E",
+"TotalQty":2.00,
+"TotalCos":5143.04,
+"TotalPrc":10878.00
 },
 {
-"brandnme": "FOX'S",
-"totalqty":68.00,
-"totalsrp":13430.00,
-"totalcos":5171.22
+"BrandNme": "ALOHA",
+"TotalQty":20.00,
+"TotalCos":4969.09,
+"TotalPrc":12850.00
 },
 {
-"brandnme": "BIODERM",
-"totalqty":131.00,
-"totalsrp":13100.00,
-"totalcos":3351.93
+"BrandNme": "OAKLEY",
+"TotalQty":5.00,
+"TotalCos":4793.29,
+"TotalPrc":8575.00
 },
 {
-"brandnme": "ALOHA",
-"totalqty":20.00,
-"totalsrp":12850.00,
-"totalcos":4969.09
+"BrandNme": "INDOPLAS",
+"TotalQty":521.00,
+"TotalCos":4689.00,
+"TotalPrc":26050.00
 },
 {
-"brandnme": "EFFICASCENT",
-"totalqty":87.00,
-"totalsrp":12700.00,
-"totalcos":3282.08
+"BrandNme": "SMARTFOOD",
+"TotalQty":49.00,
+"TotalCos":4487.78,
+"TotalPrc":12250.00
 },
 {
-"brandnme": "GENERIC MERCHANDISE",
-"totalqty":42.00,
-"totalsrp":12550.00,
-"totalcos":5725.62
+"BrandNme": "PUMA-E",
+"TotalQty":2.00,
+"TotalCos":4446.92,
+"TotalPrc":4450.00
 },
 {
-"brandnme": "BIJOUX TERNER",
-"totalqty":21.00,
-"totalsrp":12495.00,
-"totalcos":5610.31
+"BrandNme": "COCO CABANA",
+"TotalQty":17.00,
+"TotalCos":4312.47,
+"TotalPrc":17783.00
 },
 {
-"brandnme": "CELLULAR",
-"totalqty":10.00,
-"totalsrp":11800.00,
-"totalcos":4857.58
+"BrandNme": "MILKY WAY",
+"TotalQty":16.00,
+"TotalCos":4304.00,
+"TotalPrc":11200.00
 },
 {
-"brandnme": "METHYL",
-"totalqty":95.00,
-"totalsrp":11400.00,
-"totalcos":2722.70
+"BrandNme": "XTORM",
+"TotalQty":4.00,
+"TotalCos":4192.40,
+"TotalPrc":8089.00
 },
 {
-"brandnme": "CASINO",
-"totalqty":160.00,
-"totalsrp":11350.00,
-"totalcos":3439.50
+"BrandNme": "MEIJI",
+"TotalQty":41.00,
+"TotalCos":3990.12,
+"TotalPrc":12300.00
 },
 {
-"brandnme": "SMARTFOOD",
-"totalqty":44.00,
-"totalsrp":11000.00,
-"totalcos":4027.78
+"BrandNme": "OPI-B4U",
+"TotalQty":12.00,
+"TotalCos":3962.45,
+"TotalPrc":7500.00
 },
 {
-"brandnme": "TOMMY HILFIGER-E",
-"totalqty":2.00,
-"totalsrp":10878.00,
-"totalcos":5143.04
+"BrandNme": "SMIRNOFF",
+"TotalQty":10.00,
+"TotalCos":3955.73,
+"TotalPrc":12000.00
 },
 {
-"brandnme": "KOPIKO",
-"totalqty":216.00,
-"totalsrp":10800.00,
-"totalcos":3471.12
+"BrandNme": "NOTTAGE HILLS",
+"TotalQty":11.00,
+"TotalCos":3889.27,
+"TotalPrc":13200.00
 },
 {
-"brandnme": "REXONA",
-"totalqty":30.00,
-"totalsrp":10500.00,
-"totalcos":3466.93
+"BrandNme": "WONKY-TRI",
+"TotalQty":3.00,
+"TotalCos":3875.50,
+"TotalPrc":5697.00
 },
 {
-"brandnme": "KIPLING-SL",
-"totalqty":12.00,
-"totalsrp":10436.50,
-"totalcos":9421.33
+"BrandNme": "MILCU",
+"TotalQty":48.00,
+"TotalCos":3840.00,
+"TotalPrc":9600.00
 },
 {
-"brandnme": "MANZANILLA",
-"totalqty":101.00,
-"totalsrp":10100.00,
-"totalcos":1181.70
+"BrandNme": "BIODERM",
+"TotalQty":129.00,
+"TotalCos":3792.58,
+"TotalPrc":12900.00
 },
 {
-"brandnme": "TIFFANY",
-"totalqty":17.00,
-"totalsrp":9700.00,
-"totalcos":4271.68
+"BrandNme": "HI-HO",
+"TotalQty":302.00,
+"TotalCos":3768.96,
+"TotalPrc":15100.00
 },
 {
-"brandnme": "XTORM",
-"totalqty":5.00,
-"totalsrp":9588.00,
-"totalcos":4942.37
+"BrandNme": "WONKA",
+"TotalQty":33.00,
+"TotalCos":3529.68,
+"TotalPrc":11550.00
 },
 {
-"brandnme": "AIZA'S",
-"totalqty":33.00,
-"totalsrp":9240.00,
-"totalcos":3093.75
+"BrandNme": "OREO",
+"TotalQty":29.00,
+"TotalCos":3509.00,
+"TotalPrc":5800.00
 },
 {
-"brandnme": "PAPER MACHE",
-"totalqty":16.00,
-"totalsrp":8800.00,
-"totalcos":3350.96
+"BrandNme": "NIVEA",
+"TotalQty":10.00,
+"TotalCos":3462.40,
+"TotalPrc":8250.00
 },
 {
-"brandnme": "SKULLCANDY",
-"totalqty":2.00,
-"totalsrp":8400.00,
-"totalcos":2849.58
+"BrandNme": "GREEN CROSS",
+"TotalQty":139.00,
+"TotalCos":3380.87,
+"TotalPrc":10610.00
 },
 {
-"brandnme": "LEVI'S",
-"totalqty":3.00,
-"totalsrp":8398.50,
-"totalcos":2715.76
+"BrandNme": "METHYL",
+"TotalQty":105.00,
+"TotalCos":3371.55,
+"TotalPrc":12600.00
 },
 {
-"brandnme": "MAUNA LOA",
-"totalqty":13.00,
-"totalsrp":8250.00,
-"totalcos":2358.38
+"BrandNme": "PAPER MACHE",
+"TotalQty":16.00,
+"TotalCos":3350.96,
+"TotalPrc":8800.00
 },
 {
-"brandnme": "NIVEA",
-"totalqty":10.00,
-"totalsrp":8250.00,
-"totalcos":3462.40
+"BrandNme": "JULIE'S",
+"TotalQty":10.00,
+"TotalCos":3290.00,
+"TotalPrc":5500.00
 },
 {
-"brandnme": "GREAT TASTE",
-"totalqty":164.00,
-"totalsrp":8200.00,
-"totalcos":2378.00
+"BrandNme": "MANTYX",
+"TotalQty":85.00,
+"TotalCos":3252.67,
+"TotalPrc":17427.00
 },
 {
-"brandnme": "BELKIN",
-"totalqty":9.00,
-"totalsrp":8050.00,
-"totalcos":2646.29
+"BrandNme": "LAMPEIN",
+"TotalQty":127.00,
+"TotalCos":3066.48,
+"TotalPrc":19050.00
 },
 {
-"brandnme": "FOSSIL",
-"totalqty":1.00,
-"totalsrp":7800.00,
-"totalcos":3023.93
+"BrandNme": "FOSSIL",
+"TotalQty":1.00,
+"TotalCos":3023.93,
+"TotalPrc":7800.00
 },
 {
-"brandnme": "HIGH SIERRA",
-"totalqty":8.00,
-"totalsrp":7600.00,
-"totalcos":2602.24
+"BrandNme": "TY",
+"TotalQty":16.00,
+"TotalCos":3010.00,
+"TotalPrc":7820.00
 },
 {
-"brandnme": "HAITAI",
-"totalqty":42.00,
-"totalsrp":7560.00,
-"totalcos":2651.58
+"BrandNme": "SKULLCANDY",
+"TotalQty":2.00,
+"TotalCos":2849.58,
+"TotalPrc":8400.00
 },
 {
-"brandnme": "OPI-B4U",
-"totalqty":12.00,
-"totalsrp":7500.00,
-"totalcos":3962.45
+"BrandNme": "AIZA'S",
+"TotalQty":27.00,
+"TotalCos":2835.00,
+"TotalPrc":7560.00
 },
 {
-"brandnme": "BAILEY'S",
-"totalqty":5.00,
-"totalsrp":7450.00,
-"totalcos":2300.00
+"BrandNme": "ABSOLUT",
+"TotalQty":4.00,
+"TotalCos":2767.84,
+"TotalPrc":5120.00
 },
 {
-"brandnme": "BELGIAN",
-"totalqty":59.00,
-"totalsrp":7200.00,
-"totalcos":4025.16
+"BrandNme": "KIRKLAND",
+"TotalQty":3.00,
+"TotalCos":2745.00,
+"TotalPrc":7500.00
 },
 {
-"brandnme": "MEDIHEAL",
-"totalqty":26.00,
-"totalsrp":7200.00,
-"totalcos":2737.42
+"BrandNme": "MEDIHEAL",
+"TotalQty":26.00,
+"TotalCos":2737.42,
+"TotalPrc":7200.00
 },
 {
-"brandnme": "MY SAN",
-"totalqty":56.00,
-"totalsrp":7200.00,
-"totalcos":3294.60
+"BrandNme": "LEVI'S",
+"TotalQty":3.00,
+"TotalCos":2715.76,
+"TotalPrc":8398.50
 },
 {
-"brandnme": "HARDYS",
-"totalqty":8.00,
-"totalsrp":7100.00,
-"totalcos":2141.93
+"BrandNme": "KRIT",
+"TotalQty":36.00,
+"TotalCos":2682.00,
+"TotalPrc":5400.00
 },
 {
-"brandnme": "TILE",
-"totalqty":2.00,
-"totalsrp":6900.00,
-"totalcos":2536.49
+"BrandNme": "HAITAI",
+"TotalQty":42.00,
+"TotalCos":2651.58,
+"TotalPrc":7560.00
 },
 {
-"brandnme": "RONDOLETTI",
-"totalqty":17.00,
-"totalsrp":6800.00,
-"totalcos":2446.64
+"BrandNme": "BAILEYS",
+"TotalQty":6.00,
+"TotalCos":2619.66,
+"TotalPrc":10200.00
 },
 {
-"brandnme": "POLO RL",
-"totalqty":1.00,
-"totalsrp":6750.00,
-"totalcos":2109.38
+"BrandNme": "HIGH SIERRA",
+"TotalQty":8.00,
+"TotalCos":2602.24,
+"TotalPrc":7600.00
 },
 {
-"brandnme": "DESIGN GO",
-"totalqty":11.00,
-"totalsrp":6590.00,
-"totalcos":2243.31
+"BrandNme": "TILE",
+"TotalQty":2.00,
+"TotalCos":2536.49,
+"TotalPrc":6900.00
 },
 {
-"brandnme": "BARONI",
-"totalqty":20.00,
-"totalsrp":6000.00,
-"totalcos":2890.00
+"BrandNme": "TIFFANY",
+"TotalQty":10.00,
+"TotalCos":2528.68,
+"TotalPrc":5500.00
 },
 {
-"brandnme": "LANVIN",
-"totalqty":1.00,
-"totalsrp":6000.00,
-"totalcos":3511.20
+"BrandNme": "FOX'S",
+"TotalQty":31.00,
+"TotalCos":2521.61,
+"TotalPrc":6220.00
 },
 {
-"brandnme": "DOUGHNUT",
-"totalqty":2.00,
-"totalsrp":5610.00,
-"totalcos":2165.90
+"BrandNme": "KOPIKO",
+"TotalQty":153.00,
+"TotalCos":2458.71,
+"TotalPrc":7650.00
 },
 {
-"brandnme": "RHEA ACEITE",
-"totalqty":53.00,
-"totalsrp":5300.00,
-"totalcos":1278.06
+"BrandNme": "BARONI",
+"TotalQty":17.00,
+"TotalCos":2456.50,
+"TotalPrc":5100.00
 },
 {
-"brandnme": "ABSOLUT",
-"totalqty":4.00,
-"totalsrp":5120.00,
-"totalcos":2767.84
+"BrandNme": "RONDOLETTI",
+"TotalQty":17.00,
+"TotalCos":2446.64,
+"TotalPrc":6800.00
 },
 {
-"brandnme": "BAILEYS",
-"totalqty":3.00,
-"totalsrp":5100.00,
-"totalcos":1309.83
+"BrandNme": "LOCAL HEADWRAP",
+"TotalQty":38.00,
+"TotalCos":2342.79,
+"TotalPrc":15200.00
 },
 {
-"brandnme": "PUMA-E",
-"totalqty":2.00,
-"totalsrp":4450.00,
-"totalcos":4446.92
+"BrandNme": "BAILEY'S",
+"TotalQty":5.00,
+"TotalCos":2300.00,
+"TotalPrc":7450.00
 },
 {
-"brandnme": "NONGSHIM",
-"totalqty":21.00,
-"totalsrp":4300.00,
-"totalcos":1073.19
+"BrandNme": "JUICY COUTURE",
+"TotalQty":1.00,
+"TotalCos":2275.24,
+"TotalPrc":7499.00
 },
 {
-"brandnme": "T-SHIRTJEANS",
-"totalqty":2.00,
-"totalsrp":3998.00,
-"totalcos":1230.26
+"BrandNme": "DESIGN GO",
+"TotalQty":11.00,
+"TotalCos":2243.31,
+"TotalPrc":6590.00
 },
 {
-"brandnme": "BUSHNELL-TRI",
-"totalqty":1.00,
-"totalsrp":3990.00,
-"totalcos":1883.70
+"BrandNme": "ABE KENI",
+"TotalQty":20.00,
+"TotalCos":2200.00,
+"TotalPrc":6000.00
 },
 {
-"brandnme": "ASICS-SL",
-"totalqty":1.00,
-"totalsrp":3900.00,
-"totalcos":1467.14
+"BrandNme": "DOUGHNUT",
+"TotalQty":2.00,
+"TotalCos":2165.90,
+"TotalPrc":2750.00
 },
 {
-"brandnme": "DEA",
-"totalqty":6.00,
-"totalsrp":3640.00,
-"totalcos":895.76
+"BrandNme": "POLO RL",
+"TotalQty":1.00,
+"TotalCos":2109.38,
+"TotalPrc":6750.00
 },
 {
-"brandnme": "SEAFOLLY",
-"totalqty":3.00,
-"totalsrp":3620.00,
-"totalcos":658.93
+"BrandNme": "GREAT TASTE",
+"TotalQty":134.00,
+"TotalCos":1943.00,
+"TotalPrc":6700.00
 },
 {
-"brandnme": "ABE KENI",
-"totalqty":12.00,
-"totalsrp":3600.00,
-"totalcos":1320.00
+"BrandNme": "BATH  BODY WORKS-C",
+"TotalQty":6.00,
+"TotalCos":1857.24,
+"TotalPrc":2010.00
 },
 {
-"brandnme": "VSF",
-"totalqty":20.00,
-"totalsrp":3600.00,
-"totalcos":1401.80
+"BrandNme": "CANADA DRY",
+"TotalQty":84.00,
+"TotalCos":1837.92,
+"TotalPrc":12600.00
 },
 {
-"brandnme": "WELLDERMA",
-"totalqty":1.00,
-"totalsrp":3500.00,
-"totalcos":1175.20
+"BrandNme": "HARDYS",
+"TotalQty":7.00,
+"TotalCos":1781.22,
+"TotalPrc":6300.00
 },
 {
-"brandnme": "BELGIAN BUTTER",
-"totalqty":29.00,
-"totalsrp":3480.00,
-"totalcos":1540.77
+"BrandNme": "BENETTON-SL",
+"TotalQty":2.00,
+"TotalCos":1774.20,
+"TotalPrc":4790.00
 },
 {
-"brandnme": "BERRISOM",
-"totalqty":4.00,
-"totalsrp":3200.00,
-"totalcos":1089.92
+"BrandNme": "HOMI",
+"TotalQty":97.00,
+"TotalCos":1699.44,
+"TotalPrc":9700.00
 },
 {
-"brandnme": "VICKS",
-"totalqty":20.00,
-"totalsrp":3000.00,
-"totalcos":1053.78
+"BrandNme": "PARADISE MANGO",
+"TotalQty":30.00,
+"TotalCos":1617.94,
+"TotalPrc":4500.00
 },
 {
-"brandnme": "MEIJI MACADEMIA",
-"totalqty":9.00,
-"totalsrp":2700.00,
-"totalcos":981.00
+"BrandNme": "CRK",
+"TotalQty":116.00,
+"TotalCos":1581.08,
+"TotalPrc":9280.00
 },
 {
-"brandnme": "SNP",
-"totalqty":34.00,
-"totalsrp":2550.00,
-"totalcos":1224.00
+"BrandNme": "MY SAN",
+"TotalQty":51.00,
+"TotalCos":1499.50,
+"TotalPrc":3700.00
 },
 {
-"brandnme": "MASTER",
-"totalqty":9.00,
-"totalsrp":2520.00,
-"totalcos":746.89
+"BrandNme": "ASICS-SL",
+"TotalQty":1.00,
+"TotalCos":1467.14,
+"TotalPrc":3900.00
 },
 {
-"brandnme": "BROOKSIDE",
-"totalqty":2.00,
-"totalsrp":2400.00,
-"totalcos":1069.64
+"BrandNme": "ENG SENG",
+"TotalQty":16.00,
+"TotalCos":1440.00,
+"TotalPrc":2400.00
 },
 {
-"brandnme": "ENG SENG",
-"totalqty":16.00,
-"totalsrp":2400.00,
-"totalcos":1440.00
+"BrandNme": "VSF",
+"TotalQty":20.00,
+"TotalCos":1401.80,
+"TotalPrc":3600.00
 },
 {
-"brandnme": "MIGHTY BOND",
-"totalqty":14.00,
-"totalsrp":2380.00,
-"totalcos":871.54
+"BrandNme": "MANZANILLA",
+"TotalQty":106.00,
+"TotalCos":1389.66,
+"TotalPrc":10600.00
 },
 {
-"brandnme": "MAXON",
-"totalqty":12.00,
-"totalsrp":2160.00,
-"totalcos":774.00
+"BrandNme": "ADIDAS-P",
+"TotalQty":2.00,
+"TotalCos":1373.90,
+"TotalPrc":3600.00
 },
 {
-"brandnme": "BATH  BODY WORKS-C",
-"totalqty":6.00,
-"totalsrp":2010.00,
-"totalcos":1857.24
+"BrandNme": "MAUNA LOA",
+"TotalQty":7.00,
+"TotalCos":1246.90,
+"TotalPrc":3850.00
 },
 {
-"brandnme": "LISTERINE",
-"totalqty":11.00,
-"totalsrp":1980.00,
-"totalcos":644.93
+"BrandNme": "T-SHIRTJEANS",
+"TotalQty":2.00,
+"TotalCos":1230.26,
+"TotalPrc":3998.00
 },
 {
-"brandnme": "PONDS",
-"totalqty":11.00,
-"totalsrp":1980.00,
-"totalcos":599.34
+"BrandNme": "RHEA ACEITE",
+"TotalQty":51.00,
+"TotalCos":1229.83,
+"TotalPrc":5100.00
 },
 {
-"brandnme": "CHRISTIAN DIOR",
-"totalqty":1.00,
-"totalsrp":1960.00,
-"totalcos":245.00
+"BrandNme": "SNP",
+"TotalQty":34.00,
+"TotalCos":1224.00,
+"TotalPrc":2550.00
 },
 {
-"brandnme": "INDOPLUS",
-"totalqty":39.00,
-"totalsrp":1950.00,
-"totalcos":351.00
+"BrandNme": "BELGIAN BUTTER",
+"TotalQty":23.00,
+"TotalCos":1221.99,
+"TotalPrc":2760.00
 },
 {
-"brandnme": "JAYJUN-SL",
-"totalqty":26.00,
-"totalsrp":1950.00,
-"totalcos":936.00
+"BrandNme": "WELLDERMA",
+"TotalQty":1.00,
+"TotalCos":1175.20,
+"TotalPrc":3500.00
 },
 {
-"brandnme": "LEADERS",
-"totalqty":9.00,
-"totalsrp":1755.00,
-"totalcos":591.57
+"BrandNme": "CALBEE",
+"TotalQty":37.00,
+"TotalCos":1146.51,
+"TotalPrc":2960.00
 },
 {
-"brandnme": "PAPA RECIPE",
-"totalqty":22.00,
-"totalsrp":1650.00,
-"totalcos":792.00
+"BrandNme": "BERRISOM",
+"TotalQty":4.00,
+"TotalCos":1089.92,
+"TotalPrc":3200.00
 },
 {
-"brandnme": "GOYA",
-"totalqty":16.00,
-"totalsrp":1600.00,
-"totalcos":309.53
+"BrandNme": "SOMERSET-B4U",
+"TotalQty":3.00,
+"TotalCos":1071.95,
+"TotalPrc":1540.00
 },
 {
-"brandnme": "SOMERSET-B4U",
-"totalqty":3.00,
-"totalsrp":1540.00,
-"totalcos":1071.95
+"BrandNme": "VICKS",
+"TotalQty":19.00,
+"TotalCos":1001.09,
+"TotalPrc":2850.00
 },
 {
-"brandnme": "CAREFREE",
-"totalqty":22.00,
-"totalsrp":1430.00,
-"totalcos":452.49
+"BrandNme": "JAYJUN-SL",
+"TotalQty":26.00,
+"TotalCos":936.00,
+"TotalPrc":1950.00
 },
 {
-"brandnme": "MIKASA",
-"totalqty":1.00,
-"totalsrp":1400.00,
-"totalcos":916.98
+"BrandNme": "MIKASA",
+"TotalQty":1.00,
+"TotalCos":916.98,
+"TotalPrc":1400.00
 },
 {
-"brandnme": "MITCHELL  NESS",
-"totalqty":1.00,
-"totalsrp":1393.00,
-"totalcos":597.00
+"BrandNme": "DEA",
+"TotalQty":6.00,
+"TotalCos":895.76,
+"TotalPrc":3640.00
 },
 {
-"brandnme": "GILLET",
-"totalqty":8.00,
-"totalsrp":1200.00,
-"totalcos":416.24
+"BrandNme": "O'NEILL",
+"TotalQty":2.00,
+"TotalCos":892.86,
+"TotalPrc":8980.00
 },
 {
-"brandnme": "WHSMITH",
-"totalqty":2.00,
-"totalsrp":1000.00,
-"totalcos":337.38
+"BrandNme": "MIGHTY BOND",
+"TotalQty":14.00,
+"TotalCos":871.54,
+"TotalPrc":2380.00
 },
 {
-"brandnme": "WOOD",
-"totalqty":1.00,
-"totalsrp":1000.00,
-"totalcos":410.00
+"BrandNme": "PAPA RECIPE",
+"TotalQty":22.00,
+"TotalCos":792.00,
+"TotalPrc":1650.00
 },
 {
-"brandnme": "DOVE",
-"totalqty":6.00,
-"totalsrp":960.00,
-"totalcos":302.07
+"BrandNme": "MASTER",
+"TotalQty":9.00,
+"TotalCos":746.89,
+"TotalPrc":2520.00
 },
 {
-"brandnme": "GROWERS",
-"totalqty":9.00,
-"totalsrp":900.00,
-"totalcos":328.10
+"BrandNme": "SEAFOLLY",
+"TotalQty":3.00,
+"TotalCos":658.93,
+"TotalPrc":3620.00
 },
 {
-"brandnme": "HOLIKA",
-"totalqty":4.00,
-"totalsrp":800.00,
-"totalcos":320.16
+"BrandNme": "MITCHELL  NESS",
+"TotalQty":1.00,
+"TotalCos":597.00,
+"TotalPrc":1393.00
 },
 {
-"brandnme": "PIXI",
-"totalqty":2.00,
-"totalsrp":780.00,
-"totalcos":468.00
+"BrandNme": "LEADERS",
+"TotalQty":9.00,
+"TotalCos":591.57,
+"TotalPrc":1755.00
 },
 {
-"brandnme": "BC NEW YORKERS",
-"totalqty":3.00,
-"totalsrp":750.00,
-"totalcos":238.38
+"BrandNme": "PONDS",
+"TotalQty":10.00,
+"TotalCos":544.86,
+"TotalPrc":1800.00
 },
 {
-"brandnme": "PATRICK",
-"totalqty":3.00,
-"totalsrp":750.00,
-"totalcos":279.90
+"BrandNme": "PIXI",
+"TotalQty":2.00,
+"TotalCos":468.00,
+"TotalPrc":780.00
 },
 {
-"brandnme": "DR.JART",
-"totalqty":8.00,
-"totalsrp":600.00,
-"totalcos":288.00
+"BrandNme": "CAREFREE",
+"TotalQty":22.00,
+"TotalCos":452.49,
+"TotalPrc":1430.00
 },
 {
-"brandnme": "SHAMROCK",
-"totalqty":3.00,
-"totalsrp":600.00,
-"totalcos":225.60
+"BrandNme": "MAXON",
+"TotalQty":7.00,
+"TotalCos":451.50,
+"TotalPrc":1260.00
 },
 {
-"brandnme": "ISLAND GIRL",
-"totalqty":1.00,
-"totalsrp":595.00,
-"totalcos":236.67
+"BrandNme": "M.Y. SAN",
+"TotalQty":26.00,
+"TotalCos":413.40,
+"TotalPrc":1560.00
 },
 {
-"brandnme": "EASTPAK",
-"totalqty":1.00,
-"totalsrp":523.00,
-"totalcos":216.04
+"BrandNme": "WOOD",
+"TotalQty":1.00,
+"TotalCos":410.00,
+"TotalPrc":1000.00
 },
 {
-"brandnme": "BROWNIES UNLIMITED",
-"totalqty":2.00,
-"totalsrp":500.00,
-"totalcos":150.00
+"BrandNme": "NONGSHIM",
+"TotalQty":6.00,
+"TotalCos":343.11,
+"TotalPrc":1275.00
 },
 {
-"brandnme": "ARAMIS",
-"totalqty":1.00,
-"totalsrp":499.00,
-"totalcos":137.73
+"BrandNme": "HOLIKA",
+"TotalQty":4.00,
+"TotalCos":320.16,
+"TotalPrc":800.00
 },
 {
-"brandnme": "MS.JAZZ",
-"totalqty":1.00,
-"totalsrp":499.00,
-"totalcos":137.73
+"BrandNme": "GROWERS",
+"TotalQty":8.00,
+"TotalCos":291.65,
+"TotalPrc":800.00
 },
 {
-"brandnme": "SUNNIES STUDIOS",
-"totalqty":1.00,
-"totalsrp":499.00,
-"totalcos":143.66
+"BrandNme": "DR.JART",
+"TotalQty":8.00,
+"TotalCos":288.00,
+"TotalPrc":600.00
 },
 {
-"brandnme": "PAMPERS",
-"totalqty":3.00,
-"totalsrp":450.00,
-"totalcos":158.95
+"BrandNme": "PATRICK",
+"TotalQty":3.00,
+"TotalCos":279.90,
+"TotalPrc":750.00
 },
 {
-"brandnme": "DELFI",
-"totalqty":4.00,
-"totalsrp":400.00,
-"totalcos":83.54
+"BrandNme": "GOYA",
+"TotalQty":13.00,
+"TotalCos":250.04,
+"TotalPrc":1300.00
 },
 {
-"brandnme": "ISLA",
-"totalqty":3.00,
-"totalsrp":330.00,
-"totalcos":234.30
+"BrandNme": "THATS FRUTEE",
+"TotalQty":1.00,
+"TotalCos":249.00,
+"TotalPrc":500.00
 },
 {
-"brandnme": "GRANNY GOOSE",
-"totalqty":4.00,
-"totalsrp":320.00,
-"totalcos":78.45
+"BrandNme": "CHRISTIAN DIOR",
+"TotalQty":1.00,
+"TotalCos":245.00,
+"TotalPrc":1960.00
 },
 {
-"brandnme": "DORITOS",
-"totalqty":1.00,
-"totalsrp":300.00,
-"totalcos":135.67
+"BrandNme": "BC NEW YORKERS",
+"TotalQty":3.00,
+"TotalCos":238.38,
+"TotalPrc":750.00
 },
 {
-"brandnme": "MIKE AND IKE",
-"totalqty":2.00,
-"totalsrp":300.00,
-"totalcos":133.92
+"BrandNme": "ISLA",
+"TotalQty":3.00,
+"TotalCos":234.30,
+"TotalPrc":330.00
 },
 {
-"brandnme": "ESKINOL",
-"totalqty":2.00,
-"totalsrp":260.00,
-"totalcos":69.76
+"BrandNme": "EASTPAK",
+"TotalQty":1.00,
+"TotalCos":216.04,
+"TotalPrc":523.00
 },
 {
-"brandnme": "PLANTERS",
-"totalqty":1.00,
-"totalsrp":250.00,
-"totalcos":109.15
+"BrandNme": "GRANNY GOOSE",
+"TotalQty":11.00,
+"TotalCos":215.74,
+"TotalPrc":880.00
 },
 {
-"brandnme": "MICHELLES OUTRIGHT",
-"totalqty":1.00,
-"totalsrp":200.00,
-"totalcos":55.13
+"BrandNme": "WHSMITH",
+"TotalQty":1.00,
+"TotalCos":168.69,
+"TotalPrc":500.00
 },
 {
-"brandnme": "RITTER SPORT",
-"totalqty":1.00,
-"totalsrp":175.00,
-"totalcos":74.37
+"BrandNme": "PAMPERS",
+"TotalQty":3.00,
+"TotalCos":158.95,
+"TotalPrc":450.00
 },
 {
-"brandnme": "MILLENNIUM",
-"totalqty":1.00,
-"totalsrp":150.00,
-"totalcos":51.00
+"BrandNme": "GILLET",
+"TotalQty":3.00,
+"TotalCos":156.09,
+"TotalPrc":450.00
 },
 {
-"brandnme": "MONIEGOLD BANGKOK",
-"totalqty":1.00,
-"totalsrp":150.00,
-"totalcos":44.38
+"BrandNme": "BROWNIES UNLIMITED",
+"TotalQty":2.00,
+"TotalCos":150.00,
+"TotalPrc":500.00
 },
 {
-"brandnme": "KETTLE KORN",
-"totalqty":1.00,
-"totalsrp":100.00,
-"totalcos":32.27
+"BrandNme": "SUNNIES STUDIOS",
+"TotalQty":1.00,
+"TotalCos":143.66,
+"TotalPrc":499.00
 },
 {
-"brandnme": "FIBISCO",
-"totalqty":1.00,
-"totalsrp":80.00,
-"totalcos":23.97
+"BrandNme": "ARAMIS",
+"TotalQty":1.00,
+"TotalCos":137.73,
+"TotalPrc":499.00
 },
 {
-"brandnme": "QUAKER",
-"totalqty":1.00,
-"totalsrp":50.00,
-"totalcos":22.50
+"BrandNme": "MS.JAZZ",
+"TotalQty":1.00,
+"TotalCos":137.73,
+"TotalPrc":499.00
 },
 {
-"brandnme": "NON-MERCH",
-"totalqty":15190.00,
-"totalsrp":0.00,
-"totalcos":277750.00
+"BrandNme": "DORITOS",
+"TotalQty":1.00,
+"TotalCos":135.67,
+"TotalPrc":300.00
+},
+{
+"BrandNme": "AMADEO LIQUER",
+"TotalQty":2.00,
+"TotalCos":133.92,
+"TotalPrc":300.00
+},
+{
+"BrandNme": "MIKE AND IKE",
+"TotalQty":2.00,
+"TotalCos":133.92,
+"TotalPrc":300.00
+},
+{
+"BrandNme": "PLANTERS",
+"TotalQty":1.00,
+"TotalCos":109.15,
+"TotalPrc":250.00
+},
+{
+"BrandNme": "DOVE",
+"TotalQty":2.00,
+"TotalCos":100.69,
+"TotalPrc":320.00
+},
+{
+"BrandNme": "RITTER SPORT",
+"TotalQty":1.00,
+"TotalCos":74.37,
+"TotalPrc":175.00
+},
+{
+"BrandNme": "ESKINOL",
+"TotalQty":2.00,
+"TotalCos":69.76,
+"TotalPrc":260.00
+},
+{
+"BrandNme": "MICHELLES OUTRIGHT",
+"TotalQty":1.00,
+"TotalCos":55.13,
+"TotalPrc":200.00
+},
+{
+"BrandNme": "MANILLE LIQUER",
+"TotalQty":1.00,
+"TotalCos":53.57,
+"TotalPrc":150.00
+},
+{
+"BrandNme": "MILLENNIUM",
+"TotalQty":1.00,
+"TotalCos":51.00,
+"TotalPrc":150.00
+},
+{
+"BrandNme": "MONIEGOLD BANGKOK",
+"TotalQty":1.00,
+"TotalCos":44.38,
+"TotalPrc":150.00
+},
+{
+"BrandNme": "DELFI",
+"TotalQty":2.00,
+"TotalCos":41.86,
+"TotalPrc":200.00
+},
+{
+"BrandNme": "KETTLE KORN",
+"TotalQty":1.00,
+"TotalCos":32.27,
+"TotalPrc":100.00
+},
+{
+"BrandNme": "FIBISCO",
+"TotalQty":1.00,
+"TotalCos":23.97,
+"TotalPrc":80.00
+},
+{
+"BrandNme": "QUAKER",
+"TotalQty":1.00,
+"TotalCos":22.50,
+"TotalPrc":50.00
+},
+{
+"BrandNme": "NATURE SPRING",
+"TotalQty":1.00,
+"TotalCos":19.50,
+"TotalPrc":120.00
 }]

@@ -957,7 +957,7 @@ function SalesDtl(index,editMode) {
     document.getElementById('saveSalesDtlBtn').addEventListener('click', async (e) => {
         e.preventDefault()
     
-        if (!checkEmptyValue(UsersCde,Quantity,ItemPrce,Amount__)) {
+        if (!checkEmptyValue(UsersCde,Quantity)) {
             return;  // If any field is empty, stop here and do not proceed
         }
         if (editMode) {
@@ -1081,6 +1081,7 @@ export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
         }
 
         const updatedItem = await response.json();
+console.log(updatedItem)
 
         if (updatedItem) {
             itemsDtl.push(updatedItem);

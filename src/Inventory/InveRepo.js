@@ -1,5 +1,5 @@
-import { showReport, showNotification, formatter, getCurrentTime, getTimeUsed} from '../FunctLib.js';
-// import {printReportExcel, generateTitleRows} from '../PrintRep.js'
+import { showReport, showNotification, formatter, startTimer, formatDate} from '../FunctLib.js';
+import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 const divStockEndLoca = `
@@ -24,7 +24,7 @@ const divStockEndLoca = `
 
             <div id="stockEndLocaChart">
                 <div id="locaEndBarChart">
-                    <h5>Inventory By SRP</h5>
+                    <h5>Inventory By Location</h5>
                     <canvas id="locaEndChart1"></canvas>
                 </div>
                 <div class="divPieChart">
@@ -102,6 +102,8 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
 
     let data = null;
     document.getElementById('loadingIndicator').style.display = 'flex';
+     let { timerInterval, elapsedTime } = startTimer(); 
+
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/inventory/StockEndingByLocation');
@@ -117,26 +119,30 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
         if (cOtherCde) params.append('OtherCde', cOtherCde); 
         if (cDescript) params.append('Descript', cDescript); 
 
-        const startTime = getCurrentTime();
-
+        // const startTime = getCurrentTime();
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
+
+        // const response = await fetch('../data/DB_INVENLOC.json');
+        // const response = await fetch('../data/DB_INVELOBR.json');
+
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
         data = await response.json();
+        // console.log(data)
+
         const listCounter=document.getElementById('stockEndLocaCounter')
         listCounter.innerHTML=`${data.length} Records`;
 
-        const timeUsed = getTimeUsed(startTime);
-
-        // showNotification(`${data.length} Records fetched`);
-        showNotification(`${data.length} Records fetched in ${timeUsed}`);
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
 
         
         if (data.length===0) return
         const reportBody = document.getElementById('stockEndLocation');
+        reportBody.style.maxHeight = "80%";
         if (data.length > 30) {
             reportBody.style.height='700px'
         }
@@ -200,7 +206,77 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
 
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
     }
+
+    document.getElementById('printStockEndLoca').addEventListener('click', () => {
+
+        const dateRange = `As Of: ${formatDate(dDateAsOf,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Stock Ending By Location', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+            ];
+
+            const colWidths = [
+                { width: 10 },{ width: 20 },{ width: 15 },{ width: 20 },{ width: 20 },
+            ];
+        
+            let rank = 1
+            const columnConfig = [
+                { label: 'Rank.',getValue: row => rank++,type: 'integer',align: 'center'},
+                { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
+                { label: 'Total Qty.',getValue: row => +row.TotalQty,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
+                align: 'right',type: 'integer',cellFormat: '#,##0'},
+                { label: 'Total Cost',getValue: row => +row.TotalCos,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalCos || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Total SRP',getValue: row => +row.TotalPrc,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalPrc || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+            ];
+            
+            const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Ending By Location', 2);
+    })
+
+    // document.getElementById('printStockEndLoca2').addEventListener('click', () => {
+
+    //     const dateRange = `As Of: ${formatDate(dDateAsOf,'MM/DD/YYYY')}`
+    //     const titleRowsContent = [
+    //         { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+    //         { text: 'Stock Ending By Location / Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+    //         { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+    //         { text: '' } // Spacer row
+    //         ];
+
+    //         const colWidths = [
+    //             { width: 20 },{ width: 20 },{ width: 15 },{ width: 20 },{ width: 20 },
+    //         ];
+        
+    //         const columnConfig = [
+    //             { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
+    //             { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left'},
+    //             { label: 'Total Qty.',getValue: row => +row.TotalQty,
+    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
+    //             align: 'right',type: 'integer',cellFormat: '#,##0'},
+    //             { label: 'Total Cost',getValue: row => +row.TotalCos,
+    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalCos || 0), 0),
+    //             align: 'right',cellFormat: '#,##0.00'},
+    //             { label: 'Total SRP',getValue: row => +row.TotalPrc,
+    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalPrc || 0), 0),
+    //             align: 'right',cellFormat: '#,##0.00'},
+    //         ];
+            
+    //         const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+    //         printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Ending By Location_Brand', 2);
+    // })
+
 }
 
 document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
@@ -260,7 +336,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
             data: {
                 labels: allLabels,
                 datasets: [{
-                    label: 'Inventory By SRP',
+                    label: 'Inventory By Location',
                     data: allValues,
                     backgroundColor: 'rgba(54, 162, 235, 0.6)',
                     borderColor: 'rgba(54, 162, 235, 1)',
@@ -272,7 +348,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
                 plugins: {
                     title: {
                         display: true,
-                        text: `Inventory by SRP as of ${cAsOfDate}`
+                        text: `Inventory by Location as of ${cAsOfDate}`
                     },
                     font: {
                         family: 'Arial Narrow',
@@ -453,8 +529,10 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
 
     let data = null;
     document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+
     try {
-        // Build query parameters
+        // // Build query parameters
         const url = new URL('http://localhost:3000/inventory/StockEndingByBrand');
         const params = new URLSearchParams();
         if (dDateAsOf) params.append('DateAsOf', dDateAsOf); 
@@ -468,10 +546,11 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
         if (cOtherCde) params.append('OtherCde', cOtherCde); 
         if (cDescript) params.append('Descript', cDescript); 
 
-        const startTime = getCurrentTime();
-
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
+
+        // const response = await fetch(`../data/DB_INVENBRN.json`);
+
         if (!response.ok) {
             throw new Error('Network response was not ok.');
         }
@@ -480,14 +559,14 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
         const listCounter=document.getElementById('stockEndBrandCounter')
         listCounter.innerHTML=`${data.length} Records`;
 
-        const timeUsed = getTimeUsed(startTime);
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval)        
+        document.getElementById('runningTime').textContent=''
 
-        // showNotification(`${data.length} Records fetched`);
-        showNotification(`${data.length} Records fetched in ${timeUsed}`);
-        
         if (data.length===0) return
 
         const reportBody = document.getElementById('stockEndBrand');
+        reportBody.style.maxHeight = "80%";
         if (data.length > 30) {
             reportBody.style.height='700px'
         }
@@ -550,7 +629,45 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
 
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval)        
+        document.getElementById('runningTime').textContent=''
+
     }
+
+    document.getElementById('printStockEndBrand').addEventListener('click', () => {
+
+        const dateRange = `As Of: ${formatDate(dDateAsOf,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Stock Ending By Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+            ];
+
+            const colWidths = [
+                { width: 10 },{ width: 20 },{ width: 15 },{ width: 20 },{ width: 20 },
+            ];
+        
+            let rank = 1
+            const columnConfig = [
+                { label: 'Rank.',getValue: row => rank++,type: 'integer',align: 'center'},
+                { label: 'Brand.',getValue: row => row.BrandNme,type: 'string',align: 'left'},
+                { label: 'Total Qty.',getValue: row => +row.TotalQty,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
+                align: 'right',type: 'integer',cellFormat: '#,##0'},
+                { label: 'Total Cost',getValue: row => +row.TotalCos,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalCos || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Total SRP',getValue: row => +row.TotalPrc,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TotalPrc || 0), 0),
+                align: 'right',cellFormat: '#,##0.00'},
+            ];
+            
+            const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Ending By Brand', 2);
+    })
+
 }
 
 
@@ -673,6 +790,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showReport('StockEndBrand')
     });
 });
+
+
 
 
 

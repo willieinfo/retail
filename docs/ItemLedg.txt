@@ -1,0 +1,12 @@
+CREATE TABLE itemledg (
+    AutIncId INT IDENTITY(1,1) PRIMARY KEY,
+    Location CHAR(03),
+    Module__ CHAR(08),  
+    CtrlNum_ CHAR(12),
+    RecordId CHAR(12),
+    ItemCode CHAR(20),
+    Date____ DATE,
+    Quantity DECIMAL(18,2),
+    LandCost DECIMAL(18,2),     
+    DateCrea DATETIME DEFAULT GETDATE()
+);

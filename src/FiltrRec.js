@@ -339,7 +339,7 @@ export function displayErrorMsg(error,otherMsg = '') {
 
     // Display the error message
     errorMessageDiv.style.display = 'block';
-    makeDraggable(errorMessageDiv,titleBar)
+    if (errorMessageDiv) makeDraggable(errorMessageDiv,titleBar)
 
     // Button actions
     retryBtn.onclick = function () {

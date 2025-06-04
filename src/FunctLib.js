@@ -1201,3 +1201,16 @@ export function greetTime(timeNow) {
 
     return greeting;
 }
+
+export function startTimer() {
+    let elapsedTime = 0; 
+    const timerInterval = setInterval(() => {
+        elapsedTime++;
+        const minutes = Math.floor(elapsedTime / 60);
+        const seconds = elapsedTime % 60;
+        document.getElementById('runningTime').textContent = 
+            `Elapsed Time: ${minutes}m ${seconds}s`;
+    }, 1000);
+
+    return { timerInterval, elapsedTime };
+}
