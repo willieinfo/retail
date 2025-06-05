@@ -15,10 +15,11 @@ canvas {
 /* Sales Ranking By Location / Brand SALEREPO */
 /* The first chart occupying 70% of the parent width */
 #storeRankChart, #brandRankChart, #stockRankChart,
-#stockEndLocaChart, #stockEndBrandChart {
+#stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
+    justify-content: center;
     background-color: whitesmoke;
-    padding: 15px;
+    padding: 20px 20px 50px 20px;
 }
 .divChart70, .divChart30{
     width: 70%;

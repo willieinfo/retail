@@ -160,6 +160,47 @@ const divRankStock =`
         </div>
     </div>
 `
+const divDailySales =`
+    <div id="DailySalesSum" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Daily Sales Summary</span>
+            <button id="closeRepo4" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="dailySalesSum" class="ReportBody">
+                <table id="dailySalesTable">
+                    <thead id="listSales1">
+                        <tr>
+                            <th>Date</th>
+                            <th>Trx Count</th>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>ATV</th>
+                            <th>Cost</th>
+                            <th>GP%</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="dailySalesChart" class="chartContainer">
+                <div id="daySales">
+                    <h5>Last 30 Days</h5>
+                    <canvas id="dailyLast30days"></canvas>
+                </div>
+                    <br>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <button id="printDailySales"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="listSales"><i class="fa fa-filter"></i> Filter List</button>
+            </div>
+        </div>
+    </div>
+`
 
 
 const fragment = document.createDocumentFragment();
@@ -175,6 +216,10 @@ fragment.appendChild(div2);
 const div3 = document.createElement('div');
 div3.innerHTML = divRankStock;
 fragment.appendChild(div3);
+
+const div4 = document.createElement('div');
+div4.innerHTML = divDailySales;
+fragment.appendChild(div4);
 
 document.body.appendChild(fragment);  // Only one reflow happens here
 
@@ -1487,6 +1532,297 @@ async function rankStockSales(data, dateRange) {
         });
 
         window.myChart4 = myChart4;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        displayErrorMsg(error,'Error processing chart data')
+    }
+}
+
+async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+    let data = null;
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/sales/DailySalesSum');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let nTotalQty = 0
+        let nTotalPrc = 0
+        let nTotalDsc = 0
+        let nTotalAmt = 0
+        let nTotalCos = 0
+        let nTotalATV = 0
+        let nGP_Prcnt = 0
+        let nTotalTrx = 0
+    
+        data = await response.json();
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalTrx+=item.TrxCount
+                nTotalQty+=item.Quantity
+                nTotalPrc+=item.Gross___
+                nTotalDsc+=(item.Gross___-item.Amount__)
+                nTotalAmt+=item.Amount__
+                nTotalCos+=item.LandCost
+            });
+        }
+        if (nTotalAmt !== 0) {
+            nGP_Prcnt = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+        }
+        nTotalATV = (nTotalTrx) ? nTotalAmt / nTotalTrx : 0
+
+        const salesRankBrandDiv = document.getElementById('DailySalesSum');
+        salesRankBrandDiv.classList.add('active');
+
+        const reportBody = document.getElementById('dailySalesSum');
+        reportBody.style.maxHeight = "80%";
+        reportBody.innerHTML = '';  // Clear previous content
+
+        const dayNames =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+        // Define the table structure
+        const salesTable = `
+            <table id="salesRankTable1">
+                <thead id="rankTHead1">
+                    <tr>
+                        <th>Date</th>
+                        <th>Trx Count</th>
+                        <th>Quantity</th>
+                        <th>Gross</th>
+                        <th>Discount</th>
+                        <th>Net</th>
+                        <th>ATV</th>
+                        <th>Cost</th>
+                        <th>GP%</th>
+                    </tr>
+                </thead>
+                <tbody id="salesTBody">
+                    ${data.map(item => {
+                        return `
+                            <tr>
+                                <td style="text-align: left;${formatDate(item.Date____,'MM/DD/YYYY') ? (new Date(item.Date____).getDay() === 0 ? 'color: red;' : '') : ''}">
+                                    ${formatDate(item.Date____,'MM/DD/YYYY') || 'N/A'} - ${dayNames[new Date(item.Date____).getDay()]}
+                                </td>
+                                <td style="text-align: center">${item.TrxCount || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Gross___) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Gross___ - item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ATV_____) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.GrossPct)+'%' || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="height: 2px"></tr>
+                    <tr style="font-weight: bold">
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalTrx || 'N/A'}</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalATV) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nGP_Prcnt)+'%' || 'N/A'}</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = salesTable;
+
+        // Show store ranking chart
+        document.getElementById('dailySalesChart').style.display='flex';
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        setDailyChart(data)
+       
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        // Hide loading spinner once data is fetched or an error occurs
+        document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+    }
+
+}
+
+
+document.getElementById('listSales').addEventListener('click', () => {
+    try {
+        FiltrRec('DailySales').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cStoreGrp = filterData[12];
+
+            DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+
+})
+
+// Wait for the DOM to fully load before adding the event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const dailySalesElements = document.querySelectorAll('.dailySalesSum'); //<li>
+    const saleRepoDiv = document.getElementById('DailySalesSum');
+    const closeRepo = document.getElementById('closeRepo4');
+    
+    closeRepo.addEventListener('click', () => {
+        saleRepoDiv.classList.remove('active');
+    });
+
+    dailySalesElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('DailySalesSum')
+        });
+    });
+
+});
+
+
+function setDailyChart(data) {
+    let myChart5 = window.myChart5 || null;
+    
+    try {
+        
+        const dateTotals = {};
+        const backgroundColors = [];
+        const borderWidth = [];
+        const borderColor = [];
+        const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+        const ctx = document.getElementById('dailyLast30days').getContext('2d');
+
+        if (myChart5) myChart5.destroy();
+
+        // Dates and totals
+        const dates = data.map(entry => new Date(entry.Date____));
+        const maxDate = new Date(Math.max(...dates));
+        const minDate = new Date(maxDate);
+        minDate.setDate(minDate.getDate() - 30); // 30 days before maxDate
+
+
+        // Filter data between minDate and maxDate
+        const filteredData = data.filter(entry => {
+            const entryDate = new Date(entry.Date____);
+            return entryDate >= minDate && entryDate <= maxDate;
+        });
+
+        filteredData.forEach(entry => {
+            const dayName = new Date(entry.Date____);
+            const dayOfWeek = dayNames[dayName.getDay()];
+            const date = formatDate(entry.Date____,'MM/DD/YYYY').substring(0, 5) + ' ' + dayOfWeek;
+            const total = Math.round(entry.Amount__);
+
+            // Accumulate totals by date
+            if (!dateTotals[date]) {
+                dateTotals[date] = 0;
+            }
+            dateTotals[date] += total;
+
+            // Set background color for weekends
+            backgroundColors.push(dayName.getDay() === 0 ? 'rgba(255,0,0,0.2)' : 'rgba(75, 192, 192, 0.2)');
+            borderWidth.push(dayName.getDate() === 1 ? 2 : 1); // Emphasize first day
+            borderColor.push(dayName.getDate() === 1 ? 'rgb(0,0,0)' : 'rgba(75, 192, 192, 1)');
+        });
+
+        // Sort the date labels and format them as '12/12-Th', '13/12-Fr', etc.
+        const aLabels = Object.keys(dateTotals).sort((a, b) => new Date(a) - new Date(b));
+        const aTotals = aLabels.map(date => dateTotals[date]);
+
+        // Create datasets
+        const oDataSetBar = {
+            label: 'Day Total',
+            data: aTotals,
+            backgroundColor: backgroundColors,
+            borderColor: borderColor,
+            borderWidth: borderWidth,
+            type: 'bar'
+        };
+
+        const oDataSetLine = {
+            label: 'Day Total',
+            data: aTotals,
+            borderColor: 'rgba(153, 102, 255, 1)',
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+            borderWidth: 0.5,
+            tension: 0.2,
+            type: 'line'
+        };
+
+        // Initialize chart with sorted labels
+        myChart5 = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: aLabels, // X-axis labels sorted chronologically
+                datasets: [oDataSetBar, oDataSetLine]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Daily Store Sale Totals",
+                        font: {
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        window.myChart5 = myChart5;
 
     } catch (error) {
         console.error('Error fetching data:', error);

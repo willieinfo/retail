@@ -324,7 +324,7 @@ const SalesRankStock = async (req, res) => {
     ITEMLIST.Descript,
     ITEMLIST.Outright,
     BRAND___.BrandNme
-    ORDER BY 8 DESC `;
+    ORDER BY 9 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
@@ -339,4 +339,97 @@ const SalesRankStock = async (req, res) => {
   }
 };
 
-module.exports = { SalesCompStore, SalesRankBrand, SalesRankStock };
+const DailySalesSum = async (req, res) => {
+  const cBrandNum = req.query.BrandNum;
+  const cUsersCde = req.query.UsersCde;
+  const cOtherCde = req.query.OtherCde;
+  const cCategNum = req.query.CategNum;
+  const cItemDept = req.query.ItemDept;
+  const cItemType = req.query.ItemType;
+  const cLocation = req.query.Location;
+  const cStoreGrp = req.query.StoreGrp;
+  const dDateFrom = req.query.DateFrom;
+  const dDateTo__ = req.query.DateTo__;
+
+
+  // Constructing the base SQL query
+  let cSql = `SELECT
+	    SALESREC.DateFrom AS Date____,
+	    COUNT(DISTINCT SALESREC.ReferDoc) AS TrxCount,
+	    SUM(SALESDTL.Quantity) AS Quantity,
+	    SUM(SALESDTL.ItemPrce * SALESDTL.Quantity) AS Gross___,
+	    SUM(SALESDTL.Amount__ * SALESDTL.Quantity) AS Amount__,
+	    SUM(SALESDTL.LandCost * SALESDTL.Quantity) AS LandCost,
+	    SUM(SALESDTL.Amount__ * SALESDTL.Quantity) / COUNT(DISTINCT SALESREC.ReferDoc) AS ATV_____,
+	    (SUM(SALESDTL.Amount__ * SALESDTL.Quantity) - SUM(SALESDTL.LandCost * SALESDTL.Quantity))
+	    / SUM(SALESDTL.Amount__ * SALESDTL.Quantity) * 100 AS GrossPct
+    FROM SALESREC,SALESDTL,ITEMLIST,BRAND___,LOCATION
+    WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
+    AND SALESREC.Location = LOCATION.Location
+    AND ITEMLIST.BrandNum = BRAND___.BrandNum
+    AND ITEMLIST.ItemCode = SALESDTL.ItemCode
+    AND SALESREC.Disabled = 0
+  `
+
+  // Parameters object
+  const params = {};
+
+  // Additional filters based on query parameters
+  if (cBrandNum) {
+    cSql += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
+    params.cBrandNum = `%${cBrandNum}%`;
+  }
+  if (cCategNum) {
+    cSql += " AND ITEMLIST.CategNum LIKE @cCategNum";
+    params.cCategNum = `%${cCategNum}%`;
+  }
+  if (cUsersCde) {
+    cSql += " AND ITEMLIST.UsersCde LIKE @cUsersCde";
+    params.cUsersCde = `%${cUsersCde}%`;  
+  }
+  if (cOtherCde) {
+    cSql += " AND ITEMLIST.OtherCde LIKE @cOtherCde";
+    params.cOtherCde = `%${cOtherCde}%`;
+  }
+  if (cItemDept) {
+    cSql += " AND ITEMLIST.ItemDept LIKE @cItemDept";
+    params.cItemDept = `%${cItemDept}%`;
+  }
+  if (cItemType) {
+    cSql += " AND ITEMLIST.ItemType LIKE @cItemType";
+    params.cItemType = `%${cItemType}%`;
+  }
+  if (cLocation) {
+    cSql += " AND SALESREC.Location LIKE @cLocation";
+    params.cLocation = `%${cLocation}%`;
+  }
+  if (cStoreGrp) {
+    cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+    params.cStoreGrp = `%${cStoreGrp}%`;
+  }
+  if (dDateFrom) {
+    cSql += " AND SALESDTL.Date____ >= @dDateFrom";
+    params.dDateFrom = `${dDateFrom}`;
+  }
+  if (dDateTo__) {
+    cSql += " AND SALESDTL.Date____ <= @dDateTo__";
+    params.dDateTo__ = `${dDateTo__}`;
+  }
+  cSql += ` GROUP BY SALESREC.DateFrom
+    ORDER BY 1 `;
+
+  // Log SQL query and parameters for debugging
+  // console.log('Parameters:', params);
+
+  try {
+    // Execute query
+    const result = await queryDatabase(cSql, params);
+    res.json(result);
+  } catch (err) {
+    console.error('Database query error:', err.message);  // Log the error message
+    res.status(500).send('Error fetching sales data');
+  }
+};
+
+
+module.exports = { SalesCompStore, SalesRankBrand, SalesRankStock, DailySalesSum };

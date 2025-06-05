@@ -170,6 +170,14 @@ export async function FiltrRec(cModules_) {
             document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location');
             await populateStoreGrp('','FiltrRec');
+        } else if (cModules_ === 'DailySales') {
+            document.getElementById('DailySalesSum').appendChild(filterForm);
+            document.getElementById('DailySalesSum').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
+            await populateLocation('', '', 'SellArea','FiltrRec_Location');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
@@ -329,17 +337,22 @@ export function displayErrorMsg(error,otherMsg = '') {
         abortBtn.style.display = 'inline-block';
         titleBar.innerHTML = "Error Message - 500"
     } else {
-        errorText.textContent = "An unexpected error occurred. "+error;
+        errorText.textContent = "An unexpected error occurred. " + (error.message || 'Please try again later.');
         retryBtn.style.display = 'none';
         ignoreBtn.style.display = 'inline-block';
         abortBtn.style.display = 'inline-block';
         titleBar.innerHTML = "Error Message"
     }
-    errorOtherMsg.textContent = otherMsg
 
+    
+    errorOtherMsg.textContent = otherMsg
     // Display the error message
-    errorMessageDiv.style.display = 'block';
-    if (errorMessageDiv) makeDraggable(errorMessageDiv,titleBar)
+    if (errorMessageDiv) {
+        errorMessageDiv.style.display = 'block';
+        // if (titleBar) makeDraggable(errorMessageDiv, titleBar);
+    } else {
+        console.error('Error message div not found in the DOM.');
+    }
 
     // Button actions
     retryBtn.onclick = function () {
