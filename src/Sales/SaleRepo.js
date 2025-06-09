@@ -1,5 +1,5 @@
 import { showReport, showNotification, formatter, formatDate, goMonth, startTimer} from '../FunctLib.js';
-import {printReportExcel, generateTitleRows} from '../PrintRep.js'
+import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
 const dDateFrom = new Date(), dDateTo__ = new Date(), 
@@ -195,7 +195,8 @@ const divDailySales =`
         </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
-                <button id="printDailySales"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printDailySalesPDF"><i class="fa fa-file-PDF"></i> PDF</button>
+                <button id="printDailySalesXLS"><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="listSales"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -527,7 +528,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
           
           const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
            
-          printReportExcel(data, columnConfig, colWidths, titleRows, 'StoreRanking');
+          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Location');
     })
 
 }
@@ -791,7 +792,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
           
           const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
 
-          printReportExcel(data, columnConfig, colWidths, titleRows, 'StoreRanking');
+          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Brand');
     })
 
 }
@@ -1542,6 +1543,26 @@ async function rankStockSales(data, dateRange) {
 async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
+    // const selectElement = document.getElementById('FiltrRec_Location');
+    // const selectedOption = selectElement.options[selectElement.selectedIndex];
+    // const cLocaName = selectedOption.textContent || selectedOption.innerText;
+    // cLocaName = (cLocaName) ? 'All Location' : cLocaName
+    let cLocaName = ''
+
+    try {
+        const url = new URL('http://localhost:3000/lookup/location');
+        const params = new URLSearchParams();
+        if (cLocation) params.append('Location', cLocation);
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        let LocatTbl = await response.json(); // Store full data array globally
+        cLocaName = (cLocaName) ? 'All Location' : LocatTbl[0].LocaName
+
+
+    } catch (error) {
+        console.error('Fetch error on Location:', error);
+    }
+
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
     let data = null;
@@ -1662,7 +1683,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('dailySalesChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        setDailyChart(data)
+        setDailyChart(data, cLocaName)
        
     } catch (error) {
         console.error('Fetch error:', error);
@@ -1673,6 +1694,44 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         clearInterval(timerInterval);        
         document.getElementById('runningTime').textContent=''
     }
+
+    document.getElementById('printDailySalesPDF').addEventListener('click', async () => {
+
+        const headerData = [
+            `${dateRange}`,
+            `Location : `,
+            ''
+        ];
+        const colWidths = [20, 10, 10, 16, 16, 16, 12, 16, 16, 10]; 
+        const columns = ['Date','Trx Cnt','Quantity','Gross','Discount','Net','ATV','Cost','Gross Profit','GP%'];
+        const itemFields = [
+            'Date____','TrxXount','Quantity','Gross___',
+            (item, formatter) => formatter.format(item.Gross___ - item.Amount__),
+            'Amount__','ATV_____','LandCost',
+            (item, formatter) => formatter.format(item.Gross___ - item.Amount__),
+            ,'GrossPct'
+              
+        ];    
+        const fieldTypes = [
+            'string', 
+            'integer',
+            'integer',
+            'number',      
+            'calculated',   
+            'number',      
+            'number',      
+            'number',      
+            'calculated',   
+            'number'      
+        ];        
+        
+        // columns to create totals based on itemFields array
+        const createTotals = [false,true,true,true,true,true,true,true,true,false]
+
+        printFormPDF(headerData, data, itemFields, createTotals ,colWidths, 
+            columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Daily Sales Summary')
+    });
+
 
 }
 
@@ -1724,7 +1783,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-function setDailyChart(data) {
+function setDailyChart(data, cLocaName) {
     let myChart5 = window.myChart5 || null;
     
     try {
@@ -1810,7 +1869,7 @@ function setDailyChart(data) {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Daily Store Sale Totals",
+                        text: `Daily Sales Summary - ${cLocaName.trim()}`,
                         font: {
                             size: 14
                         }

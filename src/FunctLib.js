@@ -329,9 +329,10 @@ export async function populateStoreGrp(cStoreGrp, cModule='FiltrRec') {
     }
 }
 
-export async function populateLocation(cLocation, cLocaName, cSellArea='', cLocat_Id='FiltrRec_Location') {
+export async function populateLocation(cLocation, cLocaName, cSellArea='', cLocat_Id='FiltrRec_Location',lDisabled = 0) {
     const locationSelect = document.getElementById(cLocat_Id);
     locationSelect.innerHTML = '';
+    const cStoreGrp = ''
 
     const emptyOption = document.createElement('option');
     emptyOption.value = ''; 
@@ -343,6 +344,8 @@ export async function populateLocation(cLocation, cLocaName, cSellArea='', cLoca
         const params = new URLSearchParams();
         if (cLocation) params.append('Location', cLocation);
         if (cLocaName) params.append('LocaName', cLocaName);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (lDisabled) params.append('Disabled', lDisabled);
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);

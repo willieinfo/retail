@@ -42,7 +42,7 @@ document.body.appendChild(tempDiv.firstElementChild);
 
 
 let globalData = []; // Define a global array
-async function ListLoca(cLocation, cLocaName, cStoreGrp) {
+async function ListLoca(cLocation, cLocaName, cStoreGrp, lDisabled) {
     const listCounter=document.getElementById('locaListCounter')
     
     try {
@@ -51,6 +51,7 @@ async function ListLoca(cLocation, cLocaName, cStoreGrp) {
         if (cLocation) params.append('Location', cLocation);
         if (cLocaName) params.append('LocaName', cLocaName);
         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (lDisabled) params.append('Disabled', lDisabled);
 
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) throw new Error('Network response was not ok');
@@ -493,8 +494,9 @@ document.getElementById('filterLoca').addEventListener('click', async () => {
             // const cReferDoc = filterData[10];
             // const dAsOfDate = filterData[11];
             const cStoreGrp = filterData[12];
+            const lDisabled = filterData[14]
+            ListLoca(cLocation, '', cStoreGrp, lDisabled)
 
-            ListLoca(cLocation,'',cStoreGrp)
         });
     } catch (error) {
         console.error("Error processing the filter:", error);

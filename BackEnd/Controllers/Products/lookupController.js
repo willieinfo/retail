@@ -28,6 +28,7 @@ const listLoca = async (req, res) => {
     const cLocation = req.query.Location;  
     const cLocaName = req.query.LocaName;  
     const cStoreGrp = req.query.StoreGrp;  
+    const lDisabled = req.query.Disabled;  
    
     let cSql = `SELECT 
       LOCATION.LocaName,
@@ -53,10 +54,15 @@ const listLoca = async (req, res) => {
         cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
         params.cStoreGrp = `%${cStoreGrp}%`;
       }
+      if (lDisabled) {
+        cSql += " AND LOCATION.Disabled = @lDisabled";
+        params.lDisabled = `${lDisabled}`;
+      }
       cSql += ` ORDER BY 7`;
   
     try {
       const result = await queryDatabase(cSql, params);
+      console.log(params)
       res.json(result);  
     } catch (err) {
       console.error('ListLoca query error:', err);
