@@ -589,11 +589,16 @@ async function addSalesRec(cCtrlNum_, cLocation, dDateFrom, cRemarks_, cEncoder_
     }
 }
 
+let nTotalQty = 0;
+let nTotalPrc = 0;
+let nTotalDsc = 0;
+let nTotalAmt = 0;
+
 function updateItemTable(refreshOnly=false) {
-    let nTotalQty = 0;
-    let nTotalPrc = 0;
-    let nTotalDsc = 0;
-    let nTotalAmt = 0;
+    // let nTotalQty = 0;
+    // let nTotalPrc = 0;
+    // let nTotalDsc = 0;
+    // let nTotalAmt = 0;
 
     const ListSaleItem=document.getElementById('ListSaleItem')
     // Map through itemsDtl and build rows while accumulating totals
@@ -1081,7 +1086,6 @@ export async function addSalesDtl(cCtrlNum_,cItemCode,dDate____,cTimeSale,
         }
 
         const updatedItem = await response.json();
-console.log(updatedItem)
 
         if (updatedItem) {
             itemsDtl.push(updatedItem);
@@ -1273,9 +1277,10 @@ document.getElementById('printSalesInvoice').addEventListener('click', async () 
     ];        
     
     // columns to create totals based on itemFields array
-    const createTotals = [false,false,false,true,false,true,true,true]
+    const createTotals = [false,false,true,true,false,true,true,true]
+    const totalsValue = [null,null,'Totals:',nTotalQty,null,nTotalPrc,nTotalDsc,nTotalAmt]
 
-    printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
+    printFormPDF(headerData, itemsDtl, itemFields, createTotals, totalsValue ,colWidths, 
         columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Sales Record')
 });
 

@@ -38,7 +38,7 @@ const divPurchLst = `
             </div>
             <div class="footSegments">
                 <span id="purchLstCounter" class="recCounter"></span>
-                <button id="printPurcListXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printPurcListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="purchFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -65,7 +65,7 @@ const divPurcForm = `
             </div>
             <div class="footSegments">
                 <span id="purchDtlCounter" class="recCounter"></span>
-                <button id="printStockReceiving"><i class="fa fa-print"></i> Print Stock Receiving</button>
+                <button id="printStockReceiving" disabled><i class="fa fa-print"></i> Print Stock Receiving</button>
             </div>
         </div>
     </div>
@@ -124,6 +124,7 @@ async function PurchLst(dDateFrom, dDateTo__, cLocation, cReferDoc) {
         document.getElementById('loadingIndicator').style.display = 'none';
     }
 }
+
 
 function updateTable() {
     const reportBody = document.getElementById('purchRecList');
@@ -205,6 +206,7 @@ function updateTable() {
     `;
 
     reportBody.innerHTML = listTable;
+    document.getElementById('printPurcListXLS').disabled = false
     document.getElementById('ListPurchBody').addEventListener('click', (event) => {
         const row = event.target.closest('tr'); // Find the clicked row
         if (row) {
@@ -548,11 +550,16 @@ async function addPurchRec(cCtrlNum_, cLocation, cSuppNum_, dDate____, cDRNum___
     }
 }
 
+let nTotalQty = 0;
+let nTotalOrd = 0;
+let nTotalPrc = 0;
+let nTotalSel = 0;
+
 function updateItemTable(refreshOnly=false) {
-    let nTotalQty = 0;
-    let nTotalOrd = 0;
-    let nTotalPrc = 0;
-    let nTotalSel = 0;
+    // let nTotalQty = 0;
+    // let nTotalOrd = 0;
+    // let nTotalPrc = 0;
+    // let nTotalSel = 0;
 
     const ListPurcItem=document.getElementById('ListPurcItem')
     // Map through itemsDtl and build rows while accumulating totals
@@ -599,7 +606,7 @@ function updateItemTable(refreshOnly=false) {
 `
 
     ListPurcItem.innerHTML = listTable+listFooter; // Update the tbody with new rows
-
+    document.getElementById('printStockReceiving').disabled = false
     document.getElementById('ListPurcItem').addEventListener('click', async (event) => {
         const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
         if (delBtn) {
@@ -1122,9 +1129,10 @@ document.getElementById('printStockReceiving').addEventListener('click', async (
     ];        
     
     // columns to create totals based on itemFields array
-    const createTotals = [false,false,false,true,true,false,true]
+    const createTotals = [false,false,true,true,true,false,true]
+    const totalsValue = [null,null,'Totals:',nTotalOrd,nTotalQty,null,nTotalSel]
 
-    printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
+    printFormPDF(headerData, itemsDtl, itemFields, createTotals, totalsValue ,colWidths, 
         columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Stock Receiving Report')
 });
 

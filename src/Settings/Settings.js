@@ -85,8 +85,8 @@ function changeTheme(color) {
     switch (color) {
         case 'black':
             document.documentElement.style.setProperty('--main-bg-color', 'rgb(0,0,0)');
-            document.documentElement.style.setProperty('--second-bg-color', 'rgb(121, 121, 121)');
-            document.documentElement.style.setProperty('--darker-bg-color', 'rgb(100,100,100)');
+            document.documentElement.style.setProperty('--second-bg-color', 'rgba(121, 121, 121, 0.35)');
+            document.documentElement.style.setProperty('--darker-bg-color', 'rgba(100, 100, 100, 0.53)');
             break;
         case 'blue':
             document.documentElement.style.setProperty('--main-bg-color', 'rgb(0, 64, 128)');

@@ -6,6 +6,7 @@ const sql = require('mssql');
 
 console.log('DB User:', process.env.DB_USER);
 console.log('DB Server:', process.env.DB_SERVER);
+console.log('DB Database:', process.env.DB_DATABASE);
 
 // Configuration for SQL Server
 // const config = {
@@ -32,8 +33,8 @@ const config = {
     encrypt: false,  // Disable encryption for SQL Server 2008 (might not support encryption properly)
     enableArithAbort: true  // Ensures better query behavior in older versions
   },
-  port: 1433,  // Default SQL Server port
-  requestTimeout: 300000  // Increase timeout to prevent slow connections from timing out
+  port: 1433,  
+  requestTimeout: 300000  
 };
 
 

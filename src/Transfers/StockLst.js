@@ -35,7 +35,7 @@ const divStockLst = `
             </div>
             <div class="footSegments">
                 <span id="stockLstCounter" class="recCounter"></span>
-                <button id="printStocListXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStocListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="stockFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -62,7 +62,7 @@ const divStocForm = `
             </div>
             <div class="footSegments">
                 <span id="stockDtlCounter" class="recCounter"></span>
-                <button id="printStockTransfer"><i class="fa fa-print"></i> Print Stock Transfer</button>
+                <button id="printStockTransfer" disabled><i class="fa fa-print"></i> Print Stock Transfer</button>
             </div>
         </div>
     </div>
@@ -194,6 +194,7 @@ function updateTable() {
     `;
 
     reportBody.innerHTML = listTable;
+    document.getElementById('printStocListXLS').disabled = false
     document.getElementById('ListStockBody').addEventListener('click', (event) => {
         const row = event.target.closest('tr'); // Find the clicked row
         if (row) {
@@ -348,6 +349,7 @@ async function StocForm(index,editMode) {
             stockDtlCounter.innerHTML=`${itemsDtl.length} Records`
 
             updateItemTable();  // Render items using <tr>
+            document.getElementById('printStockTransfer').disabled = false
 
     
         } catch (error) {
@@ -523,10 +525,11 @@ async function addStockRec(cCtrlNum_, cWhseFrom, cWhseTo__, dDate____, dDateRcvd
     }
 }
 
+let nTotalQty = 0;
+let nTotalRcv = 0;
+let nTotalAmt = 0;
+
 function updateItemTable(refreshOnly=false) {
-    let nTotalQty = 0;
-    let nTotalRcv = 0;
-    let nTotalAmt = 0;
 
     const ListStocItem=document.getElementById('ListStocItem')
     // Map through itemsDtl and build rows while accumulating totals
@@ -806,6 +809,7 @@ function StockDtl(index,editMode) {
         document.getElementById('items-form').remove()
         document.getElementById('modal-overlay').remove();
     })
+
 }
 
 async function editStockDtl(index,cCtrlNum_,cRecordId,cItemCode,nLandCost) {
@@ -1072,9 +1076,10 @@ document.getElementById('printStockTransfer').addEventListener('click', async ()
     ];        
     
     // columns to create totals based on itemFields array
-    const createTotals = [false,false,false,true,true,false,true]
+    const createTotals = [false,false,true,true,true,false,true]
+    const totalsValue = [null,null,'Totals:',nTotalQty,nTotalRcv,null,nTotalAmt]
 
-    printFormPDF(headerData, itemsDtl, itemFields, createTotals ,colWidths, 
+    printFormPDF(headerData, itemsDtl, itemFields, createTotals, totalsValue ,colWidths, 
         columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Stock Transfer')
 });
 

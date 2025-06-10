@@ -129,7 +129,8 @@ export function generateTitleRows(columnConfig, titleRowsContent) {
 }
 
 
-export function printFormPDF(headerData, detailData, itemFields, createTotals, colWidths, 
+
+export function printFormPDF(headerData, detailData, itemFields, createTotals, totalsValue, colWidths, 
     columnHeader, fieldTypes ,imgLogo, paperSetup, formatter, cFileName) {
 
     // Initialize jsPDF
@@ -157,6 +158,8 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
     const itemLineHeight = 5; // Line height for items
     const tableHeaderHeight = 6; // Row height - Header height
     let bottomMargin = 23; // Preferred bottom margin
+    let vertLineTop = 0
+    let endOfRow = 0
 
     // Total column widths dimensions based on colWidths array determines width of report
     const totalColWidth = colWidths.reduce((sum, width) => sum + width, pageMargin);
@@ -239,6 +242,7 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
             currentX += colWidths[i]; // Move to the next column
         });        
         currentY += itemLineHeight; // Move to the next row
+        // endOfRow = currentY
     });
     doc.setTextColor(0,0,0)
 
@@ -246,69 +250,53 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
     // BOTTOM PAGE
     // Horizontal bottom line for last row on page
     doc.setLineDash([1, 2]); 
-    doc.line(pageMargin, currentY, currentX, currentY); 
+    doc.line(pageMargin, currentY, totalColWidth, currentY); 
+
 
     doc.setFontSize(8);
     doc.setFont(reportFont, "bold");
 
 
-    // Calculate TOTALS Section
-    // Create dynamic totals based on createTotals array
+    // TOTALS Section
+    // Print totals based on createTotals array
     const totals = new Array(createTotals.length).fill(0);
-    // Accumulate totals for relevant fields
-    detailData.forEach(item => {
-        createTotals.forEach((doTotal, i) => {
-            if (!doTotal) return;
-
-            const field = itemFields[i];
-            let value = 0;
-
-            if (typeof field === 'function') {
-                // Pass unformatted value for calculation (assume function returns number)
-                value = parseFloat(field(item, { format: v => v })); 
-            } else {
-                value = item[field];
-                if (typeof value !== 'number') value = parseFloat(value) || 0;
-            }
-
-            totals[i] += value;
-        });
+    createTotals.forEach((doTotal, i) => {
+        if (!doTotal) return;
+        totals[i] = totalsValue[i];
     });
 
-
-    // Where to place the 'Totals' label
-    const descriptIndex = itemFields.findIndex(f =>
-        (typeof f === 'string' && f.toLowerCase().includes('descript')) 
-    );
 
     // Align and render totals
     let totalX = pageMargin;
-
+    let textValue = ''
     colWidths.forEach((width, i) => {
         if (createTotals[i]) {
             const value = totals[i];
-            const textValue = (fieldTypes[i] === 'integer')
-                ? value.toFixed(0)
-                : formatter.format(value);
+
+            if (fieldTypes[i] === 'integer') {
+                textValue = value.toFixed(0)
+            } else if (value === 'Totals:'){
+                textValue = value.trim()
+            } else {
+                textValue = formatter.format(value)
+            }
 
             doc.text(textValue, totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
         }
-
-        // Print 'Totals:' right-aligned in the Descript column
-        if (i === descriptIndex) {
-            doc.text('Totals:', totalX + width - 2, currentY + itemLineHeight, { align: 'right' });
-        }
-
         totalX += width;
     });
+    endOfRow = currentY + itemLineHeight + 2
+    // createVertLines(bottomMargin)   
 
-    // Draw a final line to separate totals
+
+    // Draw a final line AFTER totals
     // doc.line(pageMargin, currentY + itemLineHeight + 2, totalX, currentY + itemLineHeight + 2); 
 
 
     doc.setFont('Courier', "normal");
-    doc.text('Encoded By:', pageMargin, pageHeight - 22);
+    doc.text('Prepared By:', pageMargin, pageHeight - 22);
     doc.text('Checked By:', pageMargin + 40, pageHeight - 22);
+    doc.text('Willie', pageMargin, pageHeight - 16);
     doc.text('__________________ ', pageMargin, pageHeight - 14);
     doc.text('__________________ ', pageMargin + 40, pageHeight - 14);
 
@@ -329,8 +317,6 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
 
 
     function showTableHeader() {
-        // const columns = ['Qty', 'Stock No.', 'Bar Code', 'Item Description', 'Unit Price', 'Gross', 'Discount', 'Net'];
-
         currentX = pageMargin; // **Reset
 
         // Draw the header row
@@ -345,7 +331,7 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
             currentX += colWidths[i];
         });
         currentY += tableHeaderHeight;
-
+        vertLineTop = currentY // top position where vertical line starts w/c is after header
     }
 
     function showPageNum() {
@@ -405,10 +391,12 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
         doc.text(headerData[2], centerPosi + padding, currentY); // OR Date
         // doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 3nd vert line
 
-        currentY += lineHeight;
-        doc.text(headerData[3], pageMargin + 2, currentY); // Customer
-        doc.text(headerData[4], centerPosi + padding, currentY); // Remarks
-        // doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 4th vert line
+        if (headerData[3] && headerData[4]) {
+            currentY += lineHeight;
+            doc.text(headerData[3], pageMargin + 2, currentY); // Customer
+            doc.text(headerData[4], centerPosi + padding, currentY); // Remarks
+            // doc.line(dividerX, currentY - lineHeight, dividerX, currentY + lineHeight); // 4th vert line
+        }
 
         if (headerData[5] && headerData[6]) {
             currentY += lineHeight
@@ -442,12 +430,13 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
     function createVertLines(bottomLinePosi) {
         let xPos = pageMargin+colWidths[0];
         const nNumOfLines = colWidths.length
-        const addCol = (headerData[7]) ? 44 :40
+        // const addCol = (headerData[7]) ? 44 :40
 
         for (let i = 1; i < nNumOfLines; i++) {
             doc.setLineDash([1, 2]);
             // Draw vertical dashed line at xPos
-            doc.line(xPos, startY+addCol, xPos, pageHeight - bottomLinePosi - pageMargin); 
+            doc.line(xPos, vertLineTop, xPos, pageHeight - bottomLinePosi - pageMargin); 
+            // doc.line(xPos, vertLineTop, xPos, endOfRow); 
             
             // Move xPos to the next column's starting position
             xPos += colWidths[i];
@@ -457,7 +446,10 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, c
         doc.line(pageMargin, nRowPosi , totalColWidth, nRowPosi ); 
 
     }
+
     // doc.line(startingCol, rowPosition, length, rowPosition)
     // doc.text(textStr, startingCol, rowPosition)
 
 }
+
+

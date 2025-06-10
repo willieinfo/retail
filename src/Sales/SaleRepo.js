@@ -69,7 +69,8 @@ const divRankStore = `
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="saleRank1Counter" class="recCounter"></span>
-                <button id="printStoreRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStoreRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printStoreRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank1"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -112,7 +113,8 @@ const divRankBrand =`
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="saleRank2Counter" class="recCounter"></span>
-                <button id="printBrandRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printBrandRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printBrandRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank2"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -154,7 +156,8 @@ const divRankStock =`
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="saleRank3Counter" class="recCounter"></span>
-                <button id="printStockRank"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStockRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printStockRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank3"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -179,6 +182,7 @@ const divDailySales =`
                             <th>Net</th>
                             <th>ATV</th>
                             <th>Cost</th>
+                            <th>Gross Profit</th>
                             <th>GP%</th>
                         </tr>
                     </thead>
@@ -195,8 +199,8 @@ const divDailySales =`
         </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
-                <button id="printDailySalesPDF"><i class="fa fa-file-PDF"></i> PDF</button>
-                <button id="printDailySalesXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printDailySalesPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printDailySalesXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="listSales"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -409,6 +413,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('storeRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printStoreRank').disabled = false
         setStoreChart(data, dateRange)
 
         
@@ -681,6 +686,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('brandRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printBrandRank').disabled = false
         rankBrandSales(data, dateRange)
        
     } catch (error) {
@@ -1321,6 +1327,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('stockRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printStockRank').disabled = false
         rankStockSales(data, dateRange)
        
     } catch (error) {
@@ -1548,6 +1555,8 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     // const cLocaName = selectedOption.textContent || selectedOption.innerText;
     // cLocaName = (cLocaName) ? 'All Location' : cLocaName
     let cLocaName = ''
+    const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+    const dayNames =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
     try {
         const url = new URL('http://localhost:3000/lookup/location');
@@ -1556,7 +1565,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) throw new Error('Network response was not ok');
         let LocatTbl = await response.json(); // Store full data array globally
-        cLocaName = (cLocaName) ? 'All Location' : LocatTbl[0].LocaName
+        cLocaName = (LocatTbl.length>1) ? 'All Location' : LocatTbl[0].LocaName
 
 
     } catch (error) {
@@ -1566,6 +1575,16 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
     let data = null;
+
+    let nTotalQty = 0
+    let nTotalPrc = 0
+    let nTotalDsc = 0
+    let nTotalAmt = 0
+    let nTotalCos = 0
+    let nTotalATV = 0
+    let nGP_Prcnt = 0
+    let nTotalTrx = 0
+
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/sales/DailySalesSum');
@@ -1587,19 +1606,16 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             throw new Error('Network response was not ok');
         }
 
-        let nTotalQty = 0
-        let nTotalPrc = 0
-        let nTotalDsc = 0
-        let nTotalAmt = 0
-        let nTotalCos = 0
-        let nTotalATV = 0
-        let nGP_Prcnt = 0
-        let nTotalTrx = 0
-    
+   
         data = await response.json();
         showNotification(`${data.length} Records fetched`);
         clearInterval(timerInterval);        
         document.getElementById('runningTime').textContent=''
+
+        const calcFields = {
+            ATV: (nTotalAmt, nTotalTrx) => (nTotalTrx) ? nTotalAmt / nTotalTrx : 0,
+            GP_Percentage: (nTotalAmt, nTotalCos) => ((nTotalAmt - nTotalCos) / nTotalAmt) * 100
+        };
 
         if (Array.isArray(data)) {
             data.forEach(item => {
@@ -1611,10 +1627,15 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 nTotalCos+=item.LandCost
             });
         }
-        if (nTotalAmt !== 0) {
-            nGP_Prcnt = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
-        }
-        nTotalATV = (nTotalTrx) ? nTotalAmt / nTotalTrx : 0
+        
+        // if (nTotalAmt !== 0) {
+        //     nGP_Prcnt = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+        // }
+        // nTotalATV = (nTotalTrx) ? nTotalAmt / nTotalTrx : 0
+ 
+    // Dynamically calculate totals based on field configuration
+    nTotalATV = calcFields.ATV(nTotalAmt, nTotalTrx);
+    nGP_Prcnt = calcFields.GP_Percentage(nTotalAmt, nTotalCos);
 
         const salesRankBrandDiv = document.getElementById('DailySalesSum');
         salesRankBrandDiv.classList.add('active');
@@ -1622,8 +1643,6 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         const reportBody = document.getElementById('dailySalesSum');
         reportBody.style.maxHeight = "80%";
         reportBody.innerHTML = '';  // Clear previous content
-
-        const dayNames =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
         // Define the table structure
         const salesTable = `
@@ -1638,6 +1657,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <th>Net</th>
                         <th>ATV</th>
                         <th>Cost</th>
+                        <th>Gross Profit</th>
                         <th>GP%</th>
                     </tr>
                 </thead>
@@ -1655,6 +1675,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ATV_____) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__-item.LandCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.GrossPct)+'%' || 'N/A'}</td>
                             </tr>
                         `;
@@ -1671,6 +1692,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalATV) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt-nTotalCos) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nGP_Prcnt)+'%' || 'N/A'}</td>
                     </tr>
                  </tfoot>
@@ -1680,9 +1702,10 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Add the table HTML to the div
         reportBody.innerHTML = salesTable;
 
-        // Show store ranking chart
+        // Show chart
         document.getElementById('dailySalesChart').style.display='flex';
-        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printDailySalesPDF').disabled = false
+        document.getElementById('printDailySalesXLS').disabled = false
         setDailyChart(data, cLocaName)
        
     } catch (error) {
@@ -1699,21 +1722,24 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         const headerData = [
             `${dateRange}`,
-            `Location : `,
-            ''
+            `Location : ${cLocaName}`,
+            `Net Sales: ${formatter.format(nTotalAmt)}`,
+            `Avg Daily Trx: ${formatter.format(nTotalTrx / data.length)}`,
+            `Avg Daily Sales: ${formatter.format(nTotalAmt / data.length)}`,
         ];
-        const colWidths = [20, 10, 10, 16, 16, 16, 12, 16, 16, 10]; 
+        const colWidths = [36, 15, 15, 20, 20, 20, 15, 20, 20, 10]; 
         const columns = ['Date','Trx Cnt','Quantity','Gross','Discount','Net','ATV','Cost','Gross Profit','GP%'];
         const itemFields = [
-            'Date____','TrxXount','Quantity','Gross___',
+            (item) => formatDate(item.Date____,'MM/DD/YYYY')+' - '+dayNames[new Date(item.Date____).getDay()],
+            'TrxCount','Quantity','Gross___',
             (item, formatter) => formatter.format(item.Gross___ - item.Amount__),
             'Amount__','ATV_____','LandCost',
-            (item, formatter) => formatter.format(item.Gross___ - item.Amount__),
+            (item, formatter) => formatter.format(item.Amount__ - item.LandCost),
             ,'GrossPct'
               
         ];    
         const fieldTypes = [
-            'string', 
+            'function', 
             'integer',
             'integer',
             'number',      
@@ -1724,11 +1750,14 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             'calculated',   
             'number'      
         ];        
+
         
         // columns to create totals based on itemFields array
-        const createTotals = [false,true,true,true,true,true,true,true,true,false]
+        const createTotals = [true,true,true,true,true,true,true,true,true,true]
+        const totalsValue = ['Totals:',nTotalTrx,nTotalQty,nTotalPrc,nTotalDsc,nTotalAmt,
+            nTotalATV,nTotalCos,nTotalAmt-nTotalCos,nGP_Prcnt]
 
-        printFormPDF(headerData, data, itemFields, createTotals ,colWidths, 
+        printFormPDF(headerData, data, itemFields, createTotals, totalsValue ,colWidths, 
             columns, fieldTypes, window.base64Image, ['letter','portrait'], formatter, 'Daily Sales Summary')
     });
 
