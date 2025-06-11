@@ -18,7 +18,7 @@ const divRankStore = `
                     <thead id="rankTHead1">
                         <tr>
                             <th rowspan="2">Location</th>
-                            <th colspan="8">
+                            <th colspan="10">
                                 Current
                                 <div class='thDateRange'">
                                     ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
@@ -39,10 +39,12 @@ const divRankStore = `
                         </tr>
                         <tr>
                             <th>Rank</th>
+                            <th>TRX</th>
                             <th>Quantity</th>
                             <th>Gross</th>
                             <th>Discount</th>
                             <th>Net</th>
+                            <th>ATV</th>
                             <th>Cost</th>
                             <th>Gross Profit</th>
                             <th>GP %</th>
@@ -276,6 +278,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         document.getElementById('runningTime').textContent=''
 
         let nTotalQty = 0
+        let nTotalTrx = 0
         let nTotalPrc = 0
         let nTotalDsc = 0
         let nTotalAmt = 0
@@ -294,6 +297,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (Array.isArray(data)) {
             data.forEach(item => {
                 nTotalQty+=item.Quantity
+                nTotalTrx+=item.TrxCount
                 nTotalPrc+=item.ItemPrce
                 nTotalDsc+=(item.ItemPrce-item.Amount__)
                 nTotalAmt+=item.Amount__
@@ -325,7 +329,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <thead id="rankTHead1">
                     <tr>
                         <th rowspan="2">Location</th>
-                        <th colspan="8">
+                        <th colspan="9">
                             Current
                             <div class='thDateRange'">
                                 ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
@@ -346,10 +350,12 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     </tr>
                     <tr>
                         <th>Rank</th>
+                        <th>TRX</th>
                         <th>Quantity</th>
                         <th>Gross</th>
                         <th>Discount</th>
                         <th>Net</th>
+                        <th>ATV</th>
                         <th>Cost</th>
                         <th>Gross Profit</th>
                         <th>GP %</th>
@@ -373,10 +379,12 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                             <tr>
                                 <td class="colNoWrap">${item.LocaName || 'N/A'}</td>
                                 <td style="text-align: center">${index+1 || 'N/A'}</td>
+                                <td style="text-align: center">${item.TrxCount || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__/item.TrxCount) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost) || 'N/A'}</td>
                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
@@ -392,10 +400,12 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     <tr style="font-weight: bold">
                         <td></td>
                         <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalTrx || 'N/A'}</td>
                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt/nTotalTrx) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
                         <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>

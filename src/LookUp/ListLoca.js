@@ -29,7 +29,7 @@ const divListLoca = `
             </div>
             <div class="footSegments">
                 <span id="locaListCounter" class="recCounter"></span>
-                <button id="printLocaXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printLocaXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterLoca"><i class="fa fa-filter"></i> Filter List</button>
 
             </div>
@@ -60,6 +60,7 @@ async function ListLoca(cLocation, cLocaName, cStoreGrp, lDisabled) {
         listCounter.innerHTML=`${globalData.length} Records`
 
         updateTable() //Reused at addLocation()
+        document.getElementById('printLocaXLS').disabled = false
 
         document.getElementById('ListLocaBody').addEventListener('click', async (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button

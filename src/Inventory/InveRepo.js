@@ -38,7 +38,7 @@ const divStockEndLoca = `
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="stockEndLocaCounter" class="recCounter"></span>
-                <button id="printStockEndLoca"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStockEndLoca" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="stockEndLocaFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -77,7 +77,7 @@ const divStockEndBrand = `
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="stockEndBrandCounter" class="recCounter"></span>
-                <button id="printStockEndBrand"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStockEndBrand" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="stockEndBrandFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -194,6 +194,7 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
         `;
 
         reportBody.innerHTML = listReport
+        document.getElementById('printStockEndLoca').disabled = false
 
         document.getElementById('stockEndLocaChart').style.display='flex';
         document.getElementById('stockEndLocaChart').style.flexDirection='column';
@@ -245,38 +246,7 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
             printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Ending By Location', 2);
     })
 
-    // document.getElementById('printStockEndLoca2').addEventListener('click', () => {
-
-    //     const dateRange = `As Of: ${formatDate(dDateAsOf,'MM/DD/YYYY')}`
-    //     const titleRowsContent = [
-    //         { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
-    //         { text: 'Stock Ending By Location / Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
-    //         { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
-    //         { text: '' } // Spacer row
-    //         ];
-
-    //         const colWidths = [
-    //             { width: 20 },{ width: 20 },{ width: 15 },{ width: 20 },{ width: 20 },
-    //         ];
-        
-    //         const columnConfig = [
-    //             { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
-    //             { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left'},
-    //             { label: 'Total Qty.',getValue: row => +row.TotalQty,
-    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalQty || 0), 0),
-    //             align: 'right',type: 'integer',cellFormat: '#,##0'},
-    //             { label: 'Total Cost',getValue: row => +row.TotalCos,
-    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalCos || 0), 0),
-    //             align: 'right',cellFormat: '#,##0.00'},
-    //             { label: 'Total SRP',getValue: row => +row.TotalPrc,
-    //             total: rows => rows.reduce((sum, r) => sum + (+r.TotalPrc || 0), 0),
-    //             align: 'right',cellFormat: '#,##0.00'},
-    //         ];
-            
-    //         const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
-    //         printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Ending By Location_Brand', 2);
-    // })
-
+    
 }
 
 document.getElementById('stockEndLocaFilter').addEventListener('click', () => {
@@ -617,6 +587,7 @@ async function StockEndBrand(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemT
         `;
 
         reportBody.innerHTML = listReport
+        document.getElementById('printStockEndBrand').disabled = false
 
         document.getElementById('stockEndBrandChart').style.display='flex';
         document.getElementById('stockEndBrandChart').style.flexDirection='column';

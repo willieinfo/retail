@@ -9,33 +9,33 @@ console.log('DB Server:', process.env.DB_SERVER);
 console.log('DB Database:', process.env.DB_DATABASE);
 
 // Configuration for SQL Server
-// const config = {
-//   user: process.env.DB_USER,  
-//   password: process.env.DB_PASSWORD,
-//   server: process.env.DB_SERVER,
-//   database: process.env.DB_DATABASE,
-//   options: {
-//     trustServerCertificate: true,  
-//     encrypt: false,  
-//     enableArithAbort: true  
-//   },
-//   port: 1433,
-//   requestTimeout: 300000  // <- Increase to 60 seconds  
-// };
-
 const config = {
-  user: process.env.DB_USER,
+  user: process.env.DB_USER,  
   password: process.env.DB_PASSWORD,
   server: process.env.DB_SERVER,
   database: process.env.DB_DATABASE,
   options: {
-    trustServerCertificate: true,  // For older SQL Servers (avoid SSL/TLS certificate verification issues)
-    encrypt: false,  // Disable encryption for SQL Server 2008 (might not support encryption properly)
-    enableArithAbort: true  // Ensures better query behavior in older versions
+    trustServerCertificate: true,  
+    encrypt: false,  
+    enableArithAbort: true  
   },
-  port: 1433,  
-  requestTimeout: 300000  
+  port: 1433,
+  requestTimeout: 600000  
 };
+
+// const config = {
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   server: process.env.DB_SERVER,
+//   database: process.env.DB_DATABASE,
+//   options: {
+//     trustServerCertificate: true,  // For older SQL Servers (avoid SSL/TLS certificate verification issues)
+//     encrypt: false,  // Disable encryption for SQL Server 2008 (might not support encryption properly)
+//     enableArithAbort: true  // Ensures better query behavior in older versions
+//   },
+//   port: 1433,  
+//   requestTimeout: 300000  
+// };
 
 
 // Connect to SQL Server and export the connection pool

@@ -32,7 +32,7 @@ const divListUser = `
             </div>
             <div class="footSegments">
                 <span id="userListCounter" class="recCounter"></span>
-                <button id="printUserXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printUserXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterUser"><i class="fa fa-filter"></i> Filter List</button>
 
             </div>
@@ -64,6 +64,7 @@ async function ListUser(cUserName) {
         listCounter.innerHTML=`${globalData.length} Records`
 
         updateTable() //Reused at addAppUsers()
+        document.getElementById('printUserXLS').disabled = false
 
         document.getElementById('ListUserBody').addEventListener('click', async (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button

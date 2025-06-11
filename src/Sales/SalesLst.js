@@ -35,7 +35,7 @@ const divSalesLst = `
             </div>
             <div class="footSegments">
                 <span id="salesLstCounter" class="recCounter"></span>
-                <button id="printSaleListXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printSaleListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -120,6 +120,7 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
         salesLstCounter.innerHTML=`${globalData.length} Records`
       
         updateTable() //Render Sales Invoices List
+        document.getElementById('printSaleListXLS').disabled = false
 
     } catch (error) {
         console.error('Fetch error:', error);

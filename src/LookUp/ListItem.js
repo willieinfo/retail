@@ -33,7 +33,7 @@ const divListItem = `
             </div>
             <div class="footSegments">
                 <span id="itemListCounter" class="recCounter"></span>
-                <button id="printItemXLS"><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printItemXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
             </div>
         </div>
@@ -70,6 +70,7 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         // console.log(globalData[3])
 
         updateTable()   //Render / Display ItemList Table
+        document.getElementById('printItemXLS').disabled = false
 
         // document.getElementById('ListItemBody').addEventListener('click', (event) => {
         //     const editBtn = event.target.closest('.spanEditItem'); // Find the clicked edit button
