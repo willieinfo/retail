@@ -329,7 +329,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <thead id="rankTHead1">
                     <tr>
                         <th rowspan="2">Location</th>
-                        <th colspan="9">
+                        <th colspan="10">
                             Current
                             <div class='thDateRange'">
                                 ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}

@@ -1,302 +1,180 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect');
 
 const SalesCompStore = async (req, res) => {
-  const filters = {
-    BrandNum: req.query.BrandNum,
-    UsersCde: req.query.UsersCde,
-    OtherCde: req.query.OtherCde,
-    CategNum: req.query.CategNum,
-    ItemDept: req.query.ItemDept,
-    ItemType: req.query.ItemType,
-    Location: req.query.Location,
-    StoreGrp: req.query.StoreGrp,
-    DateFrom: req.query.DateFrom,
-    DateTo__: req.query.DateTo__,
-    YearFrom: req.query.YearFrom,
-    YearTo__: req.query.YearTo__,
-    MontFrom: req.query.MontFrom,
-    MontTo__: req.query.MontTo__
-  };
+  
+  // Extract parameters from the request
+  const cBrandNum = req.query.BrandNum;
+  const cUsersCde = req.query.UsersCde;
+  const cOtherCde = req.query.OtherCde;
+  const cCategNum = req.query.CategNum;
+  const cItemDept = req.query.ItemDept;
+  const cItemType = req.query.ItemType;
+  const cLocation = req.query.Location;
+  const cStoreGrp = req.query.StoreGrp;
+  const dDateFrom = req.query.DateFrom;  // Date range for current period
+  const dDateTo__ = req.query.DateTo__;  // Date range for current period
+  const dYearFrom = req.query.YearFrom;  // Year range for previous year comparison
+  const dYearTo__ = req.query.YearTo__;  // Year range for previous year comparison
+  const dMontFrom = req.query.MontFrom;  // Month range for previous month comparison
+  const dMontTo__ = req.query.MontTo__;  // Month range for previous month comparison
 
-  const allDates = [
-    filters.DateFrom,
-    filters.DateTo__,
-    filters.YearFrom,
-    filters.YearTo__,
-    filters.MontFrom,
-    filters.MontTo__
-  ].filter(Boolean);
+  // Parameters object to pass to SQL query
+  const params = {};
+  let sqlQuery = '';
 
-  const minDate = allDates.sort()[0];
-  const maxDate = allDates.sort().reverse()[0];
-
-  const { query, params } = buildSalesQuery(filters, minDate, maxDate);
-
-  const finalQuery = `
-    SELECT 
-      StoreGrp,
-      LocaName,
-      TrxCount,
-      SUM(Quantity) AS Quantity,
-      SUM(LandCost) AS LandCost,
-      SUM(ItemPrce) AS ItemPrce,
-      SUM(Amount__) AS Amount__,
-      SUM(PrvYrQty) AS PrvYrQty,
-      SUM(PrvYrLan) AS PrvYrLan,
-      SUM(PrvYrPrc) AS PrvYrPrc,
-      SUM(PrvYrAmt) AS PrvYrAmt,
-      SUM(PrvMoQty) AS PrvMoQty,
-      SUM(PrvMoLan) AS PrvMoLan,
-      SUM(PrvMoPrc) AS PrvMoPrc,
-      SUM(PrvMoAmt) AS PrvMoAmt
-    FROM (
-      ${query}
-    ) AS CombinedSalesData
-    GROUP BY StoreGrp, LocaName, TrxCount
-    ORDER BY Amount__ DESC
-  `;
-
-  try {
-    const result = await queryDatabase(finalQuery, params);
-    res.json(result);
-  } catch (err) {
-    console.error('Database query error:', err.message);
-    res.status(500).send('Error fetching sales data');
+  // Add other filters to sqlQuery string
+  if (cBrandNum) {
+    sqlQuery += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
+    params.cBrandNum = `%${cBrandNum}%`;
   }
-};
+  if (cCategNum) {
+    sqlQuery += " AND ITEMLIST.CategNum LIKE @cCategNum";
+    params.cCategNum = `%${cCategNum}%`;
+  }
+  if (cUsersCde) {
+    sqlQuery += " AND ITEMLIST.UsersCde LIKE @cUsersCde";
+    params.cUsersCde = `%${cUsersCde}%`;
+  }
+  if (cOtherCde) {
+    sqlQuery += " AND ITEMLIST.OtherCde LIKE @cOtherCde";
+    params.cOtherCde = `%${cOtherCde}%`;
+  }
+  if (cItemDept) {
+    sqlQuery += " AND ITEMLIST.ItemDept LIKE @cItemDept";
+    params.cItemDept = `%${cItemDept}%`;
+  }
+  if (cItemType) {
+    sqlQuery += " AND ITEMLIST.ItemType LIKE @cItemType";
+    params.cItemType = `%${cItemType}%`;
+  }
+  if (cLocation) {
+    sqlQuery += " AND SALESREC.Location LIKE @cLocation";
+    params.cLocation = `%${cLocation}%`;
+  }
+  if (cStoreGrp) {
+    sqlQuery += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+    params.cStoreGrp = `%${cStoreGrp}%`;
+  }
 
-function buildSalesQuery(filters, minDate, maxDate) {
-  const where = `
-    WHERE SALESDTL.Date____ BETWEEN @MinDate AND @MaxDate
-      AND SALESREC.Disabled = 0
-      ${filters.BrandNum ? 'AND ITEMLIST.BrandNum LIKE @BrandNum' : ''}
-      ${filters.CategNum ? 'AND ITEMLIST.CategNum LIKE @CategNum' : ''}
-      ${filters.UsersCde ? 'AND ITEMLIST.UsersCde LIKE @UsersCde' : ''}
-      ${filters.OtherCde ? 'AND ITEMLIST.OtherCde LIKE @OtherCde' : ''}
-      ${filters.ItemDept ? 'AND ITEMLIST.ItemDept LIKE @ItemDept' : ''}
-      ${filters.ItemType ? 'AND ITEMLIST.ItemType LIKE @ItemType' : ''}
-      ${filters.Location ? 'AND SALESREC.Location LIKE @Location' : ''}
-      ${filters.StoreGrp ? 'AND LOCATION.StoreGrp LIKE @StoreGrp' : ''}
-  `;
-
-  const query = `
-    WITH TrxCountCTE AS (
-      SELECT 
-        SALESREC.Location,
-        COUNT(DISTINCT SALESREC.ReferDoc) AS TrxCount
-      FROM SALESREC
-      WHERE SALESREC.Disabled = 0
-        AND SALESREC.DateFrom BETWEEN @MinDate AND @MaxDate
-      GROUP BY SALESREC.Location
-    )
+  // ** cSql1 - Current period date range (dDateFrom to dDateTo__) **
+  let cSql1 = `
     SELECT 
-      LOCATION.LocaName,
       LOCATION.StoreGrp,
-      COALESCE(TrxCountCTE.TrxCount, 0) AS TrxCount,
-
-      -- Current
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.Quantity ELSE 0 END) AS Quantity,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS LandCost,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS ItemPrce,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS Amount__,
-
-      -- Prev Year
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.Quantity ELSE 0 END) AS PrvYrQty,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS PrvYrLan,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS PrvYrPrc,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS PrvYrAmt,
-
-      -- Prev Month
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.Quantity ELSE 0 END) AS PrvMoQty,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS PrvMoLan,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS PrvMoPrc,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS PrvMoAmt
-
-    FROM SALESREC
-    INNER JOIN SALESDTL ON SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
-    INNER JOIN LOCATION ON SALESREC.Location = LOCATION.Location
-    INNER JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
-    LEFT JOIN TrxCountCTE ON SALESREC.Location = TrxCountCTE.Location
-
-    ${where}
-    GROUP BY LOCATION.LocaName, LOCATION.StoreGrp, TrxCountCTE.TrxCount
-  `;
-
-  const params = {
-    MinDate: minDate,
-    MaxDate: maxDate,
-    DateFrom: filters.DateFrom,
-    DateTo__: filters.DateTo__,
-    YearFrom: filters.YearFrom,
-    YearTo__: filters.YearTo__,
-    MontFrom: filters.MontFrom,
-    MontTo__: filters.MontTo__,
-    ...(filters.BrandNum && { BrandNum: `%${filters.BrandNum}%` }),
-    ...(filters.CategNum && { CategNum: `%${filters.CategNum}%` }),
-    ...(filters.UsersCde && { UsersCde: `%${filters.UsersCde}%` }),
-    ...(filters.OtherCde && { OtherCde: `%${filters.OtherCde}%` }),
-    ...(filters.ItemDept && { ItemDept: `%${filters.ItemDept}%` }),
-    ...(filters.ItemType && { ItemType: `%${filters.ItemType}%` }),
-    ...(filters.Location && { Location: `%${filters.Location}%` }),
-    ...(filters.StoreGrp && { StoreGrp: `%${filters.StoreGrp}%` }),
-  };
-
-  return { query, params };
-}
-
-
-const SalesCompStore_ = async (req, res) => {
-  // Extract query parameters
-  const filters = {
-    BrandNum: req.query.BrandNum,
-    UsersCde: req.query.UsersCde,
-    OtherCde: req.query.OtherCde,
-    CategNum: req.query.CategNum,
-    ItemDept: req.query.ItemDept,
-    ItemType: req.query.ItemType,
-    Location: req.query.Location,
-    StoreGrp: req.query.StoreGrp,
-    DateFrom: req.query.DateFrom,
-    DateTo__: req.query.DateTo__,
-    YearFrom: req.query.YearFrom,
-    YearTo__: req.query.YearTo__,
-    MontFrom: req.query.MontFrom,
-    MontTo__: req.query.MontTo__
-  };
-
-  // Determine the full date range needed (min to max)
-  const allDates = [
-    filters.DateFrom,
-    filters.DateTo__,
-    filters.YearFrom,
-    filters.YearTo__,
-    filters.MontFrom,
-    filters.MontTo__
-  ].filter(Boolean); // Remove null/undefined if any
-
-  const minDate = allDates.sort()[0];                      // earliest
-  const maxDate = allDates.sort().reverse()[0];            // latest
-
-  const { query, params } = buildSalesQuery(filters, minDate, maxDate);
-
-  const finalQuery = `
-    SELECT 
-      StoreGrp,
-      LocaName,
-      TrxCount,
-      SUM(Quantity) AS Quantity,
-      SUM(LandCost) AS LandCost,
-      SUM(ItemPrce) AS ItemPrce,
-      SUM(Amount__) AS Amount__,
-      SUM(PrvYrQty) AS PrvYrQty,
-      SUM(PrvYrLan) AS PrvYrLan,
-      SUM(PrvYrPrc) AS PrvYrPrc,
-      SUM(PrvYrAmt) AS PrvYrAmt,
-      SUM(PrvMoQty) AS PrvMoQty,
-      SUM(PrvMoLan) AS PrvMoLan,
-      SUM(PrvMoPrc) AS PrvMoPrc,
-      SUM(PrvMoAmt) AS PrvMoAmt
-    FROM (${query}) AS CombinedSalesData
-    GROUP BY StoreGrp, LocaName, TrxCount
-    ORDER BY 7 DESC
-  `;
-
-  try {
-    const result = await queryDatabase(finalQuery, params);
-    res.json(result);
-  } catch (err) {
-    console.error('Database query error:', err.message);
-    res.status(500).send('Error fetching sales data');
-  }
-};
-
-
-function buildSalesQuery(filters, minDate, maxDate) {
-  let whereClause = `
-    WHERE SALESDTL.Date____ BETWEEN @MinDate AND @MaxDate
-      AND SALESREC.Disabled = 0
-  `;
-
-  // Dynamically build WHERE conditions
-  if (filters.BrandNum) {
-    whereClause += ` AND ITEMLIST.BrandNum LIKE @BrandNum`;
-  }
-  if (filters.CategNum) {
-    whereClause += ` AND ITEMLIST.CategNum LIKE @CategNum`;
-  }
-  if (filters.UsersCde) {
-    whereClause += ` AND ITEMLIST.UsersCde LIKE @UsersCde`;
-  }
-  if (filters.OtherCde) {
-    whereClause += ` AND ITEMLIST.OtherCde LIKE @OtherCde`;
-  }
-  if (filters.ItemDept) {
-    whereClause += ` AND ITEMLIST.ItemDept LIKE @ItemDept`;
-  }
-  if (filters.ItemType) {
-    whereClause += ` AND ITEMLIST.ItemType LIKE @ItemType`;
-  }
-  if (filters.Location) {
-    whereClause += ` AND SALESREC.Location LIKE @Location`;
-  }
-  if (filters.StoreGrp) {
-    whereClause += ` AND LOCATION.StoreGrp LIKE @StoreGrp`;
-  }
-
-  const query = `
-    SELECT 
       LOCATION.LocaName,
-      LOCATION.StoreGrp,
       COUNT(DISTINCT SALESREC.ReferDoc) AS TrxCount,
-
-      -- Current Period
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.Quantity ELSE 0 END) AS Quantity,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS LandCost,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS ItemPrce,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @DateFrom AND @DateTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS Amount__,
-
-      -- Previous Year
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.Quantity ELSE 0 END) AS PrvYrQty,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS PrvYrLan,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS PrvYrPrc,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @YearFrom AND @YearTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS PrvYrAmt,
-
-      -- Previous Month
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.Quantity ELSE 0 END) AS PrvMoQty,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.LandCost * SALESDTL.Quantity ELSE 0 END) AS PrvMoLan,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.ItemPrce * SALESDTL.Quantity ELSE 0 END) AS PrvMoPrc,
-      SUM(CASE WHEN SALESDTL.Date____ BETWEEN @MontFrom AND @MontTo__ THEN SALESDTL.Amount__ * SALESDTL.Quantity ELSE 0 END) AS PrvMoAmt
-
-    FROM SALESREC
-    INNER JOIN SALESDTL ON SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
-    INNER JOIN LOCATION ON SALESREC.Location = LOCATION.Location
-    INNER JOIN ITEMLIST ON ITEMLIST.ItemCode = SALESDTL.ItemCode
-    ${whereClause}
-    GROUP BY LOCATION.LocaName, LOCATION.StoreGrp
+      SUM(SALESDTL.Quantity) AS Quantity,
+      SUM(SALESDTL.Quantity * SALESDTL.LandCost) AS LandCost,
+      SUM(SALESDTL.Quantity * SALESDTL.ItemPrce) AS ItemPrce,
+      SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS Amount__
+    FROM SALESDTL
+    JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN LOCATION ON SALESREC.Location = LOCATION.Location
+    WHERE SALESREC.Disabled = 0
+    AND SALESDTL.Date____ >= @dDateFrom 
+    AND SALESDTL.Date____ <= @dDateTo__
+    ${sqlQuery}
+    GROUP BY LOCATION.StoreGrp, LOCATION.LocaName
   `;
 
-  // Prepare parameters safely
-  const params = {
-    MinDate: minDate,
-    MaxDate: maxDate,
-    DateFrom: filters.DateFrom,
-    DateTo__: filters.DateTo__,
-    YearFrom: filters.YearFrom,
-    YearTo__: filters.YearTo__,
-    MontFrom: filters.MontFrom,
-    MontTo__: filters.MontTo__,
-    ...(filters.BrandNum && { BrandNum: `%${filters.BrandNum}%` }),
-    ...(filters.UsersCde && { UsersCde: `%${filters.UsersCde}%` }),
-    ...(filters.OtherCde && { OtherCde: `%${filters.OtherCde}%` }),
-    ...(filters.CategNum && { CategNum: `%${filters.CategNum}%` }),
-    ...(filters.ItemDept && { ItemDept: `%${filters.ItemDept}%` }),
-    ...(filters.ItemType && { ItemType: `%${filters.ItemType}%` }),
-    ...(filters.Location && { Location: `%${filters.Location}%` }),
-    ...(filters.StoreGrp && { StoreGrp: `%${filters.StoreGrp}%` }),
-  };
+  // Add current period date range parameters to params
+  if (dDateFrom) {
+    params.dDateFrom = dDateFrom; // Set current period's start date
+  }
+  if (dDateTo__) {
+    params.dDateTo__ = dDateTo__; // Set current period's end date
+  }
 
-  return { query, params };
-}
+  // ** cSql2 - Previous year date range (dYearFrom to dYearTo__) **
+  let cSql2 = `
+    SELECT 
+      LOCATION.LocaName,
+      SUM(SALESDTL.Quantity) AS PrvYrQty,
+      SUM(SALESDTL.Quantity * SALESDTL.LandCost) AS PrvYrLan,
+      SUM(SALESDTL.Quantity * SALESDTL.ItemPrce) AS PrvYrPrc,
+      SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS PrvYrAmt
+    FROM SALESDTL
+    JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN LOCATION ON SALESREC.Location = LOCATION.Location
+    WHERE SALESREC.Disabled = 0
+    AND SALESDTL.Date____ >= @dYearFrom 
+    AND SALESDTL.Date____ <= @dYearTo__
+    ${sqlQuery}
+    GROUP BY LOCATION.LocaName
+  `;
+
+  // Add previous year date range parameters to params
+  if (dYearFrom) {
+    params.dYearFrom = dYearFrom; // Set previous year start date
+  }
+  if (dYearTo__) {
+    params.dYearTo__ = dYearTo__; // Set previous year end date
+  }
+
+  // ** cSql3 - Previous month date range (dMontFrom to dMontTo__) **
+  let cSql3 = `
+    SELECT 
+      LOCATION.LocaName,
+      SUM(SALESDTL.Quantity) AS PrvMoQty,
+      SUM(SALESDTL.Quantity * SALESDTL.LandCost) AS PrvMoLan,
+      SUM(SALESDTL.Quantity * SALESDTL.ItemPrce) AS PrvMoPrc,
+      SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS PrvMoAmt
+    FROM SALESDTL
+    JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN LOCATION ON SALESREC.Location = LOCATION.Location
+    WHERE SALESREC.Disabled = 0
+    AND SALESDTL.Date____ >= @dMontFrom 
+    AND SALESDTL.Date____ <= @dMontTo__
+    ${sqlQuery}
+    GROUP BY LOCATION.LocaName
+  `;
+
+  // Add previous month date range parameters to params
+  if (dMontFrom) {
+    params.dMontFrom = dMontFrom; // Set previous month start date
+  }
+  if (dMontTo__) {
+    params.dMontTo__ = dMontTo__; // Set previous month end date
+  }
+
+  // Final SQL combining all three queries
+  let finalSql = `
+    SELECT
+      TRXCOUNT.StoreGrp,
+      TRXCOUNT.LocaName,
+      TRXCOUNT.TrxCount,
+      TRXCOUNT.Quantity,
+      TRXCOUNT.LandCost,
+      TRXCOUNT.ItemPrce,
+      TRXCOUNT.Amount__,
+      PREVYEAR.PrvYrQty,
+      PREVYEAR.PrvYrLan,
+      PREVYEAR.PrvYrPrc,
+      PREVYEAR.PrvYrAmt,
+      PREVMONT.PrvMoQty,
+      PREVMONT.PrvMoLan,
+      PREVMONT.PrvMoPrc,
+      PREVMONT.PrvMoAmt
+    FROM
+      (${cSql1}) AS TRXCOUNT
+    LEFT JOIN
+      (${cSql2}) AS PREVYEAR ON TRXCOUNT.LocaName = PREVYEAR.LocaName
+    LEFT JOIN
+      (${cSql3}) AS PREVMONT ON TRXCOUNT.LocaName = PREVMONT.LocaName
+    ORDER BY
+      TRXCOUNT.LocaName;
+  `;
+
+  // Execute the final query
+  try {
+    const result = await queryDatabase(finalSql, params);
+    res.json(result);
+  } catch (err) {
+    console.error('Database query error:', err.message);
+    res.status(500).send('Error fetching sales data');
+  }
+};
+
+
 
 const SalesRankBrand = async (req, res) => {
   const cBrandNum = req.query.BrandNum;
