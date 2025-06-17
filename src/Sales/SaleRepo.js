@@ -383,7 +383,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__/item.TrxCount) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost) || 'N/A'}</td>
@@ -451,10 +451,12 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
           const colWidths = [
               { width: 25 }, // Column A (e.g. Group)
               { width: 30 }, // Column B (e.g. Location)
+              { width: 10 }, // TrxCount
               { width: 10 }, // Quantity
               { width: 15 }, // Gross
               { width: 15 }, // Discount
               { width: 15 }, // Net
+              { width: 12 }, // ATV
               { width: 15 }, // Cost
               { width: 15 }, // Gross Profit
               { width: 10 }, // GP %
@@ -476,40 +478,59 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 totalLabel: 'TOTALS:'
               },
               {
+                label: 'TRX Count',
+                getValue: row => +row.TrxCount,
+                total: rows => rows.reduce((sum, r) => sum + (+r.TrxCount || 0), 0),
+                align: 'right',
+                type: 'integer',
+                cellFormat: '#,##0' 
+              },
+              {
                 label: 'Quantity',
                 getValue: row => +row.Quantity,
                 total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
                 align: 'right',
                 type: 'integer',
-                cellFormat: '#,##0' // changed format to cellFormat
+                cellFormat: '#,##0' 
               },
               {
                 label: 'Gross',
                 getValue: row => +row.ItemPrce,
                 total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
                 align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
+                cellFormat: '#,##0.00' 
               },
               {
                 label: 'Discount',
                 getValue: row => +(row.ItemPrce - row.Amount__),
                 total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
                 align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
+                cellFormat: '#,##0.00' 
               },
               {
                 label: 'Net',
                 getValue: row => +row.Amount__,
                 total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
                 align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
+                cellFormat: '#,##0.00' 
+              },
+              {
+                label: 'ATV',
+                getValue: row => +(row.Amount__ / row.TrxCount),
+                total: rows => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  const totalTRX = rows.reduce((sum, r) => sum + (+r.TrxCount || 0), 0);
+                  return totalAmount ? (totalAmount / totalTRX)  : 0;
+                },
+                align: 'right',
+                cellFormat: '#,##0.00' 
               },
               {
                 label: 'Cost',
                 getValue: row => +row.LandCost,
                 total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
                 align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
+                cellFormat: '#,##0.00' 
               },
               {
                 label: 'Gross Profit',
@@ -663,7 +684,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
@@ -1307,7 +1328,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
                             </tr>
                         `;

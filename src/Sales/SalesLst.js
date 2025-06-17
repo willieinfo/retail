@@ -1,5 +1,5 @@
 import { showReport, formatDate, populateLocation, showNotification, get24HrTime, debounce,
-    MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
+    makeDraggable, MessageBox, formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode, startTimer} from '../FunctLib.js';
 
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
@@ -99,6 +99,7 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
 
     const salesLstCounter=document.getElementById('salesLstCounter')
     document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
 
     try {
         // Build query parameters
@@ -118,7 +119,10 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
 
         globalData = await response.json(); // Store full data array globally
         salesLstCounter.innerHTML=`${globalData.length} Records`
-      
+        // Clear the timer once data is fetched
+        clearInterval(timerInterval);        
+
+        
         updateTable() //Render Sales Invoices List
         document.getElementById('printSaleListXLS').disabled = false
 
@@ -128,6 +132,8 @@ async function SalesLst(dDateFrom, dDateTo__, cLocation, cStoreGrp, cReferDoc) {
         
     } finally {
         document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
     }
 }
 
@@ -776,9 +782,9 @@ function updateRecptDtlTable(refreshOnly=false) {
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                if (!isNaN(index) && index >= 0 ){
                     if (refreshOnly) return;
-                    RecptDtl(index, true); // Pass only the index to your form
+                    // RecptDtl(index, true); // Pass only the index to your form
                 }
             }
         }
@@ -860,7 +866,7 @@ function SalesDtl(index,editMode) {
                         <input type="number" id="SalesRec_DiscRate" name="DiscRate">
                     </div>
                     <div class="subTextDiv">
-                        <label for="SalesRec_Amount__">Net Amount</label>
+                        <label for="SalesRec_Amount__">Unit Net Amount</label>
                         <input type="number" id="SalesRec_Amount__" name="Amount__">
                     </div>
                 </div>
@@ -899,9 +905,11 @@ function SalesDtl(index,editMode) {
     itemsDtlForm.style.width = '80%';
     itemsDtlForm.style.maxWidth = '800px';
 
+
     document.getElementById('SaleForm').appendChild(itemsDtlForm);
     document.getElementById('SaleForm').appendChild(overlay);
     itemsDtlForm.style.display = 'flex'
+    makeDraggable(itemsDtlForm, titleBar)
 
 
     if (editMode) {
@@ -950,6 +958,16 @@ function SalesDtl(index,editMode) {
         nLandCost=otherDetails.nLandCost
     }, 300));  // 300ms delay (you can adjust the delay as needed)
     
+    document.getElementById('SalesRec_ItemPrce').addEventListener('blur', async (e) => {
+        e.preventDefault()
+        if (ItemPrce.value===0) {
+            ItemPrce.focus()
+            return
+        }
+        const nNetValue=ItemPrce.value
+        Amount__.value=nNetValue-(nNetValue*DiscRate.value/100)
+    })
+
     document.getElementById('SalesRec_DiscRate').addEventListener('blur', async (e) => {
         e.preventDefault()
         if (ItemPrce.value===0) {

@@ -102,7 +102,7 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
         Please open it in Excel to view.`,
         'Ok'
     )
-    showNotification(`${filename} in Excel`);
+    // showNotification(`${filename} in Excel`);
 
 }
 

@@ -1,5 +1,6 @@
 import { showReport, formatDate, populateLocation, populateSuppNum_, showNotification, debounce, MessageBox, 
-    formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
+    formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode,
+    makeDraggable} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 
@@ -641,7 +642,7 @@ function updateItemTable(refreshOnly=false) {
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                if (!isNaN(index) && index >= 0) {
                     if (refreshOnly) return;
                     PurchDtl(index, true); // Pass only the index to your form
                 }
@@ -713,15 +714,15 @@ function PurchDtl(index,editMode) {
                         <input type="number" id="PurchRec_Quantity" name="Quantity">
                     </div>
                     <div class="subTextDiv">
-                        <label for="PurchRec_QtyRecvd">Qty. Ord</label>
+                        <label for="PurchRec_POQty___">Qty. Ord</label>
                         <input type="number" id="PurchRec_POQty___" name="POQty___">
                     </div>
                     <div class="subTextDiv">
-                        <label for="PurchRec_ItemPrce">Net Cost</label>
+                        <label for="PurchRec_ItemPrce">Unit Net Cost</label>
                         <input type="number" id="PurchRec_ItemPrce" name="ItemPrce">
                     </div>
                     <div class="subTextDiv">
-                        <label for="PurchRec_SellPrce">Net Selling Price</label>
+                        <label for="PurchRec_SellPrce">Unit Net Selling Price</label>
                         <input type="number" id="PurchRec_SellPrce" name="SellPrce">
                     </div>
                 </div>
@@ -765,6 +766,7 @@ function PurchDtl(index,editMode) {
 
 
     itemsDtlForm.style.display = 'flex'
+    makeDraggable(itemsDtlForm, titleBar)
 
 
     if (editMode) {

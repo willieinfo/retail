@@ -46,18 +46,18 @@ export async function FiltrRec(cModules_) {
                     <div class="textDiv">
                         <div class="subTextDiv">
                             <label for="FiltrRec_UsersCde">Stock No</label>
-                            <input type="text" id="FiltrRec_UsersCde" name="UsersCde" spellcheck="false">
+                            <input type="text" id="FiltrRec_UsersCde" spellcheck="false">
                         </div>
                         <div class="subTextDiv">
                             <label for="FiltrRec_OtherCde">Bar Code</label>
-                            <input type="text" id="FiltrRec_OtherCde" name="OtherCde" spellcheck="false">
+                            <input type="text" id="FiltrRec_OtherCde" spellcheck="false">
                         </div>
                     </div>
 
                     <div id="inputDescript" class="textDiv">
                         <div class="subTextDiv" style="width:100%;">
                             <label for="FiltrRec_Descript">Item Description</label>
-                            <input type="text" id="FiltrRec_Descript" name="Descript" spellcheck="false">
+                            <input type="text" id="FiltrRec_Descript" spellcheck="false">
                         </div>
                     </div>
                     <div id="inputList1" class="textDiv">
@@ -84,12 +84,12 @@ export async function FiltrRec(cModules_) {
                 <div id="inputUserName" class="textDiv">
                     <div class="subTextDiv" style="width:100%;">
                         <label for="FiltrRec_UserName">Name or Email or Mobile</label>
-                        <input type="text" id="FiltrRec_UserName" name="UserName" spellcheck="false">
+                        <input type="text" id="FiltrRec_UserName" spellcheck="false">
                     </div>
                 </div>
                 <div id="chkDiv" style="display:none">
                     <input type="checkbox" id="FiltrRec_Disabled" >
-                    <label for="Disabled"> Show Disabled</label>
+                    <label for="FiltrRec_Disabled"> Show Disabled</label>
                 </div>
                 
                 <div class="btnDiv">

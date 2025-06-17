@@ -62,7 +62,7 @@ const listLoca = async (req, res) => {
   
     try {
       const result = await queryDatabase(cSql, params);
-      console.log(params)
+      // console.log(params)
       res.json(result);  
     } catch (err) {
       console.error('ListLoca query error:', err);

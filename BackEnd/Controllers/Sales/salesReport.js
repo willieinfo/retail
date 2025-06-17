@@ -161,7 +161,7 @@ const SalesCompStore = async (req, res) => {
     LEFT JOIN
       (${cSql3}) AS PREVMONT ON TRXCOUNT.LocaName = PREVMONT.LocaName
     ORDER BY
-      TRXCOUNT.LocaName;
+      TRXCOUNT.Amount__ DESC;
   `;
 
   // Execute the final query
