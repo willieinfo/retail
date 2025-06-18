@@ -36,7 +36,7 @@ const divSalesLst = `
             <div class="footSegments">
                 <span id="salesLstCounter" class="recCounter"></span>
                 <button id="printSaleListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="salesFilter"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="salesFilter"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>

@@ -34,7 +34,7 @@ const divListItem = `
             <div class="footSegments">
                 <span id="itemListCounter" class="recCounter"></span>
                 <button id="printItemXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="filterList"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="filterList"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>

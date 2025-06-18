@@ -36,7 +36,7 @@ const divStockLst = `
             <div class="footSegments">
                 <span id="stockLstCounter" class="recCounter"></span>
                 <button id="printStocListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="stockFilter"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="stockFilter"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -203,7 +203,7 @@ function updateTable() {
             // Optionally, call your edit function if needed
             const index = parseInt(row.getAttribute('data-index'));
             currentIndex = index
-            if (!isNaN(index) && index >= 0 && index < globalData.length) {
+            if (!isNaN(index) && index >= 0 ) {
                 // console.log(`Row clicked for index: ${index}`);
                 StocForm(index, true); // Pass only the index to your form
             }
@@ -606,7 +606,7 @@ function updateItemTable(refreshOnly=false) {
     
                 // Optionally, call your edit function if needed
                 const index = parseInt(row.getAttribute('data-index'));
-                if (!isNaN(index) && index >= 0 && index < globalData.length) {
+                if (!isNaN(index) && index >= 0 ) {
                     if (refreshOnly) return;
                     StockDtl(index, true); // Pass only the index to your form
                 }

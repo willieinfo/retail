@@ -73,7 +73,7 @@ const divRankStore = `
                 <span id="saleRank1Counter" class="recCounter"></span>
                 <button id="printStoreRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
                 <button id="printStoreRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="saleRank1"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="saleRank1"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -117,7 +117,7 @@ const divRankBrand =`
                 <span id="saleRank2Counter" class="recCounter"></span>
                 <button id="printBrandRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
                 <button id="printBrandRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="saleRank2"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="saleRank2"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -160,7 +160,7 @@ const divRankStock =`
                 <span id="saleRank3Counter" class="recCounter"></span>
                 <button id="printStockRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
                 <button id="printStockRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="saleRank3"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="saleRank3"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -203,7 +203,7 @@ const divDailySales =`
             <div class="footSegments">
                 <button id="printDailySalesPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
                 <button id="printDailySalesXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="listSales"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="listSales"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -1321,8 +1321,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         return `
                             <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
                                 <td style="text-align: center">${index+1 || 'N/A'}</td>
-                                <td style="text-align: left">${item.UsersCde || 'N/A'}</td>
-                                <td style="text-align: left">${item.OtherCde || 'N/A'}</td>
+                                <td class="colNoWrap" style="text-align: left">${item.UsersCde || 'N/A'}</td>
+                                <td class="colNoWrap" style="text-align: left">${item.OtherCde || 'N/A'}</td>
                                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>

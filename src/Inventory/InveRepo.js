@@ -39,7 +39,7 @@ const divStockEndLoca = `
             <div class="footSegments">
                 <span id="stockEndLocaCounter" class="recCounter"></span>
                 <button id="printStockEndLoca" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="stockEndLocaFilter"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="stockEndLocaFilter"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@ const divStockEndBrand = `
             <div class="footSegments">
                 <span id="stockEndBrandCounter" class="recCounter"></span>
                 <button id="printStockEndBrand" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="stockEndBrandFilter"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="stockEndBrandFilter"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>

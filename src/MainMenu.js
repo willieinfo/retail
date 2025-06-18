@@ -42,9 +42,10 @@ const menuItems= `
         <li menu-ref="B01" class="PurchaseOrder data-entry">Purchase Order</li>
         <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
-        <li menu-ref="B03" >Stock Receiving By SKU</li>
-        <li menu-ref="B04" >Stock Receiving By Category</li>
-        <li menu-ref="B05" >Stock Receiving By Supplier</li>
+        <li menu-ref="B03" class="purchReportByStock">Stock Receiving By SKU</li>
+        <li menu-ref="B04" class="purchSumByDept">Receiving Summary By Category</li>
+        <li menu-ref="B05" >Receiving Summary By Supplier</li>
+        <li menu-ref="B06" >Receiving Summary By Brand</li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers

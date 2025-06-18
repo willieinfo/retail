@@ -94,7 +94,7 @@ export async function FiltrRec(cModules_) {
                 
                 <div class="btnDiv">
                     <br>
-                    <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-list"></i>  List</button>
+                    <button type="submit" id="saveFilterBtn" class="saveBtn"><i class="fa fa-filter"></i> Filter</button>
                     <button type="button" id="cancelFilterBtn" class="cancelBtn"><i class="fa fa-close"></i>  Close</button>
                 </div>
             </div>
@@ -197,6 +197,20 @@ export async function FiltrRec(cModules_) {
             document.getElementById('inputDetails').style.display = 'none';
             document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'PurcArea','FiltrRec_Location','0');
+        } else if (cModules_ === 'PurcStoc') {
+            document.getElementById('PurchRepoStock').appendChild(filterForm);
+            document.getElementById('PurchRepoStock').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
+            await populateLocation('', '', '','FiltrRec_Location','0');
+        } else if (cModules_ === 'PurcDept') {
+            document.getElementById('PurchSumDept').appendChild(filterForm);
+            document.getElementById('PurchSumDept').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
+            await populateLocation('', '', '','FiltrRec_Location','0');
         } else if (cModules_ === 'StocEnd1') {
             document.getElementById('StockEndLocation').appendChild(filterForm);
             document.getElementById('StockEndLocation').appendChild(overlay);

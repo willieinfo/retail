@@ -30,7 +30,7 @@ const divListLoca = `
             <div class="footSegments">
                 <span id="locaListCounter" class="recCounter"></span>
                 <button id="printLocaXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="filterLoca"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="filterLoca"><i class="fa fa-list"></i> List</button>
 
             </div>
         </div>

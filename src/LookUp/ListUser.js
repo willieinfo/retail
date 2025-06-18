@@ -33,7 +33,7 @@ const divListUser = `
             <div class="footSegments">
                 <span id="userListCounter" class="recCounter"></span>
                 <button id="printUserXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="filterUser"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="filterUser"><i class="fa fa-list"></i> List</button>
 
             </div>
         </div>

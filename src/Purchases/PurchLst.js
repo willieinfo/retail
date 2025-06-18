@@ -17,6 +17,7 @@ const divPurchLst = `
                         <th>Control No</th>
                         <th>Ref. Doc</th>
                         <th>Date</th>
+                        <th>Location</th>
                         <th>Supplier</th>
                         <th>DR No.</th>
                         <th>DR Date</th>
@@ -24,9 +25,9 @@ const divPurchLst = `
                         <th>PO Date</th>
                         <th>Qty.</th>
                         <th>Amount</th>
+                        <th>SRP</th>
                         <th>Items</th>
                         <th>Remarks</th>
-                        <th>Location</th>
                         <th>Encoder</th>
                         <th>Log Date</th>
                     </tr>
@@ -40,7 +41,7 @@ const divPurchLst = `
             <div class="footSegments">
                 <span id="purchLstCounter" class="recCounter"></span>
                 <button id="printPurcListXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="purchFilter"><i class="fa fa-filter"></i> Filter List</button>
+                <button id="purchFilter"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -133,6 +134,7 @@ function updateTable() {
 
     let nTotalQty = 0;
     let nTotalAmt = 0;
+    let nTotalSel = 0;
     let nTotalItm = 0;
 
     const listTable = `
@@ -143,6 +145,7 @@ function updateTable() {
                         <th>Control No</th>
                         <th>Ref. Doc</th>
                         <th>Date</th>
+                        <th>Location</th>
                         <th>Supplier</th>
                         <th>DR No.</th>
                         <th>DR Date</th>
@@ -150,9 +153,9 @@ function updateTable() {
                         <th>PO Date</th>
                         <th>Qty.</th>
                         <th>Amount</th>
+                        <th>SRP</th>
                         <th>Items</th>
                         <th>Remarks</th>
-                        <th>Location</th>
                         <th>Encoder</th>
                         <th>Log Date</th>
                     </tr>
@@ -161,6 +164,7 @@ function updateTable() {
                     ${globalData.map((data, index) => {
                         nTotalQty += data.TotalQty || 0;
                         nTotalAmt += data.Amount__ || 0;
+                        nTotalSel += data.TotalSRP || 0;
                         nTotalItm += data.NoOfItem || 0;
 
                         return`
@@ -168,6 +172,7 @@ function updateTable() {
                             <td>${data.CtrlNum_ || 'N/A'}</td>
                             <td class="colNoWrap">${data.ReferDoc || 'N/A'}</td>
                             <td>${formatDate(data.Date____) || 'N/A'}</td>
+                            <td class="colNoWrap">${data.LocaName || 'N/A'}</td>
                             <td class="colNoWrap">${data.SuppName || 'N/A'}</td>
                             <td class="colNoWrap">${data.DRNum___ || 'N/A'}</td>
                             <td>${formatDate(data.DR__Date) || 'N/A'}</td>
@@ -175,9 +180,9 @@ function updateTable() {
                             <td>${formatDate(data.PODate__) || 'N/A'}</td>
                             <td style="text-align: center">${data.TotalQty.toFixed(0) || 'N/A'}</td>
                             <td style="text-align: right">${formatter.format(data.Amount__) || 'N/A'}</td>
+                            <td style="text-align: right">${formatter.format(data.TotalSRP) || 'N/A'}</td>
                             <td style="text-align: center">${data.NoOfItem.toFixed(0) || 'N/A'}</td>
                             <td class="colNoWrap">${data.Remarks_ || 'N/A'}</td>
-                            <td class="colNoWrap">${data.LocaName || 'N/A'}</td>
                             <td>${data.Encoder_ || 'N/A'}</td>
                             <td>${formatDate(data.Log_Date) || 'N/A'}</td>
                         </tr>`
@@ -192,11 +197,12 @@ function updateTable() {
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                         <td style="text-align: right">Totals: </td>
                         <td style="text-align: center">${nTotalQty.toFixed(0) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalSel) || 'N/A'}</td>
                         <td style="text-align: center">${nTotalItm.toFixed(0) || 'N/A'}</td>
-                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -1164,15 +1170,17 @@ document.getElementById('printPurcListXLS').addEventListener('click', () => {
 
     
     const colWidths = [
-        { width: 12 },{ width: 12 },{ width: 12 },{ width: 24 },{ width: 20 },
-        { width: 12 },{ width: 16 },{ width: 12 },{ width: 10 },{ width: 20 },
-        { width: 10 },{ width: 20 },{ width: 20 },{ width: 10 },{ width: 12 },
+        { width: 12 },{ width: 12 },{ width: 12 },{ width: 20 },{ width: 24 },
+        { width: 18 },{ width: 16 },{ width: 18 },{ width: 12 },{ width: 10 },
+        { width: 20 },{ width: 20 },{ width: 10 },{ width: 20 },{ width: 10 },
+        { width: 12 },
     ];
 
     const columnConfig = [
         {label: 'Ctrl. No,', getValue: row => row.CtrlNum_, type: 'string', align: 'left' },
         {label: 'Ref. No.',getValue: row => row.ReferDoc,type: 'string', align: 'left'},
         {label: 'Date',getValue: row => row.Date____,type: 'datetime',align: 'left'},
+        {label: 'Location',getValue: row => row.LocaName, type: 'string',align: 'left'},
         {label: 'Supplier',getValue: row => row.SuppName, type: 'string',align: 'left'},
         {label: 'DR No.',getValue: row => row.DRNum___, type: 'string',align: 'left',},
         {label: 'DR Date',getValue: row => row.DR__Date,type: 'datetime',align: 'left'},
@@ -1184,11 +1192,13 @@ document.getElementById('printPurcListXLS').addEventListener('click', () => {
         {label: 'Amount',getValue: row => +row.Amount__,
             total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
             align: 'right',cellFormat: '#,##0.00'},
+        {label: 'SRP',getValue: row => +row.TotalSRP,
+            total: rows => rows.reduce((sum, r) => sum + (+r.TotalSRP || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
         {label: 'Items',getValue: row => +row.NoOfItem,
                 total: rows => rows.reduce((sum, r) => sum + (+r.NoOfItem || 0), 0),
                 align: 'center',type: 'integer',cellFormat: '#,##0'},
         {label: 'Remarks',getValue: row => row.Remarks_,type: 'string',align: 'left'},
-        {label: 'Location',getValue: row => row.LocaName, type: 'string',align: 'left'},
         {label: 'Encoder',getValue: row => row.Encoder_, type: 'string',align: 'left'},
         {label: 'Log Date',getValue: row => row.Log_Date,type: 'datetime',align: 'left'},
 
