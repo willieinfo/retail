@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { SalesCompStore, SalesRankBrand, SalesRankStock, DailySalesSum } = require('../Controllers/Sales/salesReport');
+const { SalesCompStore, SalesRankBrand, SalesRankStock, SalesRankType, DailySalesSum } = require('../Controllers/Sales/salesReport');
 const { SalesRecLst, SalesDtlLst, addSalesHeader, editSalesHeader,
     addSalesDetail, editSalesDetail, deleteSalesDetail, updateSalesTotals } = require('../Controllers/Sales/salesInput');
 const { RecptDtlLst, addRecptDetail, editRecptDetail, deleteRecptDetail } = require('../Controllers/Sales/recptInput');
@@ -17,6 +17,7 @@ router.get('/RecptDtlLst', RecptDtlLst)
 router.get('/SalesCompStore', SalesCompStore)
 router.get('/SalesRankBrand', SalesRankBrand)
 router.get('/SalesRankStock', SalesRankStock)
+router.get('/SalesRankType', SalesRankType)
 router.get('/DailySalesSum', DailySalesSum)
 
 router.post('/addSalesHeader', addSalesHeader)

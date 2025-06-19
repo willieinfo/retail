@@ -177,6 +177,14 @@ export async function FiltrRec(cModules_) {
             document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
+        } else if (cModules_ === 'SaleRnk4') {
+            document.getElementById('SalesRankType').appendChild(filterForm);
+            document.getElementById('SalesRankType').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputUserName').style.display = 'none';
+            await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'DailySales') {
             document.getElementById('DailySalesSum').appendChild(filterForm);
             document.getElementById('DailySalesSum').appendChild(overlay);
@@ -204,9 +212,9 @@ export async function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputUserName').style.display = 'none';
             await populateLocation('', '', '','FiltrRec_Location','0');
-        } else if (cModules_ === 'PurcDept') {
-            document.getElementById('PurchSumDept').appendChild(filterForm);
-            document.getElementById('PurchSumDept').appendChild(overlay);
+        } else if (cModules_ === 'PurcType') {
+            document.getElementById('PurchSumType').appendChild(filterForm);
+            document.getElementById('PurchSumType').appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputUserName').style.display = 'none';

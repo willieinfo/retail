@@ -31,10 +31,10 @@ const menuItems= `
         <hr class="menuLine">
         <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
         <li menu-ref="A03" class="salesRankingByBrand">Sales Ranking by Brand</li>
-        <li menu-ref="A04" class="salesRankingByCategory">Sales Ranking by Category</li>
-        <li menu-ref="A05" class="dailySalesSum">Daily Sales Summary</li>
+        <li menu-ref="A04" class="salesRankingByType">Sales Ranking by Classification</li>
+        <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
-        <li menu-ref="A06" class="salesRankingByStock">Sales By SKU</li>
+        <li menu-ref="A06" class="dailySalesSum">Daily Sales Summary</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -43,7 +43,7 @@ const menuItems= `
         <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
         <li menu-ref="B03" class="purchReportByStock">Stock Receiving By SKU</li>
-        <li menu-ref="B04" class="purchSumByDept">Receiving Summary By Category</li>
+        <li menu-ref="B04" class="purchSumByType">Receiving Summary By Classification</li>
         <li menu-ref="B05" >Receiving Summary By Supplier</li>
         <li menu-ref="B06" >Receiving Summary By Brand</li>
     </ul>
@@ -54,7 +54,7 @@ const menuItems= `
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li menu-ref="C03" >Stock Transfer by SKU</li>
-        <li menu-ref="C04" >Stock Transfer by Category</li>
+        <li menu-ref="C04" >Stock Transfer by Classification</li>
         <li menu-ref="C05" >Stock Transfer by Brand</li>
     </ul>
 </li>
@@ -63,7 +63,7 @@ const menuItems= `
         <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment</li>
         <hr class="menuLine">
         <li menu-ref="D02" >Adjustments by SKU</li>
-        <li menu-ref="D03" >Adjustments by Category</li>
+        <li menu-ref="D03" >Adjustments by Classification</li>
         <li menu-ref="D04" >Adjustments by Brand</li>
     </ul>
 </li>

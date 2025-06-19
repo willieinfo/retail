@@ -286,14 +286,18 @@ const SalesRankStock = async (req, res) => {
         ITEMLIST.Descript,
         ITEMLIST.Outright,
 				BRAND___.BrandNme,
+				ITEMDEPT.Descript AS DeptDesc,
+				ITEMTYPE.Descript AS TypeDesc,
 				Sum(SALESDTL.Quantity) AS Quantity,
 				Sum(SALESDTL.LandCost*SALESDTL.Quantity) AS LandCost,
 				Sum(SALESDTL.ItemPrce*SALESDTL.Quantity) AS ItemPrce,
 				Sum(SALESDTL.Amount__*SALESDTL.Quantity) AS Amount__ 
-				FROM SALESREC, SALESDTL, BRAND___, ITEMLIST, LOCATION
+				FROM SALESREC, SALESDTL, BRAND___, ITEMDEPT, ITEMTYPE, ITEMLIST, LOCATION
 				WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
 				AND SALESREC.Location = LOCATION.Location
 				AND ITEMLIST.BrandNum = BRAND___.BrandNum
+				AND ITEMLIST.ItemDept = ITEMDEPT.ItemDept 
+				AND ITEMLIST.ItemType = ITEMTYPE.ItemType 
 				AND ITEMLIST.ItemCode = SALESDTL.ItemCode
 				AND SALESREC.Disabled = 0
         `
@@ -347,8 +351,10 @@ const SalesRankStock = async (req, res) => {
     ITEMLIST.OtherCde,
     ITEMLIST.Descript,
     ITEMLIST.Outright,
-    BRAND___.BrandNme
-    ORDER BY 9 DESC `;
+    BRAND___.BrandNme,
+    ITEMDEPT.Descript,
+    ITEMTYPE.Descript
+    ORDER BY 11 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
@@ -456,4 +462,93 @@ const DailySalesSum = async (req, res) => {
 };
 
 
-module.exports = { SalesCompStore, SalesRankBrand, SalesRankStock, DailySalesSum };
+const SalesRankType = async (req, res) => {
+  const cBrandNum = req.query.BrandNum;
+  const cUsersCde = req.query.UsersCde;
+  const cOtherCde = req.query.OtherCde;
+  const cCategNum = req.query.CategNum;
+  const cItemDept = req.query.ItemDept;
+  const cItemType = req.query.ItemType;
+  const cLocation = req.query.Location;
+  const cStoreGrp = req.query.StoreGrp;
+  const dDateFrom = req.query.DateFrom;
+  const dDateTo__ = req.query.DateTo__;
+
+
+  // Constructing the base SQL query
+  let cSql = `SELECT 
+				ITEMTYPE.Descript AS TypeDesc,
+				Sum(SALESDTL.Quantity) AS Quantity,
+				Sum(SALESDTL.ItemCost*SALESDTL.Quantity) AS ItemCost,
+				Sum(SALESDTL.LandCost*SALESDTL.Quantity) AS LandCost,
+				Sum(SALESDTL.ItemPrce*SALESDTL.Quantity) AS ItemPrce,
+				Sum(SALESDTL.Amount__*SALESDTL.Quantity) AS Amount__ 
+				FROM SALESREC, SALESDTL, ITEMTYPE, ITEMLIST, LOCATION
+				WHERE SALESREC.CtrlNum_ = SALESDTL.CtrlNum_
+				AND SALESREC.Location = LOCATION.Location
+				AND ITEMLIST.ItemType = ITEMTYPE.ItemType
+				AND ITEMLIST.ItemCode = SALESDTL.ItemCode
+				AND SALESREC.Disabled = 0
+        `
+
+  // Parameters object
+  const params = {};
+
+  // Additional filters based on query parameters
+  if (cBrandNum) {
+    cSql += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
+    params.cBrandNum = `%${cBrandNum}%`;
+  }
+  if (cCategNum) {
+    cSql += " AND ITEMLIST.CategNum LIKE @cCategNum";
+    params.cCategNum = `%${cCategNum}%`;
+  }
+  if (cUsersCde) {
+    cSql += " AND ITEMLIST.UsersCde LIKE @cUsersCde";
+    params.cUsersCde = `%${cUsersCde}%`;  
+  }
+  if (cOtherCde) {
+    cSql += " AND ITEMLIST.OtherCde LIKE @cOtherCde";
+    params.cOtherCde = `%${cOtherCde}%`;
+  }
+  if (cItemDept) {
+    cSql += " AND ITEMLIST.ItemDept LIKE @cItemDept";
+    params.cItemDept = `%${cItemDept}%`;
+  }
+  if (cItemType) {
+    cSql += " AND ITEMLIST.ItemType LIKE @cItemType";
+    params.cItemType = `%${cItemType}%`;
+  }
+  if (cLocation) {
+    cSql += " AND SALESREC.Location LIKE @cLocation";
+    params.cLocation = `%${cLocation}%`;
+  }
+  if (cStoreGrp) {
+    cSql += " AND LOCATION.StoreGrp LIKE @cStoreGrp";
+    params.cStoreGrp = `%${cStoreGrp}%`;
+  }
+  if (dDateFrom) {
+    cSql += " AND SALESDTL.Date____ >= @dDateFrom";
+    params.dDateFrom = `${dDateFrom}`;
+  }
+  if (dDateTo__) {
+    cSql += " AND SALESDTL.Date____ <= @dDateTo__";
+    params.dDateTo__ = `${dDateTo__}`;
+  }
+  cSql += ` GROUP BY ITEMTYPE.Descript
+    ORDER BY 6 DESC `;
+
+  // Log SQL query and parameters for debugging
+  // console.log('Parameters:', params);
+
+  try {
+    // Execute query
+    const result = await queryDatabase(cSql, params);
+    res.json(result);
+  } catch (err) {
+    console.error('Database query error:', err.message);  // Log the error message
+    res.status(500).send('Error fetching sales data');
+  }
+};
+
+module.exports = { SalesCompStore, SalesRankBrand, SalesRankStock, SalesRankType, DailySalesSum };

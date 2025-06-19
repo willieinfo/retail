@@ -1,6 +1,6 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect');
 
-const PurchSumDept = async (req, res) => {
+const PurchSumType = async (req, res) => {
   const cBrandNum = req.query.BrandNum;
   const cUsersCde = req.query.UsersCde;
   const cOtherCde = req.query.OtherCde;
@@ -15,16 +15,16 @@ const PurchSumDept = async (req, res) => {
   // Constructing the base SQL query
   let cSql = `SELECT 
         LOCATION.LocaName,
-        ITEMDEPT.Descript AS DeptDesc,
+        ITEMTYPE.Descript AS TypeDesc,
         Sum(PURCHDTL.Quantity) AS Quantity,
         Sum(PURCHDTL.SellPrce*PURCHDTL.Quantity) AS SellPrce,
         Sum(PURCHDTL.ItemPrce*PURCHDTL.Quantity) AS PurcCost,
         Sum(PURCHDTL.Amount__*PURCHDTL.Quantity) AS Amount__,
         Sum(PURCHDTL.LandCost*PURCHDTL.Quantity) AS LandCost
-        FROM PURCHREC, PURCHDTL, ITEMLIST, LOCATION, ITEMDEPT
+        FROM PURCHREC, PURCHDTL, ITEMLIST, LOCATION, ITEMTYPE
         WHERE PURCHREC.CtrlNum_ = PURCHDTL.CtrlNum_
         AND PURCHREC.Location = LOCATION.Location
-        AND ITEMLIST.ItemDept = ITEMDEPT.ItemDept
+        AND ITEMLIST.ItemType = ITEMTYPE.ItemType
         AND ITEMLIST.ItemCode = PURCHDTL.ItemCode
         AND PURCHREC.Disabled = 0
         `
@@ -71,7 +71,7 @@ const PurchSumDept = async (req, res) => {
   }
   cSql += ` GROUP BY 
     LOCATION.LocaName,
-    ITEMDEPT.Descript
+    ITEMTYPE.Descript
     ORDER BY 5 DESC `;
 
   // Log SQL query and parameters for debugging
@@ -110,16 +110,18 @@ const PurchRepoStock = async (req, res) => {
         ITEMLIST.Outright,
         BRAND___.BrandNme,
         ITEMDEPT.Descript AS DeptDesc,
+        SUPPLIER.SuppName,
         Sum(PURCHDTL.Quantity) AS Quantity,
         Sum(PURCHDTL.SellPrce*PURCHDTL.Quantity) AS SellPrce,
         Sum(PURCHDTL.ItemPrce*PURCHDTL.Quantity) AS PurcCost,
         Sum(PURCHDTL.Amount__*PURCHDTL.Quantity) AS Amount__,
         Sum(PURCHDTL.LandCost*PURCHDTL.Quantity) AS LandCost
-        FROM PURCHREC, PURCHDTL, BRAND___, ITEMLIST, LOCATION, ITEMDEPT
+        FROM PURCHREC, PURCHDTL, BRAND___, ITEMLIST, LOCATION, ITEMDEPT, SUPPLIER
         WHERE PURCHREC.CtrlNum_ = PURCHDTL.CtrlNum_
         AND PURCHREC.Location = LOCATION.Location
         AND ITEMLIST.BrandNum = BRAND___.BrandNum
         AND ITEMLIST.ItemDept = ITEMDEPT.ItemDept
+        AND ITEMLIST.SuppNum_ = SUPPLIER.SuppNum_
         AND ITEMLIST.ItemCode = PURCHDTL.ItemCode
         AND PURCHREC.Disabled = 0
         `
@@ -171,8 +173,9 @@ const PurchRepoStock = async (req, res) => {
     ITEMLIST.Descript,
     ITEMLIST.Outright,
     BRAND___.BrandNme,
-    ITEMDEPT.Descript
-    ORDER BY 10 DESC `;
+    ITEMDEPT.Descript,
+    SUPPLIER.SuppName
+    ORDER BY 11 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
@@ -187,4 +190,4 @@ const PurchRepoStock = async (req, res) => {
   }
 };
 
-module.exports = { PurchRepoStock, PurchSumDept };
+module.exports = { PurchRepoStock, PurchSumType };

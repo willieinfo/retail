@@ -138,6 +138,8 @@ const divRankStock =`
                             <th>Bar Code</th>
                             <th>Description</th>
                             <th>Brand</th>
+                            <th>Department</th>
+                            <th>Classification</th>
                             <th>Quantity</th>
                             <th>Gross</th>
                             <th>Discount</th>
@@ -209,7 +211,49 @@ const divDailySales =`
     </div>
 `
 
+const divRankType =`
+    <div id="SalesRankType" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Ranking Report by Classification</span>
+            <button id="closeRepo5" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="salesRankType" class="ReportBody">
+                <table id="salesRankTable1">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Classification</th>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>Cost</th>
+                            <th>Gross Profit</th>
+                            <th>GP %</th>
+                            <th>CTS %</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
 
+            <div id="typeRankChart" class="chartContainer">
+                <div id="topClass">
+                    <h5>Top 30 Classifications</h5>
+                    <canvas id="typeChart1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="saleRank4Counter" class="recCounter"></span>
+                <button id="printTypeRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printTypeRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="saleRank4"><i class="fa fa-list"></i> List</button>
+            </div>
+        </div>
+    </div>
+`
 const fragment = document.createDocumentFragment();
 
 const div1 = document.createElement('div');
@@ -227,6 +271,10 @@ fragment.appendChild(div3);
 const div4 = document.createElement('div');
 div4.innerHTML = divDailySales;
 fragment.appendChild(div4);
+
+const div5 = document.createElement('div');
+div5.innerHTML = divRankType;
+fragment.appendChild(div5);
 
 document.body.appendChild(fragment);  // Only one reflow happens here
 
@@ -741,91 +789,36 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             { text: '' } // Spacer row
           ];
 
-          const colWidths = [
-              { width: 25 }, // Brand
-              { width: 10 }, // Quantity
-              { width: 15 }, // Gross
-              { width: 15 }, // Discount
-              { width: 15 }, // Net
-              { width: 15 }, // Cost
-              { width: 15 }, // Gross Profit
-              { width: 10 }, // GP %
-              { width: 10 }  // CTS %
-          ];
-      
-          const columnConfig = [
-              {
-                label: 'Brand',
-                getValue: row => row.BrandNme,
-                type: 'string',
-                align: 'left',
-                totalLabel: 'TOTALS:'
-              },
-              {
-                label: 'Quantity',
-                getValue: row => +row.Quantity,
-                total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
-                align: 'right',
-                type: 'integer',
-                cellFormat: '#,##0' // changed format to cellFormat
-              },
-              {
-                label: 'Gross',
-                getValue: row => +row.ItemPrce,
-                total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
-              },
-              {
-                label: 'Discount',
-                getValue: row => +(row.ItemPrce - row.Amount__),
-                total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
-              },
-              {
-                label: 'Net',
-                getValue: row => +row.Amount__,
-                total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
-              },
-              {
-                label: 'Cost',
-                getValue: row => +row.LandCost,
-                total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
-              },
-              {
-                label: 'Gross Profit',
-                getValue: row => +(row.Amount__ - row.LandCost),
-                total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
-              },
-              {
-                label: 'GP %',
-                getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
-                total: rows => {
-                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                  const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
-                  return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
-                },
-                align: 'right',
-                cellFormat: 'percent' // changed format to cellFormat
-              },
-              {
-                label: 'CTS %',
-                getValue: (row, rows) => {
-                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                  return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
-                },
-                align: 'right',
-                totalLabel: '100%',
-                cellFormat: 'percent' // changed format to cellFormat
-              }
-          ];
+        const colWidths = [
+              { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
+              { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
+        ];
+
+        const columnConfig = [
+            {label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+            {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+            align: 'right',type: 'integer',cellFormat: '#,##0'},
+            {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+            total: rows => {
+                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+                return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+            },align: 'right',cellFormat: 'percent'},
+            {label: 'CTS %',getValue: (row, rows) => {
+                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+            }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
+        ];
           
           const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
 
@@ -1309,6 +1302,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <th>Bar Code</th>
                         <th>Description</th>
                         <th>Brand</th>
+                        <th>Department</th>
+                        <th>Classification</th>
                         <th>Quantity</th>
                         <th>Gross</th>
                         <th>Discount</th>
@@ -1325,6 +1320,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td class="colNoWrap" style="text-align: left">${item.OtherCde || 'N/A'}</td>
                                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
+                                <td class="colNoWrap">${item.DeptDesc || 'N/A'}</td>
+                                <td class="colNoWrap">${item.TypeDesc.substring(0,30) || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
@@ -1337,6 +1334,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <tfoot>
                     <tr style="height: 2px"></tr>
                     <tr style="font-weight: bold">
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -1391,6 +1390,8 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 { label: 'Bar Code',getValue: row => row.OtherCde,type: 'string',align: 'left'},
                 { label: 'Description',getValue: row => row.Descript.substring(0,30),type: 'string',align: 'left'},
                 { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Department',getValue: row => row.DeptDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Classification',getValue: row => row.TypeDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
                 { label: 'Quantity',getValue: row => +row.Quantity,
                 total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
                 align: 'right',type: 'integer',cellFormat: '#,##0'},
@@ -1659,10 +1660,6 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             });
         }
         
-        // if (nTotalAmt !== 0) {
-        //     nGP_Prcnt = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
-        // }
-        // nTotalATV = (nTotalTrx) ? nTotalAmt / nTotalTrx : 0
  
     // Dynamically calculate totals based on field configuration
     nTotalATV = calcFields.ATV(nTotalAmt, nTotalTrx);
@@ -1949,3 +1946,357 @@ function setDailyChart(data, cLocaName) {
     }
 }
 
+// ==========================================================================
+async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+    let data = null;
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/sales/SalesRankType');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let nTotalQty = 0
+        let nTotalPrc = 0
+        let nTotalDsc = 0
+        let nTotalAmt = 0
+        let nTotalCos = 0
+        let nTotalGro = 0
+        let nGP_Prcnt = 0
+        let nGP_Total = 0
+    
+        const listCounter=document.getElementById('saleRank4Counter')
+        data = await response.json();
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalQty+=item.Quantity
+                nTotalPrc+=item.ItemPrce
+                nTotalDsc+=(item.ItemPrce-item.Amount__)
+                nTotalAmt+=item.Amount__
+                nTotalCos+=item.LandCost
+                nTotalGro+=(item.Amount__-item.LandCost)
+            });
+        }
+        if (nTotalAmt !== 0) {
+            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+        }
+
+        const salesRankBrandDiv = document.getElementById('SalesRankType');
+        salesRankBrandDiv.classList.add('active');
+
+        const reportBody = document.getElementById('salesRankType');
+        reportBody.style.maxHeight = "80%";
+        reportBody.innerHTML = '';  // Clear previous content
+
+        // Define the table structure
+        const rankTable = `
+            <table id="salesRankTable1">
+                <thead id="rankTHead1">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Classification</th>
+                        <th>Quantity</th>
+                        <th>Gross</th>
+                        <th>Discount</th>
+                        <th>Net</th>
+                        <th>Cost</th>
+                        <th>Gross Profit</th>
+                        <th>GP %</th>
+                        <th>CTS %</th>
+                    </tr>
+                </thead>
+                <tbody id="rankTBody">
+                    ${data.map((item,index) => {
+                        nGP_Prcnt = 0;
+                        if (item.Amount__ !== 0) {
+                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
+                        }
+                        return `
+                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
+                                <td style="text-align: center">${index+1 || 'N/A'}</td>
+                                <td class="colNoWrap">${item.TypeDesc || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
+                                <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
+                                <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="height: 2px"></tr>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
+                        <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
+                        <td>100%</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = rankTable;
+
+        // Show store ranking chart
+        document.getElementById('typeRankChart').style.display='flex';
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printTypeRank').disabled = false
+        rankTypeSales(data, dateRange)
+       
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        // Hide loading spinner once data is fetched or an error occurs
+        document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+    }
+
+    document.getElementById('printTypeRank').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Sales Ranking by Classification', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+        ];
+
+        const colWidths = [
+            { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
+            { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
+        ];
+      
+        const columnConfig = [
+            {label: 'Classification',getValue: row => row.TypeDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+            {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+            align: 'right',type: 'integer',cellFormat: '#,##0'},
+            {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+            align: 'right',cellFormat: '#,##0.00'},
+            {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+            total: rows => {
+                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+                return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+            },align: 'right',cellFormat: 'percent'},
+            {label: 'CTS %',getValue: (row, rows) => {
+                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+            }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
+        ];
+          
+          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Classification');
+    })
+
+}
+
+// Wait for the DOM to fully load before adding the event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const salesRankElements = document.querySelectorAll('.salesRankingByType');
+    const rankRepoDiv = document.getElementById('SalesRankType');
+    const closeRepo = document.getElementById('closeRepo5');
+    
+    closeRepo.addEventListener('click', () => {
+        rankRepoDiv.classList.remove('active');
+    });
+
+        // Add event listener to each element with the necessary arguments
+    salesRankElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesRankType')
+        });
+    });
+
+});
+
+document.getElementById('saleRank4').addEventListener('click', () => {
+    try {
+        FiltrRec('SaleRnk4').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cStoreGrp = filterData[12];
+            
+            SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+    
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+})
+
+async function rankTypeSales(data, dateRange) {
+   
+    let myChart3 = window.myChart3 || null;
+
+    try {
+        const dataData = data;
+        const dataMap = {};
+        
+        // Build dataMap without filling background colors yet
+        dataData.forEach(item => {
+            if (!dataMap[item.TypeDesc]) {
+                dataMap[item.TypeDesc] = { Amount__: 0};
+            }
+            dataMap[item.TypeDesc].Amount__ += Math.round(item.Amount__);
+        });
+
+        // Sort the dataMap by amount
+        let sortedData = Object.entries(dataMap)
+            .map(([TypeDesc, values]) => ({ TypeDesc, ...values }))
+            .slice(0, 30);
+
+        // Now assign background colors after sorting
+        // const backgroundColors = sortedBrands.map(item => 
+        //     item.Outright === 1 ? 'rgba(54, 162, 235, 0.6)' : 'rgba(75, 192, 192, 0.2)'
+        // );
+
+        const backgroundColors = 'rgba(54, 162, 235, 0.6)' 
+        // const backgroundColors = 'var(--second-bg-color)' 
+
+        const labels = sortedData.map(item => item.TypeDesc.substring(0, 15).trim());
+        const curreamtData = sortedData.map(item => item.Amount__);
+
+        // Function to round up to the nearest multiple of step
+        const getMagnitudeStep = (value) => {
+            const magnitude = Math.floor(Math.log10(value));
+            return Math.pow(10, magnitude); // Returns the nearest power of 10
+        };
+
+        // Function to round up to the nearest appropriate step
+        const roundUpToDynamicStep = (value) => {
+            const step = getMagnitudeStep(value);
+            return Math.ceil(value / step) * step;
+        };
+
+        // Calculate the maximum value for the x-axis
+        const maxCurreamt = Math.max(...curreamtData);
+        // Round up maxValue to the nearest appropriate step
+        const roundedMaxValue = roundUpToDynamicStep(maxCurreamt);
+
+        if (myChart3) myChart3.destroy();
+
+        const getChartOptions = () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: roundedMaxValue, // Use the dynamically rounded max value
+                    ticks: {
+                        font: { family: 'Arial Narrow', size: 12 },
+                        color: 'white',  
+                        padding: 5, 
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: false },
+                    ticks: {
+                        autoSkip: false,
+                        font: { family: 'Arial Narrow', size: 12 }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: dateRange,  // Your desired title text here
+                    font: {
+                        family: 'Arial',
+                        size: 16
+                    },
+                    color: 'black',  // Title text color
+                    padding: {
+                        top: 20,  // Space between title and chart
+                        bottom: 10
+                    }
+                }
+                }
+
+        });
+
+        const ctx3 = document.getElementById('typeChart1').getContext('2d');
+        myChart3 = new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: dateRange,
+                    data: curreamtData,
+                    backgroundColor: backgroundColors, 
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: getChartOptions(),
+        });
+
+        window.myChart3 = myChart3;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        displayErrorMsg(error,'Error processing chart data')
+    }
+}

@@ -14,7 +14,7 @@ canvas {
 
 /* Sales Ranking By Location / Brand SALEREPO */
 /* The first chart occupying 70% of the parent width */
-#storeRankChart, #brandRankChart, #stockRankChart, #stockPurchChart, #deptPurchSumChart,
+#storeRankChart, #brandRankChart, #typeRankChart, #stockRankChart, #stockPurchChart, #typePurchSumChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;

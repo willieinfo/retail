@@ -19,6 +19,7 @@ const divListStock =`
                             <th>Description</th>
                             <th>Brand</th>
                             <th>Department</th>
+                            <th>Supplier</th>
                             <th>Quantity</th>
                             <th>Receiving Cost</th>
                             <th>Selling Price</th>
@@ -49,19 +50,19 @@ const divListStock =`
         </div>
     </div>
 `
-const divPurchSumDept =`
-    <div id="PurchSumDept" class="report-section containerDiv">
+const divPurchSumType =`
+    <div id="PurchSumType" class="report-section containerDiv">
         <div class="ReportHead">
-            <span>Receiving Summary Report by Category</span>
+            <span>Receiving Summary Report by Classification</span>
             <button id="closePurcRepo2" class="closeForm">✖</button>
         </div>
         <div class="ReportBody">
-            <div id="purchSumDept" class="ReportBody">
+            <div id="purchSumType" class="ReportBody">
                 <table id="purchRepoTable2">
                     <thead id="rankTHead1">
                         <tr>
                             <th>Location</th>
-                            <th>Department</th>
+                            <th>Classification</th>
                             <th>Quantity</th>
                             <th>Receiving Cost</th>
                             <th>Selling Price</th>
@@ -70,10 +71,10 @@ const divPurchSumDept =`
                 </table>            
             </div>
 
-            <div id="deptPurchSumChart" class="chartContainer">
-                <div id="sumDepartment">
-                    <h5>Top Department Purchases</h5>
-                    <canvas id="deptPurchSumChart1"></canvas>
+            <div id="typePurchSumChart" class="chartContainer">
+                <div id="sumClassification">
+                    <h5 id='h5topType'>Top Classification Purchases</h5>
+                    <canvas id="typePurchSumChart1"></canvas>
                 </div>
             </div>
         </div>
@@ -81,8 +82,8 @@ const divPurchSumDept =`
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
                 <span id="purcRepo2Counter" class="recCounter"></span>
-                <button id="printPurchDeptXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="purchDept"><i class="fa fa-list"></i> List</button>
+                <button id="printPurchTypeXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="purchType"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
@@ -95,7 +96,7 @@ div1.innerHTML = divListStock;
 fragment.appendChild(div1);
 
 const div2 = document.createElement('div');
-div2.innerHTML = divPurchSumDept;
+div2.innerHTML = divPurchSumType;
 fragment.appendChild(div2);
 
 document.body.appendChild(fragment);  // Only one reflow happens here
@@ -164,6 +165,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         <th>Description</th>
                         <th>Brand</th>
                         <th>Department</th>
+                        <th>Supplier</th>
                         <th>Quantity</th>
                         <th>Receiving Cost</th>
                         <th>Selling Price</th>
@@ -179,6 +181,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                                 <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
                                 <td class="colNoWrap">${item.DeptDesc || 'N/A'}</td>
+                                <td class="colNoWrap">${item.SuppName || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right; font-weight: bold">${formatter.format(item.PurcCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
@@ -189,6 +192,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <tfoot>
                     <tr style="height: 2px"></tr>
                     <tr style="font-weight: bold">
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -206,7 +210,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Add the table HTML to the div
         reportBody.innerHTML = rankTable;
 
-        // Show store ranking chart
+        // Show data ranking chart
         document.getElementById('stockPurchChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         document.getElementById('printPurchStockPDF').disabled = false
@@ -235,8 +239,8 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
             const colWidths = [
                 { width: 20 },{ width: 20 },{ width: 20 },{ width: 30 },{ width: 25 },
-                { width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },{ width: 15 },
-                { width: 15 },
+                { width: 25 },{ width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },
+                { width: 15 },{ width: 15 },{ width: 15 },
             ];
         
             const columnConfig = [
@@ -245,6 +249,8 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 { label: 'Bar Code',getValue: row => row.OtherCde,type: 'string',align: 'left'},
                 { label: 'Description',getValue: row => row.Descript.substring(0,30),type: 'string',align: 'left'},
                 { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Department',getValue: row => row.DeptDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Supplier',getValue: row => row.SuppName,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
                 { label: 'Quantity',getValue: row => +row.Quantity,
                     total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
                     align: 'right',type: 'integer',cellFormat: '#,##0'},
@@ -317,10 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-async function stockPurchChart(chartData, dateRange) {
+async function stockPurchChart(data, dateRange) {
 
     try {
-        const purchData = chartData;
+        const purchData = data;
         const purchChart1Element = document.getElementById('stocPurchChart');
         const purchChart2Element = document.getElementById('deptPurchChart');
 
@@ -433,22 +439,23 @@ async function stockPurchChart(chartData, dateRange) {
             }
         });
         
-        // Prepare data for the doughnut chart (Contribution to Total Sales by store group)
-        const storeGroupTotals = chartData.reduce((acc, entry) => {
+        // Prepare data for the doughnut chart 
+        let chartData = data
+        const dataGroupTotals = chartData.reduce((acc, entry) => {
             const totalAmount = parseFloat(entry.PurcCost) || 0;
-            const storeGroup = entry.DeptDesc.trim(); // Ensure group name is trimmed
-            acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
+            const dataGroup = entry.DeptDesc.trim(); // Ensure group name is trimmed
+            acc[dataGroup] = (acc[dataGroup] || 0) + totalAmount;
             return acc;
         }, {});
 
-        // Sort store groups by total amount in descending order
-        const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
+        // Sort data groups by total amount in descending order
+        const sortedStoreGroups = Object.entries(dataGroupTotals).sort((a, b) => b[1] - a[1]);
 
-        const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
-        const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
+        const dataGroupLabels = sortedStoreGroups.map(entry => entry[0]);
+        const dataGroupValues = sortedStoreGroups.map(entry => entry[1]);
 
-        const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
-        const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
+        const totalSales = Object.values(dataGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
+        const dataGroupPercentages = dataGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
 
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 255);
@@ -457,7 +464,7 @@ async function stockPurchChart(chartData, dateRange) {
             return `rgba(${r}, ${g}, ${b}, 0.6)`;
         };
 
-        const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
+        const backgroundColors = dataGroupLabels.map(() => generateRandomColor());
         const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
 
         // Create the doughnut chart (myChart2)
@@ -465,10 +472,10 @@ async function stockPurchChart(chartData, dateRange) {
         myChart2 = new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: storeGroupLabels,
+                labels: dataGroupLabels,
                 datasets: [{
                     label: 'Department Categories',
-                    data: storeGroupValues,
+                    data: dataGroupValues,
                     backgroundColor: backgroundColors,
                     borderColor: borderColors,
                     borderWidth: 1
@@ -490,7 +497,7 @@ async function stockPurchChart(chartData, dateRange) {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
+                                const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
                                 const value = context.raw || 0;
                                 return `${percentage}%`; 
                             }
@@ -500,7 +507,7 @@ async function stockPurchChart(chartData, dateRange) {
                         anchor: 'end',
                         align: 'end',
                         formatter: (value, context) => {
-                            const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
+                            const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
                             return `${percentage}%`;
                         },
                         color: '#fff',
@@ -525,7 +532,7 @@ async function stockPurchChart(chartData, dateRange) {
 
 // ======================================================================
 
-async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
@@ -533,7 +540,7 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     let data = null;
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/purchases/PurchSumDept');
+        const url = new URL('http://localhost:3000/purchases/PurchSumType');
         const params = new URLSearchParams();
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cUsersCde) params.append('UsersCde', cUsersCde);
@@ -570,10 +577,10 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             });
         }
 
-        const purcSumDeptDiv = document.getElementById('PurchSumDept');
+        const purcSumDeptDiv = document.getElementById('PurchSumType');
         purcSumDeptDiv.classList.add('active');
 
-        const reportBody = document.getElementById('purchSumDept');
+        const reportBody = document.getElementById('purchSumType');
         reportBody.style.maxHeight = "80%";
         reportBody.innerHTML = '';  // Clear previous content
 
@@ -583,7 +590,7 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                 <thead id="rankTHead1">
                     <tr>
                         <th>Location</th>
-                        <th>Department</th>
+                        <th>Classification</th>
                         <th>Quantity</th>
                         <th>Receiving Cost</th>
                         <th>Selling Price</th>
@@ -594,7 +601,7 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                         return `
                             <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
                                 <td class="colNoWrap" style="text-align: left">${item.LocaName || 'N/A'}</td>
-                                <td class="colNoWrap">${item.DeptDesc || 'N/A'}</td>
+                                <td class="colNoWrap">${item.TypeDesc || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right; font-weight: bold">${formatter.format(item.PurcCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
@@ -619,10 +626,10 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         reportBody.innerHTML = rankTable;
 
         // Show purchased sum by department chart
-        document.getElementById('deptPurchSumChart').style.display='flex';
+        document.getElementById('typePurchSumChart').style.display='flex';
         // const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printPurchDeptXLS').disabled = false
-        deptPurchChart(data)
+        document.getElementById('printPurchTypeXLS').disabled = false
+        typePurchChart(data)
        
     } catch (error) {
         console.error('Fetch error:', error);
@@ -634,12 +641,12 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         document.getElementById('runningTime').textContent=''
     }
 
-    document.getElementById('printPurchDeptXLS').addEventListener('click', () => {
+    document.getElementById('printPurchTypeXLS').addEventListener('click', () => {
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
             { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
-            { text: 'Receiving Summary by Department', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: 'Receiving Summary by Classification', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
             { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
             { text: '' } // Spacer row
             ];
@@ -651,7 +658,7 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         
             const columnConfig = [
                 { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
-                { label: 'Department',getValue: row => row.DeptDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Classification',getValue: row => row.TypeDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
                 { label: 'Quantity',getValue: row => +row.Quantity,
                     total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
                     align: 'right',type: 'integer',cellFormat: '#,##0'},
@@ -674,13 +681,13 @@ async function PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             
             const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
 
-            printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking by SKU');
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Receiving by Classifiction');
     })
 }
 
-document.getElementById('purchDept').addEventListener('click', () => {
+document.getElementById('purchType').addEventListener('click', () => {
     try {
-        FiltrRec('PurcDept').then(() => {
+        FiltrRec('PurcType').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             const dDateFrom = filterData[0];
@@ -695,7 +702,7 @@ document.getElementById('purchDept').addEventListener('click', () => {
             const cItemDept = filterData[9];
             // const cStoreGrp = filterData[12];
             
-            PurchSumDept(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+            PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To);
     
         });
@@ -706,8 +713,8 @@ document.getElementById('purchDept').addEventListener('click', () => {
 })
 
 document.addEventListener('DOMContentLoaded', () => {
-    const purchSumByDeptElements = document.querySelectorAll('.purchSumByDept'); //<li> menu
-    const rankRepoDiv = document.getElementById('PurchSumDept');
+    const purchSumByDeptElements = document.querySelectorAll('.purchSumByType'); //<li> menu
+    const rankRepoDiv = document.getElementById('PurchSumType');
     const closeRepo = document.getElementById('closePurcRepo2'); 
     
     closeRepo.addEventListener('click', () => {
@@ -716,17 +723,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     purchSumByDeptElements.forEach(element => {
         element.addEventListener('click', () => {
-            showReport('PurchSumDept')
+            showReport('PurchSumType')
         });
     });
 
 });
 
 
-async function deptPurchChart(data) {
+async function typePurchChart(data) {
 
     try {
-        const purchChartElement = document.getElementById('deptPurchSumChart1');
+        const purchChartElement = document.getElementById('typePurchSumChart1');
 
         // Declare variables for chart instances
         let myChart = window.myChart || null;
@@ -740,32 +747,33 @@ async function deptPurchChart(data) {
         // Clear the canvas context manually (important when reusing canvas elements)
         purchChartElement.getContext('2d').clearRect(0, 0, purchChartElement.width, purchChartElement.height);
 
-        let chartData = data.slice(0,30)
-        // if (data.length > 30) {
-        //     const rest = data.slice(30);
-        //     const othersSRP = rest.reduce((sum, loc) => sum + loc.TotalPrc, 0);
-        //     // Add "Others"
-        //     pieLabels.push('Others');
-        //     pieData.push(othersSRP);
-        // }
-
+        let chartData = data.slice(0,20)
 
         // Prepare data for the pie chart 
-        const storeGroupTotals = chartData.reduce((acc, entry) => {
+        const dataGroupTotals = chartData.reduce((acc, entry) => {
             const totalAmount = parseFloat(entry.PurcCost) || 0;
-            const storeGroup = entry.DeptDesc.trim(); // Ensure group name is trimmed
-            acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
+            const dataGroup = entry.TypeDesc.trim(); // Ensure group name is trimmed
+            acc[dataGroup] = (acc[dataGroup] || 0) + totalAmount;
             return acc;
         }, {});
 
-        // Sort store groups by total amount in descending order
-        const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
+        // Sort data groups by total amount in descending order
+        const sortedStoreGroups = Object.entries(dataGroupTotals).sort((a, b) => b[1] - a[1]);
 
-        const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
-        const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
+        const dataGroupLabels = sortedStoreGroups.map(entry => entry[0]);
+        const dataGroupValues = sortedStoreGroups.map(entry => entry[1]);
 
-        const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
-        const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
+        if (data.length > 20) {
+            const rest = data.slice(20);
+            const others = rest.reduce((sum, grp) => sum + grp.PurcCost, 0);
+            // Add "Others"
+            dataGroupLabels.push('OTHERS');
+            dataGroupValues.push(others);
+            document.getElementById('h5topType').textContent='Top 20 Classification and Others'
+        }
+
+        const totalSales = Object.values(dataGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
+        const dataGroupPercentages = dataGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
 
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 255);
@@ -774,7 +782,7 @@ async function deptPurchChart(data) {
             return `rgba(${r}, ${g}, ${b}, 0.6)`;
         };
 
-        const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
+        const backgroundColors = dataGroupLabels.map(() => generateRandomColor());
         const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
 
         // Create the doughnut chart (myChart2)
@@ -782,10 +790,10 @@ async function deptPurchChart(data) {
         myChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: storeGroupLabels,
+                labels: dataGroupLabels,
                 datasets: [{
-                    label: 'Department Categories',
-                    data: storeGroupValues,
+                    label: 'Classification Categories',
+                    data: dataGroupValues,
                     backgroundColor: backgroundColors,
                     borderColor: borderColors,
                     borderWidth: 1
@@ -807,7 +815,7 @@ async function deptPurchChart(data) {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
+                                const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
                                 const value = context.raw || 0;
                                 return `${percentage}%`; 
                             }
@@ -817,7 +825,7 @@ async function deptPurchChart(data) {
                         anchor: 'end',
                         align: 'end',
                         formatter: (value, context) => {
-                            const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
+                            const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
                             return `${percentage}%`;
                         },
                         color: '#fff',
