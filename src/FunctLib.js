@@ -1178,6 +1178,8 @@ export function disableLiByRef(refValue) {
 
 
 
+// Example: Disable <li> elements with menu-ref "101" and "102"
+// disableMultipleLis(['101', '102']);
 export function disableMultipleLis(refValues) {
     const liElements = document.querySelectorAll('li');
     liElements.forEach(li => {
@@ -1187,8 +1189,15 @@ export function disableMultipleLis(refValues) {
     });
 }
 
-// Example: Disable <li> elements with data-ref "101" and "102"
-// disableMultipleLis(['101', '102']);
+// Example: Disable <li> elements with no 'menu-ref' attribute and no 'class'
+export function disableNoMenuRefLis() {
+    const liElements = document.querySelectorAll('li');
+    liElements.forEach(li => {
+        if (!li.getAttribute('menu-ref') && !li.getAttribute('class')) {
+            li.classList.add('disabled');
+        }
+    });
+}
 
 export function greetTime(timeNow) {
     let greeting = '';

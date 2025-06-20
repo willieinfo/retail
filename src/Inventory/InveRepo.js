@@ -446,7 +446,7 @@ async function setStockEndByLocationChart(data, cAsOfDate) {
 }
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const stockEndingByLocation = document.getElementById('stockEndingByLocation'); //<li>
+    const stockEndingByLocation = document.querySelectorAll('.stockEndingByLocation'); //<li>
     const rankRepoDiv = document.getElementById('StockEndLocation');
     const closeRepo = document.getElementById('closeStockEndLoca');
     
@@ -454,9 +454,11 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-        // Add event listener to each element with the necessary arguments
-    stockEndingByLocation.addEventListener('click', () => {
-        showReport('StockEndLocation')
+    // Add event listener to each element with the necessary arguments
+    stockEndingByLocation.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('StockEndLocation')
+        });
     });
 });
 
@@ -748,7 +750,7 @@ async function setStockEndByBrandChart(data, cAsOfDate) {
 }
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const stockEndingByBrand = document.getElementById('stockEndingByBrand');
+    const stockEndingByBrand = document.querySelectorAll('.stockEndingByBrand');
     const rankRepoDiv = document.getElementById('StockEndBrand');
     const closeRepo = document.getElementById('closeStockEndBrand');
     
@@ -756,10 +758,13 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-        // Add event listener to each element with the necessary arguments
-    stockEndingByBrand.addEventListener('click', () => {
-        showReport('StockEndBrand')
+    // Add event listener to each element with the necessary arguments
+    stockEndingByBrand.forEach(element =>{
+        element.addEventListener('click', () => {
+            showReport('StockEndBrand')
+        });
     });
+
 });
 
 

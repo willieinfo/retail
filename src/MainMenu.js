@@ -1,5 +1,5 @@
 
-import { formatDate, disableMultipleLis } from "./FunctLib.js";
+import { formatDate, disableMultipleLis, disableNoMenuRefLis } from "./FunctLib.js";
 import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
@@ -23,6 +23,9 @@ img.style.height = "100%";
 img.style.objectFit = "cover";  
 img.style.zIndex = "-1";  
 
+{/* <i class="fa fa-arrow-right" aria-hidden="true"></i> */}
+
+
 // MainMenu
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
@@ -35,17 +38,28 @@ const menuItems= `
         <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
         <li menu-ref="A06" class="dailySalesSum">Daily Sales Summary</li>
+        <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>
+            <ul class="subDropdown">
+                <li menu-ref="A08">By Location</li>
+                <li menu-ref="A09" class="monthlySalesSumByBrand">By Brand</li>
+            </ul>
+        </li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
-        <li menu-ref="B01" class="PurchaseOrder data-entry">Purchase Order</li>
+        <li> Purchase Order</li>
         <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
         <li menu-ref="B03" class="purchReportByStock">Stock Receiving By SKU</li>
         <li menu-ref="B04" class="purchSumByType">Receiving Summary By Classification</li>
-        <li menu-ref="B05" >Receiving Summary By Supplier</li>
-        <li menu-ref="B06" >Receiving Summary By Brand</li>
+        <li>Receiving Summary By Supplier</li>
+        <li menu-ref="B06" class="purchSumByBrand">Receiving Summary By Brand
+            <ul class="subDropdown">
+                <li menu-ref="A08">RR By Location</li>
+                <li menu-ref="A09">RR By Brand</li>
+            </ul>
+        </li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
@@ -53,41 +67,41 @@ const menuItems= `
         <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
-        <li menu-ref="C03" >Stock Transfer by SKU</li>
-        <li menu-ref="C04" >Stock Transfer by Classification</li>
-        <li menu-ref="C05" >Stock Transfer by Brand</li>
+        <li>Stock Transfer by SKU</li>
+        <li>Stock Transfer by Classification</li>
+        <li>Stock Transfer by Brand</li>
     </ul>
 </li>
 <li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
     <ul class="dropdown submenu">
         <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment</li>
         <hr class="menuLine">
-        <li menu-ref="D02" >Adjustments by SKU</li>
-        <li menu-ref="D03" >Adjustments by Classification</li>
-        <li menu-ref="D04" >Adjustments by Brand</li>
+        <li>Adjustments by SKU</li>
+        <li>Adjustments by Classification</li>
+        <li>Adjustments by Brand</li>
     </ul>
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
         <li menu-ref="E01" class="PhysicalCount data-entry">Physical Count</li>
         <hr class="menuLine">
-        <li menu-ref="E02"  id='stockEndingByLocation'>Stock Ending By Location</li>
-        <li menu-ref="E03"  id='stockEndingByBrand'>Stock Ending By Brand</li>
-        <li menu-ref="E04" >Stock Movement</li>
-        <li menu-ref="E05" >Inventory Variance</li>
+        <li menu-ref="E02"  class='stockEndingByLocation'>Stock Ending By Location</li>
+        <li menu-ref="E03"  class='stockEndingByBrand'>Stock Ending By Brand</li>
+        <li>Stock Movement</li>
+        <li>Inventory Variance</li>
     </ul>
 </li>
 <li class="lookup"><i class="fa fa-table"></i> Lookup Tables
     <ul class="dropdown submenu">
         <li menu-ref="F01" class="Products data-entry"><i class="fa fa-th-list"></i> Products</li>
-        <li menu-ref="F02" class="Brands data-entry">Brands</li>
-        <li menu-ref="F03" class="Category data-entry">Category</li>
-        <li menu-ref="F04" class="Department data-entry">Department</li>
-        <li menu-ref="F05" class="Class data-entry">Class</li>
+        <li> Brands</li>
+        <li> Category</li>
+        <li> Department</li>
+        <li> Classification</li>
         <hr class="menuLine">
         <li menu-ref="F06" class="Location data-entry"><i class="fa fa-th-list"></i> Location</li>
-        <li menu-ref="F07" class="data-entry">Supplier</li>
-        <li menu-ref="F08" class="data-entry">Customer</li>
+        <li> Supplier</li>
+        <li> Customer</li>
         <li menu-ref="F09" class="AppUsers data-entry"><i class="fa fa-th-list"></i> App Users</li>
     </ul>
 </li>
@@ -102,7 +116,7 @@ const menuItems= `
 <li class="exit"><i class="fa-solid fa-door-open"></i> Exit
     <ul class="dropdown submenu">
         <li menu-ref="H01" class="LogOut">Log-Out</li>
-        <li menu-ref="H02" class="About">About</li>
+        <li >About</li>
     </ul>
 </li>
 `;
@@ -119,6 +133,11 @@ const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
 const closeSidebar = document.querySelector('.close-sidebar');
 const sidebarItems = document.querySelectorAll('.sidebar li');
+
+const monthlySalesSum = document.querySelectorAll('.monthlySalesSum');
+const purchSumByBrand = document.querySelectorAll('.purchSumByBrand');
+
+
 const spanToday = document.getElementById('spanToday')
 
 hamburger.addEventListener('click', () => {
@@ -131,11 +150,58 @@ closeSidebar.addEventListener('click', () => {
 });
 
 sidebarItems.forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (event) => {
+        // Avoid collapsing submenu when clicking on .monthlySalesSum
+        // you can add more subDropdown using the OR || script
+        if (event.target.closest('.monthlySalesSum')) {
+            return;
+        }
         sidebarItems.forEach(i => i.classList.remove('open'));
         item.classList.toggle('open');
     });
 });
+
+
+monthlySalesSum.forEach(item => {
+    item.addEventListener('click', function (event) {
+        // Prevent the dropdown from closing immediately upon click
+        event.stopPropagation();
+        
+        const subDropdown = item.querySelector('.subDropdown');
+        
+        document.querySelectorAll('.subDropdown').forEach(dropdown => {
+            if (dropdown !== subDropdown) {
+                dropdown.classList.remove('show'); 
+            }
+        });
+        
+        subDropdown.classList.toggle('show'); // Toggle the display of the submenu
+    });
+});
+
+document.querySelectorAll('.monthlySalesSumByBrand').forEach(element =>{
+    element.addEventListener('click', () => {
+        alert('monthly sales by brand')
+    })
+})
+
+purchSumByBrand.forEach(item => {
+    item.addEventListener('click', function (event) {
+        // Prevent the dropdown from closing immediately upon click
+        event.stopPropagation();
+        
+        const subDropdown = item.querySelector('.subDropdown');
+        
+        document.querySelectorAll('.subDropdown').forEach(dropdown => {
+            if (dropdown !== subDropdown) {
+                dropdown.classList.remove('show'); // Close others
+            }
+        });
+        
+        subDropdown.classList.toggle('show'); // Toggle the display of the submenu
+    });
+});
+
 
 const todaysDate = new Date();
 const cDateToday=formatDate(todaysDate)
@@ -171,4 +237,6 @@ const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
 if (cUserData) {
     disableMultipleLis(cUserData[0].MenuOpts.trim());
     if (cUserData[0].NickName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
+} else {
+    disableNoMenuRefLis()
 }
