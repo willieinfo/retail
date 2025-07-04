@@ -25,11 +25,12 @@ const wallpaper = [
     "./images/RetailShop5.JPG",
     "./images/PerfumeShop1.JPG",
     "./images/PerfumeShop2.JPG",
-    "./images/HardwareTools1.JPG",
-    "./images/HardwareTools2.JPG",
     "./images/RetailShopGrocer1.JPG",
     "./images/RetailShopGrocer2.JPG",
-    "./images/RetailShopGrocer3.JPG"
+    "./images/RetailShopGrocer3.JPG",
+    "./images/HardwareTools1.JPG",
+    "./images/HardwareTools2.JPG"
+
 ];
 
 function changeWallPaper() {

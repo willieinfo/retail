@@ -2,6 +2,8 @@ import { showReport, showNotification, formatter, formatDate, startTimer} from '
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
+const cCompName = 'REGENT TRAVEL RETAIL GROUP'
+
 const divListStock =`
     <div id="PurchRepoStock" class="report-section containerDiv">
         <div class="ReportHead">
@@ -88,6 +90,83 @@ const divPurchSumType =`
         </div>
     </div>
 `
+const divPurchSumSupp =`
+    <div id="PurchSumSupp" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Receiving Summary Report by Supplier</span>
+            <button id="closePurcRepo3" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="purchSumSupp" class="ReportBody">
+                <table id="purchRepoTable2">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th>Location</th>
+                            <th>Supplier</th>
+                            <th>Quantity</th>
+                            <th>Receiving Cost</th>
+                            <th>Selling Price</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="suppPurchSumChart" class="chartContainer">
+                <div id="sumSupplier">
+                    <h5 id='h5topSupp'>Top Suppliers</h5>
+                    <canvas id="suppPurchSumChart1"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="purcRepo3Counter" class="recCounter"></span>
+                <button id="printPurchSuppXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="purchSupp"><i class="fa fa-list"></i> List</button>
+            </div>
+        </div>
+    </div>
+`
+
+const divPurchSumBrnd =`
+    <div id="PurchSumBrnd" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Receiving Summary Report by Brand</span>
+            <button id="closePurcRepo4" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="purchSumBrnd" class="ReportBody">
+                <table id="purchRepoTable2">
+                    <thead id="rankTHead1">
+                        <tr>
+                            <th>Location</th>
+                            <th>Brand</th>
+                            <th>Quantity</th>
+                            <th>Receiving Cost</th>
+                            <th>Selling Price</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="brndPurchSumChart" class="chartContainer">
+                <div id="sumSupplier">
+                    <h5 id='h5topBran'>Top Brands</h5>
+                    <canvas id="brndPurchSumChart1"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="purcRepo4Counter" class="recCounter"></span>
+                <button id="printPurchBrndXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="purchBrnd"><i class="fa fa-list"></i> List</button>
+            </div>
+        </div>
+    </div>
+`
 
 const fragment = document.createDocumentFragment();
 
@@ -99,11 +178,19 @@ const div2 = document.createElement('div');
 div2.innerHTML = divPurchSumType;
 fragment.appendChild(div2);
 
+const div3 = document.createElement('div');
+div3.innerHTML = divPurchSumSupp;
+fragment.appendChild(div3);
+
+const div4 = document.createElement('div');
+div4.innerHTML = divPurchSumBrnd;
+fragment.appendChild(div4);
+
 document.body.appendChild(fragment);  // Only one reflow happens here
 // ======================================================================
 
 async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__, cSuppName) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
@@ -121,6 +208,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cLocation) params.append('Location', cLocation);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cSuppName) params.append('SuppName', cSuppName); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -231,7 +319,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
-            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
             { text: 'Stock Receiving by SKU', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
             { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
             { text: '' } // Spacer row
@@ -293,10 +381,10 @@ document.getElementById('purchStock').addEventListener('click', () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
-            // const cStoreGrp = filterData[12];
+            const cSuppName = filterData[16];
             
             PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, dDateFrom, dDate__To);
+                cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
     
         });
     } catch (error) {
@@ -533,7 +621,7 @@ async function stockPurchChart(data, dateRange) {
 // ======================================================================
 
 async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__, cSuppName) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
@@ -551,6 +639,7 @@ async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cLocation) params.append('Location', cLocation);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cSuppName) params.append('SuppName', cSuppName); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -629,7 +718,7 @@ async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         document.getElementById('typePurchSumChart').style.display='flex';
         // const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         document.getElementById('printPurchTypeXLS').disabled = false
-        typePurchChart(data)
+        PurchChart(data,'TypeDesc')
        
     } catch (error) {
         console.error('Fetch error:', error);
@@ -645,7 +734,7 @@ async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
-            { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
             { text: 'Receiving Summary by Classification', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
             { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
             { text: '' } // Spacer row
@@ -700,10 +789,10 @@ document.getElementById('purchType').addEventListener('click', () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
-            // const cStoreGrp = filterData[12];
+            const cSuppName = filterData[16];
             
             PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, dDateFrom, dDate__To);
+                cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
     
         });
     } catch (error) {
@@ -730,18 +819,434 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-async function typePurchChart(data) {
 
+// ======================================================================
+async function PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__, cSuppName) {
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+    let data = null;
     try {
-        const purchChartElement = document.getElementById('typePurchSumChart1');
+        // Build query parameters
+        const url = new URL('http://localhost:3000/purchases/PurchSumSupp');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cSuppName) params.append('SuppName', cSuppName); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let nTotalQty = 0
+        let nTotalPrc = 0
+        let nTotalSel = 0
+    
+        const listCounter=document.getElementById('purcRepo3Counter')
+        data = await response.json();
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalQty+=item.Quantity
+                nTotalPrc+=item.PurcCost
+                nTotalSel+=item.SellPrce
+            });
+        }
+
+        const purcSumDeptDiv = document.getElementById('PurchSumSupp');
+        purcSumDeptDiv.classList.add('active');
+
+        const reportBody = document.getElementById('purchSumSupp');
+        reportBody.style.maxHeight = "80%";
+        reportBody.innerHTML = '';  // Clear previous content
+
+        // Define the table structure
+        const rankTable = `
+            <table id="purchRepoTable1">
+                <thead id="rankTHead1">
+                    <tr>
+                        <th>Location</th>
+                        <th>Supplier</th>
+                        <th>Quantity</th>
+                        <th>Receiving Cost</th>
+                        <th>Selling Price</th>
+                    </tr>
+                </thead>
+                <tbody id="rankTBody">
+                    ${data.map(item => {
+                        return `
+                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
+                                <td class="colNoWrap" style="text-align: left">${item.LocaName || 'N/A'}</td>
+                                <td class="colNoWrap">${item.SuppName || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.PurcCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="height: 2px"></tr>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalSel) || 'N/A'}</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = rankTable;
+
+        // Show purchased sum by department chart
+        document.getElementById('suppPurchSumChart').style.display='flex';
+        // const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printPurchSuppXLS').disabled = false
+        PurchChart(data,'SuppName')
+       
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        // Hide loading spinner once data is fetched or an error occurs
+        document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+    }
+
+    document.getElementById('printPurchSuppXLS').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Receiving Summary by Supplier', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+            ];
+
+            const colWidths = [
+                { width: 20 },{ width: 30 },{ width: 10 },{ width: 15 },{ width: 15 },
+                { width: 15 },{ width: 15 },{ width: 15 },
+            ];
+        
+            const columnConfig = [
+                { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
+                { label: 'Supplier',getValue: row => row.SuppName,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Quantity',getValue: row => +row.Quantity,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                    align: 'right',type: 'integer',cellFormat: '#,##0'},
+                { label: 'Gross',getValue: row => +row.PurcCost,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.PurcCost || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Discount',getValue: row => +(row.PurcCost - row.Amount__),
+                    total: rows => rows.reduce((sum, r) => sum + (+(r.PurcCost - r.Amount__) || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Net',getValue: row => +row.Amount__,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'SRP',getValue: row => +row.SellPrce,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.SellPrce || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'L.Cost',getValue: row => +row.LandCost,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'}
+            ];
+            
+            const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Receiving by Supplier');
+    })
+}
+
+document.getElementById('purchSupp').addEventListener('click', () => {
+    try {
+        FiltrRec('PurcSupp').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cSuppName = filterData[16];
+            
+            PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+    
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+    const purchSumByDeptElements = document.querySelectorAll('.purchSumBySupp'); //<li> menu
+    const rankRepoDiv = document.getElementById('PurchSumSupp');
+    const closeRepo = document.getElementById('closePurcRepo3'); 
+    
+    closeRepo.addEventListener('click', () => {
+        rankRepoDiv.classList.remove('active');
+    });
+
+    purchSumByDeptElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('PurchSumSupp')
+        });
+    });
+
+});
+
+// ======================================================================
+async function PurchSumBrnd(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, dDateFrom, dDateTo__, cSuppName) {
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+    let data = null;
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/purchases/PurchSumBrnd');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cSuppName) params.append('SuppName', cSuppName); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let nTotalQty = 0
+        let nTotalPrc = 0
+        let nTotalSel = 0
+    
+        const listCounter=document.getElementById('purcRepo4Counter')
+        data = await response.json();
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalQty+=item.Quantity
+                nTotalPrc+=item.PurcCost
+                nTotalSel+=item.SellPrce
+            });
+        }
+
+        const purcSumDiv = document.getElementById('PurchSumBrnd');
+        purcSumDiv.classList.add('active');
+
+        const reportBody = document.getElementById('purchSumBrnd');
+        reportBody.style.maxHeight = "80%";
+        reportBody.innerHTML = '';  // Clear previous content
+
+        // Define the table structure
+        const rankTable = `
+            <table id="purchRepoTable1">
+                <thead id="rankTHead1">
+                    <tr>
+                        <th>Location</th>
+                        <th>Brand</th>
+                        <th>Quantity</th>
+                        <th>Receiving Cost</th>
+                        <th>Selling Price</th>
+                    </tr>
+                </thead>
+                <tbody id="rankTBody">
+                    ${data.map(item => {
+                        return `
+                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
+                                <td class="colNoWrap" style="text-align: left">${item.LocaName || 'N/A'}</td>
+                                <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.PurcCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="height: 2px"></tr>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalSel) || 'N/A'}</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = rankTable;
+
+        // Show purchased sum by department chart
+        document.getElementById('brndPurchSumChart').style.display='flex';
+        // const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        document.getElementById('printPurchBrndXLS').disabled = false
+        PurchChart(data,'BrandNme')
+       
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        // Hide loading spinner once data is fetched or an error occurs
+        document.getElementById('loadingIndicator').style.display = 'none';
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+    }
+
+    document.getElementById('printPurchBrndXLS').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Receiving Summary by Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+            ];
+
+            const colWidths = [
+                { width: 20 },{ width: 30 },{ width: 10 },{ width: 15 },{ width: 15 },
+                { width: 15 },{ width: 15 },{ width: 15 },
+            ];
+        
+            const columnConfig = [
+                { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
+                { label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Quantity',getValue: row => +row.Quantity,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                    align: 'right',type: 'integer',cellFormat: '#,##0'},
+                { label: 'Gross',getValue: row => +row.PurcCost,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.PurcCost || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Discount',getValue: row => +(row.PurcCost - row.Amount__),
+                    total: rows => rows.reduce((sum, r) => sum + (+(r.PurcCost - r.Amount__) || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'Net',getValue: row => +row.Amount__,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'SRP',getValue: row => +row.SellPrce,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.SellPrce || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'},
+                { label: 'L.Cost',getValue: row => +row.LandCost,
+                    total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                    align: 'right',cellFormat: '#,##0.00'}
+            ];
+            
+            const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Receiving by Brand');
+    })
+}
+
+document.getElementById('purchBrnd').addEventListener('click', () => {
+    try {
+        FiltrRec('PurcBrnd').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cSuppName = filterData[16];
+            
+            PurchSumBrnd(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+    
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+})
+
+document.addEventListener('DOMContentLoaded', () => {
+    const purchSumByDeptElements = document.querySelectorAll('.purchSumByBrnd'); //<li> menu
+    const rankRepoDiv = document.getElementById('PurchSumBrnd');
+    const closeRepo = document.getElementById('closePurcRepo4'); 
+    
+    closeRepo.addEventListener('click', () => {
+        rankRepoDiv.classList.remove('active');
+    });
+
+    purchSumByDeptElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('PurchSumBrnd')
+        });
+    });
+
+});
+
+
+
+// Purchases Charts ===========================================
+async function PurchChart(data, showData) {
+    try {
+        // Define a mapping of showData to canvas IDs
+        const dataCanvasMapping = {
+            'TypeDesc': 'typePurchSumChart1',
+            'SuppName': 'suppPurchSumChart1',
+            'BrandNme': 'brndPurchSumChart1'
+        };
+
+        // Get the canvas ID based on showData
+        const dataCanvass = dataCanvasMapping[showData];
+
+        if (!dataCanvass) {
+            console.error(`Unknown data type: ${showData}`);
+            return;
+        }        
+
+        // const dataCanvass = showData === 'TypeDesc' ? 'typePurchSumChart1' : 'suppPurchSumChart1'
+        const purchChartElement = document.getElementById(dataCanvass);
 
         // Declare variables for chart instances
-        let myChart = window.myChart || null;
+         let myChart = window.myCharts && window.myCharts[dataCanvass] || null;
 
         // Destroy existing charts if they exist
         if (myChart) {
             myChart.destroy();
-            window.myChart = null;  // Reset reference
         }
 
         // Clear the canvas context manually (important when reusing canvas elements)
@@ -749,11 +1254,26 @@ async function typePurchChart(data) {
 
         let chartData = data.slice(0,20)
 
+        const dataFieldMapping = {
+            'TypeDesc': 'TypeDesc',
+            'SuppName': 'SuppName',
+            'BrandNme': 'BrandNme'
+        };        
+        const dataField = dataFieldMapping[showData];
+
+        // Check if the mapping is valid
+        if (!dataField) {
+            console.error(`Unknown showData type: ${showData}`);
+            return;
+        }
         // Prepare data for the pie chart 
         const dataGroupTotals = chartData.reduce((acc, entry) => {
             const totalAmount = parseFloat(entry.PurcCost) || 0;
-            const dataGroup = entry.TypeDesc.trim(); // Ensure group name is trimmed
+            // Dynamically access the property based on `showData`
+            const dataGroup = entry[dataField]?.trim() || '';  
+            // const dataGroup = showData === 'TypeDesc' ? entry.TypeDesc.trim() : entry.SuppName.trim();
             acc[dataGroup] = (acc[dataGroup] || 0) + totalAmount;
+
             return acc;
         }, {});
 
@@ -763,13 +1283,22 @@ async function typePurchChart(data) {
         const dataGroupLabels = sortedStoreGroups.map(entry => entry[0]);
         const dataGroupValues = sortedStoreGroups.map(entry => entry[1]);
 
+        // Update dynamic text content based on `showData`
+        const headingMapping = {
+            'TypeDesc': 'Top Classification',
+            'SuppName': 'Top Suppliers',
+            'BrandNme': 'Top Brands'
+        };
+       
+        const headingElementId = `h5top${showData.substring(0, 4)}`;
+        document.getElementById(headingElementId).textContent = headingMapping[showData];        
+
         if (data.length > 20) {
             const rest = data.slice(20);
             const others = rest.reduce((sum, grp) => sum + grp.PurcCost, 0);
             // Add "Others"
             dataGroupLabels.push('OTHERS');
             dataGroupValues.push(others);
-            document.getElementById('h5topType').textContent='Top 20 Classification and Others'
         }
 
         const totalSales = Object.values(dataGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
@@ -839,7 +1368,9 @@ async function typePurchChart(data) {
         });
 
         // Store the chart instances globally if needed (optional)
-        window.myChart = myChart;
+        // window.myChart = myChart;
+        window.myCharts = window.myCharts || {};
+        window.myCharts[dataCanvass] = myChart;        
 
     } catch (error) {
         console.error('Error processing chart data:', error);

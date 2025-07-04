@@ -26,6 +26,10 @@
     min-height: 90dvh;
     grid-template-rows: auto 1fr auto;
     grid-template-columns: minmax(0, 1fr);    
+
+    animation: slideInUp 0.4s ease-out forwards;
+    /* animation: popInCenter 0.4s ease-out forwards; */
+
 }
 
 .itemsTableDiv {

@@ -38,12 +38,7 @@ const menuItems= `
         <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
         <li menu-ref="A06" class="dailySalesSum">Daily Sales Summary</li>
-        <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>
-            <ul class="subDropdown">
-                <li menu-ref="A08">By Location</li>
-                <li menu-ref="A09" class="monthlySalesSumByBrand">By Brand</li>
-            </ul>
-        </li>
+        <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -53,13 +48,8 @@ const menuItems= `
         <hr class="menuLine">
         <li menu-ref="B03" class="purchReportByStock">Stock Receiving By SKU</li>
         <li menu-ref="B04" class="purchSumByType">Receiving Summary By Classification</li>
-        <li>Receiving Summary By Supplier</li>
-        <li menu-ref="B06" class="purchSumByBrand">Receiving Summary By Brand
-            <ul class="subDropdown">
-                <li menu-ref="A08">RR By Location</li>
-                <li menu-ref="A09">RR By Brand</li>
-            </ul>
-        </li>
+        <li menu-ref="B05" class="purchSumBySupp">Receiving Summary By Supplier</li>
+        <li menu-ref="B06" class="purchSumByBrnd">Receiving Summary By Brand</li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
@@ -120,6 +110,15 @@ const menuItems= `
     </ul>
 </li>
 `;
+
+// Sample Code with dropdown
+// <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>
+//     <ul class="subDropdown">
+//         <li menu-ref="A08">By Location</li>
+//         <li menu-ref="A09" class="monthlySalesSumByBrand">By Brand</li>
+//     </ul>
+// </li>
+
 
 // Check if the stored value exists and if it needs updating
 if (!localStorage.getItem('menuItems') || localStorage.getItem('menuItems') !== menuItems) {
@@ -209,6 +208,7 @@ const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
 
 async function applyColorsAndShowContent() {
+
     // Apply user color preferences
     setUserColor();
 }
@@ -240,3 +240,15 @@ if (cUserData) {
 } else {
     disableNoMenuRefLis()
 }
+
+// Check if tables exist, create if none
+function createTables() {
+    fetch('http://localhost:3000/lookup/createTables', {
+        method: 'POST'
+    })
+    // .then(response => response.json())
+    // .then(data => console.log(data))
+    // .catch(err => console.error('createTables error', err));
+
+}
+createTables(); // Call once at startup

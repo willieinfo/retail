@@ -987,6 +987,8 @@ export function pickItem(dataItemList, inputElement) {
         pickItemDiv.appendChild(bottomBar);
         document.body.appendChild(pickItemDiv);  // Add it to the body
 
+        pickItemDiv.style.animation = "popInCenter 0.5s ease-out forwards";
+
         // Show the pickItemDiv and dropdownList
         pickItemDiv.style.display = 'flex';  // Show the pickItemDiv
         dropdownList.style.display = 'block';  // Show the dropdown

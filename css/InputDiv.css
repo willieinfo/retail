@@ -129,6 +129,22 @@ label {
     
 }
 
+#divConsolid {
+    display: flex;
+    align-items: center;
+}
+#lblConsolid {
+    margin-left: 0;
+    padding: 0;
+}
+#divConsolid input[type="checkbox"] {
+    margin-right: 6px;
+    margin-left: 46%;
+    width: 16px; 
+    height: 16px; 
+}
+
+
 .textDiv {
     display: flex;
     margin: 0px;
@@ -140,6 +156,7 @@ label {
     width: 100%;
     margin: 0px 8px;
     padding: 0px;
+    padding-right: 20px;
     /* align-items: center; */
     /* padding: 10px; */
 }
@@ -308,24 +325,6 @@ textarea {
     background-image: linear-gradient(to bottom, #ffff, var(--main-bg-color)  ); 
 
 }
-
-.wallpaperContainer {
-    margin: 10px;
-    cursor: pointer;
-}
-
-.wallpaperImage {
-    width: 240px;
-    height: 240px;
-    object-fit: cover;
-    border: 2px solid transparent;
-    transition: border 0.3s ease;
-}
-
-.wallpaperImage:hover {
-    border: 2px solid #007BFF;
-}
-
 
 @media (max-width: 600px) {
     .item-form {
