@@ -188,7 +188,6 @@ const SalesRankBrand = async (req, res) => {
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
 
-
   // Constructing the base SQL query
   let cSql = `SELECT 
 				BRAND___.BrandNme,

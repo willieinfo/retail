@@ -451,17 +451,62 @@ const deleteAppUsers = async (req, res) => {
   }
 };
 
-  module.exports = { 
-    listGrup,
-    listSupp,
-    listUser,
-    checkLogIn,
-    addAppUsers,
-    editAppUsers,
-    deleteAppUsers,
-    listLoca,
-    addLocation,
-    editLocation,
-    deleteLocation
-  };
-  
+const createTables = async (req, res) => {
+
+  try {
+    const cSql = `
+      IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'appusers')
+        BEGIN
+          CREATE TABLE appusers (
+            UserCode Char(4) PRIMARY KEY,
+            UserName Char(25) DEFAULT '',
+            NickName Char(10) DEFAULT '',
+            Address_ Char(100) DEFAULT '',
+            Tel_Num_ Char(40) DEFAULT '',
+            Password Char(10) DEFAULT '',
+            Position Char(20) DEFAULT '',
+            Remarks_ Char(50) DEFAULT '',
+            EmailAdd Char(50) DEFAULT '',
+            SuffixId Char(2) DEFAULT '',
+            MenuOpts Char(200) DEFAULT '',
+            Disabled bit DEFAULT 0,
+            AutIncId Int IDENTITY(1,1)
+          )
+        END
+    `;
+    await queryDatabase(cSql);  
+
+    const cSql2 = `
+      ALTER TABLE SALESREC ADD CustName Char(20) NOT NULL DEFAULT ''
+      ALTER TABLE ITEMLIST ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE SALESREC ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE SALESDTL ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE STOCKREC ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE STOCKDTL ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE PURCHREC ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE PURCHDTL ADD AutIncId Int IDENTITY(1,1)
+      ALTER TABLE LOCATION ADD AutIncId Int IDENTITY(1,1)
+    `;
+    // await queryDatabase(cSql2);  
+
+    res.json({ success: true, message: 'Table check/creation executed' });
+  } catch (err) {
+    // console.error('Update Tables error:', err);
+    res.status(500).json({ error: 'Error Updating Tables' });
+  }
+};
+
+module.exports = { 
+  listGrup,
+  listSupp,
+  listUser,
+  checkLogIn,
+  addAppUsers,
+  editAppUsers,
+  deleteAppUsers,
+  listLoca,
+  addLocation,
+  editLocation,
+  deleteLocation,
+  createTables
+};
