@@ -55,45 +55,45 @@ const StockEndingByLocation = async (req, res) => {
         params.cDescript = `%${cDescript}%`;
     }
 
-    let cSql=`
-	SELECT
-	    LOCATION.LocaName,
-	    SUM(COUNTDTL.Quantity) AS TotalQty,
-	    SUM(COUNTDTL.Quantity * ITEMLIST.LandCost) AS TotalCos,
-	    SUM(COUNTDTL.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
-	FROM COUNTDTL
-	JOIN COUNTREC ON COUNTDTL.CtrlNum_ = COUNTREC.CtrlNum_
-	JOIN ITEMLIST ON COUNTDTL.ItemCode = ITEMLIST.ItemCode
-	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-	JOIN LOCATION ON COUNTREC.Location = LOCATION.Location
-	WHERE COUNTREC.Date____ = LOCATION.BeginDte `+sqlFilters+`
-        AND LOCATION.Damaged_=0 
-        AND LOCATION.Disabled=0 
-        AND ITEMLIST.Services=0 
-        AND ITEMLIST.Outright=1 
-	GROUP BY LOCATION.LocaName
-	UNION ALL
-	SELECT
-	    LOCATION.LocaName,
-	    SUM(ITEMLEDG.Quantity) AS TotalQty,
-	    SUM(ITEMLEDG.Quantity * ITEMLIST.LandCost) AS TotalCos,
-	    SUM(ITEMLEDG.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
-	FROM ITEMLEDG
-	JOIN ITEMLIST ON ITEMLEDG.ItemCode = ITEMLIST.ItemCode
-	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-	JOIN LOCATION ON ITEMLEDG.Location = LOCATION.Location
-	WHERE ITEMLEDG.DateTran >= LOCATION.BeginDte +1
-		AND ITEMLEDG.DateTran <= @dDateAsOf `+sqlFilters+`
-        AND LOCATION.Damaged_=0 
-        AND LOCATION.Disabled=0 
-        AND ITEMLIST.Services=0 
-        AND ITEMLIST.Outright=1 
-	GROUP BY LOCATION.LocaName
-	ORDER BY 3 DESC
-   `
+//     let cSql=`
+// 	SELECT
+// 	    LOCATION.LocaName,
+// 	    SUM(COUNTDTL.Quantity) AS TotalQty,
+// 	    SUM(COUNTDTL.Quantity * ITEMLIST.LandCost) AS TotalCos,
+// 	    SUM(COUNTDTL.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
+// 	FROM COUNTDTL
+// 	JOIN COUNTREC ON COUNTDTL.CtrlNum_ = COUNTREC.CtrlNum_
+// 	JOIN ITEMLIST ON COUNTDTL.ItemCode = ITEMLIST.ItemCode
+// 	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
+// 	JOIN LOCATION ON COUNTREC.Location = LOCATION.Location
+// 	WHERE COUNTREC.Date____ = LOCATION.BeginDte `+sqlFilters+`
+//         AND LOCATION.Damaged_=0 
+//         AND LOCATION.Disabled=0 
+//         AND ITEMLIST.Services=0 
+//         AND ITEMLIST.Outright=1 
+// 	GROUP BY LOCATION.LocaName
+// 	UNION ALL
+// 	SELECT
+// 	    LOCATION.LocaName,
+// 	    SUM(ITEMLEDG.Quantity) AS TotalQty,
+// 	    SUM(ITEMLEDG.Quantity * ITEMLIST.LandCost) AS TotalCos,
+// 	    SUM(ITEMLEDG.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
+// 	FROM ITEMLEDG
+// 	JOIN ITEMLIST ON ITEMLEDG.ItemCode = ITEMLIST.ItemCode
+// 	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
+// 	JOIN LOCATION ON ITEMLEDG.Location = LOCATION.Location
+// 	WHERE ITEMLEDG.DateTran >= LOCATION.BeginDte +1
+// 		AND ITEMLEDG.DateTran <= @dDateAsOf `+sqlFilters+`
+//         AND LOCATION.Damaged_=0 
+//         AND LOCATION.Disabled=0 
+//         AND ITEMLIST.Services=0 
+//         AND ITEMLIST.Outright=1 
+// 	GROUP BY LOCATION.LocaName
+// 	ORDER BY 3 DESC
+//    `
 
     
-    let cSql1 = `SELECT 
+    let cSql = `SELECT 
         LocaName, 
         SUM(TotalQty) AS TotalQty,
         SUM(TotalCos) AS TotalCos,
@@ -279,44 +279,44 @@ const StockEndingByLocation = async (req, res) => {
         params.cDescript = `%${cDescript}%`;
     }
 
-    let cSql=`
-	SELECT
-	    BRAND___.BrandNme,
-	    SUM(COUNTDTL.Quantity) AS TotalQty,
-	    SUM(COUNTDTL.Quantity * ITEMLIST.LandCost) AS TotalCos,
-	    SUM(COUNTDTL.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
-	FROM COUNTDTL
-	JOIN COUNTREC ON COUNTDTL.CtrlNum_ = COUNTREC.CtrlNum_
-	JOIN ITEMLIST ON COUNTDTL.ItemCode = ITEMLIST.ItemCode
-	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-	JOIN LOCATION ON COUNTREC.Location = LOCATION.Location
-	WHERE COUNTREC.Date____ = LOCATION.BeginDte `+sqlFilters+`
-        AND LOCATION.Damaged_=0 
-        AND LOCATION.Disabled=0 
-        AND ITEMLIST.Services=0 
-        AND ITEMLIST.Outright=1 
-	GROUP BY BRAND___.BrandNme
-	UNION ALL
-	SELECT
-	    BRAND___.BrandNme,
-	    SUM(ITEMLEDG.Quantity) AS TotalQty,
-	    SUM(ITEMLEDG.Quantity * ITEMLIST.LandCost) AS TotalCos,
-	    SUM(ITEMLEDG.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
-	FROM ITEMLEDG
-	JOIN ITEMLIST ON ITEMLEDG.ItemCode = ITEMLIST.ItemCode
-	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-	JOIN LOCATION ON ITEMLEDG.Location = LOCATION.Location
-	WHERE ITEMLEDG.DateTran >= LOCATION.BeginDte +1
-		AND ITEMLEDG.DateTran <= @dDateAsOf `+sqlFilters+`
-        AND LOCATION.Damaged_=0 
-        AND LOCATION.Disabled=0 
-        AND ITEMLIST.Services=0 
-        AND ITEMLIST.Outright=1 
-	GROUP BY BRAND___.BrandNme
-	ORDER BY 3 DESC
-   `
+//     let cSql=`
+// 	SELECT
+// 	    BRAND___.BrandNme,
+// 	    SUM(COUNTDTL.Quantity) AS TotalQty,
+// 	    SUM(COUNTDTL.Quantity * ITEMLIST.LandCost) AS TotalCos,
+// 	    SUM(COUNTDTL.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
+// 	FROM COUNTDTL
+// 	JOIN COUNTREC ON COUNTDTL.CtrlNum_ = COUNTREC.CtrlNum_
+// 	JOIN ITEMLIST ON COUNTDTL.ItemCode = ITEMLIST.ItemCode
+// 	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
+// 	JOIN LOCATION ON COUNTREC.Location = LOCATION.Location
+// 	WHERE COUNTREC.Date____ = LOCATION.BeginDte `+sqlFilters+`
+//         AND LOCATION.Damaged_=0 
+//         AND LOCATION.Disabled=0 
+//         AND ITEMLIST.Services=0 
+//         AND ITEMLIST.Outright=1 
+// 	GROUP BY BRAND___.BrandNme
+// 	UNION ALL
+// 	SELECT
+// 	    BRAND___.BrandNme,
+// 	    SUM(ITEMLEDG.Quantity) AS TotalQty,
+// 	    SUM(ITEMLEDG.Quantity * ITEMLIST.LandCost) AS TotalCos,
+// 	    SUM(ITEMLEDG.Quantity * ITEMLIST.ItemPrce) AS TotalPrc
+// 	FROM ITEMLEDG
+// 	JOIN ITEMLIST ON ITEMLEDG.ItemCode = ITEMLIST.ItemCode
+// 	JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
+// 	JOIN LOCATION ON ITEMLEDG.Location = LOCATION.Location
+// 	WHERE ITEMLEDG.DateTran >= LOCATION.BeginDte +1
+// 		AND ITEMLEDG.DateTran <= @dDateAsOf `+sqlFilters+`
+//         AND LOCATION.Damaged_=0 
+//         AND LOCATION.Disabled=0 
+//         AND ITEMLIST.Services=0 
+//         AND ITEMLIST.Outright=1 
+// 	GROUP BY BRAND___.BrandNme
+// 	ORDER BY 3 DESC
+//    `
     
-    let cSql1 = `SELECT 
+    let cSql = `SELECT 
         BrandNme, 
         SUM(TotalQty) AS TotalQty,
         SUM(TotalCos) AS TotalCos,

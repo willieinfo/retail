@@ -32,6 +32,18 @@ export async function FiltrRec(cModules_) {
                     </div>
                 </div>
 
+                <div id="inputTransfer" class="textDiv" style="flex-direction: row; display:none ">
+                    <div id='txtFiltrRec_LocaFrom' class="subTextDiv">
+                        <label for="FiltrRec_LocaFrom">From:</label>
+                        <input type="text" id="FiltrRec_LocaFrom" placeholder = 'Origin'>
+                    </div>
+                    <div id='txtFiltrRec_LocaTo__' class="subTextDiv">
+                        <label for="FiltrRec_LocaTo__">To:</label>
+                        <input type="text" id="FiltrRec_LocaTo__" placeholder = 'Destination'>
+                    </div>
+                </div>
+
+
                 <div id="inputLocation" class="textDiv">
                     <div class="subTextDiv">
                         <div id="divConsolid">
@@ -65,7 +77,8 @@ export async function FiltrRec(cModules_) {
                             <input type="text" id="FiltrRec_Descript" spellcheck="false">
                         </div>
                     </div>
-                    <div id="inputList1" class="textDiv">
+
+                    <div id="inputList1" class="textDiv" >
                         <div class="subTextDiv">
                             <label for="FiltrRec_BrandNum">Brand</label>
                             <select id="FiltrRec_BrandNum"></select>
@@ -75,7 +88,8 @@ export async function FiltrRec(cModules_) {
                             <select id="FiltrRec_CategNum"></select>
                         </div>
                     </div>
-                    <div id="inputList2" class="textDiv">
+
+                    <div id="inputList2" class="textDiv" >
                         <div class="subTextDiv">
                             <label for="FiltrRec_ItemDept">Department</label>
                             <select id="FiltrRec_ItemDept"></select>
@@ -208,7 +222,14 @@ export async function FiltrRec(cModules_) {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
-            await populateLocation('', '', 'StocArea','FiltrRec_Location','0');
+            document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputTransfer').style.display = 'flex';
+        } else if (cModules_ === 'StocRep1') {
+            document.getElementById('StockDetails').appendChild(filterForm);
+            document.getElementById('StockDetails').appendChild(overlay);
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputTransfer').style.display = 'flex';
         } else if (cModules_ === 'PurchLst') {
             document.getElementById('PurchLst').appendChild(filterForm);
             document.getElementById('PurchLst').appendChild(overlay);
@@ -363,12 +384,14 @@ export async function FiltrRec(cModules_) {
             const lDisabled = document.getElementById('FiltrRec_Disabled').checked ? '1' : '0' 
             const lConsolid = document.getElementById('FiltrRec_Consolid').checked ? '1' : '0' 
             const cSuppName = document.getElementById('FiltrRec_SuppName').value;
+            const cLocaFrom = document.getElementById('FiltrRec_LocaFrom').value.trim();
+            const cLocaTo__ = document.getElementById('FiltrRec_LocaTo__').value.trim();
 
             const filterData = 
                 [dDateFrom, dDate__To, cLocation, cUsersCde, cOtherCde, 
                  cDescript, cBrandNum, cCategNum, cItemType, cItemDept, 
                  cReferDoc, dDateAsOf, cStoreGrp, cUserName, lDisabled, 
-                 lConsolid, cSuppName];
+                 lConsolid, cSuppName, cLocaFrom, cLocaTo__];
 
             localStorage.setItem("filterData", JSON.stringify(filterData));
 

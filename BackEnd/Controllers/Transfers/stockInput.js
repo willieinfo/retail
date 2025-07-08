@@ -246,34 +246,12 @@ const addStockHeader = async (req, res) => {
 // ORDER BY AutIncId DESC;
 
 const StockRecLst = async (req, res) => {
-  const cWhseFrom = req.query.WhseFrom;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
   const cReferDoc = req.query.ReferDoc;
+  const cLocaFrom = req.query.LocaFrom;
+  const cLocaTo__ = req.query.LocaTo__;
 
-  // let cSql = `SELECT 
-  //     STOCKREC.CtrlNum_,
-  //     STOCKREC.ReferDoc,
-  //     STOCKREC.Date____,
-  //     STOCKREC.DateRcvd,
-  //     LOCATION.LocaName,
-  //     STOCKREC.TotalQty,
-  //     STOCKREC.TotalRcv,
-  //     STOCKREC.Amount__,
-  //     STOCKREC.NoOfItem,
-  //     STOCKREC.Remarks_,
-  //     STOCKREC.Encoder_,
-  //     STOCKREC.WhseFrom,
-  //     STOCKREC.WhseTo__,
-  //     STOCKREC.Printed_,
-  //     STOCKREC.Prepared,
-  //     STOCKREC.Received,
-  //     STOCKREC.Disabled,
-  //     STOCKREC.Log_Date
-  //   FROM STOCKREC, LOCATION
-  //   WHERE STOCKREC.WhseFrom = LOCATION.Location
-  //   AND 1=1
-  // `
   let cSql=`SELECT
         STOCKREC.CtrlNum_,
         STOCKREC.ReferDoc,
@@ -304,10 +282,6 @@ const StockRecLst = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
-  if (cWhseFrom) {
-    cSql += " AND STOCKREC.WhseFrom LIKE @cWhseFrom";
-    params.cWhseFrom = `%${cWhseFrom}%`;
-  }
   if (dDateFrom) {
     cSql += " AND STOCKREC.Date____ >= @dDateFrom";
     params.dDateFrom = `${dDateFrom}`;
@@ -320,10 +294,18 @@ const StockRecLst = async (req, res) => {
     cSql += " AND STOCKREC.ReferDoc LIKE @cReferDoc";
     params.cReferDoc = `%${cReferDoc}%`;
   }
+  if (cLocaFrom) {
+    cSql += " AND LOC1.LocaName LIKE @cLocaFrom";
+    params.cLocaFrom = `%${cLocaFrom}%`;
+  }
+  if (cLocaTo__) {
+    cSql += " AND LOC2.LocaName LIKE @cLocaTo__";
+    params.cLocaTo__ = `%${cLocaTo__}%`;
+  }
   cSql += ` ORDER BY 1 `;
 
   // Log SQL query and parameters for debugging
-  // console.log('Parameters:', params);
+  console.log('Parameters:', params);
 
   try {
     // Execute query

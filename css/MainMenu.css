@@ -127,10 +127,10 @@ ul.dropdown.submenu {
     transition: background-color 0.3s ease;
 }
 
-
 .data-entry {
     background-color: var(--darker-bg-color);
 }
+
 /* Sidebar Menu */
 .sidebar {
     display: none;
@@ -279,7 +279,7 @@ li {
     cursor: not-allowed;  
 }
 
-/* Responsive Design */
+/* Responsive Menu Design */
 @media (max-width: 1020px) {
     .menu {
         display: none;

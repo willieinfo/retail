@@ -57,7 +57,7 @@ const menuItems= `
         <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
-        <li>Stock Transfer by SKU</li>
+        <li menu-ref="C03" class="stockDetails">Stock Transfer by SKU</li>
         <li>Stock Transfer by Classification</li>
         <li>Stock Transfer by Brand</li>
     </ul>
@@ -111,14 +111,6 @@ const menuItems= `
 </li>
 `;
 
-// Sample Code with dropdown
-// <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>
-//     <ul class="subDropdown">
-//         <li menu-ref="A08">By Location</li>
-//         <li menu-ref="A09" class="monthlySalesSumByBrand">By Brand</li>
-//     </ul>
-// </li>
-
 
 // Check if the stored value exists and if it needs updating
 if (!localStorage.getItem('menuItems') || localStorage.getItem('menuItems') !== menuItems) {
@@ -132,10 +124,6 @@ const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
 const closeSidebar = document.querySelector('.close-sidebar');
 const sidebarItems = document.querySelectorAll('.sidebar li');
-
-const monthlySalesSum = document.querySelectorAll('.monthlySalesSum');
-const purchSumByBrand = document.querySelectorAll('.purchSumByBrand');
-
 
 const spanToday = document.getElementById('spanToday')
 
@@ -161,57 +149,11 @@ sidebarItems.forEach(item => {
 });
 
 
-monthlySalesSum.forEach(item => {
-    item.addEventListener('click', function (event) {
-        // Prevent the dropdown from closing immediately upon click
-        event.stopPropagation();
-        
-        const subDropdown = item.querySelector('.subDropdown');
-        
-        document.querySelectorAll('.subDropdown').forEach(dropdown => {
-            if (dropdown !== subDropdown) {
-                dropdown.classList.remove('show'); 
-            }
-        });
-        
-        subDropdown.classList.toggle('show'); // Toggle the display of the submenu
-    });
-});
-
-document.querySelectorAll('.monthlySalesSumByBrand').forEach(element =>{
-    element.addEventListener('click', () => {
-        alert('monthly sales by brand')
-    })
-})
-
-purchSumByBrand.forEach(item => {
-    item.addEventListener('click', function (event) {
-        // Prevent the dropdown from closing immediately upon click
-        event.stopPropagation();
-        
-        const subDropdown = item.querySelector('.subDropdown');
-        
-        document.querySelectorAll('.subDropdown').forEach(dropdown => {
-            if (dropdown !== subDropdown) {
-                dropdown.classList.remove('show'); // Close others
-            }
-        });
-        
-        subDropdown.classList.toggle('show'); // Toggle the display of the submenu
-    });
-});
-
-
 const todaysDate = new Date();
 const cDateToday=formatDate(todaysDate)
 const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
 
-async function applyColorsAndShowContent() {
-
-    // Apply user color preferences
-    setUserColor();
-}
 
 const liOSKey=document.querySelectorAll('.OSKey')
 liOSKey.forEach(element => {
@@ -220,10 +162,15 @@ liOSKey.forEach(element => {
     })
 })
 
-// Run the function once the DOM is fully loaded
+// Apply user color preferences
+window.CompName = 'REGENT TRAVEL RETAIL GROUP'
 document.addEventListener('DOMContentLoaded', () => {
     applyColorsAndShowContent();
+    document.getElementById('spanCompName').innerText = window.CompName
 });
+async function applyColorsAndShowContent() {
+    setUserColor();
+}
 
 document.querySelectorAll('.LogOut').forEach( el =>{
     el.addEventListener('click', () => {
@@ -233,12 +180,14 @@ document.querySelectorAll('.LogOut').forEach( el =>{
     })
 })
 
+// Configure available menus for current user
 const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
 if (cUserData) {
     disableMultipleLis(cUserData[0].MenuOpts.trim());
-    if (cUserData[0].NickName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
+    if (cUserData[0].UserName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
 } else {
     disableNoMenuRefLis()
+    spanToday.innerText = 'Willie Estrada - '+spanToday.innerText
 }
 
 // Check if tables exist, create if none
@@ -246,9 +195,46 @@ function createTables() {
     fetch('http://localhost:3000/lookup/createTables', {
         method: 'POST'
     })
-    // .then(response => response.json())
-    // .then(data => console.log(data))
-    // .catch(err => console.error('createTables error', err));
-
 }
 createTables(); // Call once at startup
+
+
+// Sample Code with dropdown
+// <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>
+//     <ul class="subDropdown">
+//         <li menu-ref="A08">By Location</li>
+//         <li menu-ref="A09" class="monthlySalesSumByBrand">By Brand</li>
+//     </ul>
+// </li>
+
+// const monthlySalesSum = document.querySelectorAll('.monthlySalesSum');
+// const purchSumByBrand = document.querySelectorAll('.purchSumByBrand');
+
+// monthlySalesSum.forEach(item => {
+//     item.addEventListener('click', function (event) {
+//         // Prevent the dropdown from closing immediately upon click
+//         event.stopPropagation();
+//         const subDropdown = item.querySelector('.subDropdown');
+//         document.querySelectorAll('.subDropdown').forEach(dropdown => {
+//             if (dropdown !== subDropdown) {
+//                 dropdown.classList.remove('show'); 
+//             }
+//         });
+//         subDropdown.classList.toggle('show'); // Toggle the display of the submenu
+//     });
+// });
+
+// purchSumByBrand.forEach(item => {
+//     item.addEventListener('click', function (event) {
+//         // Prevent the dropdown from closing immediately upon click
+//         event.stopPropagation();
+//         const subDropdown = item.querySelector('.subDropdown');
+//         document.querySelectorAll('.subDropdown').forEach(dropdown => {
+//             if (dropdown !== subDropdown) {
+//                 dropdown.classList.remove('show'); // Close others
+//             }
+//         });
+//         subDropdown.classList.toggle('show'); // Toggle the display of the submenu
+//     });
+// });
+

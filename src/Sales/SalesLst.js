@@ -4,6 +4,8 @@ import { showReport, formatDate, populateLocation, showNotification, get24HrTime
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 
+const cCompName = window.CompName //Company Name - MainMenu.js
+
 const divSalesLst = `
     <div id="SalesLst" class="report-section containerDiv">
         <div class="ReportHead">
@@ -1321,7 +1323,7 @@ document.getElementById('printSaleListXLS').addEventListener('click', () => {
 
     const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDate__To,'MM/DD/YYYY')}`
     const titleRowsContent = [
-        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
         { text: 'Sales Record List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
         { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
         { text: '' } // Spacer row

@@ -15,7 +15,7 @@ canvas {
 /* Sales Ranking By Location / Brand SALEREPO */
 /* The first chart occupying 70% of the parent width */
 #storeRankChart, #brandRankChart, #typeRankChart, #stockRankChart, #stockPurchChart, 
-#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart,
+#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart,#transChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;
@@ -66,3 +66,32 @@ canvas {
     box-sizing: border-box;
 }
 
+
+#transChart {
+    /* display: flex; */
+    flex-direction: column;
+    height: 1000px;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+#topBrand,
+#topClass {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    overflow: hidden;
+    padding: 0 10px 10px 10px;
+}
+
+#topBrand canvas,
+#topClass canvas {
+    flex: 1 1 auto;
+    width: 100% !important;
+    height: 100% !important;
+    padding-bottom: 40px;
+}
+#topClass canvas {
+    background-image: linear-gradient(to right, #ffff, lightgrey  ); 
+}

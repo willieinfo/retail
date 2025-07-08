@@ -6,7 +6,7 @@ const dDateFrom = new Date(), dDateTo__ = new Date(),
     dMontFrom = goMonth(new Date(), -1), dMontTo__ = goMonth(new Date(), -1),
     dYearFrom = goMonth(new Date(), -12), dYearTo__ = goMonth(new Date(), -12)
 
-const cCompName = 'REGENT TRAVEL RETAIL GROUP'
+const cCompName = window.CompName
 
 const divRankStore = `
     <div id="SalesRankStore" class="report-section containerDiv">
@@ -74,7 +74,7 @@ const divRankStore = `
             <div class="footSegments">
                 <span id="saleRank1Counter" class="recCounter"></span>
                 <button id="printStoreRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printStoreRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStoreRankXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank1"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
@@ -118,7 +118,7 @@ const divRankBrand =`
             <div class="footSegments">
                 <span id="saleRank2Counter" class="recCounter"></span>
                 <button id="printBrandRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printBrandRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printBrandRankXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank2"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
@@ -163,7 +163,7 @@ const divRankStock =`
             <div class="footSegments">
                 <span id="saleRank3Counter" class="recCounter"></span>
                 <button id="printStockRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printStockRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="printStockRankXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
                 <button id="saleRank3"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
@@ -473,7 +473,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('storeRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printStoreRank').disabled = false
+        document.getElementById('printStoreRankXLS').disabled = false
         setStoreChart(data, dateRange)
 
         
@@ -488,7 +488,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
     }
 
-    document.getElementById('printStoreRank').addEventListener('click', () => {
+    document.getElementById('printStoreRankXLS').addEventListener('click', () => {
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
@@ -499,129 +499,72 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
           ];
           
           const colWidths = [
-              { width: 25 }, // Column A (e.g. Group)
-              { width: 30 }, // Column B (e.g. Location)
-              { width: 10 }, // TrxCount
-              { width: 10 }, // Quantity
-              { width: 15 }, // Gross
-              { width: 15 }, // Discount
-              { width: 15 }, // Net
-              { width: 12 }, // ATV
-              { width: 15 }, // Cost
-              { width: 15 }, // Gross Profit
-              { width: 10 }, // GP %
-              { width: 10 }  // CTS %
+              { width: 25 },{ width: 30 },{ width: 10 },{ width: 10 },{ width: 15 }, // Gross
+              { width: 15 },{ width: 15 },{ width: 12 },{ width: 15 },{ width: 15 }, // Gross Profit
+              { width: 10 },{ width: 10 }  // CTS %
           ];
       
           const columnConfig = [
-              {
-                label: 'Group',
-                getValue: row => row.StoreGrp,
-                type: 'string',
-                align: 'left'
-              },
-              {
-                label: 'Location',
-                getValue: row => row.LocaName,
-                type: 'string',
-                align: 'left',
-                totalLabel: 'TOTALS:'
-              },
-              {
-                label: 'TRX Count',
-                getValue: row => +row.TrxCount,
+              {label: 'Group',getValue: row => row.StoreGrp,type: 'string',align: 'left'},
+              {label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+              {label: 'TRX Count',getValue: row => +row.TrxCount,
                 total: rows => rows.reduce((sum, r) => sum + (+r.TrxCount || 0), 0),
-                align: 'right',
-                type: 'integer',
-                cellFormat: '#,##0' 
+                align: 'right',type: 'integer',cellFormat: '#,##0' 
               },
-              {
-                label: 'Quantity',
-                getValue: row => +row.Quantity,
+              {label: 'Quantity',getValue: row => +row.Quantity,
                 total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
-                align: 'right',
-                type: 'integer',
-                cellFormat: '#,##0' 
+                align: 'right',type: 'integer',cellFormat: '#,##0' 
               },
-              {
-                label: 'Gross',
-                getValue: row => +row.ItemPrce,
+              {label: 'Gross',getValue: row => +row.ItemPrce,
                 total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' 
+                align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'Discount',
-                getValue: row => +(row.ItemPrce - row.Amount__),
+              {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),
                 total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' 
+                align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'Net',
-                getValue: row => +row.Amount__,
+              {label: 'Net',getValue: row => +row.Amount__,
                 total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' 
+                align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'ATV',
-                getValue: row => +(row.Amount__ / row.TrxCount),
+              {label: 'ATV', getValue: row => +(row.Amount__ / row.TrxCount),
                 total: rows => {
                   const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
                   const totalTRX = rows.reduce((sum, r) => sum + (+r.TrxCount || 0), 0);
                   return totalAmount ? (totalAmount / totalTRX)  : 0;
-                },
-                align: 'right',
-                cellFormat: '#,##0.00' 
+                },align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'Cost',
-                getValue: row => +row.LandCost,
+              {label: 'Cost',getValue: row => +row.LandCost,
                 total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' 
+                align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'Gross Profit',
-                getValue: row => +(row.Amount__ - row.LandCost),
+              {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),
                 total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
-                align: 'right',
-                cellFormat: '#,##0.00' // changed format to cellFormat
+                align: 'right',cellFormat: '#,##0.00' 
               },
-              {
-                label: 'GP %',
-                getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+              {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
                 total: rows => {
                   const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
                   const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
                   return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
-                },
-                align: 'right',
-                cellFormat: 'percent' // changed format to cellFormat
+                },align: 'right',cellFormat: 'percent' 
               },
-              {
-                label: 'CTS %',
-                getValue: (row, rows) => {
+              {label: 'CTS %',getValue: (row, rows) => {
                   const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
                   return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
-                },
-                align: 'right',
-                totalLabel: '100%',
-                cellFormat: 'percent' // changed format to cellFormat
+                },align: 'right',totalLabel: '100%',cellFormat: 'percent' 
               }
           ];
           
-          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
-           
-          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Location');
+        const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+        printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Location');
     })
 
 }
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankLocationElements = document.querySelectorAll('.salesRankingByLocation'); //<li>
+    const menuReportElements = document.querySelectorAll('.salesRankingByLocation'); //<li>
     const rankRepoDiv = document.getElementById('SalesRankStore');
     const closeRepo = document.getElementById('closeRepo1');
     
@@ -629,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-    salesRankLocationElements.forEach(element => {
+    menuReportElements.forEach(element => {
         element.addEventListener('click', () => {
             showReport('SalesRankStore')
         });
@@ -767,7 +710,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('brandRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printBrandRank').disabled = false
+        document.getElementById('printBrandRankXLS').disabled = false
         rankBrandSales(data, dateRange)
        
     } catch (error) {
@@ -781,7 +724,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
     }
 
-    document.getElementById('printBrandRank').addEventListener('click', () => {
+    document.getElementById('printBrandRankXLS').addEventListener('click', () => {
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
@@ -831,7 +774,7 @@ async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankBrandElements = document.querySelectorAll('.salesRankingByBrand');
+    const menuReportElements = document.querySelectorAll('.salesRankingByBrand');
     const rankRepoDiv = document.getElementById('SalesRankBrand');
     const closeRepo = document.getElementById('closeRepo2');
     
@@ -840,7 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
         // Add event listener to each element with the necessary arguments
-    salesRankBrandElements.forEach(element => {
+    menuReportElements.forEach(element => {
         element.addEventListener('click', () => {
             showReport('SalesRankBrand')
         });
@@ -1037,7 +980,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         // Show store ranking chart
         document.getElementById('stockRankChart').style.display='flex';
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printStockRank').disabled = false
+        document.getElementById('printStockRankXLS').disabled = false
         rankStockSales(data, dateRange)
        
     } catch (error) {
@@ -1050,7 +993,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         document.getElementById('runningTime').textContent=''
     }
 
-    document.getElementById('printStockRank').addEventListener('click', () => {
+    document.getElementById('printStockRankXLS').addEventListener('click', () => {
 
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
@@ -1098,7 +1041,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankStockElements = document.querySelectorAll('.salesRankingByStock');
+    const menuReportElements = document.querySelectorAll('.salesRankingByStock');
     const rankRepoDiv = document.getElementById('SalesRankStock');
     const closeRepo = document.getElementById('closeRepo3');
     
@@ -1106,8 +1049,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-        // Add event listener to each element with the necessary arguments
-    salesRankStockElements.forEach(element => {
+    // Add event listener to each element with the necessary arguments
+    menuReportElements.forEach(element => {
         element.addEventListener('click', () => {
             showReport('SalesRankStock')
         });
@@ -1389,7 +1332,7 @@ document.getElementById('listSales').addEventListener('click', () => {
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const dailySalesElements = document.querySelectorAll('.dailySalesSum'); //<li>
+    const menuReportElements = document.querySelectorAll('.dailySalesSum'); //<li>
     const saleRepoDiv = document.getElementById('DailySalesSum');
     const closeRepo = document.getElementById('closeRepo4');
     
@@ -1397,7 +1340,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saleRepoDiv.classList.remove('active');
     });
 
-    dailySalesElements.forEach(element => {
+    menuReportElements.forEach(element => {
         element.addEventListener('click', () => {
             showReport('DailySalesSum')
         });
@@ -1599,7 +1542,7 @@ async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 // Wait for the DOM to fully load before adding the event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const salesRankElements = document.querySelectorAll('.salesRankingByType');
+    const menuReportElements = document.querySelectorAll('.salesRankingByType');
     const rankRepoDiv = document.getElementById('SalesRankType');
     const closeRepo = document.getElementById('closeRepo5');
     
@@ -1607,8 +1550,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rankRepoDiv.classList.remove('active');
     });
 
-        // Add event listener to each element with the necessary arguments
-    salesRankElements.forEach(element => {
+    // Add event listener to each element with the necessary arguments
+    menuReportElements.forEach(element => {
         element.addEventListener('click', () => {
             showReport('SalesRankType')
         });

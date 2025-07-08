@@ -94,7 +94,7 @@ const div2 = document.createElement('div');
 div2.innerHTML = divStockEndBrand;
 fragment.appendChild(div2);
 
-document.body.appendChild(fragment);  // Only one reflow happens here
+document.body.appendChild(fragment);  
 
 
 async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cItemType, cItemDept, cCategNum,
@@ -124,7 +124,6 @@ async function StockEndLocation(cLocation, cStoreGrp, dDateAsOf , cBrandNum, cIt
         const response = await fetch(`${url}?${params.toString()}`);
 
         // const response = await fetch('../data/DB_INVENLOC.json');
-        // const response = await fetch('../data/DB_INVELOBR.json');
 
         if (!response.ok) {
             throw new Error('Network response was not ok');

@@ -33,14 +33,19 @@
     <div id="headerDiv">
         <div id="headerCaption">
             <span style="font-weight: bold;">Fashion Retail App</span>
+            <span id="spanCompName"></span>
             <span id="spanToday"></span>
         </div>
         <div id="menuBarDiv">
-            <div><ul id="menuNavBar" class="menu"></ul></div>
-            <div>LOGO</div>
+            <!-- <div><ul id="menuNavBar" class="menu"></ul></div> -->
+            <div>
+                <div class="hamburger">☰</div>
+                <ul id="menuNavBar" class="menu"></ul>
+            </div>
+            <div>LOGO </div>
         </div>
     </div>
-    <div class="hamburger">☰</div>
+    <!-- <div class="hamburger">☰</div> -->
     <div id="menuSideBar" class="sidebar"></div>
 
     <!-- Tools -->
@@ -82,6 +87,7 @@
     <script type="module" src="./src/Tools/Keyboard.js"></script>
 
     <script type="module" src="./src/Transfers/StockLst.js"></script>
+    <script type="module" src="./src/Transfers/StocRepo.js"></script>
 
     <script type="module" src="./src/Purchases/PurchLst.js"></script>
     <script type="module" src="./src/Purchases/PurcRepo.js"></script>

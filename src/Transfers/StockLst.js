@@ -3,6 +3,8 @@ import { showReport, formatDate, populateLocation, showNotification, debounce, M
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF,printReportExcel, generateTitleRows } from "../PrintRep.js"
 
+const cCompName = window.CompName //Company Name - MainMenu.js
+
 const divStockLst = `
     <div id="StockLst" class="report-section containerDiv">
         <div class="ReportHead">
@@ -89,7 +91,7 @@ let currentIndex = 0    // Index of the selected STOCKREC record
 let cItemCode=null  
 let nLandCost=0
 
-async function StockLst(dDateFrom, dDateTo__, cWhseFrom, cReferDoc) {
+async function StockLst(dDateFrom, dDateTo__, cReferDoc, cLocaFrom, cLocaTo__) {
 
     const stockLstCounter=document.getElementById('stockLstCounter')
     document.getElementById('loadingIndicator').style.display = 'flex';
@@ -100,8 +102,10 @@ async function StockLst(dDateFrom, dDateTo__, cWhseFrom, cReferDoc) {
         const params = new URLSearchParams();
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
-        if (cWhseFrom) params.append('WhseFrom', cWhseFrom);
         if (cReferDoc) params.append('ReferDoc', cReferDoc);
+        if (cLocaFrom) params.append('LocaFrom', cLocaFrom); 
+        if (cLocaTo__) params.append('LocaTo__', cLocaTo__); 
+
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -151,10 +155,12 @@ function updateTable() {
                 </thead>
                 <tbody id="ListStockBody">
                     ${globalData.map((item, index) => {
-                        nTotalQty += item.TotalQty || 0;
-                        nTotalRcv += item.TotalRcv || 0;
-                        nTotalAmt += item.Amount__ || 0;
-                        nTotalItm += item.NoOfItem || 0;
+                        if (!item.Disabled) {
+                            nTotalQty += item.TotalQty || 0;
+                            nTotalRcv += item.TotalRcv || 0;
+                            nTotalAmt += item.Amount__ || 0;
+                            nTotalItm += item.NoOfItem || 0;
+                        }
                         
                         return`
                         <tr id="trStocList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
@@ -625,7 +631,7 @@ document.getElementById('stockFilter').addEventListener('click', async () => {
             // console.log(filterData)
             const dDateFrom = filterData[0];
             const dDate__To = filterData[1];
-            const cWhseFrom = filterData[2];
+            // const cWhseFrom = filterData[2];
             // const cUsersCde = filterData[3];
             // const cOtherCde = filterData[4];
             // const cDescript = filterData[5];
@@ -634,8 +640,10 @@ document.getElementById('stockFilter').addEventListener('click', async () => {
             // const cItemType = filterData[8];
             // const cItemDept = filterData[9];
             const cReferDoc = filterData[10];
+            const cLocaFrom = filterData[17];
+            const cLocaTo__ = filterData[18];
 
-            StockLst(dDateFrom,dDate__To,cWhseFrom,cReferDoc) //Calling Main StockRec List
+            StockLst(dDateFrom,dDate__To,cReferDoc,cLocaFrom,cLocaTo__) //Calling Main StockRec List
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -1102,16 +1110,16 @@ document.getElementById('printStocListXLS').addEventListener('click', () => {
 
     const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDate__To,'MM/DD/YYYY')}`
     const titleRowsContent = [
-        { text: 'REGENT TRAVEL RETAIL GROUP', style: { fontWeight: 'bold', fontSize: 14 } },
+        { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
         { text: 'Stock Transfer List', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
         { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
         { text: '' } // Spacer row
     ];
     
     const colWidths = [
-        { width: 12 },{ width: 12 },{ width: 10 },{ width: 24 },{ width: 24 },
-        { width: 10 },{ width: 10 },{ width: 16 },{ width: 10 },{ width: 20 },
-        { width: 10 },{ width: 16 },
+        { width: 12 },{ width: 12 },{ width: 10 },{ width: 28 },{ width: 28 },
+        { width: 10 },{ width: 10 },{ width: 16 },{ width: 10 },{ width: 40 },
+        { width: 18 },{ width: 12 }
     ];
 
     const columnConfig = [
@@ -1134,6 +1142,7 @@ document.getElementById('printStocListXLS').addEventListener('click', () => {
                 align: 'center',type: 'integer',cellFormat: '#,##0'},
         {label: 'Remarks',getValue: row => row.Remarks_,type: 'string',align: 'left'},
         {label: 'Log Date',getValue: row => row.Log_Date,type: 'datetime',align: 'left'},
+        {label: 'Encoder',getValue: row => row.Encoder_,type: 'string',align: 'left'},
 
     ];
     

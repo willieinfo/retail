@@ -19,5 +19,4 @@ router.post('/addLocation', addLocation);
 router.put('/editLocation', editLocation);  
 router.delete('/deleteLocation/:id', deleteLocation);  // Route to delete a location
 
-
 module.exports = router;

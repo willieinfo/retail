@@ -1,182 +1,182 @@
 [{
 "LocaName": "ACCLI",
-"TotalQty":157233.00,
-"TotalCos":42047804.5,
-"TotalPrc":116673593
+"TotalQty":176832.00,
+"TotalCos":35966784.0,
+"TotalPrc":99223489.0
 },
 {
 "LocaName": "CITY OF DREAMS",
-"TotalQty":6190.00,
-"TotalCos":10862031.0,
-"TotalPrc":23975007.8
+"TotalQty":6114.00,
+"TotalCos":10646198.6,
+"TotalPrc":23311908.0
 },
 {
 "LocaName": "SUBIC PUREGOLD",
-"TotalQty":24474.00,
-"TotalCos":9167872.73,
-"TotalPrc":27673742.0
+"TotalQty":22769.00,
+"TotalCos":8490166.37,
+"TotalPrc":25428860.0
 },
 {
 "LocaName": "BTG KALIBO",
-"TotalQty":7821.00,
-"TotalCos":6759765.05,
-"TotalPrc":17962675.0
-},
-{
-"LocaName": "MINISO",
-"TotalQty":40533.00,
-"TotalCos":6732478.50,
-"TotalPrc":14643036.0
-},
-{
-"LocaName": "VS T3 PREDEP",
-"TotalQty":9046.00,
-"TotalCos":6391274.06,
-"TotalPrc":17777020.0
-},
-{
-"LocaName": "PUREGOLD CLARK",
-"TotalQty":12865.00,
-"TotalCos":6025732.35,
-"TotalPrc":11867757.6
+"TotalQty":7562.00,
+"TotalCos":6725765.02,
+"TotalPrc":17609768.0
 },
 {
 "LocaName": "BORACAY",
-"TotalQty":12359.00,
-"TotalCos":5628199.63,
-"TotalPrc":14524837.0
+"TotalQty":11784.00,
+"TotalCos":5558323.13,
+"TotalPrc":13685921.0
 },
 {
-"LocaName": "MAC T3 AIRMALL",
-"TotalQty":5380.00,
-"TotalCos":5397677.82,
-"TotalPrc":10435760.0
+"LocaName": "MINISO",
+"TotalQty":31017.00,
+"TotalCos":5238996.27,
+"TotalPrc":11289108.0
 },
 {
 "LocaName": "BTG CLARK DPD",
-"TotalQty":6772.00,
-"TotalCos":5084759.14,
-"TotalPrc":12974944.0
+"TotalQty":6472.00,
+"TotalCos":4912991.56,
+"TotalPrc":12449906.0
+},
+{
+"LocaName": "MAC T3 AIRMALL",
+"TotalQty":4908.00,
+"TotalCos":4720996.99,
+"TotalPrc":9558260.00
 },
 {
 "LocaName": "NLEX MEGA STATION",
-"TotalQty":9433.00,
-"TotalCos":4982599.78,
-"TotalPrc":15322475.3
+"TotalQty":8161.00,
+"TotalCos":4555102.04,
+"TotalPrc":13865642.5
 },
 {
 "LocaName": "FR PITX",
-"TotalQty":9931.00,
-"TotalCos":4943889.02,
-"TotalPrc":14656580.5
+"TotalQty":8635.00,
+"TotalCos":4518816.67,
+"TotalPrc":13217063.5
 },
 {
-"LocaName": "SLEX",
-"TotalQty":8161.00,
-"TotalCos":4504927.53,
-"TotalPrc":12530105.0
+"LocaName": "PUREGOLD CLARK",
+"TotalQty":11856.00,
+"TotalCos":4413207.33,
+"TotalPrc":11352080.7
 },
 {
 "LocaName": "NLEX BALAGTAS",
-"TotalQty":8074.00,
-"TotalCos":4478407.57,
-"TotalPrc":13033739.5
+"TotalQty":7264.00,
+"TotalCos":4356798.56,
+"TotalPrc":12319036.5
+},
+{
+"LocaName": "SLEX",
+"TotalQty":6697.00,
+"TotalCos":3868689.38,
+"TotalPrc":10894990.0
+},
+{
+"LocaName": "VS T3 PREDEP",
+"TotalQty":4958.00,
+"TotalCos":3861939.39,
+"TotalPrc":10480490.0
 },
 {
 "LocaName": "NLEX DRIVEDINE",
-"TotalQty":9890.00,
-"TotalCos":4261911.98,
-"TotalPrc":12378409.8
+"TotalQty":8418.00,
+"TotalCos":3579765.30,
+"TotalPrc":10657467.0
 },
 {
-"LocaName": "JO MALONE T3 INTL SPACE4",
-"TotalQty":1280.00,
-"TotalCos":3930350.72,
-"TotalPrc":9513695.00
+"LocaName": "THE RUNWAY SPACE6",
+"TotalQty":4844.00,
+"TotalCos":3359993.67,
+"TotalPrc":9306363.00
 },
 {
 "LocaName": "AIRMALL T3",
-"TotalQty":14359.00,
-"TotalCos":2866272.31,
-"TotalPrc":7414394.00
+"TotalQty":17023.00,
+"TotalCos":3271124.51,
+"TotalPrc":8193215.00
 },
 {
-"LocaName": "BBW T3 LANDSIDE",
-"TotalQty":7141.00,
-"TotalCos":2780698.32,
-"TotalPrc":8944300.00
+"LocaName": "JO MALONE T3 INTL SPACE4",
+"TotalQty":1084.00,
+"TotalCos":3233234.08,
+"TotalPrc":7805245.00
 },
 {
 "LocaName": "CEBU PUEBLO VERDE",
-"TotalQty":4737.00,
-"TotalCos":2753305.66,
-"TotalPrc":8174465.50
+"TotalQty":4287.00,
+"TotalCos":2659436.77,
+"TotalPrc":7752363.25
 },
 {
-"LocaName": "THE SHOPPES RIGHT WING",
-"TotalQty":3794.00,
-"TotalCos":2062222.32,
-"TotalPrc":4793806.00
-},
-{
-"LocaName": "AIRMALL BOHOL AIRPORT",
-"TotalQty":14544.00,
-"TotalCos":2017914.77,
-"TotalPrc":5686441.00
+"LocaName": "BBW T3 LANDSIDE",
+"TotalQty":6202.00,
+"TotalCos":2444153.29,
+"TotalPrc":7876480.00
 },
 {
 "LocaName": "WHSMITH CEBU T1 NORTHWING",
-"TotalQty":25023.00,
-"TotalCos":1910451.76,
-"TotalPrc":6047353.00
+"TotalQty":27318.00,
+"TotalCos":2326393.26,
+"TotalPrc":6831395.00
 },
 {
-"LocaName": "AIRMALL ILOILO",
-"TotalQty":9444.00,
-"TotalCos":1856788.00,
-"TotalPrc":4777408.00
+"LocaName": "THE SHOPPES RIGHT WING",
+"TotalQty":4474.00,
+"TotalCos":2291627.19,
+"TotalPrc":5411453.00
 },
 {
-"LocaName": "BBW T3 INTL",
-"TotalQty":4725.00,
-"TotalCos":1664397.98,
-"TotalPrc":5362720.00
-},
-{
-"LocaName": "TRAVEL HUB BATANGAS",
-"TotalQty":7609.00,
-"TotalCos":1649604.83,
-"TotalPrc":4304620.00
+"LocaName": "AIRMALL BOHOL AIRPORT",
+"TotalQty":14579.00,
+"TotalCos":1871038.07,
+"TotalPrc":5170283.00
 },
 {
 "LocaName": "WHSMITH NAIA T1 DEP",
-"TotalQty":18511.00,
-"TotalCos":1545509.00,
-"TotalPrc":4071547.00
-},
-{
-"LocaName": "WHSMITH BICOL AIRPORT",
-"TotalQty":8990.00,
-"TotalCos":1466784.27,
-"TotalPrc":4051346.00
-},
-{
-"LocaName": "WHSMITH BACOLOD",
-"TotalQty":11244.00,
-"TotalCos":1420157.04,
-"TotalPrc":3903065.00
+"TotalQty":22253.00,
+"TotalCos":1848283.61,
+"TotalPrc":4746245.00
 },
 {
 "LocaName": "WHSMITH T3 INTL (S12)",
-"TotalQty":9889.00,
-"TotalCos":1294056.29,
-"TotalPrc":3531541.25
+"TotalQty":16327.00,
+"TotalCos":1844487.40,
+"TotalPrc":4932898.25
 },
 {
-"LocaName": "DFP LUXE MALL",
-"TotalQty":1095.00,
-"TotalCos":1238544.40,
-"TotalPrc":2014870.00
+"LocaName": "TRAVEL HUB BATANGAS",
+"TotalQty":7935.00,
+"TotalCos":1638406.05,
+"TotalPrc":4136500.00
+},
+{
+"LocaName": "AIRMALL ILOILO",
+"TotalQty":9253.00,
+"TotalCos":1578232.70,
+"TotalPrc":4130240.00
+},
+{
+"LocaName": "BBW T3 INTL",
+"TotalQty":4317.00,
+"TotalCos":1562410.73,
+"TotalPrc":5034180.00
+},
+{
+"LocaName": "WHSMITH BICOL AIRPORT",
+"TotalQty":10223.00,
+"TotalCos":1428816.15,
+"TotalPrc":3945017.00
+},
+{
+"LocaName": "WHSMITH BACOLOD",
+"TotalQty":9190.00,
+"TotalCos":1341580.73,
+"TotalPrc":3617095.00
 },
 {
 "LocaName": "MTR CEBU",
@@ -185,56 +185,56 @@
 "TotalPrc":3270090.00
 },
 {
-"LocaName": "THE RUNWAY SPACE6",
-"TotalQty":1527.00,
-"TotalCos":1047471.46,
-"TotalPrc":2623080.00
-},
-{
-"LocaName": "DFP FIESTAMALL",
-"TotalQty":955.00,
-"TotalCos":1032405.05,
-"TotalPrc":1676030.00
-},
-{
 "LocaName": "WHSMITH CLARK IPD",
-"TotalQty":10560.00,
-"TotalCos":906383.90,
-"TotalPrc":2452491.00
+"TotalQty":13840.00,
+"TotalCos":1116055.82,
+"TotalPrc":2916684.00
+},
+{
+"LocaName": "DFP LUXE MALL",
+"TotalQty":988.00,
+"TotalCos":1114772.00,
+"TotalPrc":1813010.00
 },
 {
 "LocaName": "WHSMITH NAIA T3 BUS GATE",
-"TotalQty":9666.00,
-"TotalCos":828846.77,
-"TotalPrc":2323781.00
+"TotalQty":11606.00,
+"TotalCos":905324.27,
+"TotalPrc":2492246.00
+},
+{
+"LocaName": "DFP FIESTAMALL",
+"TotalQty":828.00,
+"TotalCos":877841.00,
+"TotalPrc":1425175.00
 },
 {
 "LocaName": "WHSMITH CLARK DPD",
-"TotalQty":11374.00,
-"TotalCos":813779.50,
-"TotalPrc":2271984.00
+"TotalQty":11675.00,
+"TotalCos":813557.14,
+"TotalPrc":2229525.00
 },
 {
 "LocaName": "CSP PITX",
-"TotalQty":8473.00,
-"TotalCos":422880.37,
-"TotalPrc":1098085.00
+"TotalQty":12284.00,
+"TotalCos":657749.26,
+"TotalPrc":1551305.00
 },
 {
 "LocaName": "WHSMITH LAGUINDINGAN",
-"TotalQty":6103.00,
-"TotalCos":333785.26,
-"TotalPrc":958295.00
+"TotalQty":6296.00,
+"TotalCos":334259.25,
+"TotalPrc":974680.00
 },
 {
 "LocaName": "KIEHL'S T3 SPACE5",
-"TotalQty":282.00,
-"TotalCos":293294.42,
-"TotalPrc":827550.00
+"TotalQty":191.00,
+"TotalCos":237373.84,
+"TotalPrc":570100.00
 },
 {
 "LocaName": "T3 INTL SPACE5",
-"TotalQty":78.00,
-"TotalCos":58287.58,
-"TotalPrc":97660.00
+"TotalQty":12.00,
+"TotalCos":4130.08,
+"TotalPrc":14900.00
 }]
