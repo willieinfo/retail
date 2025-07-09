@@ -12,9 +12,8 @@ canvas {
     height: 100% !important;
 }
 
-/* Sales Ranking By Location / Brand SALEREPO */
-/* The first chart occupying 70% of the parent width */
-#storeRankChart, #brandRankChart, #typeRankChart, #stockRankChart, #stockPurchChart, 
+/* Chart Container Divs */
+#storeRankChart,#brandCompChart, #brandRankChart, #typeRankChart, #stockRankChart, #stockPurchChart, 
 #typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart,#transChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
@@ -22,6 +21,8 @@ canvas {
     background-color: whitesmoke;
     padding: 20px 20px 50px 20px;
 }
+
+/* The chart occupying 70% of the parent width */
 .divChart70, .divChart30{
     width: 70%;
     height: 100%;
@@ -45,14 +46,16 @@ canvas {
     justify-content: center;
 }
 
-#topBrands{
+#topBrands, #topStock{
     width: 100%;
+    padding-bottom: 40px;
 }
 #storeChart1, #brandChart1 {
     width: 70%;
     padding: 10px;
     box-sizing: border-box;
 }
+
 /* The second chart occupying 30% of the parent width */
 .divChart30 {
     width: 30%;
@@ -67,6 +70,32 @@ canvas {
 }
 
 
+#brandCompChart {
+    height: 700px;
+    width: 100%;
+    overflow: hidden;
+}
+.divBrand1, .divBrand2  {
+    width: 50%;
+    height: 100%;
+    padding: 10px;
+}
+.divBrand1  {
+    background-color: whitesmoke;
+}
+.divBrand2 {
+    background-image: linear-gradient(to right, #ffff, lightgrey  ); 
+}
+#brandChart1, #brandChart2  {
+    padding-bottom: 40px;
+}
+
+/* #brandChart2 {
+    width: 100% !important;
+    height: 100% !important;
+}  */
+
+/* StocRepo.js */
 #transChart {
     /* display: flex; */
     flex-direction: column;
@@ -74,7 +103,6 @@ canvas {
     width: 100%;
     overflow: hidden;
 }
-
 
 #topBrand,
 #topClass {

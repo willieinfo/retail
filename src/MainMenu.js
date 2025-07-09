@@ -33,7 +33,7 @@ const menuItems= `
         <li menu-ref="A01" class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
         <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
-        <li menu-ref="A03" class="salesRankingByBrand">Sales Ranking by Brand</li>
+        <li menu-ref="A03" class="salesCompBrand">Sales Ranking by Brand</li>
         <li menu-ref="A04" class="salesRankingByType">Sales Ranking by Classification</li>
         <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">

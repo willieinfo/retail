@@ -374,6 +374,7 @@ async function StockChart(data, showData) {
             },
             options: {
                 responsive: true,
+                indexAxis: 'y',         // labels at left side
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {

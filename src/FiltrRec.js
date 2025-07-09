@@ -190,6 +190,13 @@ export async function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
+        } else if (cModules_ === 'CompBrnd') {
+            document.getElementById('SalesCompBrand').appendChild(filterForm);
+            document.getElementById('SalesCompBrand').appendChild(overlay);
+            document.getElementById('inputDescript').style.display = 'none';
+            document.getElementById('txtReferDoc').style.display = 'none';
+            await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
+            await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
