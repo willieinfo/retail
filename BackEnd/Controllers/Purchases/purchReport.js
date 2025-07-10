@@ -79,7 +79,7 @@ const PurchSumType = async (req, res) => {
   cSql += ` GROUP BY 
     LOCATION.LocaName,
     ITEMTYPE.Descript
-    ORDER BY 5 DESC `;
+    ORDER BY 1,5 DESC `;
 
   // Log SQL query and parameters for debugging
   console.log('Parameters:', params);
@@ -186,7 +186,7 @@ const PurchRepoStock = async (req, res) => {
     BRAND___.BrandNme,
     ITEMDEPT.Descript,
     SUPPLIER.SuppName
-    ORDER BY 11 DESC `;
+    ORDER BY 1,11 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);
@@ -216,8 +216,8 @@ const PurchSumSupp = async (req, res) => {
 
   // Constructing the base SQL query
   let cSql = `SELECT 
-        LOCATION.LocaName,
         SUPPLIER.SuppName,
+        LOCATION.LocaName,
         Sum(PURCHDTL.Quantity) AS Quantity,
         Sum(PURCHDTL.SellPrce*PURCHDTL.Quantity) AS SellPrce,
         Sum(PURCHDTL.ItemPrce*PURCHDTL.Quantity) AS PurcCost,
@@ -278,8 +278,8 @@ const PurchSumSupp = async (req, res) => {
   }
 
   cSql += ` GROUP BY 
-    LOCATION.LocaName,
-    SUPPLIER.SuppName
+    SUPPLIER.SuppName,
+    LOCATION.LocaName
     ORDER BY 5 DESC `;
 
   // Log SQL query and parameters for debugging
@@ -374,7 +374,7 @@ const PurchSumBrnd = async (req, res) => {
   cSql += ` GROUP BY 
     LOCATION.LocaName,
     BRAND___.BrandNme
-    ORDER BY 5 DESC `;
+    ORDER BY 1,5 DESC `;
 
   // Log SQL query and parameters for debugging
   // console.log('Parameters:', params);

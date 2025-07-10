@@ -34,7 +34,7 @@ const divStockDetails =`
                 </table>            
             </div>
 
-            <div id="transChart" class="chartContainer">
+            <div id="transDetailsChart" class="chartContainer">
                 <div id="topBrand">
                     <h5 id='h5topBran'>Top Brands</h5>
                     <canvas id="transChart1"></canvas>
@@ -55,6 +55,49 @@ const divStockDetails =`
         </div>
     </div>
 `
+const divStockClass =`
+    <div id="StockClass" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Stock Transfer Report by Classification</span>
+            <button id="closeTra2" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="transStockClass" class="ReportBody">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Classification</th>
+                            <th>Origin</th>
+                            <th>Qty. Out</th>
+                            <th>Destination</th>
+                            <th>Qty. In</th>
+                            <th>Tot Amt Out</th>
+                            <th>Tot Amt In</th>
+                            <th>Tot Cost Out</th>
+                            <th>Tot Cost In</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="transChart" class="chartContainer">
+                <div id="topClass">
+                    <h5>Top Classifications</h5>
+                    <canvas id="transChart3"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="transCounter2" class="recCounter"></span>
+                <button id="printStockClassPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printStockClassXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="transBtn2"><i class="fa fa-list"></i> List</button>
+            </div>
+        </div>
+    </div>
+`
+
 const fragment = document.createDocumentFragment();
 
 const div1 = document.createElement('div');
@@ -210,7 +253,7 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
         reportBody.innerHTML =  reportTable;
 
         // Show report chart
-        document.getElementById('transChart').style.display='flex';
+        document.getElementById('transDetailsChart').style.display='flex';
         StockChart(data,'Details1')
         StockChart(data,'Details2')
         // document.getElementById('printStockDetailsPDF').disabled = false

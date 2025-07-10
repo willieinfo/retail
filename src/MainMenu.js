@@ -34,7 +34,7 @@ const menuItems= `
         <hr class="menuLine">
         <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
         <li menu-ref="A03" class="salesCompBrand">Sales Ranking by Brand</li>
-        <li menu-ref="A04" class="salesRankingByType">Sales Ranking by Classification</li>
+        <li menu-ref="A04" class="salesCompClass">Sales Ranking by Classification</li>
         <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
         <li menu-ref="A06" class="dailySalesSum">Daily Sales Summary</li>
@@ -58,7 +58,7 @@ const menuItems= `
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li menu-ref="C03" class="stockDetails">Stock Transfer by SKU</li>
-        <li>Stock Transfer by Classification</li>
+        <li menu-ref="C04" class="stockClass">Stock Transfer by Classification</li>
         <li>Stock Transfer by Brand</li>
     </ul>
 </li>

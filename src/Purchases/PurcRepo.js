@@ -101,8 +101,8 @@ const divPurchSumSupp =`
                 <table id="purchRepoTable2">
                     <thead id="rankTHead1">
                         <tr>
-                            <th>Location</th>
                             <th>Supplier</th>
+                            <th>Location</th>
                             <th>Quantity</th>
                             <th>Receiving Cost</th>
                             <th>Selling Price</th>
@@ -361,7 +361,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             
             const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
 
-            printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking by SKU');
+            printReportExcel(data, columnConfig, colWidths, titleRows, 'Stock Receiving by SKU');
     })
 }
 
@@ -879,8 +879,8 @@ async function PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             <table id="purchRepoTable1">
                 <thead id="rankTHead1">
                     <tr>
-                        <th>Location</th>
                         <th>Supplier</th>
+                        <th>Location</th>
                         <th>Quantity</th>
                         <th>Receiving Cost</th>
                         <th>Selling Price</th>
@@ -890,8 +890,8 @@ async function PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum,
                     ${data.map(item => {
                         return `
                             <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}"">
-                                <td class="colNoWrap" style="text-align: left">${item.LocaName || 'N/A'}</td>
                                 <td class="colNoWrap">${item.SuppName || 'N/A'}</td>
+                                <td class="colNoWrap" style="text-align: left">${item.LocaName || 'N/A'}</td>
                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
                                 <td style="text-align: right; font-weight: bold">${formatter.format(item.PurcCost) || 'N/A'}</td>
                                 <td style="text-align: right">${formatter.format(item.SellPrce) || 'N/A'}</td>
@@ -942,13 +942,13 @@ async function PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             ];
 
             const colWidths = [
-                { width: 20 },{ width: 30 },{ width: 10 },{ width: 15 },{ width: 15 },
+                { width: 30 },{ width: 30 },{ width: 10 },{ width: 15 },{ width: 15 },
                 { width: 15 },{ width: 15 },{ width: 15 },
             ];
         
             const columnConfig = [
-                { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
                 { label: 'Supplier',getValue: row => row.SuppName,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+                { label: 'Location',getValue: row => row.LocaName,type: 'string',align: 'left'},
                 { label: 'Quantity',getValue: row => +row.Quantity,
                     total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
                     align: 'right',type: 'integer',cellFormat: '#,##0'},

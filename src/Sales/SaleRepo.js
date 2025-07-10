@@ -8,78 +8,6 @@ const dDateFrom = new Date(), dDateTo__ = new Date(),
 
 const cCompName = window.CompName
 
-const divCompBrand = `
-    <div id="SalesCompBrand" class="report-section containerDiv">
-        <div class="ReportHead">
-            <span>Sales Ranking Report by Brand</span>
-            <button id="closeRepo6" class="closeForm">✖</button>
-        </div>
-        <div class="ReportBody">
-            <div id="salesCompBrand" class="ReportBody">
-                <table>
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Brand</th>
-                            <th colspan="8">
-                                Current
-                                <div class='thDateRange'">
-                                    ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
-                                </div>
-                            </th>
-                            <th colspan="2">
-                                Previous Month
-                                <div class='thDateRange'">
-                                    ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
-                                </div>
-                            </th>
-                            <th colspan="2">
-                                Previous Year
-                                <div class='thDateRange'">
-                                    ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
-                                </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Quantity</th>
-                            <th>Gross</th>
-                            <th>Discount</th>
-                            <th>Net</th>
-                            <th>Cost</th>
-                            <th>Gross Profit</th>
-                            <th>GP %</th>
-                            <th>Net</th>
-                            <th>Inc/Dec %</th>
-                            <th>Net</th>
-                            <th>Inc/Dec %</th>
-                        </tr>
-                    </thead>
-                </table>            
-            </div>
-
-            <div id="brandCompChart" class="chartContainer">
-                <div class="divBrand1">
-                    <h5>Current Year</h5>
-                    <p id='currDateRange'></p>
-                    <canvas id="brandChart1"></canvas>
-                </div>
-                <div class="divBrand2">
-                    <h5>Previous Month</h5>
-                    <p id='prevDateRange'></p>
-                    <canvas id="brandChart2"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="ReportFooter" style="justify-content: flex-end;">
-            <div class="footSegments">
-                <span id="compBrandCounter" class="recCounter"></span>
-                <button id="printCompBrandPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printCompBrandXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="compBrand"><i class="fa fa-list"></i> List</button>
-            </div>
-        </div>
-    </div>
-`
 const divCompStore = `
     <div id="SalesRankStore" class="report-section containerDiv">
         <div class="ReportHead">
@@ -153,19 +81,39 @@ const divCompStore = `
     </div>
 `
 
-const divRankBrand =`
-    <div id="SalesRankBrand" class="report-section containerDiv">
+const divCompBrand = `
+    <div id="SalesCompBrand" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Sales Ranking Report by Brand</span>
-            <button id="closeRepo2" class="closeForm">✖</button>
+            <button id="closeRepo6" class="closeForm">✖</button>
         </div>
         <div class="ReportBody">
-            <div id="salesRankBrand" class="ReportBody">
-                <table id="salesRankTable1">
-                    <thead id="rankTHead1">
+            <div id="salesCompBrand" class="ReportBody">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Brand</th>
+                            <th colspan="8">
+                                Current
+                                <div class='thDateRange'">
+                                    ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Month
+                                <div class='thDateRange'">
+                                    ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Year
+                                <div class='thDateRange'">
+                                    ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                        </tr>
                         <tr>
                             <th>Rank</th>
-                            <th>Brand</th>
                             <th>Quantity</th>
                             <th>Gross</th>
                             <th>Discount</th>
@@ -173,29 +121,111 @@ const divRankBrand =`
                             <th>Cost</th>
                             <th>Gross Profit</th>
                             <th>GP %</th>
-                            <th>CTS %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
                         </tr>
                     </thead>
                 </table>            
             </div>
 
-            <div id="brandRankChart" class="chartContainer">
-                <div id="topBrands">
-                    <h5>Top 30 Brands</h5>
-                    <canvas id="brandChart3"></canvas>
+            <div id="brandCompChart" class="chartContainer">
+                <div class="divBrand1">
+                    <h5>Current Year</h5>
+                    <p class='currDateRange'></p>
+                    <canvas id="brandnmeChart1"></canvas>
+                </div>
+                <div class="divBrand2">
+                    <h5>Previous Month</h5>
+                    <p class='prevDateRange'></p>
+                    <canvas id="brandnmeChart2"></canvas>
                 </div>
             </div>
         </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
             <div class="footSegments">
-                <span id="saleRank2Counter" class="recCounter"></span>
-                <button id="printBrandRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printBrandRankXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="saleRank2"><i class="fa fa-list"></i> List</button>
+                <span id="compBrandCounter" class="recCounter"></span>
+                <button id="printCompBrandPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printCompBrandXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="compBrand"><i class="fa fa-list"></i> List</button>
             </div>
         </div>
     </div>
 `
+const divCompClass = `
+    <div id="SalesCompClass" class="report-section containerDiv">
+        <div class="ReportHead">
+            <span>Sales Ranking Report by Classification</span>
+            <button id="closeRepo8" class="closeForm">✖</button>
+        </div>
+        <div class="ReportBody">
+            <div id="salesCompClass" class="ReportBody">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Classification</th>
+                            <th colspan="8">
+                                Current
+                                <div class='thDateRange'">
+                                    ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Month
+                                <div class='thDateRange'">
+                                    ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                            <th colspan="2">
+                                Previous Year
+                                <div class='thDateRange'">
+                                    ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Quantity</th>
+                            <th>Gross</th>
+                            <th>Discount</th>
+                            <th>Net</th>
+                            <th>Cost</th>
+                            <th>Gross Profit</th>
+                            <th>GP %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
+                            <th>Net</th>
+                            <th>Inc/Dec %</th>
+                        </tr>
+                    </thead>
+                </table>            
+            </div>
+
+            <div id="classCompChart" class="chartContainer">
+                <div class="divBrand1">
+                    <h5>Current Year</h5>
+                    <p class='currDateRange'></p>
+                    <canvas id="typedescChart1"></canvas>
+                </div>
+                <div class="divBrand2">
+                    <h5>Previous Month</h5>
+                    <p class='prevDateRange'></p>
+                    <canvas id="typedescChart2"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="ReportFooter" style="justify-content: flex-end;">
+            <div class="footSegments">
+                <span id="compClassCounter" class="recCounter"></span>
+                <button id="printCompClassPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
+                <button id="printCompClassXLS" disabled><i class="fa fa-file-excel"></i> Excel</button>
+                <button id="compClass"><i class="fa fa-list"></i> List</button>
+            </div>
+        </div>
+    </div>
+`
+
 const divRankStock =`
     <div id="SalesRankStock" class="report-section containerDiv">
         <div class="ReportHead">
@@ -272,7 +302,7 @@ const divDailySales =`
                     <h5>Last 30 Days</h5>
                     <canvas id="dailyLast30days"></canvas>
                 </div>
-                    <br>
+                <br>
             </div>
         </div>
         <div class="ReportFooter" style="justify-content: flex-end;">
@@ -285,49 +315,6 @@ const divDailySales =`
     </div>
 `
 
-const divRankType =`
-    <div id="SalesRankType" class="report-section containerDiv">
-        <div class="ReportHead">
-            <span>Sales Ranking Report by Classification</span>
-            <button id="closeRepo5" class="closeForm">✖</button>
-        </div>
-        <div class="ReportBody">
-            <div id="salesRankType" class="ReportBody">
-                <table id="salesRankTable1">
-                    <thead id="rankTHead1">
-                        <tr>
-                            <th>Rank</th>
-                            <th>Classification</th>
-                            <th>Quantity</th>
-                            <th>Gross</th>
-                            <th>Discount</th>
-                            <th>Net</th>
-                            <th>Cost</th>
-                            <th>Gross Profit</th>
-                            <th>GP %</th>
-                            <th>CTS %</th>
-                        </tr>
-                    </thead>
-                </table>            
-            </div>
-
-            <div id="typeRankChart" class="chartContainer">
-                <div id="topClass">
-                    <h5>Top 30 Classifications</h5>
-                    <canvas id="typeChart1"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="ReportFooter" style="justify-content: flex-end;">
-            <div class="footSegments">
-                <span id="saleRank4Counter" class="recCounter"></span>
-                <button id="printTypeRankPDF" disabled><i class="fa fa-file-pdf"></i> PDF</button>
-                <button id="printTypeRank" disabled><i class="fa fa-file-excel"></i> Excel</button>
-                <button id="saleRank4"><i class="fa fa-list"></i> List</button>
-            </div>
-        </div>
-    </div>
-`
 const fragment = document.createDocumentFragment();
 
 const div1 = document.createElement('div');
@@ -335,27 +322,340 @@ div1.innerHTML = divCompStore;
 fragment.appendChild(div1);
 
 const div2 = document.createElement('div');
-div2.innerHTML = divRankBrand;
+div2.innerHTML = divCompBrand;
 fragment.appendChild(div2);
 
 const div3 = document.createElement('div');
-div3.innerHTML = divRankStock;
+div3.innerHTML = divCompClass;
 fragment.appendChild(div3);
 
 const div4 = document.createElement('div');
-div4.innerHTML = divDailySales;
+div4.innerHTML = divRankStock;
 fragment.appendChild(div4);
 
 const div5 = document.createElement('div');
-div5.innerHTML = divRankType;
+div5.innerHTML = divDailySales;
 fragment.appendChild(div5);
 
-const div6 = document.createElement('div');
-div6.innerHTML = divCompBrand;
-fragment.appendChild(div6);
-
-
 document.body.appendChild(fragment);  // Only one reflow happens here
+
+
+// ======================================================
+async function SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+
+    let data = null;
+    const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
+    const dYearTo__ = goMonth(dDateTo__, -12)
+    const dMontFrom = goMonth(dDateFrom, -1)    // Previous Month
+    const dMontTo__ = goMonth(dDateTo__, -1)
+
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    let { timerInterval, elapsedTime } = startTimer(); 
+
+    try {
+        // Build query parameters
+        const url = new URL('http://localhost:3000/sales/SalesCompClass');
+        const params = new URLSearchParams();
+        if (cBrandNum) params.append('BrandNum', cBrandNum);
+        if (cUsersCde) params.append('UsersCde', cUsersCde);
+        if (cOtherCde) params.append('OtherCde', cOtherCde);
+        if (cCategNum) params.append('CategNum', cCategNum);
+        if (cItemDept) params.append('ItemDept', cItemDept);
+        if (cItemType) params.append('ItemType', cItemType);
+        if (cLocation) params.append('Location', cLocation);
+        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+        if (dDateFrom) params.append('DateFrom', dDateFrom); 
+        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (dYearFrom) params.append('YearFrom', dYearFrom); 
+        if (dYearTo__) params.append('YearTo__', dYearTo__); 
+        if (dMontFrom) params.append('MontFrom', dMontFrom); 
+        if (dMontTo__) params.append('MontTo__', dMontTo__); 
+
+        // Send request with query parameters
+        const response = await fetch(`${url}?${params.toString()}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const listCounter=document.getElementById('compClassCounter')
+        data = await response.json();
+        listCounter.innerHTML=`${data.length} Records`;
+        showNotification(`${data.length} Records fetched`);
+
+        // Clear the timer once data is fetched
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+        let nTotalQty = 0
+        let nTotalTrx = 0
+        let nTotalPrc = 0
+        let nTotalDsc = 0
+        let nTotalAmt = 0
+        let nTotalCos = 0
+        let nTotalGro = 0
+        let nGP_Prcnt = 0
+        let nGP_Total = 0
+
+        let nTotPrvYr = 0
+        let nPrvYrPct = 0
+        let nTotYrPct = 0
+        let nTotPrvMo = 0
+        let nPrvMoPct = 0
+        let nTotMoPct = 0
+
+        if (Array.isArray(data)) {
+            data.forEach(item => {
+                nTotalQty+=item.Quantity
+                nTotalTrx+=item.TrxCount
+                nTotalPrc+=item.ItemPrce
+                nTotalDsc+=(item.ItemPrce-item.Amount__)
+                nTotalAmt+=item.Amount__
+                nTotalCos+=item.LandCost
+                nTotalGro+=(item.Amount__-item.LandCost)
+
+                nTotPrvYr+=item.PrvYrAmt
+                nTotPrvMo+=item.PrvMoAmt
+            });
+        }
+        if (nTotalAmt !== 0) {
+            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+            nTotMoPct = ((nTotalAmt-nTotPrvMo) / nTotalAmt) * 100; // Total Inc/Dec formula
+            nTotYrPct = ((nTotalAmt-nTotPrvYr) / nTotalAmt) * 100; // Total Inc/Dec formula
+        }
+
+
+        const salesMainDiv = document.getElementById('SalesCompClass');
+        salesMainDiv.classList.add('active');
+
+        const reportBody = document.getElementById('salesCompClass');
+        reportBody.style.maxHeight = "80%";
+
+        reportBody.innerHTML = '';  // Clear previous content
+
+        // Define the table structure
+        const rankTable = `
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Classification</th>
+                        <th colspan="8">
+                            Current
+                            <div class='thDateRange'">
+                                ${formatDate(dDateFrom,'MM/DD/YYYY')} - ${formatDate(dDateTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                        <th colspan="2">
+                            Previous Month
+                            <div class='thDateRange'">
+                                ${formatDate(dMontFrom,'MM/DD/YYYY')} - ${formatDate(dMontTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                        <th colspan="2">
+                            Previous Year
+                            <div class='thDateRange'">
+                                ${formatDate(dYearFrom,'MM/DD/YYYY')} - ${formatDate(dYearTo__,'MM/DD/YYYY')}
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Quantity</th>
+                        <th>Gross</th>
+                        <th>Discount</th>
+                        <th>Net</th>
+                        <th>Cost</th>
+                        <th>Gross Profit</th>
+                        <th>GP %</th>
+                        <th>Net</th>
+                        <th>Inc/Dec %</th>
+                        <th>Net</th>
+                        <th>Inc/Dec %</th>
+                    </tr>
+                </thead>
+                <tbody id="rankTBody">
+                    ${data.map((item,index) => {
+                        nGP_Prcnt = 0;
+                        nPrvYrPct = 0
+                        nPrvMoPct = 0
+                        if (item.Amount__ !== 0) {
+                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
+                            nPrvYrPct = ((item.Amount__ - item.PrvYrAmt) / item.Amount__) * 100
+                            nPrvMoPct = ((item.Amount__ - item.PrvMoAmt) / item.Amount__) * 100
+                        }
+                        return `
+                            <tr>
+                                <td class="colNoWrap">${item.TypeDesc || 'N/A'}</td>
+                                <td style="text-align: center">${index+1 || 'N/A'}</td>
+                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost) || 'N/A'}</td>
+                                <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.PrvMoAmt) || 'N/A'}</td>
+                                <td style="text-align: right; color: ${nPrvMoPct < 0 ? 'red' : 'black'}">${nPrvMoPct ? nPrvMoPct.toFixed(2) + '%' : 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.PrvYrAmt) || 'N/A'}</td>
+                                <td style="text-align: right; color: ${nPrvYrPct < 0 ? 'red' : 'black'}">${nPrvYrPct ? nPrvYrPct.toFixed(2) + '%' : 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td style="text-align: right">Total</td>
+                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
+                        <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotPrvMo) || 'N/A'}</td>
+                        <td style="text-align: right; color: ${nTotMoPct < 0 ? 'red' : 'black'}">${nTotMoPct ? nTotMoPct.toFixed(2) + '%' : 'N/A'}</td>
+                        <td style="text-align: right">${formatter.format(nTotPrvYr) || 'N/A'}</td>
+                        <td style="text-align: right; color: ${nTotYrPct < 0 ? 'red' : 'black'}">${nTotYrPct ? nTotYrPct.toFixed(2) + '%' : 'N/A'}</td>
+                    </tr>
+                 </tfoot>
+            </table>
+        `;
+        
+        // Add the table HTML to the div
+        reportBody.innerHTML = rankTable;
+        // Show chart
+        document.getElementById('classCompChart').style.display='flex';
+        const dateRange1 = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const dateRange2 = `From: ${formatDate(dMontFrom,'MM/DD/YYYY')} To: ${formatDate(dMontTo__,'MM/DD/YYYY')}`
+        document.getElementById('printCompClassXLS').disabled = false
+
+        document.querySelectorAll('.currDateRange').forEach( e => {e.innerText = dateRange1})
+        document.querySelectorAll('.prevDateRange').forEach( e => {e.innerText = dateRange2})
+
+
+        SalesCompChart(data , 'TypeDesc')
+
+        
+    } catch (error) {
+        console.error('Fetch error:', error);
+        displayErrorMsg(error,'Fetch error')
+    } finally {
+        document.getElementById('loadingIndicator').style.display = 'none';
+        // Clear the timer once data is fetched
+        clearInterval(timerInterval);        
+        document.getElementById('runningTime').textContent=''
+
+    }
+
+    // Print report to Excel
+    document.getElementById('printCompClassXLS').addEventListener('click', () => {
+
+        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+        const titleRowsContent = [
+            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
+            { text: 'Sales Ranking by Classification', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+            { text: '' } // Spacer row
+          ];
+          
+          const colWidths = [
+              { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 }, // Gross
+              { width: 15 },{ width: 15 },{ width: 12 },{ width: 15 },{ width: 15 }, // Gross Profit
+              { width: 10 },{ width: 10 }  // CTS %
+          ];
+      
+          const columnConfig = [
+              {label: 'Classification',getValue: row => row.TypeDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+              {label: 'Quantity',getValue: row => +row.Quantity,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+                align: 'right',type: 'integer',cellFormat: '#,##0' 
+              },
+              {label: 'Gross',getValue: row => +row.ItemPrce,
+                total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+                align: 'right',cellFormat: '#,##0.00' 
+              },
+              {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+                align: 'right',cellFormat: '#,##0.00' 
+              },
+              {label: 'Net',getValue: row => +row.Amount__,
+                total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+                align: 'right',cellFormat: '#,##0.00' 
+              },
+              {label: 'Cost',getValue: row => +row.LandCost,
+                total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+                align: 'right',cellFormat: '#,##0.00' 
+              },
+              {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),
+                total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+                align: 'right',cellFormat: '#,##0.00' 
+              },
+              {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+                total: rows => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+                  return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+                },align: 'right',cellFormat: 'percent' 
+              },
+              {label: 'CTS %',getValue: (row, rows) => {
+                  const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+                  return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+                },align: 'right',totalLabel: '100%',cellFormat: 'percent' 
+              }
+          ];
+          
+        const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+        printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Classification');
+    })
+
+}
+
+// Wait for the DOM to fully load before adding the event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const menuReportElements = document.querySelectorAll('.salesCompClass'); //<li>
+    const rankRepoDiv = document.getElementById('SalesCompClass');
+    const closeRepo = document.getElementById('closeRepo8');
+    
+    closeRepo.addEventListener('click', () => {
+        rankRepoDiv.classList.remove('active');
+    });
+
+    menuReportElements.forEach(element => {
+        element.addEventListener('click', () => {
+            showReport('SalesCompClass')
+        });
+    });
+
+});
+
+document.getElementById('compClass').addEventListener('click', () => {
+    try {
+        FiltrRec('CompClas').then(() => {
+            const filterData = JSON.parse(localStorage.getItem("filterData"));
+    
+            const dDateFrom = filterData[0];
+            const dDate__To = filterData[1];
+            const cLocation = filterData[2];
+            const cUsersCde = filterData[3];
+            const cOtherCde = filterData[4];
+            // const cDescript = filterData[5];
+            const cBrandNum = filterData[6];
+            const cCategNum = filterData[7];
+            const cItemType = filterData[8];
+            const cItemDept = filterData[9];
+            const cStoreGrp = filterData[12];
+            
+            SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+    
+        });
+    } catch (error) {
+        console.error("Error processing the filter:", error);
+        displayErrorMsg(error,"Error processing the filter")
+    }
+})
+
 
 // ======================================================
 async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -395,7 +695,7 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
             throw new Error('Network response was not ok');
         }
 
-        const listCounter=document.getElementById('saleRank1Counter')
+        const listCounter=document.getElementById('compBrandCounter')
         data = await response.json();
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
@@ -546,9 +846,11 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         const dateRange1 = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const dateRange2 = `From: ${formatDate(dMontFrom,'MM/DD/YYYY')} To: ${formatDate(dMontTo__,'MM/DD/YYYY')}`
         document.getElementById('printCompBrandXLS').disabled = false
-        document.getElementById('currDateRange').innerText = dateRange1
-        document.getElementById('prevDateRange').innerText = dateRange2
-        SalesCompChart(data)
+
+        document.querySelectorAll('.currDateRange').forEach( e => {e.innerText = dateRange1})
+        document.querySelectorAll('.prevDateRange').forEach( e => {e.innerText = dateRange2})
+
+        SalesCompChart(data, 'BrandNme')
 
         
     } catch (error) {
@@ -562,12 +864,6 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
     }
 
-        // document.addEventListener('DOMContentLoaded', () => {
-        //     SalesChart(data, 'Current');
-        //     SalesChart(data, 'Previous');
-        // });
-
-
     // Print report to Excel
     document.getElementById('printCompBrandXLS').addEventListener('click', () => {
 
@@ -580,7 +876,7 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
           ];
           
           const colWidths = [
-              { width: 25 },{ width: 30 },{ width: 10 },{ width: 10 },{ width: 15 }, // Gross
+              { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 }, // Gross
               { width: 15 },{ width: 15 },{ width: 12 },{ width: 15 },{ width: 15 }, // Gross Profit
               { width: 10 },{ width: 10 }  // CTS %
           ];
@@ -976,216 +1272,216 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+// async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
+//     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
 
-    document.getElementById('loadingIndicator').style.display = 'flex';
-    let { timerInterval, elapsedTime } = startTimer(); 
-    let data = null;
-    try {
-        // Build query parameters
-        const url = new URL('http://localhost:3000/sales/SalesRankBrand');
-        const params = new URLSearchParams();
-        if (cBrandNum) params.append('BrandNum', cBrandNum);
-        if (cUsersCde) params.append('UsersCde', cUsersCde);
-        if (cOtherCde) params.append('OtherCde', cOtherCde);
-        if (cCategNum) params.append('CategNum', cCategNum);
-        if (cItemDept) params.append('ItemDept', cItemDept);
-        if (cItemType) params.append('ItemType', cItemType);
-        if (cLocation) params.append('Location', cLocation);
-        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
-        if (dDateFrom) params.append('DateFrom', dDateFrom); 
-        if (dDateTo__) params.append('DateTo__', dDateTo__); 
+//     document.getElementById('loadingIndicator').style.display = 'flex';
+//     let { timerInterval, elapsedTime } = startTimer(); 
+//     let data = null;
+//     try {
+//         // Build query parameters
+//         const url = new URL('http://localhost:3000/sales/SalesRankBrand');
+//         const params = new URLSearchParams();
+//         if (cBrandNum) params.append('BrandNum', cBrandNum);
+//         if (cUsersCde) params.append('UsersCde', cUsersCde);
+//         if (cOtherCde) params.append('OtherCde', cOtherCde);
+//         if (cCategNum) params.append('CategNum', cCategNum);
+//         if (cItemDept) params.append('ItemDept', cItemDept);
+//         if (cItemType) params.append('ItemType', cItemType);
+//         if (cLocation) params.append('Location', cLocation);
+//         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
+//         if (dDateFrom) params.append('DateFrom', dDateFrom); 
+//         if (dDateTo__) params.append('DateTo__', dDateTo__); 
 
-        // Send request with query parameters
-        const response = await fetch(`${url}?${params.toString()}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+//         // Send request with query parameters
+//         const response = await fetch(`${url}?${params.toString()}`);
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
 
-        let nTotalQty = 0
-        let nTotalPrc = 0
-        let nTotalDsc = 0
-        let nTotalAmt = 0
-        let nTotalCos = 0
-        let nTotalGro = 0
-        let nGP_Prcnt = 0
-        let nGP_Total = 0
+//         let nTotalQty = 0
+//         let nTotalPrc = 0
+//         let nTotalDsc = 0
+//         let nTotalAmt = 0
+//         let nTotalCos = 0
+//         let nTotalGro = 0
+//         let nGP_Prcnt = 0
+//         let nGP_Total = 0
     
-        const listCounter=document.getElementById('saleRank2Counter')
-        data = await response.json();
-        listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
-        clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
+//         const listCounter=document.getElementById('saleRank2Counter')
+//         data = await response.json();
+//         listCounter.innerHTML=`${data.length} Records`;
+//         showNotification(`${data.length} Records fetched`);
+//         clearInterval(timerInterval);        
+//         document.getElementById('runningTime').textContent=''
 
-        if (Array.isArray(data)) {
-            data.forEach(item => {
-                nTotalQty+=item.Quantity
-                nTotalPrc+=item.ItemPrce
-                nTotalDsc+=(item.ItemPrce-item.Amount__)
-                nTotalAmt+=item.Amount__
-                nTotalCos+=item.LandCost
-                nTotalGro+=(item.Amount__-item.LandCost)
-            });
-        }
-        if (nTotalAmt !== 0) {
-            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
-        }
+//         if (Array.isArray(data)) {
+//             data.forEach(item => {
+//                 nTotalQty+=item.Quantity
+//                 nTotalPrc+=item.ItemPrce
+//                 nTotalDsc+=(item.ItemPrce-item.Amount__)
+//                 nTotalAmt+=item.Amount__
+//                 nTotalCos+=item.LandCost
+//                 nTotalGro+=(item.Amount__-item.LandCost)
+//             });
+//         }
+//         if (nTotalAmt !== 0) {
+//             nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
+//         }
 
-        const salesRankBrandDiv = document.getElementById('SalesRankBrand');
-        salesRankBrandDiv.classList.add('active');
+//         const salesRankBrandDiv = document.getElementById('SalesRankBrand');
+//         salesRankBrandDiv.classList.add('active');
 
-        const reportBody = document.getElementById('salesRankBrand');
-        reportBody.style.maxHeight = "80%";
-        // if (data.length > 30) {
-        //     reportBody.style.height='700px'
-        // }
-        reportBody.innerHTML = '';  // Clear previous content
+//         const reportBody = document.getElementById('salesRankBrand');
+//         reportBody.style.maxHeight = "80%";
+//         // if (data.length > 30) {
+//         //     reportBody.style.height='700px'
+//         // }
+//         reportBody.innerHTML = '';  // Clear previous content
 
-        // Define the table structure
-        const rankTable = `
-            <table id="salesRankTable1">
-                <thead id="rankTHead1">
-                    <tr>
-                        <th>Rank</th>
-                        <th>Brand</th>
-                        <th>Quantity</th>
-                        <th>Gross</th>
-                        <th>Discount</th>
-                        <th>Net</th>
-                        <th>Cost</th>
-                        <th>Gross Profit</th>
-                        <th>GP %</th>
-                        <th>CTS %</th>
-                    </tr>
-                </thead>
-                <tbody id="rankTBody">
-                    ${data.map((item,index) => {
-                        nGP_Prcnt = 0;
-                        if (item.Amount__ !== 0) {
-                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
-                        }
-                        return `
-                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
-                                <td style="text-align: center">${index+1 || 'N/A'}</td>
-                                <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
-                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
-                                <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
-                                <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-                <tfoot>
-                    <tr style="height: 2px"></tr>
-                    <tr style="font-weight: bold">
-                        <td></td>
-                        <td style="text-align: right">Total</td>
-                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
-                        <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
-                        <td>100%</td>
-                    </tr>
-                 </tfoot>
-            </table>
-        `;
+//         // Define the table structure
+//         const rankTable = `
+//             <table id="salesRankTable1">
+//                 <thead id="rankTHead1">
+//                     <tr>
+//                         <th>Rank</th>
+//                         <th>Brand</th>
+//                         <th>Quantity</th>
+//                         <th>Gross</th>
+//                         <th>Discount</th>
+//                         <th>Net</th>
+//                         <th>Cost</th>
+//                         <th>Gross Profit</th>
+//                         <th>GP %</th>
+//                         <th>CTS %</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody id="rankTBody">
+//                     ${data.map((item,index) => {
+//                         nGP_Prcnt = 0;
+//                         if (item.Amount__ !== 0) {
+//                             nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
+//                         }
+//                         return `
+//                             <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
+//                                 <td style="text-align: center">${index+1 || 'N/A'}</td>
+//                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
+//                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+//                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
+//                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
+//                                 <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
+//                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+//                                 <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
+//                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
+//                                 <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
+//                             </tr>
+//                         `;
+//                     }).join('')}
+//                 </tbody>
+//                 <tfoot>
+//                     <tr style="height: 2px"></tr>
+//                     <tr style="font-weight: bold">
+//                         <td></td>
+//                         <td style="text-align: right">Total</td>
+//                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
+//                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
+//                         <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
+//                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
+//                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+//                         <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
+//                         <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
+//                         <td>100%</td>
+//                     </tr>
+//                  </tfoot>
+//             </table>
+//         `;
         
-        // Add the table HTML to the div
-        reportBody.innerHTML = rankTable;
+//         // Add the table HTML to the div
+//         reportBody.innerHTML = rankTable;
 
-        // Show store ranking chart
-        document.getElementById('brandRankChart').style.display='flex';
-        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printBrandRankXLS').disabled = false
-        rankBrandSales(data, dateRange)
+//         // Show store ranking chart
+//         document.getElementById('brandRankChart').style.display='flex';
+//         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+//         document.getElementById('printBrandRankXLS').disabled = false
+//         rankBrandSales(data, dateRange)
        
-    } catch (error) {
-        console.error('Fetch error:', error);
-        displayErrorMsg(error,'Fetch error')
-    } finally {
-        // Hide loading spinner once data is fetched or an error occurs
-        document.getElementById('loadingIndicator').style.display = 'none';
-        clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
+//     } catch (error) {
+//         console.error('Fetch error:', error);
+//         displayErrorMsg(error,'Fetch error')
+//     } finally {
+//         // Hide loading spinner once data is fetched or an error occurs
+//         document.getElementById('loadingIndicator').style.display = 'none';
+//         clearInterval(timerInterval);        
+//         document.getElementById('runningTime').textContent=''
 
-    }
+//     }
 
-    document.getElementById('printBrandRankXLS').addEventListener('click', () => {
+//     document.getElementById('printBrandRankXLS').addEventListener('click', () => {
 
-        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        const titleRowsContent = [
-            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
-            { text: 'Sales Ranking by Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
-            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
-            { text: '' } // Spacer row
-          ];
+//         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
+//         const titleRowsContent = [
+//             { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
+//             { text: 'Sales Ranking by Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
+//             { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
+//             { text: '' } // Spacer row
+//           ];
 
-        const colWidths = [
-              { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
-              { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
-        ];
+//         const colWidths = [
+//               { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
+//               { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
+//         ];
 
-        const columnConfig = [
-            {label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
-            {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
-            align: 'right',type: 'integer',cellFormat: '#,##0'},
-            {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
-            total: rows => {
-                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
-                return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
-            },align: 'right',cellFormat: 'percent'},
-            {label: 'CTS %',getValue: (row, rows) => {
-                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
-            }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
-        ];
+//         const columnConfig = [
+//             {label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
+//             {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
+//             align: 'right',type: 'integer',cellFormat: '#,##0'},
+//             {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
+//             align: 'right',cellFormat: '#,##0.00'},
+//             {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
+//             align: 'right',cellFormat: '#,##0.00'},
+//             {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
+//             align: 'right',cellFormat: '#,##0.00'},
+//             {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
+//             align: 'right',cellFormat: '#,##0.00'},
+//             {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
+//             align: 'right',cellFormat: '#,##0.00'},
+//             {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
+//             total: rows => {
+//                 const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+//                 const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
+//                 return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
+//             },align: 'right',cellFormat: 'percent'},
+//             {label: 'CTS %',getValue: (row, rows) => {
+//                 const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
+//                 return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
+//             }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
+//         ];
           
-          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
+//           const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
 
-          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Brand');
-    })
+//           printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Brand');
+//     })
 
-}
+// }
 
-// Wait for the DOM to fully load before adding the event listener
-document.addEventListener('DOMContentLoaded', () => {
-    const menuReportElements = document.querySelectorAll('.salesRankingByBrand');
-    const rankRepoDiv = document.getElementById('SalesRankBrand');
-    const closeRepo = document.getElementById('closeRepo2');
+// // Wait for the DOM to fully load before adding the event listener
+// document.addEventListener('DOMContentLoaded', () => {
+//     const menuReportElements = document.querySelectorAll('.salesRankingByBrand');
+//     const rankRepoDiv = document.getElementById('SalesRankBrand');
+//     const closeRepo = document.getElementById('closeRepo2');
     
-    closeRepo.addEventListener('click', () => {
-        rankRepoDiv.classList.remove('active');
-    });
+//     closeRepo.addEventListener('click', () => {
+//         rankRepoDiv.classList.remove('active');
+//     });
 
-        // Add event listener to each element with the necessary arguments
-    menuReportElements.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('SalesRankBrand')
-        });
-    });
+//         // Add event listener to each element with the necessary arguments
+//     menuReportElements.forEach(element => {
+//         element.addEventListener('click', () => {
+//             showReport('SalesRankBrand')
+//         });
+//     });
 
-});
+// });
 
 document.getElementById('saleRank1').addEventListener('click', () => {
     try {
@@ -1213,33 +1509,34 @@ document.getElementById('saleRank1').addEventListener('click', () => {
         displayErrorMsg(error,"Error processing the filter")
     }
 })
-document.getElementById('saleRank2').addEventListener('click', () => {
-    try {
-        FiltrRec('SaleRnk2').then(() => {
-            const filterData = JSON.parse(localStorage.getItem("filterData"));
+
+// document.getElementById('saleRank2').addEventListener('click', () => {
+//     try {
+//         FiltrRec('SaleRnk2').then(() => {
+//             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
-            const dDateFrom = filterData[0];
-            const dDate__To = filterData[1];
-            const cLocation = filterData[2];
-            const cUsersCde = filterData[3];
-            const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
-            const cBrandNum = filterData[6];
-            const cCategNum = filterData[7];
-            const cItemType = filterData[8];
-            const cItemDept = filterData[9];
-            const cStoreGrp = filterData[12];
+//             const dDateFrom = filterData[0];
+//             const dDate__To = filterData[1];
+//             const cLocation = filterData[2];
+//             const cUsersCde = filterData[3];
+//             const cOtherCde = filterData[4];
+//             // const cDescript = filterData[5];
+//             const cBrandNum = filterData[6];
+//             const cCategNum = filterData[7];
+//             const cItemType = filterData[8];
+//             const cItemDept = filterData[9];
+//             const cStoreGrp = filterData[12];
 
-            SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+//             SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
+//                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
 
-        });
-    } catch (error) {
-        console.error("Error processing the filter:", error);
-        displayErrorMsg(error,"Error processing the filter")
-    }
+//         });
+//     } catch (error) {
+//         console.error("Error processing the filter:", error);
+//         displayErrorMsg(error,"Error processing the filter")
+//     }
 
-})
+// })
 
 
 
@@ -1755,7 +2052,7 @@ async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     let data = null;
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/sales/SalesRankType');
+        const url = new URL('http://localhost:3000/sales/SalesCompClass');
         const params = new URLSearchParams();
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cUsersCde) params.append('UsersCde', cUsersCde);
@@ -1936,52 +2233,6 @@ async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 }
 
-// Wait for the DOM to fully load before adding the event listener
-document.addEventListener('DOMContentLoaded', () => {
-    const menuReportElements = document.querySelectorAll('.salesRankingByType');
-    const rankRepoDiv = document.getElementById('SalesRankType');
-    const closeRepo = document.getElementById('closeRepo5');
-    
-    closeRepo.addEventListener('click', () => {
-        rankRepoDiv.classList.remove('active');
-    });
-
-    // Add event listener to each element with the necessary arguments
-    menuReportElements.forEach(element => {
-        element.addEventListener('click', () => {
-            showReport('SalesRankType')
-        });
-    });
-
-});
-
-document.getElementById('saleRank4').addEventListener('click', () => {
-    try {
-        FiltrRec('SaleRnk4').then(() => {
-            const filterData = JSON.parse(localStorage.getItem("filterData"));
-    
-            const dDateFrom = filterData[0];
-            const dDate__To = filterData[1];
-            const cLocation = filterData[2];
-            const cUsersCde = filterData[3];
-            const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
-            const cBrandNum = filterData[6];
-            const cCategNum = filterData[7];
-            const cItemType = filterData[8];
-            const cItemDept = filterData[9];
-            const cStoreGrp = filterData[12];
-            
-            SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
-    
-        });
-    } catch (error) {
-        console.error("Error processing the filter:", error);
-        displayErrorMsg(error,"Error processing the filter")
-    }
-})
-
 
 // SALES CHARTS SECTION HERE ==================================
 async function rankTypeSales(data, dateRange) {
@@ -2111,121 +2362,6 @@ async function rankTypeSales(data, dateRange) {
     }
 }
 
-async function rankBrandSales(data, dateRange) {
-   
-    let myChart3 = window.myChart3 || null;
-
-    try {
-        const brandData = data;
-        const brandMap = {};
-        
-        // Build brandMap without filling background colors yet
-        brandData.forEach(item => {
-            if (!brandMap[item.BrandNme]) {
-                brandMap[item.BrandNme] = { Amount__: 0, Outright: item.Outright};
-            }
-            brandMap[item.BrandNme].Amount__ += Math.round(item.Amount__);
-        });
-
-        // Sort the brandMap by amount
-        let sortedBrands = Object.entries(brandMap)
-            .map(([BrandNme, values]) => ({ BrandNme, ...values }))
-            .slice(0, 30);
-
-        // Now assign background colors after sorting
-        const backgroundColors = sortedBrands.map(item => 
-            item.Outright === 1 ? 'rgba(54, 162, 235, 0.6)' : 'rgba(75, 192, 192, 0.2)'
-        );
-
-        const labels = sortedBrands.map(item => item.BrandNme.substring(0, 15).trim());
-        const curreamtData = sortedBrands.map(item => item.Amount__);
-
-        // // Function to round up to the nearest multiple of step
-        // const getMagnitudeStep = (value) => {
-        //     const magnitude = Math.floor(Math.log10(value));
-        //     return Math.pow(10, magnitude); // Returns the nearest power of 10
-        // };
-
-        // // Function to round up to the nearest appropriate step
-        // const roundUpToDynamicStep = (value) => {
-        //     const step = getMagnitudeStep(value);
-        //     return Math.ceil(value / step) * step;
-        // };
-
-        // // Calculate the maximum value for the x-axis
-        // const maxCurreamt = Math.max(...curreamtData);
-        // // Round up maxValue to the nearest appropriate step
-        // const roundedMaxValue = roundUpToDynamicStep(maxCurreamt);
-
-        if (myChart3) myChart3.destroy();
-
-        const getChartOptions = () => ({
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    // max: roundedMaxValue, // Use the dynamically rounded max value
-                    ticks: {
-                        font: { family: 'Arial Narrow', size: 12 },
-                        color: 'black',
-                        padding: 5, 
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: { display: false },
-                    ticks: {
-                        autoSkip: false,
-                        font: { family: 'Arial Narrow', size: 12 }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: dateRange,  // Your desired title text here
-                    font: {
-                        family: 'Arial',
-                        size: 16
-                    },
-                    color: 'black',  // Title text color
-                    padding: {
-                        top: 20,  // Space between title and chart
-                        bottom: 10
-                    }
-                }
-                }
-
-        });
-
-        const ctx3 = document.getElementById('brandChart1').getContext('2d');
-        myChart3 = new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: dateRange,
-                    data: curreamtData,
-                    backgroundColor: backgroundColors, 
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: getChartOptions(),
-        });
-
-        window.myChart3 = myChart3;
-
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        displayErrorMsg(error,'Error processing chart data')
-    }
-}
 
 function setDailyChart(data, cLocaName) {
     let myChart5 = window.myChart5 || null;
@@ -2656,7 +2792,7 @@ async function setStoreChart(chartData, dateRange) {
 }
 
 
-async function SalesChart(data, showData) {
+async function SalesChart(data) {
     try {
         // Define a mapping of showData to canvas IDs
         const dataCanvasMapping = {
@@ -2822,14 +2958,23 @@ async function SalesChart(data, showData) {
     }
 }
 
-async function SalesCompChart(data) {
-    try {
-        const current_Chart = document.getElementById("brandChart1");
-        const previousChart = document.getElementById("brandChart2");
 
-        // Destroy existing charts if any
-        if (window.myCharts?.brandChart1) window.myCharts.brandChart1.destroy();
-        if (window.myCharts?.brandChart2) window.myCharts.brandChart2.destroy();
+async function SalesCompChart(data, showData) {
+    try {
+        let current_Chart = null;
+        let previousChart = null;
+
+        // Dynamically create canvas chart IDs based on the showData value
+        const currentChartId = `${showData.toLowerCase()}Chart1`;  // e.g., 'brandChart1' or 'classChart1'
+        const previousChartId = `${showData.toLowerCase()}Chart2`; // e.g., 'brandChart2' or 'classChart2'
+
+        // Assign the canvas elements based on the dynamic IDs
+        current_Chart = document.getElementById(currentChartId);
+        previousChart = document.getElementById(previousChartId);
+
+        // Destroy existing charts if they exist
+        if (window.myCharts?.[currentChartId]) window.myCharts[currentChartId].destroy();
+        if (window.myCharts?.[previousChartId]) window.myCharts[previousChartId].destroy();
 
         // Clear canvas manually
         current_Chart.getContext('2d').clearRect(0, 0, current_Chart.width, current_Chart.height);
@@ -2838,25 +2983,32 @@ async function SalesCompChart(data) {
         // Initialize chart registry if needed
         window.myCharts = window.myCharts || {};
 
-        // Aggregate amounts by BrandNme
-        const brandMap = {};
-        data.forEach(({ BrandNme = '', Amount__ = 0, PrvMoAmt = 0 }) => {
-            const brand = BrandNme.trim();
-            if (!brandMap[brand]) brandMap[brand] = { current: 0, previous: 0 };
+        // Aggregate amounts by dynamic field (e.g., BrandNme or TypeDesc)
+        const dataFieldMap = {};
+        data.forEach(item => {
+            const fieldValue = item[showData];  // Access the dynamic field using showData
+            const amountCurrent = parseFloat(item.Amount__) || 0;
+            const amountPrevious = parseFloat(item.PrvMoAmt) || 0;
 
-            brandMap[brand].current += parseFloat(Amount__) || 0;
-            brandMap[brand].previous += parseFloat(PrvMoAmt) || 0;
+            // If there's no entry for this field value, create an empty one
+            if (!dataFieldMap[fieldValue]) {
+                dataFieldMap[fieldValue] = { current: 0, previous: 0 };
+            }
+
+            // Aggregate the values
+            dataFieldMap[fieldValue].current += amountCurrent;
+            dataFieldMap[fieldValue].previous += amountPrevious;
         });
 
         // Convert to array and sort by current amount descending
-        const sortedBrands = Object.entries(brandMap)
-            .map(([BrandNme, vals]) => ({ BrandNme, ...vals }))
+        const sortedDataFields = Object.entries(dataFieldMap)
+            .map(([fieldValue, vals]) => ({ [showData]: fieldValue, ...vals }))
             .sort((a, b) => b.current - a.current);
 
-        const top20 = sortedBrands.slice(0, 20);
-        const others = sortedBrands.slice(20);
+        const top20 = sortedDataFields.slice(0, 20);
+        const others = sortedDataFields.slice(20);
 
-        const dataGroupLabels = top20.map(item => item.BrandNme);
+        const dataGroupLabels = top20.map(item => item[showData]);
         const dataGroupValuesCurrent = top20.map(item => item.current);
         const dataGroupValuesPrevious = top20.map(item => item.previous);
 
@@ -2883,26 +3035,11 @@ async function SalesCompChart(data) {
         const backgroundColors = dataGroupLabels.map(() => generateRandomColor());
         const borderColors = backgroundColors.map(c => c.replace('0.6', '1'));
 
-        // Function to round up to the nearest multiple of step
-        const getMagnitudeStep = (value) => {
-            const magnitude = Math.floor(Math.log10(value));
-            return Math.pow(10, magnitude); // Returns the nearest power of 10
-        };
-
-        // Function to round up to the nearest appropriate step
-        const roundUpToDynamicStep = (value) => {
-            const step = getMagnitudeStep(value);
-            return Math.ceil(value / step) * step;
-        };
-
         // Calculate the maximum value for the x-axis
         const maxiCurValue = Math.max(...dataGroupValuesCurrent);
         const maxiPrvValue = Math.max(...dataGroupValuesPrevious);
-        const maximumValue = Math.max(maxiCurValue , maxiPrvValue);
-        // Round up maxValue to the nearest appropriate step
-        const roundedMaxValue = roundUpToDynamicStep(maximumValue);
-
-
+        const maximumValue = Math.max(maxiCurValue, maxiPrvValue);
+        const roundedMaxValue = Math.ceil(maximumValue);
 
         // Chart options (shared)
         const commonOptions = {
@@ -2936,7 +3073,6 @@ async function SalesCompChart(data) {
                     beginAtZero: true,
                     max: roundedMaxValue,
                     ticks: {
-                        stepSize: roundedMaxValue / 5,
                         maxRotation: 45,
                         minRotation: 0
                     }
@@ -2947,9 +3083,8 @@ async function SalesCompChart(data) {
             }
         };
 
-
-        // Render brandChart1 (Current Amount__)
-        window.myCharts.brandChart1 = new Chart(current_Chart.getContext('2d'), {
+        // Render current chart (Current Amount__)
+        window.myCharts[currentChartId] = new Chart(current_Chart.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: dataGroupLabels,
@@ -2964,8 +3099,8 @@ async function SalesCompChart(data) {
             options: commonOptions
         });
 
-        // Render brandChart2 (Previous Month Amount)
-        window.myCharts.brandChart2 = new Chart(previousChart.getContext('2d'), {
+        // Render previous chart (Previous Month Amount)
+        window.myCharts[previousChartId] = new Chart(previousChart.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: dataGroupLabels,

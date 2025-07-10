@@ -13,8 +13,8 @@ canvas {
 }
 
 /* Chart Container Divs */
-#storeRankChart,#brandCompChart, #brandRankChart, #typeRankChart, #stockRankChart, #stockPurchChart, 
-#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart,#transChart,
+#storeRankChart,#brandCompChart,#classCompChart, #stockRankChart, #stockPurchChart, 
+#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, #transDetailsChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;
@@ -70,7 +70,7 @@ canvas {
 }
 
 
-#brandCompChart {
+#brandCompChart, #classCompChart {
     height: 700px;
     width: 100%;
     overflow: hidden;
@@ -86,7 +86,8 @@ canvas {
 .divBrand2 {
     background-image: linear-gradient(to right, #ffff, lightgrey  ); 
 }
-#brandChart1, #brandChart2  {
+#brandnmeChart1, #brandnmeChart2,
+#typedescChart1, #typedescChart2  {
     padding-bottom: 40px;
 }
 
