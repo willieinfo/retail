@@ -9,7 +9,7 @@ const divListLoca = `
             <span>Location File</span>
             <button id="closeLoca" class="closeForm">✖</button>
         </div>
-        <div id="ListLoca" class="ReportBody">
+        <div id="ListLoca" class="ReportBody data-list">
             <table>
                 <thead>
                     <tr>

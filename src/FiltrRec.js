@@ -332,6 +332,8 @@ export async function FiltrRec(cModules_) {
         document.getElementById('FiltrRec_DateFrom').value = filterData[0];
         document.getElementById('FiltrRec_Date__To').value = filterData[1];
         document.getElementById('FiltrRec_DateAsOf').value = filterData[11];
+        document.getElementById('FiltrRec_LocaFrom').value = filterData[17].toUpperCase();
+        document.getElementById('FiltrRec_LocaTo__').value = filterData[18].toUpperCase();
         
 
         // Wait for populate functions to finish

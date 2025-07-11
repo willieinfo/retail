@@ -9,7 +9,7 @@ const divListUser = `
             <span>App Users File</span>
             <button id="closeUser" class="closeForm">✖</button>
         </div>
-        <div id="ListUser" class="ReportBody">
+        <div id="ListUser" class="ReportBody data-list">
             <table>
                 <thead>
                     <tr>

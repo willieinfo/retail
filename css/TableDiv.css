@@ -181,10 +181,13 @@ td:last-child {
     background-color: red;
     animation: wiggle 0.6s ease;
 }
-
 tr  {
     height: var(--rowHeight) !important; 
     padding: 0;
+}
+
+.data-list tr, .itemsTableDiv tr{
+    /* for data entry list only*/
     cursor: pointer;
 }
 tr:nth-child(even) {

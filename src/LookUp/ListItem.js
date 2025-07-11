@@ -9,7 +9,7 @@ const divListItem = `
             <span>Product File</span>
             <button id="closeList" class="closeForm">✖</button>
         </div>
-        <div id="ListItem" class="ReportBody">
+        <div id="ListItem" class="ReportBody data-list">
             <table>
                 <thead id="Look_Up_Head">
                     <tr>

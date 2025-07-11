@@ -10,7 +10,7 @@ const divPurchLst = `
             <span><i class="fa fa-cart-arrow-down"></i> Stock Receiving List</span>
             <button id="closePurchRec" class="closeForm">✖</button>
         </div>
-        <div id="purchRecList" class="ReportBody">
+        <div id="purchRecList" class="ReportBody data-list">
             <table id="ListPurchTable">
                 <thead id="Look_Up_Head">
                     <tr>
@@ -298,7 +298,7 @@ async function PurcForm(index,editMode) {
         </div>
 
 
-        <div class="itemsTableDiv" id="itemsTableDiv";>
+        <div class="itemsTableDiv data-list" id="itemsTableDiv";>
             <table class="PurchDtlTable">
                 <thead id="ListItemHead">
                     <tr>

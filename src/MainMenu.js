@@ -32,13 +32,14 @@ const menuItems= `
     <ul class="dropdown submenu">
         <li menu-ref="A01" class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
         <hr class="menuLine">
-        <li menu-ref="A02" class="salesRankingByLocation">Sales Ranking by Location</li>
-        <li menu-ref="A03" class="salesCompBrand">Sales Ranking by Brand</li>
-        <li menu-ref="A04" class="salesCompClass">Sales Ranking by Classification</li>
-        <li menu-ref="A05" class="salesRankingByStock">Sales By SKU</li>
+        <li menu-ref="A02" >Sales Record Details</li>
+        <li menu-ref="A03" class="salesRankingByLocation">Sales Ranking by Location</li>
+        <li menu-ref="A04" class="salesCompBrand">Sales Ranking by Brand</li>
+        <li menu-ref="A05" class="salesCompClass">Sales Ranking by Classification</li>
+        <li menu-ref="A06" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
-        <li menu-ref="A06" class="dailySalesSum">Daily Sales Summary</li>
-        <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary</li>
+        <li menu-ref="A07" class="dailySalesSum">Daily Sales Summary</li>
+        <li menu-ref="A08" class="monthlySalesSum">Monthly Sales Summary</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -46,10 +47,11 @@ const menuItems= `
         <li> Purchase Order</li>
         <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
         <hr class="menuLine">
-        <li menu-ref="B03" class="purchReportByStock">Stock Receiving By SKU</li>
-        <li menu-ref="B04" class="purchSumByType">Receiving Summary By Classification</li>
-        <li menu-ref="B05" class="purchSumBySupp">Receiving Summary By Supplier</li>
-        <li menu-ref="B06" class="purchSumByBrnd">Receiving Summary By Brand</li>
+        <li menu-ref="B03">Stock Receiving Details</li>
+        <li menu-ref="B04" class="purchReportByStock">Stock Receiving By SKU</li>
+        <li menu-ref="B05" class="purchSumByType">Receiving Summary By Classification</li>
+        <li menu-ref="B06" class="purchSumBySupp">Receiving Summary By Supplier</li>
+        <li menu-ref="B07" class="purchSumByBrnd">Receiving Summary By Brand</li>
     </ul>
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
@@ -57,8 +59,9 @@ const menuItems= `
         <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
-        <li menu-ref="C03" class="stockDetails">Stock Transfer by SKU</li>
-        <li menu-ref="C04" class="stockClass">Stock Transfer by Classification</li>
+        <li menu-ref="C03" class="stockDetails">Stock Transfer Details</li>
+        <li menu-ref="C04" class="stockClass">Stock Transfer by SKU</li>
+        <li menu-ref="C05" class="stockClass">Stock Transfer by Classification</li>
         <li>Stock Transfer by Brand</li>
     </ul>
 </li>
@@ -66,6 +69,7 @@ const menuItems= `
     <ul class="dropdown submenu">
         <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment</li>
         <hr class="menuLine">
+        <li>Adjustments Details</li>
         <li>Adjustments by SKU</li>
         <li>Adjustments by Classification</li>
         <li>Adjustments by Brand</li>
@@ -154,7 +158,16 @@ const cDateToday=formatDate(todaysDate)
 const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
 
+// Log Out
+document.querySelectorAll('.LogOut').forEach( el =>{
+    el.addEventListener('click', () => {
+        sessionStorage.removeItem('loggedIn'); // Clear login state
+        window.location.href = './LogIn.html'; // Redirect to login page
 
+    })
+})
+
+// Keyboard
 const liOSKey=document.querySelectorAll('.OSKey')
 liOSKey.forEach(element => {
     element.addEventListener('click', () =>{
@@ -162,6 +175,7 @@ liOSKey.forEach(element => {
     })
 })
 
+// INIT App preparation ================================
 // Apply user color preferences
 window.CompName = 'REGENT TRAVEL RETAIL GROUP'
 document.addEventListener('DOMContentLoaded', () => {
@@ -171,14 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
 async function applyColorsAndShowContent() {
     setUserColor();
 }
-
-document.querySelectorAll('.LogOut').forEach( el =>{
-    el.addEventListener('click', () => {
-        sessionStorage.removeItem('loggedIn'); // Clear login state
-        window.location.href = './LogIn.html'; // Redirect to login page
-
-    })
-})
 
 // Configure available menus for current user
 const cUserData = JSON.parse(sessionStorage.getItem('userdata'));

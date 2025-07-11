@@ -13,22 +13,33 @@ const divStockDetails =`
             <div id="transStockDetails" class="ReportBody">
                 <table>
                     <thead>
+                        <th rowspan='2'>Ref. No.</th>
+                        <th colspan="10">
+                            Stock Transfer
+                        </th>
+                        <th colspan="3">
+                            O U T
+                        </th>
+                        <th colspan="3">
+                            I N
+                        </th>
                         <tr>
-                            <th>Ref. No.</th>
-                            <th>Date Transfer</th>
-                            <th>Qty. Out</th>
-                            <th>Date Received</th>
-                            <th>Qty. In</th>
                             <th>Origin</th>
                             <th>Destination</th>
-                            <th>Remarks</th>
-                            <th>Brand</th>
-                            <th>Classification</th>
                             <th>Stock No.</th>
                             <th>Bar Code</th>
                             <th>Description</th>
-                            <th>Selling Price</th>
-                            <th>Cost</th>
+                            <th>Remarks</th>
+                            <th>Brand</th>
+                            <th>Classification</th>
+                            <th>Unit Price</th>
+                            <th>Unit Cost</th>
+                            <th>Date Transfer</th>
+                            <th>Qty. Out</th>
+                            <th>Transfer By</th>
+                            <th>Date Received</th>
+                            <th>Qty. In</th>
+                            <th>Received By</th>
                         </tr>
                     </thead>
                 </table>            
@@ -65,15 +76,21 @@ const divStockClass =`
             <div id="transStockClass" class="ReportBody">
                 <table>
                     <thead>
+                        <th rowspan='2'>Classification</th>
+                        <th colspan='4'>
+                            O U T
+                        </th>
+                        <th colspan='4'>
+                            I N
+                        </th>
                         <tr>
-                            <th>Classification</th>
                             <th>Origin</th>
                             <th>Qty. Out</th>
+                            <th>Tot Amt Out</th>
+                            <th>Tot Cost Out</th>
                             <th>Destination</th>
                             <th>Qty. In</th>
-                            <th>Tot Amt Out</th>
                             <th>Tot Amt In</th>
-                            <th>Tot Cost Out</th>
                             <th>Tot Cost In</th>
                         </tr>
                     </thead>
@@ -155,7 +172,8 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
 
         let nTotalQty = 0
         let nTotalRcv = 0
-        let nTotalAmt = 0
+        let nTotalAmt_O = 0
+        let nTotalAmt_I = 0
         let nTotalCos = 0
     
         const listCounter=document.getElementById('transCounter1')
@@ -169,7 +187,8 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
             data.forEach(item => {
                 nTotalQty+=item.Quantity
                 nTotalRcv+=item.QtyRecvd
-                nTotalAmt+=item.Amount__
+                nTotalAmt_O+=item.Quantity*item.Amount__
+                nTotalAmt_I+=item.Quantity*item.Amount__
                 nTotalCos+=item.LandCost
             });
         }
@@ -185,65 +204,90 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
         const reportTable = `
             <table>
                 <thead>
+                    <th rowspan='2'>Ref. No.</th>
+                    <th colspan="11">
+                        Stock Transfer
+                    </th>
+                    <th colspan="3">
+                        O U T
+                    </th>
+                    <th colspan="3">
+                        I N
+                    </th>
                     <tr>
-                        <th>Ref. No.</th>
-                        <th>Date Transfer</th>
-                        <th>Qty. Out</th>
-                        <th>Date Received</th>
-                        <th>Qty. In</th>
                         <th>Origin</th>
                         <th>Destination</th>
-                        <th>Remarks</th>
-                        <th>Brand</th>
-                        <th>Classification</th>
                         <th>Stock No.</th>
                         <th>Bar Code</th>
                         <th>Description</th>
-                        <th>Selling Price</th>
-                        <th>Cost</th>
+                        <th>Remarks</th>
+                        <th>Brand</th>
+                        <th>Classification</th>
+                        <th>Unit Price</th>
+                        <th>Unit Cost</th>
+                        <th>Date Transfer</th>
+                        <th>Qty. Out</th>
+                        <th>Transfer By</th>
+                        <th>Date Received</th>
+                        <th>Qty. In</th>
+                        <th>Received By</th>
                     </tr>
                 </thead>
-                <tbody>
-                ${data.map((item) => {
+            <tbody>
+                ${data.map((item, index) => {
+                    // Compare current item with previous item to see if ReferDoc is the same
+                    const isSameReferDoc = index > 0 && data[index - 1].ReferDoc === item.ReferDoc;
+
+                    // If the current ReferDoc is the same as the previous one, don't show it again
+                    const referDocDisplay = isSameReferDoc ? '' : item.ReferDoc || 'N/A';
+                    const locaFromDisplay = isSameReferDoc ? '' : item.LocaFrom || 'N/A';
+                    const locaTo__Display = isSameReferDoc ? '' : item.LocaTo__ || 'N/A';
+
+                    // Determine rowspan for the ReferDoc
+                    const rowspan = isSameReferDoc ? 0 : data.filter(d => d.ReferDoc === item.ReferDoc).length;
+
+                    const showDateTran = (new Date(item.Date____).toLocaleDateString() === '1/1/1900' 
+                    || !item.Date____) ? '' : formatDate(item.Date____, 'MM/DD/YYYY') || 'N/A';
+                    
+                    const showDateRcvd = (new Date(item.DateRcvd).toLocaleDateString() === '1/1/1900' 
+                    || !item.DateRcvd) ? '' : formatDate(item.DateRcvd, 'MM/DD/YYYY') || 'N/A';
+
                     return `
-                        <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
-                            <td style="text-align: center">${item.ReferDoc || 'N/A'}</td>
-                            <td style="text-align: center">${formatDate(item.Date____,'MM/DD/YYYY') || 'N/A'}</td>
-                            <td style="text-align: center">${item.Quantity || 'N/A'}</td>
-                            <td style="text-align: center">${formatDate(item.DateRcvd,'MM/DD/YYYY') || 'N/A'}</td>
-                            <td style="text-align: center">${item.QtyRecvd || 'N/A'}</td>
-                            <td class="colNoWrap">${item.LocaFrom || 'N/A'}</td>
-                            <td class="colNoWrap">${item.LocaTo__ || 'N/A'}</td>
+                        <tr style="color: ${item.Outright === 2 ? 'rgb(7, 130, 130)' : 'black'}">
+                            <td style="font-weight: bold ${referDocDisplay ? '' : '; display: none'}" rowspan="${rowspan > 0 ? rowspan : ''}">
+                                ${referDocDisplay}
+                            </td>
+                            <td style="${locaFromDisplay ? '' : '; display: none'}" rowspan="${rowspan > 0 ? rowspan : ''}">
+                                ${locaFromDisplay}
+                            </td>
+                            <td style="${locaTo__Display ? '' : '; display: none'}" rowspan="${rowspan > 0 ? rowspan : ''}">
+                                ${locaTo__Display}
+                            </td>
+                            <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+                            <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
+                            <td class="colNoWrap">${item.Descript.substring(0, 30) || 'N/A'}</td>
                             <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
                             <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
                             <td class="colNoWrap">${item.TypeDesc || 'N/A'}</td>
-                            <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
-                            <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
-                            <td class="colNoWrap">${item.Descript.substring(0,30) || 'N/A'}</td>
                             <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
                             <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                            <td style="text-align: center">${showDateTran}</td>
+                            <td style="text-align: center">${item.Quantity || 'N/A'}</td>
+                            <td class="colNoWrap">${item.Prepared || 'N/A'}</td>
+                            <td style="text-align: center">${showDateRcvd}</td>
+                            <td style="text-align: center">${item.QtyRecvd || 'N/A'}</td>
+                            <td class="colNoWrap">${item.Received || 'N/A'}</td>
                         </tr>
                     `;
                 }).join('')}
             </tbody>
             <tfoot>
-                <tr style="height: 2px"></tr>
                 <tr style="font-weight: bold">
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: center">${nTotalQty || 'N/A'}</td>
-                    <td></td>
-                    <td style="text-align: center">${nTotalRcv || 'N/A'}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: right">Total</td>
-                    <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                    <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
+                    <td colspan = "11" style="text-align: right">
+                        TOTAL
+                    </td>
+                    <td colspan = "3" style="text-align: center">${' Qty OUT: '+nTotalQty || 'N/A'} Amount: ${formatter.format(nTotalAmt_O) || 'N/A'}</td>
+                    <td colspan = "3" style="text-align: center">${' Qty IN :'+nTotalRcv || 'N/A'} Amount: ${formatter.format(nTotalAmt_I).toString().trim() || 'N/A'}</td>
                 </tr>
             </tfoot>
         </table>
@@ -459,43 +503,6 @@ async function StockChart(data, showData) {
                 }
             }
 
-            // options: {
-            //     responsive: true,
-            //     maintainAspectRatio: false,
-            //     plugins: {
-            //         legend: {
-            //             position: 'top',
-            //             labels: {
-            //                 font: {
-            //                     family: 'Arial Narrow',
-            //                     size: 10
-            //                 }
-            //             }
-            //         },
-            //         tooltip: {
-            //             callbacks: {
-            //                 label: function (context) {
-            //                     const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
-            //                     const value = context.raw || 0;
-            //                     return `${percentage}%`;
-            //                 }
-            //             }
-            //         },
-            //         datalabels: {
-            //             anchor: 'end',
-            //             align: 'end',
-            //             formatter: (value, context) => {
-            //                 const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
-            //                 return `${percentage}%`;
-            //             },
-            //             color: '#fff',
-            //             font: {
-            //                 weight: 'bold',
-            //                 size: 10
-            //             }
-            //         }
-            //     }
-            // }
         });
 
         // Store the chart instances globally if needed (optional)
@@ -508,158 +515,3 @@ async function StockChart(data, showData) {
     }
 }
 
-// async function StockChart(data, showData) {
-//     try {
-//         // Define a mapping of showData to canvas IDs
-//         const dataCanvasMapping = {
-//             'Details1' : 'transChart1',
-//             'Details2' : 'transChart2'
-//         };
-
-//         // Get the canvas ID based on showData
-//         const dataCanvass = dataCanvasMapping[showData];
-
-//         if (!dataCanvass) {
-//             console.error(`Unknown data type: ${showData}`);
-//             return;
-//         }        
-
-        
-//         const reportChartElement = document.getElementById(dataCanvass);
-
-//         // Declare variables for chart instances
-//          let myChart = window.myCharts && window.myCharts[dataCanvass] || null;
-
-//         // Destroy existing charts if they exist
-//         if (myChart) {
-//             myChart.destroy();
-//         }
-
-//         // Clear the canvas context manually (important when reusing canvas elements)
-//         reportChartElement.getContext('2d').clearRect(0, 0, reportChartElement.width, reportChartElement.height);
-
-//         // let chartData = data.slice(0,20)
-//         let chartData = data
-
-//         const dataFieldMapping = {
-//             'Details1' : 'BrandNme',
-//             'Details2' : 'TypeDesc'
-//         };        
-//         const dataField = dataFieldMapping[showData];
-
-//         // Check if the mapping is valid
-//         if (!dataField) {
-//             console.error(`Unknown showData type: ${showData}`);
-//             return;
-//         }
-//         // Prepare data for the pie chart 
-//         const groupTotals = chartData.reduce((acc, entry) => {
-//             const totalAmount = parseFloat(entry.Amount__) || 0;
-//             // Dynamically access the property based on `showData`
-//             const dataGroup = entry[dataField]?.trim() || '';  
-//             acc[dataGroup] = (acc[dataGroup] || 0) + totalAmount;
-
-//             return acc;
-//         }, {});
-
-//         let dataGroupTotals = groupTotals.slice(0,20)
-
-//         // Sort data groups by total amount in descending order
-//         const sortedGroups = Object.entries(dataGroupTotals).sort((a, b) => b[1] - a[1]);
-
-//         const dataGroupLabels = sortedGroups.map(entry => entry[0]);
-//         const dataGroupValues = sortedGroups.map(entry => entry[1]);
-
-//         // Update dynamic text content based on `showData`
-//         const headingMapping = {
-//             'Details1' : 'Top Brands',
-//             'Details2' : 'Top Classifications'
-//         };
-       
-//         const headingElementId = `h5top${dataFieldMapping[showData].substring(0, 4)}`;
-//         document.getElementById(headingElementId).textContent = headingMapping[showData];        
-
-//         if (data.length > 20) {
-//             // const rest = data.slice(20);
-//             // const others = rest.reduce((sum, grp) => sum + grp.PurcCost, 0);
-//             // // Add "Others"
-//             // dataGroupLabels.push('OTHERS');
-//             // dataGroupValues.push(others);
-//         }
-
-//         const totalValues = Object.values(dataGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total values
-//         const dataGroupPercentages = dataGroupValues.map(value => (value / totalValues * 100).toFixed(2)); // Calculate percentages
-
-//         const generateRandomColor = () => {
-//             const r = Math.floor(Math.random() * 255);
-//             const g = Math.floor(Math.random() * 255);
-//             const b = Math.floor(Math.random() * 255);
-//             return `rgba(${r}, ${g}, ${b}, 0.6)`;
-//         };
-
-//         const backgroundColors = dataGroupLabels.map(() => generateRandomColor());
-//         const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
-
-//         // Create the chart 
-//         const ctx = reportChartElement.getContext('2d');
-//         myChart = new Chart(ctx, {
-//             type: 'bar',
-//             data: {
-//                 labels: dataGroupLabels,
-//                 datasets: [{
-//                     label: 'Values',
-//                     data: dataGroupValues,
-//                     backgroundColor: backgroundColors,
-//                     borderColor: borderColors,
-//                     borderWidth: 1
-//                 }]
-//             },
-//             options: {
-//                 responsive: true,
-//                 maintainAspectRatio: false,
-//                 plugins: {
-//                     legend: {
-//                         position: 'top',
-//                         labels: {
-//                             font: {
-//                                 family: 'Arial Narrow',
-//                                 size: 10
-//                             }
-//                         }
-//                     },
-//                     tooltip: {
-//                         callbacks: {
-//                             label: function(context) {
-//                                 const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
-//                                 const value = context.raw || 0;
-//                                 return `${percentage}%`; 
-//                             }
-//                         }
-//                     },
-//                     datalabels: {
-//                         anchor: 'end',
-//                         align: 'end',
-//                         formatter: (value, context) => {
-//                             const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
-//                             return `${percentage}%`;
-//                         },
-//                         color: '#fff',
-//                         font: {
-//                             weight: 'bold',
-//                             size: '10'
-//                         }
-//                     }
-//                 }
-//             }
-//         });
-
-//         // Store the chart instances globally if needed (optional)
-//         // window.myChart = myChart;
-//         window.myCharts = window.myCharts || {};
-//         window.myCharts[dataCanvass] = myChart;        
-
-//     } catch (error) {
-//         console.error('Error processing chart data:', error);
-//         displayErrorMsg(error,"'Error processing chart data'")
-//     }
-// }

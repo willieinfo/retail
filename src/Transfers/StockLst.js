@@ -1,5 +1,6 @@
 import { showReport, formatDate, populateLocation, showNotification, debounce, MessageBox, 
-    formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode} from '../FunctLib.js';
+    formatter, checkEmptyValue, highlightRow, chkUsersCde, addScanCode,
+    makeDraggable} from '../FunctLib.js';
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF,printReportExcel, generateTitleRows } from "../PrintRep.js"
 
@@ -11,7 +12,7 @@ const divStockLst = `
             <span><i class="fa fa-dollar-sign"></i> Stock Transfers List</span>
             <button id="closeStockRec" class="closeForm">✖</button>
         </div>
-        <div id="stockRecList" class="ReportBody">
+        <div id="stockRecList" class="ReportBody data-list">
             <table>
                 <thead>
                     <tr>
@@ -690,7 +691,7 @@ function StockDtl(index,editMode) {
                         <input type="number" id="StockRec_QtyRecvd" name="QtyRecvd">
                     </div>
                     <div class="subTextDiv">
-                        <label for="StockRec_Amount__">Net Amount</label>
+                        <label for="StockRec_Amount__">Unit Price</label>
                         <input type="number" id="StockRec_Amount__" name="Amount__">
                     </div>
                 </div>
@@ -731,8 +732,10 @@ function StockDtl(index,editMode) {
 
     document.getElementById('StocForm').appendChild(itemsDtlForm);
     document.getElementById('StocForm').appendChild(overlay);
-    itemsDtlForm.style.display = 'flex'
+    const titleBar = document.getElementById('titleBar')
 
+    itemsDtlForm.style.display = 'flex'
+    makeDraggable(itemsDtlForm, titleBar)
 
     if (editMode) {
         document.getElementById('StockRec_UsersCde').value=itemData.UsersCde
