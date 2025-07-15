@@ -35,11 +35,11 @@ export async function FiltrRec(cModules_) {
                 <div id="inputTransfer" class="textDiv" style="flex-direction: row; display:none ">
                     <div id='txtFiltrRec_LocaFrom' class="subTextDiv">
                         <label for="FiltrRec_LocaFrom">From:</label>
-                        <input type="text" id="FiltrRec_LocaFrom" placeholder = 'Origin'>
+                        <input type="text" id="FiltrRec_LocaFrom" placeholder = 'Stock Out'>
                     </div>
                     <div id='txtFiltrRec_LocaTo__' class="subTextDiv">
                         <label for="FiltrRec_LocaTo__">To:</label>
-                        <input type="text" id="FiltrRec_LocaTo__" placeholder = 'Destination'>
+                        <input type="text" id="FiltrRec_LocaTo__" placeholder = 'Stock In'>
                     </div>
                 </div>
 
@@ -238,9 +238,15 @@ export async function FiltrRec(cModules_) {
             document.getElementById('inputDetails').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
             document.getElementById('inputTransfer').style.display = 'flex';
-        } else if (cModules_ === 'StocRep1') {
-            document.getElementById('StockDetails').appendChild(filterForm);
-            document.getElementById('StockDetails').appendChild(overlay);
+        } else if (cModules_ === 'StockDetails') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputTransfer').style.display = 'flex';
+        } else if (cModules_ === 'StockClass') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
             document.getElementById('inputTransfer').style.display = 'flex';

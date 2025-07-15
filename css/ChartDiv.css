@@ -2,7 +2,7 @@
 
 .chartContainer {
     display: flex;
-    height: 700px;
+    height: 800px;
     width: 100%;
 }
 
@@ -14,7 +14,8 @@ canvas {
 
 /* Chart Container Divs */
 #storeRankChart,#brandCompChart,#classCompChart, #stockRankChart, #stockPurchChart, 
-#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, #transDetailsChart,
+#typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, 
+#transDetailsChart, #transClassChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;

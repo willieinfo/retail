@@ -1006,12 +1006,14 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
+        // const response = await fetch('./data/DB_COMPSTORE.json');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
 
         const listCounter=document.getElementById('saleRank1Counter')
         data = await response.json();
+        // console.log(data)
         listCounter.innerHTML=`${data.length} Records`;
         showNotification(`${data.length} Records fetched`);
 
@@ -2613,7 +2615,7 @@ async function setStoreChart(chartData, dateRange) {
         // Aggregate totalamt per storname
         const storeTotals = storeData.reduce((acc, entry) => {
             const totalAmount = parseFloat(entry.Amount__) || 0;
-            const storeName = entry.LocaName.trim(); // Ensure store name is trimmed
+            const storeName = entry.LocaName.trim(); 
             acc[storeName] = (acc[storeName] || 0) + totalAmount;
             return acc;
         }, {});

@@ -1,10 +1,10 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "Backend/mainApp.js",
+  "main": "BackEnd/mainApp.js",
   "scripts": {
-    "start": "node Backend/mainApp.js",
-    "dev": "nodemon Backend/mainApp.js",
+    "start": "node BackEnd/mainApp.js",
+    "dev": "nodemon BackEnd/mainApp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Willie Estrada",
