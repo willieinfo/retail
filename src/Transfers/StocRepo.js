@@ -5,8 +5,11 @@ import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 const divStockDetails =`
     <div id="StockDetails" class="report-section containerDiv">
         <div class="ReportHead">
-            <span>Stock Transfer Report by Stock No</span>
-            <button id="closeTra1" class="closeForm">✖</button>
+            <span>Stock Transfer Report by Reference No.</span>
+            <div style="flex-wrap: nowrap; gap: 10px;">
+                <span class="fetchDataMore" style="display:none; padding:0px 10px 0px 10px"></span>
+                <button id="closeTra1" class="closeForm">✖</button>
+            </div>
         </div>
         <div class="ReportBody">
             <div id="transStockDetails" class="ReportBody">
@@ -145,12 +148,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__,
-    cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) {
-
+let existingData = [];  
+let currentPage = 1
+let remainingData = null
+async function StockTraDetails(dDateFrom, dDateTo__, cReferDoc, cLocaFrom, cLocaTo__, 
+    cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept, page = 1) {
+    
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
     let data = null;
+
     try {
         // Build query parameters
         const url = new URL('http://localhost:3000/transfers/StockTransfer');
@@ -168,8 +175,11 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
         if (cItemType) params.append('ItemType', cItemType); 
         if (cItemDept) params.append('ItemDept', cItemDept); 
 
-        const cRepoType = 'TranRefe'
-        params.append('RepoType', cRepoType)
+        const cRepoType = 'TranRefe';
+        params.append('RepoType', cRepoType);
+
+        // Pass the "page" parameter for pagination
+        params.append('page', page);
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -177,37 +187,55 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
             throw new Error('Network response was not ok');
         }
 
-        let nTotalQty = 0
-        let nTotalRcv = 0
-        let nTotalAmt_O = 0
-        let nTotalAmt_I = 0
-        let nTotalCos = 0
-    
-        const listCounter=document.getElementById('transCounter1')
+        // Parse the response JSON
         data = await response.json();
-        listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
-        clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
+        // console.log(data);
 
-        if (Array.isArray(data)) {
-            data.forEach(item => {
-                nTotalQty+=item.Quantity
-                nTotalRcv+=item.QtyRecvd
-                nTotalAmt_O+=item.Quantity*item.Amount__
-                nTotalAmt_I+=item.Quantity*item.Amount__
-                nTotalCos+=item.LandCost
-            });
+        const { data: records, totalRecords } = data;  // Destructure response for clarity
+        existingData = [...existingData, ...records]; 
+        remainingData = totalRecords - existingData.length;
+
+        currentPage += 1
+
+        // Update the counter with the fetched data length
+        const listCounter = document.getElementById('transCounter1');
+        listCounter.innerHTML = `${existingData.length} Records`;
+        console.log(existingData)
+
+        const fetchDataMoreButton = document.querySelector('.fetchDataMore');
+        // remainingData < 40
+        if (records <= 0) {
+            fetchDataMoreButton.disabled = true; // Disable button if less than 500 records
+
+        } else {
+            // Calculate remaining data
+            fetchDataMoreButton.style.display = 'flex'
+            // let remainingData = totalRecords - existingData.length;
+            fetchDataMoreButton.innerText = `${remainingData} left ...`;
+
+            if (remainingData <= 0) {
+                fetchDataMoreButton.disabled = true; // Disable the button if no remaining data
+            }
         }
 
-        const mainReportDiv = document.getElementById('StockDetails');
-        mainReportDiv.classList.add('active');
+        // Process the data for totals (e.g., sum of quantities and amounts)
+        let nTotalQty = 0;
+        let nTotalRcv = 0;
+        let nTotalCos = 0;
+    
+        // if (Array.isArray(records)) {
+        //     records.forEach(item => {
+        //         nTotalQty += item.Quantity;
+        //         nTotalRcv += item.QtyRecvd;
+        //         nTotalCos += item.LandCost;
+        //     });
+        // }
 
+        // Update the table with the records
         const reportBody = document.getElementById('transStockDetails');
         reportBody.style.maxHeight = "80%";
         reportBody.innerHTML = '';  // Clear previous content
 
-        // Define the table structure
         const reportTable = `
             <table>
                 <thead>
@@ -229,73 +257,62 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
                         <th class="tdData_In" >Received</th>
                     </tr>
                 </thead>
-            <tbody>
-                ${data.map((item, index) => {
-                    // Compare current item with previous item to see if ReferDoc is the same
-                    const isSameReferDoc = index > 0 && data[index - 1].ReferDoc === item.ReferDoc;
+                <tbody>
+                    ${existingData.map((item, index) => {
+                        nTotalQty += item.Quantity;
+                        nTotalRcv += item.QtyRecvd;
+                        nTotalCos += item.LandCost;
 
-                    // If the current ReferDoc is the same as the previous one, don't show it again
-                    const referDocDisplay = isSameReferDoc ? '' : item.ReferDoc || 'N/A';
-                    const locaFromDisplay = isSameReferDoc ? '' : item.LocaFrom || 'N/A';
-                    const locaTo__Display = isSameReferDoc ? '' : item.LocaTo__ || 'N/A';
-                    const remarks_Display = isSameReferDoc ? '' : item.Remarks_ || 'N/A';
+                        const isSameReferDoc = index > 0 && existingData[index - 1].ReferDoc === item.ReferDoc;
+                        const referDocDisplay = isSameReferDoc ? '' : item.ReferDoc || 'N/A';
+                        const showDateTran = new Date(item.Date____).toLocaleDateString() === '1/1/1900' 
+                            || !item.Date____ ? '' : formatDate(item.Date____, 'MM/DD/YYYY') || 'N/A';
+                        const showDateRcvd = new Date(item.DateRcvd).toLocaleDateString() === '1/1/1900' 
+                            || !item.DateRcvd ? '' : formatDate(item.DateRcvd, 'MM/DD/YYYY') || 'N/A';
 
-                    // Determine rowspan for the ReferDoc
-                    // const rowspan = isSameReferDoc ? 0 : data.filter(d => d.ReferDoc === item.ReferDoc).length;
-
-                    let showDateTran = (new Date(item.Date____).toLocaleDateString() === '1/1/1900' 
-                    || !item.Date____) ? '' : formatDate(item.Date____, 'MM/DD/YYYY') || 'N/A';
-                    showDateTran = isSameReferDoc ? '' : showDateTran || 'N/A';
-
-                    
-                    const showDateRcvd = (new Date(item.DateRcvd).toLocaleDateString() === '1/1/1900' 
-                    || !item.DateRcvd) ? '' : formatDate(item.DateRcvd, 'MM/DD/YYYY') || 'N/A';
-
-                    return `
-                        <tr style="color: ${item.Outright === 2 ? 'rgb(7, 130, 130)' : 'black'}">
-                            <td style="font-weight: bold">${referDocDisplay}</td>
-                            <td style="text-align: center">${showDateTran}</td>
-                            <td class="tdDataOut colNoWrap">${locaFromDisplay}</td>
-                            <td class="tdData_In colNoWrap">${locaTo__Display}</td>
-                            <td class="colNoWrap">${remarks_Display}</td>
-                            <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
-                            <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
-                            <td class="colNoWrap">${item.Descript.substring(0, 30) || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
-                            <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                            <td class="tdDataOut" style="text-align: center">${item.Quantity || 'N/A'}</td>
-                            <td class="tdDataOut colNoWrap">${item.Prepared || 'N/A'}</td>
-                            <td class="tdData_In" style="text-align: center">${showDateRcvd}</td>
-                            <td class="tdData_In" style="text-align: center">${item.QtyRecvd || 'N/A'}</td>
-                            <td class="tdData_In colNoWrap">${item.Received || 'N/A'}</td>
-                        </tr>
-                    `;
-                }).join('')}
-            </tbody>
-            <tfoot>
-                <tr style="font-weight: bold">
-                    <td></td>
-                    <td></td>
-                    <td class="tdDataOut" ></td>
-                    <td class="tdData_In" ></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td style="text-align: right">Total:</td>
-                    <td class="tdDataOut" style="text-align: center">${nTotalQty || 'N/A'}</td>
-                    <td class="tdDataOut"></td>
-                    <td class="tdData_In"></td>
-                    <td class="tdData_In" style="text-align: center">${nTotalRcv || 'N/A'}</td>
-                    <td class="tdData_In"></td>
-                </tr>
-            </tfoot>
-        </table>
+                        return `
+                            <tr style="color: ${item.Outright === 2 ? 'rgb(7, 130, 130)' : 'black'}">
+                                <td style="font-weight: bold">${referDocDisplay}</td>
+                                <td style="text-align: center">${showDateTran}</td>
+                                <td class="tdDataOut colNoWrap">${item.LocaFrom || 'N/A'}</td>
+                                <td class="tdData_In colNoWrap">${item.LocaTo__ || 'N/A'}</td>
+                                <td class="colNoWrap">${item.Remarks_ || 'N/A'}</td>
+                                <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+                                <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
+                                <td class="colNoWrap">${item.Descript.substring(0, 30) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+                                <td class="tdDataOut" style="text-align: center">${item.Quantity || 'N/A'}</td>
+                                <td class="tdDataOut colNoWrap">${item.Prepared || 'N/A'}</td>
+                                <td class="tdData_In" style="text-align: center">${showDateRcvd}</td>
+                                <td class="tdData_In" style="text-align: center">${item.QtyRecvd || 'N/A'}</td>
+                                <td class="tdData_In colNoWrap">${item.Received || 'N/A'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold">
+                        <td></td>
+                        <td></td>
+                        <td class="tdDataOut" ></td>
+                        <td class="tdData_In" ></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">Total:</td>
+                        <td class="tdDataOut" style="text-align: center">${nTotalQty || 'N/A'}</td>
+                        <td class="tdDataOut"></td>
+                        <td class="tdData_In"></td>
+                        <td class="tdData_In" style="text-align: center">${nTotalRcv || 'N/A'}</td>
+                        <td class="tdData_In"></td>
+                    </tr>
+                </tfoot>
+            </table>
         `;
-        
-        // Add the table HTML to the div
-        reportBody.innerHTML =  reportTable;
+        reportBody.innerHTML = reportTable;
         if (nTotalQty===0) {
             document.querySelectorAll('.tdDataOut').forEach( e => {
                 e.style.display = 'none'
@@ -309,25 +326,47 @@ async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__
 
         // Show report chart
         document.getElementById('transDetailsChart').style.display='flex';
-        StockChart(data,'Details1')
-        StockChart(data,'Details2')
+        StockChart(existingData,'Details1')
+        StockChart(existingData,'Details2')
         // document.getElementById('printStockDetailsPDF').disabled = false
         // document.getElementById('printStockDetailsXLS').disabled = false
 
-        
     } catch (error) {
         console.error('Fetch error:', error);
-        displayErrorMsg(error,'Fetch error')
+        displayErrorMsg(error, 'Fetch error');
     } finally {
-        // Hide loading spinner once data is fetched or an error occurs
         document.getElementById('loadingIndicator').style.display = 'none';
         clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
-
+        document.getElementById('runningTime').textContent = '';
     }
-
-
 }
+
+document.querySelector('.fetchDataMore').addEventListener('click', async () => {
+        const filterData = JSON.parse(localStorage.getItem("filterData"));
+
+        // console.log(filterData)
+        const dDateFrom = filterData[0];
+        const dDate__To = filterData[1];
+        // const cWhseFrom = filterData[2];
+        const cUsersCde = filterData[3];
+        const cOtherCde = filterData[4];
+        const cDescript = filterData[5];
+        const cBrandNum = filterData[6];
+        const cCategNum = filterData[7];
+        const cItemType = filterData[8];
+        const cItemDept = filterData[9];
+        const cReferDoc = filterData[10];
+        const cLocaFrom = filterData[17];
+        const cLocaTo__ = filterData[18];
+
+        // let currentPage =2 
+        console.log('current Page', currentPage)
+        StockTraDetails(dDateFrom,dDate__To,cReferDoc,cLocaFrom,cLocaTo__,
+            cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept,
+            currentPage
+         ) 
+})
+
 
 document.getElementById('transBtn1').addEventListener('click', async () => {
     try {
@@ -715,3 +754,202 @@ async function StockChart(data, showData) {
         displayErrorMsg(error, "'Error processing chart data'");
     }
 }
+
+
+// async function StockTraDetails(dDateFrom,dDateTo__,cReferDoc,cLocaFrom,cLocaTo__,
+//     cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) {
+
+//     document.getElementById('loadingIndicator').style.display = 'flex';
+//     let { timerInterval, elapsedTime } = startTimer(); 
+//     let data = null;
+//     let existingData = [];  
+
+//     try {
+//         // Build query parameters
+//         const url = new URL('http://localhost:3000/transfers/StockTransfer');
+//         const params = new URLSearchParams();
+//         if (dDateFrom) params.append('DateFrom', dDateFrom); 
+//         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+//         if (cReferDoc) params.append('ReferDoc', cReferDoc);
+//         if (cLocaFrom) params.append('LocaFrom', cLocaFrom); 
+//         if (cLocaTo__) params.append('LocaTo__', cLocaTo__); 
+//         if (cUsersCde) params.append('UsersCde', cUsersCde); 
+//         if (cOtherCde) params.append('OtherCde', cOtherCde); 
+//         if (cDescript) params.append('Descript', cDescript); 
+//         if (cBrandNum) params.append('BrandNum', cBrandNum); 
+//         if (cCategNum) params.append('CategNum', cCategNum); 
+//         if (cItemType) params.append('ItemType', cItemType); 
+//         if (cItemDept) params.append('ItemDept', cItemDept); 
+
+//         const cRepoType = 'TranRefe'
+//         params.append('RepoType', cRepoType)
+
+//         // Send request with query parameters
+//         const response = await fetch(`${url}?${params.toString()}`);
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+
+//         let nTotalQty = 0
+//         let nTotalRcv = 0
+//         let nTotalAmt_O = 0
+//         let nTotalAmt_I = 0
+//         let nTotalCos = 0
+    
+//         const listCounter=document.getElementById('transCounter1')
+//         const fetchDataMoreButton = document.querySelector('.fetchDataMore');
+
+//         data = await response.json();
+//         console.log(data)
+//         if (data.length < 500) {
+//             fetchDataMoreButton.disabled = true;
+//         } else {
+//             existingData = [...existingData, ...data];
+
+//             // fetchDataMoreButton.innerText = `${remainingData} left`;
+//         }
+
+
+//         listCounter.innerHTML=`${data.length} Records`;
+//         showNotification(`${data.length} Records fetched`);
+//         clearInterval(timerInterval);        
+//         document.getElementById('runningTime').textContent=''
+
+//         if (Array.isArray(data)) {
+//             data.forEach(item => {
+//                 nTotalQty+=item.Quantity
+//                 nTotalRcv+=item.QtyRecvd
+//                 nTotalAmt_O+=item.Quantity*item.Amount__
+//                 nTotalAmt_I+=item.Quantity*item.Amount__
+//                 nTotalCos+=item.LandCost
+//             });
+//         }
+
+//         const mainReportDiv = document.getElementById('StockDetails');
+//         mainReportDiv.classList.add('active');
+
+//         const reportBody = document.getElementById('transStockDetails');
+//         reportBody.style.maxHeight = "80%";
+//         reportBody.innerHTML = '';  // Clear previous content
+
+//         // Define the table structure
+//         const reportTable = `
+//             <table>
+//                 <thead>
+//                     <tr>
+//                         <th>Ref. No.</th>
+//                         <th>Date Transfer</th>
+//                         <th class="tdDataOut" >Stock Out</th>
+//                         <th class="tdData_In" >Stock In</th>
+//                         <th>Remarks</th>
+//                         <th>Stock No.</th>
+//                         <th>Bar Code</th>
+//                         <th>Description</th>
+//                         <th>Unit Price</th>
+//                         <th>Unit Cost</th>
+//                         <th class="tdDataOut" >Qty. Out</th>
+//                         <th class="tdDataOut" >Prepared</th>
+//                         <th class="tdData_In" >Date Received</th>
+//                         <th class="tdData_In" >Qty. In</th>
+//                         <th class="tdData_In" >Received</th>
+//                     </tr>
+//                 </thead>
+//             <tbody>
+//                 ${data.map((item, index) => {
+//                     // Compare current item with previous item to see if ReferDoc is the same
+//                     const isSameReferDoc = index > 0 && data[index - 1].ReferDoc === item.ReferDoc;
+
+//                     // If the current ReferDoc is the same as the previous one, don't show it again
+//                     const referDocDisplay = isSameReferDoc ? '' : item.ReferDoc || 'N/A';
+//                     const locaFromDisplay = isSameReferDoc ? '' : item.LocaFrom || 'N/A';
+//                     const locaTo__Display = isSameReferDoc ? '' : item.LocaTo__ || 'N/A';
+//                     const remarks_Display = isSameReferDoc ? '' : item.Remarks_ || 'N/A';
+
+//                     // Determine rowspan for the ReferDoc
+//                     // const rowspan = isSameReferDoc ? 0 : data.filter(d => d.ReferDoc === item.ReferDoc).length;
+
+//                     let showDateTran = (new Date(item.Date____).toLocaleDateString() === '1/1/1900' 
+//                     || !item.Date____) ? '' : formatDate(item.Date____, 'MM/DD/YYYY') || 'N/A';
+//                     showDateTran = isSameReferDoc ? '' : showDateTran || 'N/A';
+
+                    
+//                     const showDateRcvd = (new Date(item.DateRcvd).toLocaleDateString() === '1/1/1900' 
+//                     || !item.DateRcvd) ? '' : formatDate(item.DateRcvd, 'MM/DD/YYYY') || 'N/A';
+
+//                     return `
+//                         <tr style="color: ${item.Outright === 2 ? 'rgb(7, 130, 130)' : 'black'}">
+//                             <td style="font-weight: bold">${referDocDisplay}</td>
+//                             <td style="text-align: center">${showDateTran}</td>
+//                             <td class="tdDataOut colNoWrap">${locaFromDisplay}</td>
+//                             <td class="tdData_In colNoWrap">${locaTo__Display}</td>
+//                             <td class="colNoWrap">${remarks_Display}</td>
+//                             <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+//                             <td class="colNoWrap">${item.OtherCde || 'N/A'}</td>
+//                             <td class="colNoWrap">${item.Descript.substring(0, 30) || 'N/A'}</td>
+//                             <td style="text-align: right">${formatter.format(item.Amount__) || 'N/A'}</td>
+//                             <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
+//                             <td class="tdDataOut" style="text-align: center">${item.Quantity || 'N/A'}</td>
+//                             <td class="tdDataOut colNoWrap">${item.Prepared || 'N/A'}</td>
+//                             <td class="tdData_In" style="text-align: center">${showDateRcvd}</td>
+//                             <td class="tdData_In" style="text-align: center">${item.QtyRecvd || 'N/A'}</td>
+//                             <td class="tdData_In colNoWrap">${item.Received || 'N/A'}</td>
+//                         </tr>
+//                     `;
+//                 }).join('')}
+//             </tbody>
+//             <tfoot>
+//                 <tr style="font-weight: bold">
+//                     <td></td>
+//                     <td></td>
+//                     <td class="tdDataOut" ></td>
+//                     <td class="tdData_In" ></td>
+//                     <td></td>
+//                     <td></td>
+//                     <td></td>
+//                     <td></td>
+//                     <td></td>
+//                     <td style="text-align: right">Total:</td>
+//                     <td class="tdDataOut" style="text-align: center">${nTotalQty || 'N/A'}</td>
+//                     <td class="tdDataOut"></td>
+//                     <td class="tdData_In"></td>
+//                     <td class="tdData_In" style="text-align: center">${nTotalRcv || 'N/A'}</td>
+//                     <td class="tdData_In"></td>
+//                 </tr>
+//             </tfoot>
+//         </table>
+//         `;
+        
+//         // Add the table HTML to the div
+//         reportBody.innerHTML =  reportTable;
+//         if (nTotalQty===0) {
+//             document.querySelectorAll('.tdDataOut').forEach( e => {
+//                 e.style.display = 'none'
+//             })
+//         }
+//         if (nTotalRcv===0) {
+//             document.querySelectorAll('.tdData_In').forEach( e => {
+//                 e.style.display = 'none'
+//             })
+//         }
+
+//         // Show report chart
+//         document.getElementById('transDetailsChart').style.display='flex';
+//         StockChart(data,'Details1')
+//         StockChart(data,'Details2')
+//         // document.getElementById('printStockDetailsPDF').disabled = false
+//         // document.getElementById('printStockDetailsXLS').disabled = false
+
+        
+//     } catch (error) {
+//         console.error('Fetch error:', error);
+//         displayErrorMsg(error,'Fetch error')
+//     } finally {
+//         // Hide loading spinner once data is fetched or an error occurs
+//         document.getElementById('loadingIndicator').style.display = 'none';
+//         clearInterval(timerInterval);        
+//         document.getElementById('runningTime').textContent=''
+
+//     }
+
+
+// }
