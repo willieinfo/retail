@@ -1,8 +1,11 @@
 
-const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
+const { queryDatabase } = require('../../DBConnect/dbConnect'); 
+require('dotenv').config();
+
 
 // Modified route to accept multiple query parameters
 const listItem = async (req, res) => {
+
   const cUsersCde = req.query.UsersCde;  
   const cOtherCde = req.query.OtherCde;  
   const cDescript = req.query.Descript;  
@@ -10,6 +13,56 @@ const listItem = async (req, res) => {
   const cItemDept = req.query.ItemDept;  
   const cItemType = req.query.ItemType;  
   const cCategNum = req.query.CategNum;  
+
+  // Add conditions based on query parameters
+  const params = {};
+  let sqlQuery = ''
+  if (cUsersCde) {
+    sqlQuery += " AND ITEMLIST.UsersCde LIKE @cUsersCde";
+    params.cUsersCde = `%${cUsersCde}%`;
+  }
+  if (cOtherCde) {
+    sqlQuery += " AND ITEMLIST.OtherCde LIKE @cOtherCde";
+    params.cOtherCde = `%${cOtherCde}%`;
+  }
+  if (cDescript) {
+    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;  
+  }
+  if (cBrandNum) {
+    sqlQuery += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
+    params.cBrandNum = `%${cBrandNum}%`;  
+  }
+  if (cItemDept) {
+    sqlQuery += " AND ITEMLIST.ItemDept LIKE @cItemDept";
+    params.cItemDept = `%${cItemDept}%`;  
+  }
+  if (cItemType) {
+    sqlQuery += " AND ITEMLIST.ItemType LIKE @cItemType";
+    params.cItemType = `%${cItemType}%`;  
+  }
+  if (cCategNum) {
+    sqlQuery += " AND ITEMLIST.CategNum LIKE @cCategNum";
+    params.cCategNum = `%${cCategNum}%`;  
+  }
+
+  let limit = process.env.FETCH_LIMIT;
+  let sqlCount = '';
+
+  let offset = 0;
+  const page = parseInt(req.query.page) || 0;
+  offset = page * limit;
+
+  sqlCount = `
+    SELECT COUNT(*) AS totalCount 
+    FROM ITEMLIST
+    INNER JOIN ITEMTYPE ON ITEMLIST.ItemType = ITEMTYPE.ItemType
+    INNER JOIN ITEMDEPT ON ITEMLIST.ItemDept = ITEMDEPT.ItemDept
+    INNER JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
+    WHERE 1=1
+    ${sqlQuery}
+  `;
+
 
   // Build SQL query with parameters
   let cSql = `SELECT 
@@ -37,46 +90,25 @@ const listItem = async (req, res) => {
     INNER JOIN ITEMTYPE ON ITEMLIST.ItemType = ITEMTYPE.ItemType
     INNER JOIN ITEMDEPT ON ITEMLIST.ItemDept = ITEMDEPT.ItemDept
     INNER JOIN BRAND___ ON ITEMLIST.BrandNum = BRAND___.BrandNum
-    WHERE 1=1`;
+    WHERE 1=1
+    ${sqlQuery}
+    `;
 
-  // Add conditions based on query parameters
-  const params = {};
-  if (cUsersCde) {
-    cSql += " AND ITEMLIST.UsersCde LIKE @cUsersCde";
-    params.cUsersCde = `%${cUsersCde}%`;
-  }
-  if (cOtherCde) {
-    cSql += " AND ITEMLIST.OtherCde LIKE @cOtherCde";
-    params.cOtherCde = `%${cOtherCde}%`;
-  }
-  if (cDescript) {
-    cSql += " AND ITEMLIST.Descript LIKE @cDescript";
-    params.cDescript = `%${cDescript}%`;  
-  }
-  if (cBrandNum) {
-    cSql += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
-    params.cBrandNum = `%${cBrandNum}%`;  
-  }
-  if (cItemDept) {
-    cSql += " AND ITEMLIST.ItemDept LIKE @cItemDept";
-    params.cItemDept = `%${cItemDept}%`;  
-  }
-  if (cItemType) {
-    cSql += " AND ITEMLIST.ItemType LIKE @cItemType";
-    params.cItemType = `%${cItemType}%`;  
-  }
-  if (cCategNum) {
-    cSql += " AND ITEMLIST.CategNum LIKE @cCategNum";
-    params.cCategNum = `%${cCategNum}%`;  
-  }
-  cSql += " ORDER BY ITEMLIST.Descript ";
+  cSql += ` ORDER BY ITEMLIST.Descript  
+    OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY `;
 
-  // console.log(params)
+  // console.log(cSql)
 
   try {
     // Perform the query and get the result
     const result = await queryDatabase(cSql, params);
-    res.json(result);  // Send the result as a JSON response
+
+    const totalCountResult = await queryDatabase(sqlCount, params); 
+    // const totalCount = totalCountResult[0].totalCount;
+    const totalCount = parseInt(totalCountResult[0].totalCount, 10);
+    // Send both the data and total count in the response
+    res.json({ data: result, totalRecords: totalCount });
+
   } catch (err) {
     console.error('Database query error:', err);
     res.status(500).send('Error fetching items');

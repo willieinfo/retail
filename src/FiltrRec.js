@@ -250,6 +250,12 @@ export async function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
             document.getElementById('inputTransfer').style.display = 'flex';
+        } else if (cModules_ === 'StockSKU') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
+            document.getElementById('txtReferDoc').style.display = 'none';
+            document.getElementById('inputLocation').style.display = 'none';
+            document.getElementById('inputTransfer').style.display = 'flex';
         } else if (cModules_ === 'PurchLst') {
             document.getElementById('PurchLst').appendChild(filterForm);
             document.getElementById('PurchLst').appendChild(overlay);

@@ -1,4 +1,5 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect');
+require('dotenv').config();
 
 const StockTransfer = async (req, res) => {
   const cLocaFrom = req.query.LocaFrom;
@@ -64,7 +65,7 @@ const StockTransfer = async (req, res) => {
   }
 
   let cSql = '';
-  let limit = 50;
+  let limit = process.env.FETCH_LIMIT;
   let sqlCount = '';
 
   if (cRepoType === 'TranRefe') {
@@ -86,11 +87,12 @@ const StockTransfer = async (req, res) => {
         ${sqlQuery}
     `;
     
-    const totalCountResult = await queryDatabase(sqlCount, params);
-    const totalCount = totalCountResult[0].totalCount;
+    // const totalCountResult = await queryDatabase(sqlCount, params);
+    // const totalCount = totalCountResult[0].totalCount;
 
     // Adjust limit to prevent negative or zero values
-    limit = totalCount > offset ? Math.min(totalCount - offset, 50) : 0;
+    // limit = totalCount > offset ? Math.min(totalCount - offset, limit) : 0;
+    // console.log('currentPage:',page,'offset:', offset, 'limit:', limit, 'totalCount:', totalCount);
 
     cSql = `
       SELECT
@@ -124,14 +126,47 @@ const StockTransfer = async (req, res) => {
       JOIN ITEMTYPE ON ITEMTYPE.ItemType = ITEMLIST.ItemType
       WHERE STOCKREC.Disabled = 0 
       ${sqlQuery}
-      ORDER BY STOCKREC.ReferDoc
+      ORDER BY 2
       OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
     `;
-    if (limit === 0) {
-        // console.log('offset:', offset, 'limit:', limit, 'totalCount:', totalCount);
-        return res.json({ data: [], totalRecords: totalCount });
-    }
-    console.log('offset:', offset, 'limit:', limit, 'totalCount:', totalCount);
+
+  } else if (cRepoType === 'TranStoc') {
+    
+    cSql=`SELECT
+          LOC1.LocaName AS LocaFrom,
+          LOC2.LocaName AS LocaTo__,
+          BRAND___.BrandNme,
+          ITEMLIST.Outright,
+          ITEMTYPE.Descript AS TypeDesc,
+          ITEMLIST.UsersCde,
+          ITEMLIST.OtherCde,
+          ITEMLIST.Descript,
+          Sum(STOCKDTL.Quantity) AS TotalQty,
+          Sum(STOCKDTL.Quantity*STOCKDTL.Amount__) AS TotAmtOu,
+          Sum(STOCKDTL.Quantity*STOCKDTL.LandCost) AS TotCosOu,
+          Sum(STOCKDTL.QtyRecvd) AS TotalRcv,
+          Sum(STOCKDTL.QtyRecvd*STOCKDTL.Amount__) AS TotAmtIn,
+          Sum(STOCKDTL.QtyRecvd*STOCKDTL.LandCost) AS TotCosIn
+      FROM STOCKREC
+      FULL JOIN LOCATION LOC1 ON STOCKREC.WhseFrom = LOC1.Location
+      FULL JOIN LOCATION LOC2 ON STOCKREC.WhseTo__ = LOC2.Location
+      JOIN STOCKDTL ON STOCKDTL.CtrlNum_ = STOCKREC.CtrlNum_
+      JOIN ITEMLIST ON ITEMLIST.ItemCode = STOCKDTL.ItemCode
+      JOIN BRAND___ ON BRAND___.BrandNum = ITEMLIST.BrandNum
+      JOIN ITEMTYPE ON ITEMTYPE.ItemType = ITEMLIST.ItemType
+      WHERE STOCKREC.Disabled = 0
+      ${sqlQuery}
+      GROUP BY 
+        LOC1.LocaName,
+        LOC2.LocaName,
+        BRAND___.BrandNme,
+        ITEMLIST.Outright,
+        ITEMTYPE.Descript,
+        ITEMLIST.UsersCde,
+        ITEMLIST.OtherCde,
+        ITEMLIST.Descript
+        ORDER BY 1,2,6 
+      `
 
   } else if (cRepoType === 'TranClas') {
     
@@ -171,8 +206,8 @@ const StockTransfer = async (req, res) => {
       // Only if it's the 'TranRefe' RepoType, we fetch the total count
       if (cRepoType === 'TranRefe') {
           const totalCountResult = await queryDatabase(sqlCount, params); 
-          const totalCount = totalCountResult[0].totalCount;
-
+          // const totalCount = totalCountResult[0].totalCount;
+          const totalCount = parseInt(totalCountResult[0].totalCount, 10);
           // Send both the data and total count in the response
           res.json({ data: result, totalRecords: totalCount });
       } else {

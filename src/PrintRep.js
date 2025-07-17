@@ -20,7 +20,7 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
             if (col.type === 'datetime') {
                 // Assuming the value is a valid Date object, format it to a string (you can customize the format here)
                 value = formatDate(new Date(value).toLocaleDateString(),'MM/DD/YYYY'); // You can change this to `toLocaleDateString()` or other formats if needed
-                
+                return {value: value}                
             }
 
             return {
@@ -48,7 +48,6 @@ export async function printReportExcel(jsonData, columnConfig, colWidths, titleR
               } else {
                   formattedValue = totalValue.toFixed(2); // Ensure 2 decimal places as a string
                   formattedValue = formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Apply comma formatting in the string
-                  // console.log(col.label,formattedValue)
               }
           }
     

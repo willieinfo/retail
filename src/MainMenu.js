@@ -60,9 +60,8 @@ const menuItems= `
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li menu-ref="C03" class="stockDetails">Stock Transfer Details</li>
-        <li menu-ref="C04" class="stockStock">Stock Transfer by SKU</li>
+        <li menu-ref="C04" class="stockSKU">Stock Transfer by SKU</li>
         <li menu-ref="C05" class="stockClass">Stock Transfer by Classification</li>
-        <li menu-ref="C06" class="stockBrand">Stock Transfer by Brand</li>
         <li>Stock Transfer by Brand</li>
     </ul>
 </li>

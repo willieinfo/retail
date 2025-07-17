@@ -74,6 +74,24 @@
     overflow-y: hidden;
 }
 
+.showRemaining {
+    display: flex; 
+    flex-wrap: nowrap; 
+    white-space: nowrap; 
+    width: auto;
+}
+.fetchDataMore {
+    display:none; 
+    padding:0px 10px 0px 10px;
+    /* border-radius: 20px; */
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    cursor: pointer;
+    background-blend-mode:lighten;
+    animation: bounceIn 0.6s ease-out forwards;
+    opacity:cubic-bezier(1, 0, 0, 1)
+
+}
 /* Report Footer */
 .ReportFooter {
     height: auto;

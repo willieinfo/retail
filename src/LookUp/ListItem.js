@@ -1,4 +1,4 @@
-import { showReport, formatDate, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
+import { showReport, debounce, formatDate, showNotification, formatter, validateField, checkEmptyValue, highlightRow } from '../FunctLib.js';
 import { populateBrandNum, populateItemDept, populateItemType, populateCategNum , populateSuppNum_ } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import { printReportExcel, generateTitleRows } from '../PrintRep.js'
@@ -7,7 +7,10 @@ const divListItem = `
     <div id="ProductFile" class="report-section containerDiv">
         <div class="ReportHead">
             <span>Product File</span>
-            <button id="closeList" class="closeForm">✖</button>
+            <div class='showRemaining'>
+                <button class="fetchDataMore"></button>
+                <button id="closeList" class="closeForm">✖</button>
+            </div>
         </div>
         <div id="ListItem" class="ReportBody data-list">
             <table>
@@ -43,12 +46,18 @@ const tempDiv = document.createElement('div');
 tempDiv.innerHTML = divListItem;
 document.body.appendChild(tempDiv.firstElementChild);
 
+// Batch Fetching
+let existingData = [];  
+let currentPage = 0
+let remainingData = null
+
 let globalData = []; // Define a global array
 async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum, 
     cItemDept, cItemType, cCategNum) {
     const listCounter=document.getElementById('itemListCounter')
     document.getElementById('loadingIndicator').style.display = 'flex';
 
+    // let data = null;
     try {
         const url = new URL('http://localhost:3000/product/listItem');
         const params = new URLSearchParams();
@@ -59,29 +68,50 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         if (cItemDept) params.append('ItemDept', cItemDept);
         if (cItemType) params.append('ItemType', cItemType);
         if (cCategNum) params.append('CategNum', cCategNum);
+        
+        // Pass the "page" parameter for pagination
+        params.append('page', currentPage);
+        currentPage += 1
 
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) throw new Error('Network response was not ok');
 
-        globalData = await response.json(); // Store full data array globally
-        showNotification(`${globalData.length} Item Records fetched`);
-        listCounter.innerHTML=`${globalData.length} Records`
+        globalData = await response.json(); 
+        // showNotification(`${globalData.length} Item Records fetched`);
+
+        const { data: records, totalRecords } = globalData;  
+        existingData = [...existingData, ...records]; 
+        remainingData = totalRecords - existingData.length;
+
+        // const tolerance = 0.0001;  
+        // if (Math.abs(existingData.length - totalRecords) < tolerance) {
+        if (existingData.length === totalRecords) {
+            listCounter.innerHTML = `${existingData.length} Records`;
+        } else {
+            listCounter.innerHTML = `${existingData.length} of ${totalRecords} Records`;
+        }        
+        
+        globalData = existingData
+
+        const fetchDataMoreButton = document.querySelector('.fetchDataMore');
+        if (records <= 0) {
+            fetchDataMoreButton.style.display = 'none'
+
+        } else {
+            // Calculate remaining data
+            fetchDataMoreButton.style.display = 'block'
+            fetchDataMoreButton.innerHTML = `<i class="fa fa-list"></i>  ${remainingData} records remaining ...`;
+
+            if (remainingData <= 0) {
+                fetchDataMoreButton.style.display = 'none'
+            }
+        }
+
 
         // console.log(globalData[3])
 
         updateTable()   //Render / Display ItemList Table
         document.getElementById('printItemXLS').disabled = false
-
-        // document.getElementById('ListItemBody').addEventListener('click', (event) => {
-        //     const editBtn = event.target.closest('.spanEditItem'); // Find the clicked edit button
-        //     if (editBtn) {
-        //         const index = parseInt(editBtn.getAttribute('data-index')); // Get index
-        //         if (!isNaN(index) && index >= 0 && index < globalData.length) {
-        //             console.log(`Edit clicked for index: ${index}`);
-        //             ItemForm(index); // Pass only the index
-        //         }
-        //     }
-        // });
 
         document.getElementById('ListItemBody').addEventListener('click',async (event) => {
             const delBtn = event.target.closest('.spanDelItem'); // Find the clicked delete button
@@ -705,15 +735,26 @@ async function deleteItemList(cItemCode) {
     }
 }
 
+document.querySelector('.fetchDataMore').addEventListener('click', async () => {
+    const filterData = JSON.parse(localStorage.getItem("filterData"));
+    const cUsersCde = filterData[3];
+    const cOtherCde = filterData[4];
+    const cDescript = filterData[5];
+    const cBrandNum = filterData[6];
+    const cCategNum = filterData[7];
+    const cItemType = filterData[8];
+    const cItemDept = filterData[9];
+
+    debounce(ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum, 
+        cItemDept, cItemType, cCategNum),300);
+    
+})
+
 document.getElementById('filterList').addEventListener('click', async () => {
     try {
         FiltrRec('ListItem').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
 
-            // console.log(filterData)
-            // const dDateFrom = filterData[0];
-            // const dDate__To = filterData[1];
-            // const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
             const cDescript = filterData[5];
@@ -721,6 +762,10 @@ document.getElementById('filterList').addEventListener('click', async () => {
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
             const cItemDept = filterData[9];
+
+            existingData = [];  
+            globalData = [];  
+            currentPage = 0
 
             ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum, 
                 cItemDept, cItemType, cCategNum);

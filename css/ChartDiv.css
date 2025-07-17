@@ -15,7 +15,7 @@ canvas {
 /* Chart Container Divs */
 #storeRankChart,#brandCompChart,#classCompChart, #stockRankChart, #stockPurchChart, 
 #typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, 
-#transDetailsChart, #transClassChart,
+#transDetailsChart, #transClassChart, #transSKUChart,
 #stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;
