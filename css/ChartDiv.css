@@ -25,7 +25,7 @@ canvas {
 
 /* The chart occupying 70% of the parent width */
 .divChart70, .divChart30{
-    width: 70%;
+    width: 60%;
     height: 100%;
     padding: 10px;
     background-color: whitesmoke;
@@ -59,7 +59,7 @@ canvas {
 
 /* The second chart occupying 30% of the parent width */
 .divChart30 {
-    width: 30%;
+    width: 40%;
     height: 100%;
     padding: 10px;
     background-color: whitesmoke;

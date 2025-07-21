@@ -30,24 +30,24 @@ img.style.zIndex = "-1";
 const menuItems= `
 <li class="sales"><i class="fa fa-dollar-sign"></i> Sales
     <ul class="dropdown submenu">
-        <li menu-ref="A01" class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales Invoice</li>
+        <li menu-ref="A01" class="SalesInvoice data-entry"><i class="fa fa-th-list"></i> Sales - Data Entry</li>
         <hr class="menuLine">
-        <li menu-ref="A02" >Sales Record Details</li>
+        <li >Sales Record Details</li>
         <li menu-ref="A03" class="salesRankingByLocation">Sales Ranking by Location</li>
         <li menu-ref="A04" class="salesCompBrand">Sales Ranking by Brand</li>
         <li menu-ref="A05" class="salesCompClass">Sales Ranking by Classification</li>
         <li menu-ref="A06" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
         <li menu-ref="A07" class="dailySalesSum">Daily Sales Summary</li>
-        <li menu-ref="A08" class="monthlySalesSum">Monthly Sales Summary</li>
+        <li class="monthlySalesSum">Monthly Sales Summary</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
     <ul class="dropdown submenu">
-        <li> Purchase Order</li>
-        <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving Form</li>
+        <li> Purchase Order - Data Entry</li>
+        <li menu-ref="B02" class="StockReceiving data-entry"><i class="fa fa-th-list"></i> Stock Receiving - Data Entry</li>
         <hr class="menuLine">
-        <li menu-ref="B03">Stock Receiving Details</li>
+        <li >Stock Receiving Details</li>
         <li menu-ref="B04" class="purchReportByStock">Stock Receiving By SKU</li>
         <li menu-ref="B05" class="purchSumByType">Receiving Summary By Classification</li>
         <li menu-ref="B06" class="purchSumBySupp">Receiving Summary By Supplier</li>
@@ -56,7 +56,7 @@ const menuItems= `
 </li>
 <li class="transfers"><i class="fa fa-truck"></i> Transfers
     <ul class="dropdown submenu">
-        <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer</li>
+        <li menu-ref="C01" class="StockTransfer data-entry"><i class="fa fa-th-list"></i> Stock Transfer - Data Entry</li>
         <li menu-ref="C02" class="MerchandisePullOut data-entry">Merchandise Pull Out</li>
         <hr class="menuLine">
         <li menu-ref="C03" class="stockDetails">Stock Transfer Details</li>
@@ -67,7 +67,7 @@ const menuItems= `
 </li>
 <li class="adjustment"><i class="fa fa-clipboard"></i> Adjustments
     <ul class="dropdown submenu">
-        <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment</li>
+        <li menu-ref="D01" class="StockAdjustment data-entry">Stock Adjustment - Data Entry</li>
         <hr class="menuLine">
         <li>Adjustments Details</li>
         <li>Adjustments by SKU</li>
@@ -77,7 +77,7 @@ const menuItems= `
 </li>
 <li class="inventory"><i class="fa fa-boxes"></i> Inventory
     <ul class="dropdown submenu">
-        <li menu-ref="E01" class="PhysicalCount data-entry">Physical Count</li>
+        <li menu-ref="E01" class="PhysicalCount data-entry">Physical Count - Data Entry</li>
         <hr class="menuLine">
         <li menu-ref="E02"  class='stockEndingByLocation'>Stock Ending By Location</li>
         <li menu-ref="E03"  class='stockEndingByBrand'>Stock Ending By Brand</li>
@@ -157,6 +157,8 @@ const todaysDate = new Date();
 const cDateToday=formatDate(todaysDate)
 const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
+
+Chart.register(ChartDataLabels)
 
 // Log Out
 document.querySelectorAll('.LogOut').forEach( el =>{

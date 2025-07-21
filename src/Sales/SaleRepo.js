@@ -1005,8 +1005,8 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (dMontTo__) params.append('MontTo__', dMontTo__); 
 
         // Send request with query parameters
-        const response = await fetch(`${url}?${params.toString()}`);
-        // const response = await fetch('./data/DB_COMPSTORE.json');
+        // const response = await fetch(`${url}?${params.toString()}`);
+        const response = await fetch('./data/DB_COMPSTORE.json');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -2702,86 +2702,185 @@ async function setStoreChart(chartData, dateRange) {
                 }
             }
         });
-        
-        // Prepare data for the doughnut chart (Contribution to Total Sales by store group)
-        const storeGroupTotals = chartData.reduce((acc, entry) => {
-            const totalAmount = parseFloat(entry.Amount__) || 0;
-            const storeGroup = entry.StoreGrp.trim(); // Ensure group name is trimmed
-            acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
-            return acc;
-        }, {});
 
-        // Sort store groups by total amount in descending order
-        const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
 
-        const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
-        const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
+    const storeGroupTotals = chartData.reduce((acc, entry) => {
+        const totalAmount = parseFloat(entry.Amount__) || 0;
+        const storeGroup = entry.StoreGrp.trim();
+        acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
+        return acc;
+    }, {});
 
-        const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
-        const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
+    const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
 
-        const generateRandomColor = () => {
-            const r = Math.floor(Math.random() * 255);
-            const g = Math.floor(Math.random() * 255);
-            const b = Math.floor(Math.random() * 255);
-            return `rgba(${r}, ${g}, ${b}, 0.6)`;
-        };
+    const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
+    const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
 
-        const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
-        const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+    const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0);
+    const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2));
 
-        // Create the doughnut chart (myChart2)
-        const ctx2 = storeChart2Element.getContext('2d');
-        myChart2 = new Chart(ctx2, {
-            type: 'doughnut',
-            data: {
-                labels: storeGroupLabels,
-                datasets: [{
-                    label: 'Contribution to Total Sales',
-                    data: storeGroupValues,
-                    backgroundColor: backgroundColors,
-                    borderColor: borderColors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            font: {
-                                family: 'Arial Narrow',
-                                size: 10
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
-                                const value = context.raw || 0;
-                                return `${percentage}%`; 
-                            }
-                        }
-                    },
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'end',
-                        formatter: (value, context) => {
-                            const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
-                            return `${percentage}%`;
-                        },
-                        color: '#fff',
+    const generateRandomColor = () => {
+        const r = Math.floor(Math.random() * 255);
+        const g = Math.floor(Math.random() * 255);
+        const b = Math.floor(Math.random() * 255);
+        return `rgba(${r}, ${g}, ${b}, 0.6)`;
+    };
+
+    const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
+    const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+
+    // Create the doughnut chart
+    const ctx2 = storeChart2Element.getContext('2d');
+    myChart2 = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: storeGroupLabels,
+            datasets: [{
+                label: 'Contribution to Total Sales',
+                data: storeGroupValues,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
                         font: {
-                            weight: 'bold',
-                            size: '10'
+                            family: 'Arial Narrow',
+                            size: 10
                         }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const percentage = storeGroupPercentages[context.dataIndex];
+                            return `${context.label}: ${percentage}%`;
+                        }
+                    }
+                },
+                datalabels: {
+                    anchor: 'end', // Anchor labels at the end of the arc
+                    align: 'end', // Align labels outside the arc
+                    offset: 10, // Distance from the arc to the label
+                    display: 'auto', // Automatically hide overlapping labels
+                    color: '#000', // Label color (black for better visibility)
+                    font: {
+                        weight: 'bold',
+                        size: 10,
+                        family: 'Arial Narrow'
+                    },
+                    formatter: (value, context) => {
+                        const percentage = storeGroupPercentages[context.dataIndex];
+                        return `${percentage}%`;
+                    },
+                    // Enable leader lines (callouts)
+                    textAlign: 'center',
+                    padding: 4,
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Optional: Background for labels
+                    borderRadius: 3, // Optional: Rounded corners for label background
+                    clip: false, // Ensure labels are not clipped outside the canvas
+                    // Configure leader lines
+                    labels: {
+                        value: {
+                            color: '#000'
+                        }
+                    },
+                    // Enable callout lines
+                    callout: {
+                        display: true, // Show leader lines
+                        borderColor: '#000', // Line color
+                        borderWidth: 1 // Line thickness
                     }
                 }
             }
-        });
+        }
+    });        
+
+            // // Prepare data for the doughnut chart (Contribution to Total Sales by store group)
+            // const storeGroupTotals = chartData.reduce((acc, entry) => {
+            //     const totalAmount = parseFloat(entry.Amount__) || 0;
+            //     const storeGroup = entry.StoreGrp.trim(); // Ensure group name is trimmed
+            //     acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
+            //     return acc;
+            // }, {});
+
+            // // Sort store groups by total amount in descending order
+            // const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
+
+            // const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
+            // const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
+
+            // const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
+            // const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
+
+            // const generateRandomColor = () => {
+            //     const r = Math.floor(Math.random() * 255);
+            //     const g = Math.floor(Math.random() * 255);
+            //     const b = Math.floor(Math.random() * 255);
+            //     return `rgba(${r}, ${g}, ${b}, 0.6)`;
+            // };
+
+            // const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
+            // const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+
+            // // Create the doughnut chart (myChart2)
+            // const ctx2 = storeChart2Element.getContext('2d');
+            // myChart2 = new Chart(ctx2, {
+            //     type: 'doughnut',
+            //     data: {
+            //         labels: storeGroupLabels,
+            //         datasets: [{
+            //             label: 'Contribution to Total Sales',
+            //             data: storeGroupValues,
+            //             backgroundColor: backgroundColors,
+            //             borderColor: borderColors,
+            //             borderWidth: 1
+            //         }]
+            //     },
+            //     options: {
+            //         responsive: true,
+            //         maintainAspectRatio: false,
+            //         plugins: {
+            //             legend: {
+            //                 position: 'top',
+            //                 labels: {
+            //                     font: {
+            //                         family: 'Arial Narrow',
+            //                         size: 10
+            //                     }
+            //                 }
+            //             },
+            //             tooltip: {
+            //                 callbacks: {
+            //                     label: function(context) {
+            //                         const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
+            //                         const value = context.raw || 0;
+            //                         return `${percentage}%`; 
+            //                     }
+            //                 }
+            //             },
+            //             datalabels: {
+            //                 anchor: 'end',
+            //                 align: 'end',
+            //                 formatter: (value, context) => {
+            //                     const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
+            //                     return `${percentage}%`;
+            //                 },
+            //                 color: '#fff',
+            //                 font: {
+            //                     weight: 'bold',
+            //                     size: '10'
+            //                 }
+            //             }
+            //         }
+            //     }
+            // });
 
         // Store the chart instances globally if needed (optional)
         window.myChart1 = myChart1;
@@ -3024,8 +3123,14 @@ async function SalesCompChart(data, showData) {
             dataGroupValuesPrevious.push(othersPrevious);
         }
 
-        const totalValues = dataGroupValuesCurrent.reduce((acc, v) => acc + v, 0);
-        const dataGroupPercentages = dataGroupValuesCurrent.map(v => ((v / totalValues) * 100).toFixed(2));
+        // const totalValue1 = dataGroupValuesCurrent.reduce((acc, v) => acc + v, 0);
+        // const dataGroupPercentage1 = dataGroupValuesCurrent.map(v => ((v / totalValue1) * 100).toFixed(2));
+        // const dataGroupPercentage1 = dataGroupValuesCurrent
+
+        // const totalValue2 = dataGroupValuesPrevious.reduce((acc, v) => acc + v, 0);
+        // const dataGroupPercentage2 = dataGroupValuesPrevious.map(v => ((v / totalValue2) * 100).toFixed(2));
+        // const dataGroupPercentage2 = dataGroupValuesPrevious
+
 
         const generateRandomColor = () => {
             const r = Math.floor(Math.random() * 255);
@@ -3044,7 +3149,7 @@ async function SalesCompChart(data, showData) {
         const roundedMaxValue = Math.ceil(maximumValue);
 
         // Chart options (shared)
-        const commonOptions = {
+        const Option1 = {
             responsive: true,
             indexAxis: 'y',
             maintainAspectRatio: false,
@@ -3054,17 +3159,16 @@ async function SalesCompChart(data, showData) {
                     callbacks: {
                         label: function (context) {
                             const value = context.raw || 0;
-                            const percentage = dataGroupPercentages[context.dataIndex] || 0;
-                            return `${value} (${percentage}%)`;
+                            return `${value}`;
                         }
                     }
                 },
                 datalabels: {
-                    anchor: 'end',
+                    anchor: 'center',
                     align: 'end',
                     formatter: (value, context) => {
-                        const percentage = dataGroupPercentages[context.dataIndex] || 0;
-                        return `${percentage}%`;
+                        const displayValue = dataGroupValuesCurrent[context.dataIndex] || 0;
+                        return `${Math.round(displayValue)}`;
                     },
                     color: '#000',
                     font: { weight: 'bold', size: 10 }
@@ -3085,6 +3189,47 @@ async function SalesCompChart(data, showData) {
             }
         };
 
+        const Option2 = {
+            responsive: true,
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw || 0;
+                            return `${value}`;
+                        }
+                    }
+                },
+                datalabels: {
+                    anchor: 'center',
+                    align: 'end',
+                    formatter: (value, context) => {
+                        const displayValue = dataGroupValuesPrevious[context.dataIndex] || 0;
+                        return `${Math.round(displayValue)}`;
+                    },
+                    color: '#000',
+                    font: { weight: 'bold', size: 10 }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: roundedMaxValue,
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 0
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+
         // Render current chart (Current Amount__)
         window.myCharts[currentChartId] = new Chart(current_Chart.getContext('2d'), {
             type: 'bar',
@@ -3098,7 +3243,7 @@ async function SalesCompChart(data, showData) {
                     borderWidth: 1
                 }]
             },
-            options: commonOptions
+            options: Option1
         });
 
         // Render previous chart (Previous Month Amount)
@@ -3114,7 +3259,7 @@ async function SalesCompChart(data, showData) {
                     borderWidth: 1
                 }]
             },
-            options: commonOptions
+            options: Option2
         });
 
     } catch (error) {
