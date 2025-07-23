@@ -10,6 +10,14 @@ export function showReport(reportType) {
     // Show the selected report section
     const selectedSection = document.getElementById(reportType);
     selectedSection.classList.add('active');
+
+    document.querySelectorAll('.filter-form').forEach(e => {
+        e.remove()
+    })
+    document.querySelectorAll('.modal-overlay').forEach(e => {
+        e.remove()
+    })
+
 }
 
 export function formatDate(dateString, cDateFormat='MM/DD/YYYY') {

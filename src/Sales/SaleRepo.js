@@ -932,7 +932,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuReportElements = document.querySelectorAll('.salesCompBrand'); //<li>
     const rankRepoDiv = document.getElementById('SalesCompBrand');
     const closeRepo = document.getElementById('closeRepo6');
-    
+
     closeRepo.addEventListener('click', () => {
         rankRepoDiv.classList.remove('active');
     });

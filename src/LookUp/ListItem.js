@@ -94,8 +94,10 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         globalData = existingData
 
         const fetchDataMoreButton = document.querySelector('.fetchDataMore');
-        if (records <= 0) {
-            fetchDataMoreButton.style.display = 'none'
+        console.log('records',records.length)
+        console.log('remainingData',remainingData)
+        if (records.length <= 0) {
+            // fetchDataMoreButton.style.display = 'none'
 
         } else {
             // Calculate remaining data

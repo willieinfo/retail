@@ -4,13 +4,17 @@ export async function FiltrRec(cModules_) {
             populateCategNum, populateLocation, checkEmptyValue, makeDraggable } = await import('./FunctLib.js');
 
     return new Promise(async (resolve) => {
+
+        const uniqueTitleBarId = generateUniqueId('titleBar');
+
         // Create the form element
         const filterForm = document.createElement('form');
         filterForm.id = "filter-form";
+        filterForm.className = "filter-form"
         filterForm.style.display = "none";  // Start with it hidden
 
         filterForm.innerHTML = `
-            <div id="titleBar">Filter Form</div>
+            <div id="${uniqueTitleBarId}" class="titleFilterBar">Filter Form</div>
             <div id="inputSection">
                 <br>
                 <div id="inputDates" class="subTextDiv" style="flex-direction: row;">
@@ -135,6 +139,9 @@ export async function FiltrRec(cModules_) {
         overlay.style.height = '100%';
         overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent black background
         overlay.style.zIndex = 999; 
+        overlay.className = "modal-overlay"
+
+
 
         // Form styling to center it
         filterForm.style.position = 'absolute';
@@ -172,9 +179,7 @@ export async function FiltrRec(cModules_) {
             document.getElementById('LocationFile').appendChild(overlay);
             document.getElementById('inputDates').style.display = 'none';
             document.getElementById('inputDetails').style.display = 'none';
-            document.getElementById('inputDetails').style.display = 'none';
             document.getElementById('chkDiv').style.display = 'block';
-
             await populateLocation('', '', '','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SalesLst') {
@@ -323,7 +328,10 @@ export async function FiltrRec(cModules_) {
 
         // Show the form by changing its display style
         filterForm.style.display = 'flex';
-        makeDraggable(filterForm,titleBar)
+        const titleBar = filterForm.querySelector(`#${uniqueTitleBarId}`);
+        titleBar.classList.add("titleBar")
+        makeDraggable(filterForm, titleBar)
+        
 
         let filterData = JSON.parse(localStorage.getItem("filterData"));
         if (!filterData || filterData.length === 0) {
@@ -367,20 +375,12 @@ export async function FiltrRec(cModules_) {
         }
 
         // Cancel button logic
-        // document.getElementById('cancelFilterBtn').addEventListener('click', () => {
-        //     document.getElementById('filter-form').remove(); 
-        //     document.getElementById('modal-overlay').remove();
-        // });
-
         document.getElementById('cancelFilterBtn').addEventListener('click', () => {
             document.getElementById('filter-form').remove(); 
-            const modalOverlay = document.getElementById('modal-overlay');
-            modalOverlay.classList.add('fade-out');
-            modalOverlay.addEventListener('animationend', () => {
-                modalOverlay.remove();
-            }, { once: true });
+            document.getElementById('modal-overlay').remove();
+            // document.getElementById('filter-form').style.display = 'none'; 
+            // document.getElementById('modal-overlay').style.display = 'none'; 
         });
-
 
         // Save button logic
         document.getElementById('saveFilterBtn').addEventListener('click', (e) => {
@@ -424,13 +424,7 @@ export async function FiltrRec(cModules_) {
             localStorage.setItem("filterData", JSON.stringify(filterData));
 
             document.getElementById('filter-form').remove(); 
-            // document.getElementById('modal-overlay').remove();  
-
-            const modalOverlay = document.getElementById('modal-overlay');
-            modalOverlay.classList.add('fade-out');
-            modalOverlay.addEventListener('animationend', () => {
-                modalOverlay.remove();
-            }, { once: true });
+            document.getElementById('modal-overlay').remove();
 
             // Resolve the promise once everything is set up
             resolve();
@@ -449,15 +443,19 @@ function getNonRepeatingRandom(arr) {
     return arr[index];
 }
 
+function generateUniqueId(prefix) {
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 
 export function displayErrorMsg(error,otherMsg = '') {
-    const errorMessageDiv = document.getElementById("error-message");
+    const errorMessageDiv = document.querySelector(".error-message");
     const errorText = document.getElementById("error-text");
     const retryBtn = document.getElementById("retry-btn");
     const ignoreBtn = document.getElementById("ignore-btn");
     const abortBtn = document.getElementById("abort-btn");
     const errorOtherMsg = document.getElementById("error-otherMsg");
-    const titleBar = document.getElementById("title-bar");
+    const titleBar = document.querySelector(".title-bar");
 
     error = !error ? 'Error occured' : error
 
@@ -505,3 +503,4 @@ export function displayErrorMsg(error,otherMsg = '') {
         errorMessageDiv.style.display = 'none';
     };
 }
+
