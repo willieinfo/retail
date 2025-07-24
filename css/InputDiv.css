@@ -255,25 +255,26 @@ textarea {
     display:none; 
     padding:0px 10px 0px 10px;
     margin: 4px;
-    /* border-radius: 20px; */
+    border-radius: 10px;
     font-family: 'Times New Roman', Times, serif;
     font-style: italic;
     cursor: pointer;
-    /* background-blend-mode:lighten; */
     background-blend-mode: multiply;
     animation: bounceIn 0.6s ease-out forwards;
     opacity:cubic-bezier(1, 0, 0, 1);
     background-color: transparent;
     color: white;
-    /* border: 1px solid linear-gradient(to right, #ffff, var(--main-bg-color)  );   */
-    animation: blink 2s infinite;
+    border: 1px solid;  
+    animation: blink 1s infinite;
 
 }
 
 @keyframes blink {
-    0% { opacity: 1; }
+
+    /* 0% { opacity: 1; }
     50% { opacity: 0.4; }
-    100% { opacity: 1; }
+    100% { opacity: 1; } */
+
     /* 0% { background-color: whitesmoke;
         color: black ;}
     50% { background-color: transparent;
@@ -281,6 +282,10 @@ textarea {
     100% {  background-color: whitesmoke;
         color: black ; } */
 
+    0% {border-color: white;}
+    50% {border-color: transparent;}
+    100% {border-color: white;}
+        
 }
 
 /* PickList */

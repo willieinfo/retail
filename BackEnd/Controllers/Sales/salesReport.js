@@ -243,6 +243,7 @@ const SalesCompStore = async (req, res) => {
       SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS Amount__
     FROM SALESDTL
     JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
     JOIN LOCATION ON SALESREC.Location = LOCATION.Location
     WHERE SALESREC.Disabled = 0
     AND SALESDTL.Date____ >= @dDateFrom 
@@ -269,6 +270,7 @@ const SalesCompStore = async (req, res) => {
       SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS PrvYrAmt
     FROM SALESDTL
     JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
     JOIN LOCATION ON SALESREC.Location = LOCATION.Location
     WHERE SALESREC.Disabled = 0
     AND SALESDTL.Date____ >= @dYearFrom 
@@ -295,6 +297,7 @@ const SalesCompStore = async (req, res) => {
       SUM(SALESDTL.Quantity * SALESDTL.Amount__) AS PrvMoAmt
     FROM SALESDTL
     JOIN SALESREC ON SALESDTL.CtrlNum_ = SALESREC.CtrlNum_
+    JOIN ITEMLIST ON SALESDTL.ItemCode = ITEMLIST.ItemCode
     JOIN LOCATION ON SALESREC.Location = LOCATION.Location
     WHERE SALESREC.Disabled = 0
     AND SALESDTL.Date____ >= @dMontFrom 

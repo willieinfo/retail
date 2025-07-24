@@ -59,6 +59,11 @@ const divCompStore = `
                 </table>            
             </div>
 
+            <details class="seeFilters" style="display: none">
+                <summary>See Filters</summary>
+                <p class="filterLists"></p>
+            </details>
+
             <div id="storeRankChart" class="chartContainer">
                 <div class="divChart70">
                     <h5>Top 30 Stores</h5>
@@ -1005,8 +1010,8 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (dMontTo__) params.append('MontTo__', dMontTo__); 
 
         // Send request with query parameters
-        // const response = await fetch(`${url}?${params.toString()}`);
-        const response = await fetch('./data/DB_COMPSTORE.json');
+        const response = await fetch(`${url}?${params.toString()}`);
+        // const response = await fetch('./data/DB_COMPSTORE.json');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -1485,7 +1490,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // });
 
-document.getElementById('saleRank1').addEventListener('click', () => {
+document.getElementById('saleRank1').addEventListener('click',() => {
     try {
         FiltrRec('SaleRnk1').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
@@ -1504,44 +1509,52 @@ document.getElementById('saleRank1').addEventListener('click', () => {
             
             SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
-    
+
+            getFilters(filterData)
+           
         });
+
     } catch (error) {
         console.error("Error processing the filter:", error);
         displayErrorMsg(error,"Error processing the filter")
     }
 })
 
-// document.getElementById('saleRank2').addEventListener('click', () => {
-//     try {
-//         FiltrRec('SaleRnk2').then(() => {
-//             const filterData = JSON.parse(localStorage.getItem("filterData"));
-    
-//             const dDateFrom = filterData[0];
-//             const dDate__To = filterData[1];
-//             const cLocation = filterData[2];
-//             const cUsersCde = filterData[3];
-//             const cOtherCde = filterData[4];
-//             // const cDescript = filterData[5];
-//             const cBrandNum = filterData[6];
-//             const cCategNum = filterData[7];
-//             const cItemType = filterData[8];
-//             const cItemDept = filterData[9];
-//             const cStoreGrp = filterData[12];
 
-//             SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-//                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
-
-//         });
-//     } catch (error) {
-//         console.error("Error processing the filter:", error);
-//         displayErrorMsg(error,"Error processing the filter")
-//     }
-
-// })
-
-
-
+async function getFilters(filterData){
+    const aFilters = []
+    for (let i = 0; i < filterData.length; i++) {
+        if (i===0 && filterData[i]) {
+            aFilters.push(`Date From: ${formatDate(filterData[i],'MM/DD/YYYY')}`) 
+        }
+        if (i===1 && filterData[i]) {
+            aFilters.push(`Date To: ${formatDate(filterData[i],'MM/DD/YYYY')}`) 
+        }
+        if (i===2 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            console.log(data[0].LocaName)
+            aFilters.push(`Location: ${data[0].LocaName}`) 
+        }
+        if (i===6 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Brand: ${data[0].BrandNme}`) 
+        }
+        if (i===12 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Store Group: ${data[0].StoreGrp}`) 
+        }
+    }
+    console.log(aFilters)
+    document.querySelector('.seeFilters').style.display = 'flex'
+    document.querySelector('.filterLists').innerText = aFilters.toString()
+    return
+}
 
 // ==========================================================================
 async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -2626,7 +2639,7 @@ async function setStoreChart(chartData, dateRange) {
             .slice(0, 30); // Take the top 30 stores
 
         const storeNames = topStores.map(entry => entry[0]); // Store names
-        const storeAmounts = topStores.map(entry => entry[1]); // Total amounts
+        const storeAmounts =topStores.map(entry => Math.round(entry[1])); // Total amounts
 
         const ctx1 = storeChart1Element.getContext('2d');
         myChart1 = new Chart(ctx1, {

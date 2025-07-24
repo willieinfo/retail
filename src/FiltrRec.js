@@ -428,7 +428,6 @@ export async function FiltrRec(cModules_) {
 
             // Resolve the promise once everything is set up
             resolve();
-
         });
     });
 }
@@ -448,14 +447,17 @@ function generateUniqueId(prefix) {
 }
 
 
-export function displayErrorMsg(error,otherMsg = '') {
+export async function displayErrorMsg(error,otherMsg = '') {
+    const { makeDraggable } = await import('./FunctLib.js');
+
     const errorMessageDiv = document.querySelector(".error-message");
     const errorText = document.getElementById("error-text");
     const retryBtn = document.getElementById("retry-btn");
     const ignoreBtn = document.getElementById("ignore-btn");
     const abortBtn = document.getElementById("abort-btn");
     const errorOtherMsg = document.getElementById("error-otherMsg");
-    const titleBar = document.querySelector(".title-bar");
+    const titleBar = document.getElementById("title-bar");
+    titleBar.classList.add('.titleBar')
 
     error = !error ? 'Error occured' : error
 
@@ -485,7 +487,7 @@ export function displayErrorMsg(error,otherMsg = '') {
     // Display the error message
     if (errorMessageDiv) {
         errorMessageDiv.style.display = 'block';
-        // if (titleBar) makeDraggable(errorMessageDiv, titleBar);
+        if (titleBar) makeDraggable(errorMessageDiv, titleBar);
     } else {
         console.error('Error message div not found in the DOM.');
     }

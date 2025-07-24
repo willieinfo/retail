@@ -16,7 +16,7 @@ canvas {
 #storeRankChart,#brandCompChart,#classCompChart, #stockRankChart, #stockPurchChart, 
 #typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, 
 #transDetailsChart, #transClassChart, #transSKUChart,
-#stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
+#stockEndLocaChart, #stockEndBrandChart, #dailySalesChart, .seeFilters {
     display: none;
     justify-content: center;
     background-color: whitesmoke;
@@ -125,4 +125,22 @@ canvas {
 }
 #topClass canvas {
     background-image: linear-gradient(to right, #ffff, lightgrey  ); 
+}
+
+/* getFilters */
+.seeFilters {
+    padding: 0px 10px 0px 10px;
+    /* color: rgba(0, 0, 0, 0.6); */
+    color:rgba(128, 128, 128);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: small;
+    cursor: pointer;
+}
+.seeFilters p {
+    justify-self: center;
+    width: 70%;
+    text-align: center;
+}
+.filterLists:hover {
+    cursor: initial;
 }

@@ -77,40 +77,32 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         if (!response.ok) throw new Error('Network response was not ok');
 
         globalData = await response.json(); 
-        // showNotification(`${globalData.length} Item Records fetched`);
 
         const { data: records, totalRecords } = globalData;  
         existingData = [...existingData, ...records]; 
         remainingData = totalRecords - existingData.length;
 
-        // const tolerance = 0.0001;  
-        // if (Math.abs(existingData.length - totalRecords) < tolerance) {
-        if (existingData.length === totalRecords) {
-            listCounter.innerHTML = `${existingData.length} Records`;
-        } else {
-            listCounter.innerHTML = `${existingData.length} of ${totalRecords} Records`;
-        }        
-        
+        listCounter.innerHTML = (existingData.length === totalRecords) ? `${existingData.length} Records` 
+            : `${existingData.length} of ${totalRecords} Records`;
+
         globalData = existingData
 
         const fetchDataMoreButton = document.querySelector('.fetchDataMore');
-        console.log('records',records.length)
-        console.log('remainingData',remainingData)
+        // console.log('remainingData',remainingData)
         if (records.length <= 0) {
-            // fetchDataMoreButton.style.display = 'none'
+            fetchDataMoreButton.style.display = 'none'
 
         } else {
             // Calculate remaining data
             fetchDataMoreButton.style.display = 'block'
-            fetchDataMoreButton.innerHTML = `<i class="fa fa-list"></i>  ${remainingData} records remaining ...`;
+            fetchDataMoreButton.innerHTML = `<i class="fa fa-list"></i>  ${remainingData} remaining records`;
 
             if (remainingData <= 0) {
                 fetchDataMoreButton.style.display = 'none'
+
             }
         }
 
-
-        // console.log(globalData[3])
 
         updateTable()   //Render / Display ItemList Table
         document.getElementById('printItemXLS').disabled = false
@@ -681,8 +673,8 @@ function updateTable() {
                     <tr id="trItemList" data-index="${index}" style="${item.Disabled ? 'color: darkgray;' : ''}">
                         <td>${item.ItemCode || 'N/A'}</td>
                         <td class="colNoWrap">${item.Descript.trim().substring(0, 50) || 'N/A'}</td>
-                        <td>${item.UsersCde || 'N/A'}</td>
-                        <td>${item.BrandNme || 'N/A'}</td>
+                        <td class="colNoWrap">${item.UsersCde || 'N/A'}</td>
+                        <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
                         <td class="colNoWrap">${item.DeptName.trim() || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
                         <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>

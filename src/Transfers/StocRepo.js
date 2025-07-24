@@ -270,11 +270,9 @@ async function StockTraDetails(dDateFrom, dDateTo__, cReferDoc, cLocaFrom, cLoca
 
         // Update the counter with the fetched data length
         const listCounter = document.getElementById('transCounter1');
-        if (existingData.length === totalRecords) {
-            listCounter.innerHTML = `${existingData.length} Records`;
-        } else {
-            listCounter.innerHTML = `${existingData.length} of ${totalRecords} Records`;
-        }
+        listCounter.innerHTML = (existingData.length === totalRecords) ? `${existingData.length} Records` 
+            : `${existingData.length} of ${totalRecords} Records`;
+
 
         const fetchDataMoreButton = document.querySelector('.fetchDataMore');
         if (records <= 0) {
@@ -283,7 +281,7 @@ async function StockTraDetails(dDateFrom, dDateTo__, cReferDoc, cLocaFrom, cLoca
         } else {
             // Calculate remaining data
             fetchDataMoreButton.style.display = 'block'
-            fetchDataMoreButton.innerHTML = `<i class="fa fa-list"></i>  ${remainingData} records remaining ...`;
+            fetchDataMoreButton.innerHTML = `<i class="fa fa-list"></i>  ${remainingData} remaining records`;
 
             if (remainingData <= 0) {
                 fetchDataMoreButton.style.display = 'none'
