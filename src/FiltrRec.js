@@ -182,6 +182,7 @@ export async function FiltrRec(cModules_) {
             document.getElementById('chkDiv').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
+
         } else if (cModules_ === 'SalesLst') {
             document.getElementById('SalesLst').appendChild(filterForm);
             document.getElementById('SalesLst').appendChild(overlay);
@@ -191,52 +192,46 @@ export async function FiltrRec(cModules_) {
         } else if (cModules_ === 'SaleRnk1') {
             document.getElementById('SalesRankStore').appendChild(filterForm);
             document.getElementById('SalesRankStore').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'CompBrnd') {
             document.getElementById('SalesCompBrand').appendChild(filterForm);
             document.getElementById('SalesCompBrand').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'CompClas') {
             document.getElementById('SalesCompClass').appendChild(filterForm);
             document.getElementById('SalesCompClass').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk2') {
             document.getElementById('SalesRankBrand').appendChild(filterForm);
             document.getElementById('SalesRankBrand').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk3') {
             document.getElementById('SalesRankStock').appendChild(filterForm);
             document.getElementById('SalesRankStock').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'SaleRnk4') {
             document.getElementById('SalesRankType').appendChild(filterForm);
             document.getElementById('SalesRankType').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
         } else if (cModules_ === 'DailySales') {
             document.getElementById('DailySalesSum').appendChild(filterForm);
             document.getElementById('DailySalesSum').appendChild(overlay);
-            document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             await populateLocation('', '', 'SellArea','FiltrRec_Location','0');
             await populateStoreGrp('','FiltrRec');
+
         } else if (cModules_ === 'StockLst') {
             document.getElementById('StockLst').appendChild(filterForm);
             document.getElementById('StockLst').appendChild(overlay);

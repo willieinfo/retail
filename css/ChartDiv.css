@@ -135,6 +135,9 @@ canvas {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: small;
     cursor: pointer;
+    display: flex;
+    justify-content: space-around;
+    background-color: aqua;
 }
 .seeFilters p {
     justify-self: center;

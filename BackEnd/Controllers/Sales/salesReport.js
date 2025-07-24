@@ -16,12 +16,17 @@ const SalesCompBrand = async (req, res) => {
   const dYearTo__ = req.query.YearTo__;  // Year range for previous year comparison
   const dMontFrom = req.query.MontFrom;  // Month range for previous month comparison
   const dMontTo__ = req.query.MontTo__;  // Month range for previous month comparison
+  const cDescript = req.query.Descript;
 
   // Parameters object to pass to SQL query
   const params = {};
   let sqlQuery = '';
 
   // Add other filters to sqlQuery string
+  if (cDescript) {
+    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;
+  }
   if (cBrandNum) {
     sqlQuery += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
     params.cBrandNum = `%${cBrandNum}%`;
@@ -192,12 +197,17 @@ const SalesCompStore = async (req, res) => {
   const dYearTo__ = req.query.YearTo__;  // Year range for previous year comparison
   const dMontFrom = req.query.MontFrom;  // Month range for previous month comparison
   const dMontTo__ = req.query.MontTo__;  // Month range for previous month comparison
+  const cDescript = req.query.Descript;
 
   // Parameters object to pass to SQL query
   const params = {};
   let sqlQuery = '';
 
   // Add other filters to sqlQuery string
+  if (cDescript) {
+    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;
+  }
   if (cBrandNum) {
     sqlQuery += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
     params.cBrandNum = `%${cBrandNum}%`;
@@ -365,6 +375,7 @@ const SalesRankStock = async (req, res) => {
   const cStoreGrp = req.query.StoreGrp;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
+  const cDescript = req.query.Descript;
 
 
   // Constructing the base SQL query
@@ -394,6 +405,10 @@ const SalesRankStock = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
+   if (cDescript) {
+    cSql += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;
+  }
   if (cBrandNum) {
     cSql += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
     params.cBrandNum = `%${cBrandNum}%`;
@@ -468,6 +483,7 @@ const DailySalesSum = async (req, res) => {
   const cStoreGrp = req.query.StoreGrp;
   const dDateFrom = req.query.DateFrom;
   const dDateTo__ = req.query.DateTo__;
+  const cDescript = req.query.Descript;
 
 
   // Constructing the base SQL query
@@ -493,6 +509,10 @@ const DailySalesSum = async (req, res) => {
   const params = {};
 
   // Additional filters based on query parameters
+  if (cDescript) {
+    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;
+  }
   if (cBrandNum) {
     cSql += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
     params.cBrandNum = `%${cBrandNum}%`;
@@ -567,12 +587,17 @@ const SalesCompClass = async (req, res) => {
   const dYearTo__ = req.query.YearTo__;  // Year range for previous year comparison
   const dMontFrom = req.query.MontFrom;  // Month range for previous month comparison
   const dMontTo__ = req.query.MontTo__;  // Month range for previous month comparison
+  const cDescript = req.query.Descript;
 
   // Parameters object to pass to SQL query
   const params = {};
   let sqlQuery = '';
 
   // Add other filters to sqlQuery string
+  if (cDescript) {
+    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    params.cDescript = `%${cDescript}%`;
+  }
   if (cBrandNum) {
     sqlQuery += " AND ITEMLIST.BrandNum LIKE @cBrandNum";
     params.cBrandNum = `%${cBrandNum}%`;

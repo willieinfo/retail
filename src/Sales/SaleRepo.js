@@ -61,7 +61,7 @@ const divCompStore = `
 
             <details class="seeFilters" style="display: none">
                 <summary>See Filters</summary>
-                <p class="filterLists"></p>
+                <div id="pCompStore" class='filterLists'></div>
             </details>
 
             <div id="storeRankChart" class="chartContainer">
@@ -135,6 +135,11 @@ const divCompBrand = `
                 </table>            
             </div>
 
+            <details class="seeFilters" style="display: none">
+                <summary>See Filters</summary>
+                <div id="pCompBrand" class='filterLists'></div>
+            </details>
+
             <div id="brandCompChart" class="chartContainer">
                 <div class="divBrand1">
                     <h5>Current Year</h5>
@@ -206,6 +211,10 @@ const divCompClass = `
                     </thead>
                 </table>            
             </div>
+            <details class="seeFilters" style="display: none">
+                <summary>See Filters</summary>
+                <div id="pCompClass" class='filterLists'></div>
+            </details>
 
             <div id="classCompChart" class="chartContainer">
                 <div class="divBrand1">
@@ -258,6 +267,10 @@ const divRankStock =`
                     </thead>
                 </table>            
             </div>
+            <details class="seeFilters" style="display: none">
+                <summary>See Filters</summary>
+                <div id="pRankStock" class='filterLists'></div>
+            </details>
 
             <div id="stockRankChart" class="chartContainer">
                 <div id="topStock">
@@ -301,6 +314,10 @@ const divDailySales =`
                     </thead>
                 </table>            
             </div>
+            <details class="seeFilters" style="display: none">
+                <summary>See Filters</summary>
+                <div id="pDailySales" class='filterLists'></div>
+            </details>
 
             <div id="dailySalesChart" class="chartContainer">
                 <div id="daySales">
@@ -347,7 +364,7 @@ document.body.appendChild(fragment);  // Only one reflow happens here
 
 // ======================================================
 async function SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     let data = null;
     const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
@@ -376,6 +393,7 @@ async function SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (dYearTo__) params.append('YearTo__', dYearTo__); 
         if (dMontFrom) params.append('MontFrom', dMontFrom); 
         if (dMontTo__) params.append('MontTo__', dMontTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -644,7 +662,7 @@ document.getElementById('compClass').addEventListener('click', () => {
             const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
@@ -652,7 +670,9 @@ document.getElementById('compClass').addEventListener('click', () => {
             const cStoreGrp = filterData[12];
             
             SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
+            
+            getFilters(filterData)
     
         });
     } catch (error) {
@@ -664,7 +684,7 @@ document.getElementById('compClass').addEventListener('click', () => {
 
 // ======================================================
 async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     let data = null;
     const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
@@ -693,6 +713,7 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (dYearTo__) params.append('YearTo__', dYearTo__); 
         if (dMontFrom) params.append('MontFrom', dMontFrom); 
         if (dMontTo__) params.append('MontTo__', dMontTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -960,7 +981,7 @@ document.getElementById('compBrand').addEventListener('click', () => {
             const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
@@ -968,8 +989,10 @@ document.getElementById('compBrand').addEventListener('click', () => {
             const cStoreGrp = filterData[12];
             
             SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
-    
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
+
+            getFilters(filterData)
+                
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -979,7 +1002,7 @@ document.getElementById('compBrand').addEventListener('click', () => {
 
 // ======================================================
 async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     let data = null;
     const dYearFrom = goMonth(dDateFrom, -12)   // Previous Year 
@@ -1008,6 +1031,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (dYearTo__) params.append('YearTo__', dYearTo__); 
         if (dMontFrom) params.append('MontFrom', dMontFrom); 
         if (dMontTo__) params.append('MontTo__', dMontTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -1279,216 +1303,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// async function SalesRankBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-//     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
-
-//     document.getElementById('loadingIndicator').style.display = 'flex';
-//     let { timerInterval, elapsedTime } = startTimer(); 
-//     let data = null;
-//     try {
-//         // Build query parameters
-//         const url = new URL('http://localhost:3000/sales/SalesRankBrand');
-//         const params = new URLSearchParams();
-//         if (cBrandNum) params.append('BrandNum', cBrandNum);
-//         if (cUsersCde) params.append('UsersCde', cUsersCde);
-//         if (cOtherCde) params.append('OtherCde', cOtherCde);
-//         if (cCategNum) params.append('CategNum', cCategNum);
-//         if (cItemDept) params.append('ItemDept', cItemDept);
-//         if (cItemType) params.append('ItemType', cItemType);
-//         if (cLocation) params.append('Location', cLocation);
-//         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
-//         if (dDateFrom) params.append('DateFrom', dDateFrom); 
-//         if (dDateTo__) params.append('DateTo__', dDateTo__); 
-
-//         // Send request with query parameters
-//         const response = await fetch(`${url}?${params.toString()}`);
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-
-//         let nTotalQty = 0
-//         let nTotalPrc = 0
-//         let nTotalDsc = 0
-//         let nTotalAmt = 0
-//         let nTotalCos = 0
-//         let nTotalGro = 0
-//         let nGP_Prcnt = 0
-//         let nGP_Total = 0
-    
-//         const listCounter=document.getElementById('saleRank2Counter')
-//         data = await response.json();
-//         listCounter.innerHTML=`${data.length} Records`;
-//         showNotification(`${data.length} Records fetched`);
-//         clearInterval(timerInterval);        
-//         document.getElementById('runningTime').textContent=''
-
-//         if (Array.isArray(data)) {
-//             data.forEach(item => {
-//                 nTotalQty+=item.Quantity
-//                 nTotalPrc+=item.ItemPrce
-//                 nTotalDsc+=(item.ItemPrce-item.Amount__)
-//                 nTotalAmt+=item.Amount__
-//                 nTotalCos+=item.LandCost
-//                 nTotalGro+=(item.Amount__-item.LandCost)
-//             });
-//         }
-//         if (nTotalAmt !== 0) {
-//             nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
-//         }
-
-//         const salesRankBrandDiv = document.getElementById('SalesRankBrand');
-//         salesRankBrandDiv.classList.add('active');
-
-//         const reportBody = document.getElementById('salesRankBrand');
-//         reportBody.style.maxHeight = "80%";
-//         // if (data.length > 30) {
-//         //     reportBody.style.height='700px'
-//         // }
-//         reportBody.innerHTML = '';  // Clear previous content
-
-//         // Define the table structure
-//         const rankTable = `
-//             <table id="salesRankTable1">
-//                 <thead id="rankTHead1">
-//                     <tr>
-//                         <th>Rank</th>
-//                         <th>Brand</th>
-//                         <th>Quantity</th>
-//                         <th>Gross</th>
-//                         <th>Discount</th>
-//                         <th>Net</th>
-//                         <th>Cost</th>
-//                         <th>Gross Profit</th>
-//                         <th>GP %</th>
-//                         <th>CTS %</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody id="rankTBody">
-//                     ${data.map((item,index) => {
-//                         nGP_Prcnt = 0;
-//                         if (item.Amount__ !== 0) {
-//                             nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
-//                         }
-//                         return `
-//                             <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
-//                                 <td style="text-align: center">${index+1 || 'N/A'}</td>
-//                                 <td class="colNoWrap">${item.BrandNme || 'N/A'}</td>
-//                                 <td style="text-align: center">${item.Quantity || 'N/A'}</td>
-//                                 <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
-//                                 <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-//                                 <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
-//                                 <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-//                                 <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
-//                                 <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
-//                                 <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
-//                             </tr>
-//                         `;
-//                     }).join('')}
-//                 </tbody>
-//                 <tfoot>
-//                     <tr style="height: 2px"></tr>
-//                     <tr style="font-weight: bold">
-//                         <td></td>
-//                         <td style="text-align: right">Total</td>
-//                         <td style="text-align: center">${nTotalQty || 'N/A'}</td>
-//                         <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
-//                         <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
-//                         <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-//                         <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
-//                         <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
-//                         <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
-//                         <td>100%</td>
-//                     </tr>
-//                  </tfoot>
-//             </table>
-//         `;
-        
-//         // Add the table HTML to the div
-//         reportBody.innerHTML = rankTable;
-
-//         // Show store ranking chart
-//         document.getElementById('brandRankChart').style.display='flex';
-//         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-//         document.getElementById('printBrandRankXLS').disabled = false
-//         rankBrandSales(data, dateRange)
-       
-//     } catch (error) {
-//         console.error('Fetch error:', error);
-//         displayErrorMsg(error,'Fetch error')
-//     } finally {
-//         // Hide loading spinner once data is fetched or an error occurs
-//         document.getElementById('loadingIndicator').style.display = 'none';
-//         clearInterval(timerInterval);        
-//         document.getElementById('runningTime').textContent=''
-
-//     }
-
-//     document.getElementById('printBrandRankXLS').addEventListener('click', () => {
-
-//         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-//         const titleRowsContent = [
-//             { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
-//             { text: 'Sales Ranking by Brand', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
-//             { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
-//             { text: '' } // Spacer row
-//           ];
-
-//         const colWidths = [
-//               { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
-//               { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
-//         ];
-
-//         const columnConfig = [
-//             {label: 'Brand',getValue: row => row.BrandNme,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
-//             {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
-//             align: 'right',type: 'integer',cellFormat: '#,##0'},
-//             {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
-//             align: 'right',cellFormat: '#,##0.00'},
-//             {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
-//             align: 'right',cellFormat: '#,##0.00'},
-//             {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
-//             align: 'right',cellFormat: '#,##0.00'},
-//             {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
-//             align: 'right',cellFormat: '#,##0.00'},
-//             {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
-//             align: 'right',cellFormat: '#,##0.00'},
-//             {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
-//             total: rows => {
-//                 const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-//                 const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
-//                 return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
-//             },align: 'right',cellFormat: 'percent'},
-//             {label: 'CTS %',getValue: (row, rows) => {
-//                 const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-//                 return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
-//             }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
-//         ];
-          
-//           const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
-
-//           printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Brand');
-//     })
-
-// }
-
-// // Wait for the DOM to fully load before adding the event listener
-// document.addEventListener('DOMContentLoaded', () => {
-//     const menuReportElements = document.querySelectorAll('.salesRankingByBrand');
-//     const rankRepoDiv = document.getElementById('SalesRankBrand');
-//     const closeRepo = document.getElementById('closeRepo2');
-    
-//     closeRepo.addEventListener('click', () => {
-//         rankRepoDiv.classList.remove('active');
-//     });
-
-//         // Add event listener to each element with the necessary arguments
-//     menuReportElements.forEach(element => {
-//         element.addEventListener('click', () => {
-//             showReport('SalesRankBrand')
-//         });
-//     });
-
-// });
 
 document.getElementById('saleRank1').addEventListener('click',() => {
     try {
@@ -1500,7 +1314,7 @@ document.getElementById('saleRank1').addEventListener('click',() => {
             const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
@@ -1508,7 +1322,7 @@ document.getElementById('saleRank1').addEventListener('click',() => {
             const cStoreGrp = filterData[12];
             
             SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
 
             getFilters(filterData)
            
@@ -1525,40 +1339,56 @@ async function getFilters(filterData){
     const aFilters = []
     for (let i = 0; i < filterData.length; i++) {
         if (i===0 && filterData[i]) {
-            aFilters.push(`Date From: ${formatDate(filterData[i],'MM/DD/YYYY')}`) 
+            aFilters.push(`Date From: ${formatDate(filterData[i],'MM/DD/YYYY')} `) 
         }
         if (i===1 && filterData[i]) {
-            aFilters.push(`Date To: ${formatDate(filterData[i],'MM/DD/YYYY')}`) 
+            aFilters.push(`Date To: ${formatDate(filterData[i],'MM/DD/YYYY')}   `) 
         }
         if (i===2 && filterData[i]) {
             const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
             const res = await fetch(url);
             const data = await res.json()
             console.log(data[0].LocaName)
-            aFilters.push(`Location: ${data[0].LocaName}`) 
+            aFilters.push(`Location: ${data[0].LocaName}    `) 
+        }
+        if (i===3 && filterData[i]) {
+            aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
+        }
+        if (i===4 && filterData[i]) {
+            aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
+        }
+        if (i===5 && filterData[i]) {
+            aFilters.push(`Description: ${filterData[i].trim()}   `) 
         }
         if (i===6 && filterData[i]) {
             const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
             const res = await fetch(url);
             const data = await res.json()
-            aFilters.push(`Brand: ${data[0].BrandNme}`) 
+            aFilters.push(`Brand: ${data[0].BrandNme}   `) 
         }
         if (i===12 && filterData[i]) {
             const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
             const res = await fetch(url);
             const data = await res.json()
-            aFilters.push(`Store Group: ${data[0].StoreGrp}`) 
+            aFilters.push(`Store Group: ${data[0].StoreGrp} `) 
         }
     }
-    console.log(aFilters)
-    document.querySelector('.seeFilters').style.display = 'flex'
-    document.querySelector('.filterLists').innerText = aFilters.toString()
+    document.querySelectorAll('.seeFilters').forEach( e => e.style.display = 'flex')
+    document.querySelectorAll('.filterLists').forEach( e => e.innerText = aFilters.toString())
+    // document.querySelector('.filterLists').innerText = aFilters.toString()
+    aFilters.forEach(text => {
+        const span = document.createElement("span");
+        span.textContent = text;
+        document.querySelectorAll('.seeFilters').forEach(e=>{
+            e.appendChild(span);
+        })
+    });
     return
 }
 
 // ==========================================================================
 async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
@@ -1577,6 +1407,7 @@ async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -1776,7 +1607,7 @@ document.getElementById('saleRank3').addEventListener('click', () => {
             const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
@@ -1784,7 +1615,10 @@ document.getElementById('saleRank3').addEventListener('click', () => {
             const cStoreGrp = filterData[12];
 
             SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
+
+            getFilters(filterData)
+
 
         });
     } catch (error) {
@@ -1797,7 +1631,7 @@ document.getElementById('saleRank3').addEventListener('click', () => {
 
 // ==========================================================================
 async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     // const selectElement = document.getElementById('FiltrRec_Location');
     // const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -1848,6 +1682,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
@@ -2020,7 +1855,7 @@ document.getElementById('listSales').addEventListener('click', () => {
             const cLocation = filterData[2];
             const cUsersCde = filterData[3];
             const cOtherCde = filterData[4];
-            // const cDescript = filterData[5];
+            const cDescript = filterData[5];
             const cBrandNum = filterData[6];
             const cCategNum = filterData[7];
             const cItemType = filterData[8];
@@ -2028,7 +1863,8 @@ document.getElementById('listSales').addEventListener('click', () => {
             const cStoreGrp = filterData[12];
 
             DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
-                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To);
+                cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
+            getFilters(filterData)
 
         });
     } catch (error) {
@@ -2060,7 +1896,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==========================================================================
 async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__) {
+    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
     document.getElementById('loadingIndicator').style.display = 'flex';
     let { timerInterval, elapsedTime } = startTimer(); 
@@ -2079,6 +1915,7 @@ async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
         if (dDateFrom) params.append('DateFrom', dDateFrom); 
         if (dDateTo__) params.append('DateTo__', dDateTo__); 
+        if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
