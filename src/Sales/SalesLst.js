@@ -12,7 +12,7 @@ const divSalesLst = `
             <span><i class="fa fa-dollar-sign"></i> Sales Record List</span>
             <button id="closeSalesRec" class="closeForm">✖</button>
         </div>
-        <div id="salesRecList" class="ReportBody">
+        <div id="salesRecList" class="ReportBody data-list">
             <table>
                 <thead>
                     <tr>

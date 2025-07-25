@@ -42,7 +42,10 @@
                 <div class="hamburger">☰</div>
                 <ul id="menuNavBar" class="menu"></ul>
             </div>
-            <div></div>
+            <div class="appMessaging">
+                <div class="chatIcon"><i class="fa-regular fa-message"></i></div>
+                <div class="chatIcon"><i class="fa-regular fa-bell"></i></div>
+            </div>
         </div>
     </div>
     <!-- <div class="hamburger">☰</div> -->
@@ -59,7 +62,7 @@
 
     <!-- Error Message -->
     <div id="error-message" class="error-message">
-        <div id="title-bar" class="titleClass-bar">Error Message</div>
+        <div id="title-bar" class="title-bar">Error Message</div>
         <p id="error-text"></p>
         <p id="error-otherMsg"></p>
         <div class="button-container">
@@ -67,6 +70,12 @@
             <button id="ignore-btn" class="ignore">Ignore</button>
             <button id="abort-btn" class="abort">Abort</button>
         </div>    
+    </div>
+
+    <div id="menuOptDiv">
+        <div id="menuSelect"></div>
+        <div id="selectMenu"></div>
+        <button id="cancelMenuOptsBtn">Close</button>
     </div>
 
     <!-- Respective HTMLs are injected on each of JS files -->

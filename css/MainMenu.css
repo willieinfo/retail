@@ -10,7 +10,7 @@
 }
 
 html, body {
-    /* visibility: hidden; */
+    visibility: hidden;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -42,7 +42,19 @@ html {
     background-color: var(--main-bg-color);
     align-items: center; 
     justify-content: space-between;
-
+}
+.appMessaging {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.chatIcon {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: x-large;
+}
+.chatIcon:hover {
+    background-color: black;
 }
 .menu {
     display: flex;

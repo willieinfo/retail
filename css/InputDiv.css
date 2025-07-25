@@ -128,6 +128,9 @@ label {
     height: 16px; /* Optional: adjust checkbox size */
     
 }
+.lookUpperCase input[type="text"] {
+  text-transform: uppercase;
+}
 
 #divConsolid {
     display: flex;

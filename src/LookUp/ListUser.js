@@ -209,7 +209,7 @@ async function UserForm(index, editMode) {
             <div class="textDiv">
                 <div class="subTextDiv">
                     <label for="AppUsers_UserName">App User Name</label>
-                    <input type="text" style="width: 100%" id="AppUsers_UserName" spellcheck="false" required>
+                    <input type="text" class="lookUpperCase" style="width: 100%" id="AppUsers_UserName" spellcheck="false"  required autocapitalize="on">
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_EmailAdd">Email Address</label>
@@ -219,15 +219,15 @@ async function UserForm(index, editMode) {
             <div class="textDiv" style="display: flex; justify-content: space-between">
                 <div class="subTextDiv">
                     <label for="AppUsers_UserCode">Code</label>
-                    <input type="text" id="AppUsers_UserCode" spellcheck="false" required readonly>
+                    <input type="text" class="lookUpperCase" id="AppUsers_UserCode" spellcheck="false" required readonly>
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Tel_Num_">Mobile Number</label>
-                    <input type="text" id="AppUsers_Tel_Num_" spellcheck="false" required>
+                    <input type="text" class="lookUpperCase" id="AppUsers_Tel_Num_" spellcheck="false" required>
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Position">Position</label>
-                    <input type="text" id="AppUsers_Position" spellcheck="false" >
+                    <input type="text" class="lookUpperCase" id="AppUsers_Position" spellcheck="false" >
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Password">Password</label>
@@ -238,7 +238,7 @@ async function UserForm(index, editMode) {
                 <div class="textDiv">
                     <div class="subTextDiv">
                         <label for="AppUsers_NickName">Nick Name</label>
-                        <input type="text" id="AppUsers_NickName" spellcheck="false" required>
+                        <input type="text" class="lookUpperCase" id="AppUsers_NickName" spellcheck="false" required>
                     </div>
                     <div class="subTextDiv">
                         <label for="AppUsers_SuffixId">Data Suffix</label>
@@ -328,9 +328,9 @@ async function UserForm(index, editMode) {
     // Event listener for users Menu Permissions
     document.getElementById('menuItemBtn').addEventListener('click',() => MenuOpts(index))
 
-    document.getElementById('cancelAppUsersBtn').addEventListener('click',() => {
-        document.getElementById('menuOptDiv').style.display = 'none';
-    })
+    // document.getElementById('cancelAppUsersBtn').addEventListener('click',() => {
+    //     document.getElementById('menuOptDiv').style.display = 'none';
+    // })
 
     // Event listener for Cancel button to close the modal
     document.getElementById('cancelAppUsersBtn').addEventListener('click', () => {
@@ -340,12 +340,12 @@ async function UserForm(index, editMode) {
 
     });
 
-    // document.addEventListener('click', (e) => {
-    //     const menuOptDiv = document.getElementById('menuOptDiv')
-    //     if (!menuOptDiv.contains(e.target)) {
-    //         menuOptDiv.style.display = 'none';  // Hide if clicked outside
-    //     }
-    // });
+    document.addEventListener('click', (e) => {
+        const menuOptDiv = document.getElementById('menuOptDiv')
+        if (!menuOptDiv.contains(e.target)) {
+            menuOptDiv.style.display = 'none';  // Hide if clicked outside
+        }
+    });
 
     
     document.getElementById('saveAppUsersBtn').addEventListener('click', (e) => {
@@ -648,8 +648,7 @@ document.getElementById('printUserXLS').addEventListener('click', () => {
 function MenuOpts(index) {
     let nIndex = index
     const cNickName =  !globalData[index] ? 'New User' :globalData[index].NickName.trim()
-    const menuItems = localStorage.getItem('menuItems'); // HTML menu Nav Bar template literal
-
+    const menuItems = localStorage.getItem('menuItems'); // Restricted menu options for user
     const menuOptDiv = document.getElementById("menuOptDiv");
     menuOptDiv.style.display = 'flex';
     menuOptDiv.style.flexDirection = 'column';

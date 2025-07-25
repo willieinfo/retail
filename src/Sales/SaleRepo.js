@@ -59,8 +59,8 @@ const divCompStore = `
                 </table>            
             </div>
 
-            <details class="seeFilters" style="display: none">
-                <summary>See Filters</summary>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
                 <div id="pCompStore" class='filterLists'></div>
             </details>
 
@@ -135,19 +135,17 @@ const divCompBrand = `
                 </table>            
             </div>
 
-            <details class="seeFilters" style="display: none">
-                <summary>See Filters</summary>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
                 <div id="pCompBrand" class='filterLists'></div>
             </details>
 
             <div id="brandCompChart" class="chartContainer">
                 <div class="divBrand1">
-                    <h5>Current Year</h5>
                     <p class='currDateRange'></p>
                     <canvas id="brandnmeChart1"></canvas>
                 </div>
                 <div class="divBrand2">
-                    <h5>Previous Month</h5>
                     <p class='prevDateRange'></p>
                     <canvas id="brandnmeChart2"></canvas>
                 </div>
@@ -211,19 +209,17 @@ const divCompClass = `
                     </thead>
                 </table>            
             </div>
-            <details class="seeFilters" style="display: none">
-                <summary>See Filters</summary>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
                 <div id="pCompClass" class='filterLists'></div>
             </details>
 
             <div id="classCompChart" class="chartContainer">
                 <div class="divBrand1">
-                    <h5>Current Year</h5>
                     <p class='currDateRange'></p>
                     <canvas id="typedescChart1"></canvas>
                 </div>
                 <div class="divBrand2">
-                    <h5>Previous Month</h5>
                     <p class='prevDateRange'></p>
                     <canvas id="typedescChart2"></canvas>
                 </div>
@@ -267,8 +263,8 @@ const divRankStock =`
                     </thead>
                 </table>            
             </div>
-            <details class="seeFilters" style="display: none">
-                <summary>See Filters</summary>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
                 <div id="pRankStock" class='filterLists'></div>
             </details>
 
@@ -314,14 +310,14 @@ const divDailySales =`
                     </thead>
                 </table>            
             </div>
-            <details class="seeFilters" style="display: none">
-                <summary>See Filters</summary>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
                 <div id="pDailySales" class='filterLists'></div>
             </details>
 
             <div id="dailySalesChart" class="chartContainer">
                 <div id="daySales">
-                    <h5>Last 30 Days</h5>
+                    <h5>Daily Sales</h5>
                     <canvas id="dailyLast30days"></canvas>
                 </div>
                 <br>
@@ -360,7 +356,6 @@ div5.innerHTML = divDailySales;
 fragment.appendChild(div5);
 
 document.body.appendChild(fragment);  // Only one reflow happens here
-
 
 // ======================================================
 async function SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -672,7 +667,7 @@ document.getElementById('compClass').addEventListener('click', () => {
             SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
             
-            getFilters(filterData)
+            getFilters(filterData,'pCompClass')
     
         });
     } catch (error) {
@@ -991,7 +986,7 @@ document.getElementById('compBrand').addEventListener('click', () => {
             SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
 
-            getFilters(filterData)
+            getFilters(filterData,'pCompBrand')
                 
         });
     } catch (error) {
@@ -1324,7 +1319,7 @@ document.getElementById('saleRank1').addEventListener('click',() => {
             SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
 
-            getFilters(filterData)
+            getFilters(filterData,'pCompStore')
            
         });
 
@@ -1333,58 +1328,6 @@ document.getElementById('saleRank1').addEventListener('click',() => {
         displayErrorMsg(error,"Error processing the filter")
     }
 })
-
-
-async function getFilters(filterData){
-    const aFilters = []
-    for (let i = 0; i < filterData.length; i++) {
-        if (i===0 && filterData[i]) {
-            aFilters.push(`Date From: ${formatDate(filterData[i],'MM/DD/YYYY')} `) 
-        }
-        if (i===1 && filterData[i]) {
-            aFilters.push(`Date To: ${formatDate(filterData[i],'MM/DD/YYYY')}   `) 
-        }
-        if (i===2 && filterData[i]) {
-            const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
-            const res = await fetch(url);
-            const data = await res.json()
-            console.log(data[0].LocaName)
-            aFilters.push(`Location: ${data[0].LocaName}    `) 
-        }
-        if (i===3 && filterData[i]) {
-            aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
-        }
-        if (i===4 && filterData[i]) {
-            aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
-        }
-        if (i===5 && filterData[i]) {
-            aFilters.push(`Description: ${filterData[i].trim()}   `) 
-        }
-        if (i===6 && filterData[i]) {
-            const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
-            const res = await fetch(url);
-            const data = await res.json()
-            aFilters.push(`Brand: ${data[0].BrandNme}   `) 
-        }
-        if (i===12 && filterData[i]) {
-            const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
-            const res = await fetch(url);
-            const data = await res.json()
-            aFilters.push(`Store Group: ${data[0].StoreGrp} `) 
-        }
-    }
-    document.querySelectorAll('.seeFilters').forEach( e => e.style.display = 'flex')
-    document.querySelectorAll('.filterLists').forEach( e => e.innerText = aFilters.toString())
-    // document.querySelector('.filterLists').innerText = aFilters.toString()
-    aFilters.forEach(text => {
-        const span = document.createElement("span");
-        span.textContent = text;
-        document.querySelectorAll('.seeFilters').forEach(e=>{
-            e.appendChild(span);
-        })
-    });
-    return
-}
 
 // ==========================================================================
 async function SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
@@ -1617,7 +1560,7 @@ document.getElementById('saleRank3').addEventListener('click', () => {
             SalesRankStock(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
 
-            getFilters(filterData)
+            getFilters(filterData,'pRankStock')
 
 
         });
@@ -1633,10 +1576,6 @@ document.getElementById('saleRank3').addEventListener('click', () => {
 async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
     cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
 
-    // const selectElement = document.getElementById('FiltrRec_Location');
-    // const selectedOption = selectElement.options[selectElement.selectedIndex];
-    // const cLocaName = selectedOption.textContent || selectedOption.innerText;
-    // cLocaName = (cLocaName) ? 'All Location' : cLocaName
     let cLocaName = ''
     const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
     const dayNames =['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
@@ -1647,7 +1586,7 @@ async function DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cLocation) params.append('Location', cLocation);
         const response = await fetch(`${url}?${params.toString()}`);
         if (!response.ok) throw new Error('Network response was not ok');
-        let LocatTbl = await response.json(); // Store full data array globally
+        let LocatTbl = await response.json(); 
         cLocaName = (LocatTbl.length>1) ? 'All Location' : LocatTbl[0].LocaName
 
 
@@ -1864,7 +1803,8 @@ document.getElementById('listSales').addEventListener('click', () => {
 
             DailySalesSum(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, cStoreGrp, dDateFrom, dDate__To, cDescript);
-            getFilters(filterData)
+
+            getFilters(filterData,'pDailySales')
 
         });
     } catch (error) {
@@ -1893,328 +1833,69 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// // ================================================
+// async function getFilters(filterData, filterIdCon){
+//     const aFilters = []
+//     for (let i = 0; i < filterData.length; i++) {
 
-// ==========================================================================
-async function SalesRankType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
-    cItemDept, cItemType, cLocation, cStoreGrp, dDateFrom, dDateTo__, cDescript) {
+//         if (i===0 && filterData[0] && filterData[1]) {
+//             aFilters.push(`Date From: ${formatDate(filterData[0],'MM/DD/YYYY')}  To: ${formatDate(filterData[1],'MM/DD/YYYY')} `) 
+//         }
 
-    document.getElementById('loadingIndicator').style.display = 'flex';
-    let { timerInterval, elapsedTime } = startTimer(); 
-    let data = null;
-    try {
-        // Build query parameters
-        const url = new URL('http://localhost:3000/sales/SalesCompClass');
-        const params = new URLSearchParams();
-        if (cBrandNum) params.append('BrandNum', cBrandNum);
-        if (cUsersCde) params.append('UsersCde', cUsersCde);
-        if (cOtherCde) params.append('OtherCde', cOtherCde);
-        if (cCategNum) params.append('CategNum', cCategNum);
-        if (cItemDept) params.append('ItemDept', cItemDept);
-        if (cItemType) params.append('ItemType', cItemType);
-        if (cLocation) params.append('Location', cLocation);
-        if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
-        if (dDateFrom) params.append('DateFrom', dDateFrom); 
-        if (dDateTo__) params.append('DateTo__', dDateTo__); 
-        if (cDescript) params.append('Descript', cDescript); 
+//         if (i===2 && filterData[i]) {
+//             const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
+//             const res = await fetch(url);
+//             const data = await res.json()
+//             aFilters.push(`Location: ${data[0].LocaName}    `) 
+//         }
+//         if (i===3 && filterData[i]) {
+//             aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
+//         }
+//         if (i===4 && filterData[i]) {
+//             aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
+//         }
+//         if (i===5 && filterData[i]) {
+//             aFilters.push(`Description: ${filterData[i].trim()}   `) 
+//         }
+//         if (i===6 && filterData[i]) {
+//             const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
+//             const res = await fetch(url);
+//             const data = await res.json()
+//             aFilters.push(`Brand: ${data[0].BrandNme}   `) 
+//         }
+//         if (i===12 && filterData[i]) {
+//             const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
+//             const res = await fetch(url);
+//             const data = await res.json()
+//             aFilters.push(`Store Group: ${data[0].StoreGrp} `) 
+//         }
 
-        // Send request with query parameters
-        const response = await fetch(`${url}?${params.toString()}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+//         if (i===17 && filterData[i]) {
+//             aFilters.push(`Supplier: ${filterData[i].trim()}   `) 
+//         }
+//         if (i===18 && filterData[i]) {
+//             aFilters.push(`Stock Out From: ${filterData[i].trim()}   `) 
+//         }
+//         if (i===19 && filterData[i]) {
+//             aFilters.push(`Stock Out To: ${filterData[i].trim()}   `) 
+//         }
 
-        let nTotalQty = 0
-        let nTotalPrc = 0
-        let nTotalDsc = 0
-        let nTotalAmt = 0
-        let nTotalCos = 0
-        let nTotalGro = 0
-        let nGP_Prcnt = 0
-        let nGP_Total = 0
-    
-        const listCounter=document.getElementById('saleRank4Counter')
-        data = await response.json();
-        listCounter.innerHTML=`${data.length} Records`;
-        showNotification(`${data.length} Records fetched`);
-        clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
+//     }
 
-        if (Array.isArray(data)) {
-            data.forEach(item => {
-                nTotalQty+=item.Quantity
-                nTotalPrc+=item.ItemPrce
-                nTotalDsc+=(item.ItemPrce-item.Amount__)
-                nTotalAmt+=item.Amount__
-                nTotalCos+=item.LandCost
-                nTotalGro+=(item.Amount__-item.LandCost)
-            });
-        }
-        if (nTotalAmt !== 0) {
-            nGP_Total = ((nTotalAmt-nTotalCos) / nTotalAmt) * 100; // GP% formula
-        }
+//     document.querySelectorAll('.showFilterScope').forEach( e => e.style.display = 'flex')
+//     document.getElementById(filterIdCon).innerText = ''
 
-        const salesRankBrandDiv = document.getElementById('SalesRankType');
-        salesRankBrandDiv.classList.add('active');
-
-        const reportBody = document.getElementById('salesRankType');
-        reportBody.style.maxHeight = "80%";
-        reportBody.innerHTML = '';  // Clear previous content
-
-        // Define the table structure
-        const rankTable = `
-            <table id="salesRankTable1">
-                <thead id="rankTHead1">
-                    <tr>
-                        <th>Rank</th>
-                        <th>Classification</th>
-                        <th>Quantity</th>
-                        <th>Gross</th>
-                        <th>Discount</th>
-                        <th>Net</th>
-                        <th>Cost</th>
-                        <th>Gross Profit</th>
-                        <th>GP %</th>
-                        <th>CTS %</th>
-                    </tr>
-                </thead>
-                <tbody id="rankTBody">
-                    ${data.map((item,index) => {
-                        nGP_Prcnt = 0;
-                        if (item.Amount__ !== 0) {
-                            nGP_Prcnt = ((item.Amount__ - item.LandCost) / item.Amount__) * 100; // GP% formula
-                        }
-                        return `
-                            <tr style=" color: ${item.Outright===2 ? 'rgb(7, 130, 130)' : 'black'}">
-                                <td style="text-align: center">${index+1 || 'N/A'}</td>
-                                <td class="colNoWrap">${item.TypeDesc || 'N/A'}</td>
-                                <td style="text-align: center">${item.Quantity || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.ItemPrce) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.ItemPrce - item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right; font-weight: bold">${formatter.format(item.Amount__) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.LandCost) || 'N/A'}</td>
-                                <td style="text-align: right">${formatter.format(item.Amount__ - item.LandCost ) || 'N/A'}</td>
-                                <td>${nGP_Prcnt ? nGP_Prcnt.toFixed(2) + '%' : 'N/A'}</td>
-                                <td>${(item.Amount__ / nTotalAmt *100).toFixed(2) + '%'|| 'N/A'}</td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-                <tfoot>
-                    <tr style="height: 2px"></tr>
-                    <tr style="font-weight: bold">
-                        <td></td>
-                        <td style="text-align: right">Total</td>
-                        <td style="text-align: center">${nTotalQty || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalPrc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalDsc) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalAmt) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalCos) || 'N/A'}</td>
-                        <td style="text-align: right">${formatter.format(nTotalGro) || 'N/A'}</td>
-                        <td>${nGP_Total ? nGP_Total.toFixed(2) + '%' : 'N/A'}</td>
-                        <td>100%</td>
-                    </tr>
-                 </tfoot>
-            </table>
-        `;
-        
-        // Add the table HTML to the div
-        reportBody.innerHTML = rankTable;
-
-        // Show store ranking chart
-        document.getElementById('typeRankChart').style.display='flex';
-        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        document.getElementById('printTypeRank').disabled = false
-        rankTypeSales(data, dateRange)
-       
-    } catch (error) {
-        console.error('Fetch error:', error);
-        displayErrorMsg(error,'Fetch error')
-    } finally {
-        // Hide loading spinner once data is fetched or an error occurs
-        document.getElementById('loadingIndicator').style.display = 'none';
-        clearInterval(timerInterval);        
-        document.getElementById('runningTime').textContent=''
-
-    }
-
-    document.getElementById('printTypeRank').addEventListener('click', () => {
-
-        const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
-        const titleRowsContent = [
-            { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },
-            { text: 'Sales Ranking by Classification', style: { fontWeight: 'bold', fontStyle: 'italic', fontSize: 14 } },
-            { text: dateRange, style: { fontStyle: 'italic', fontSize: 12 } },
-            { text: '' } // Spacer row
-        ];
-
-        const colWidths = [
-            { width: 25 },{ width: 10 },{ width: 15 },{ width: 15 },{ width: 15 },
-            { width: 15 },{ width: 15 },{ width: 10 },{ width: 10 }
-        ];
-      
-        const columnConfig = [
-            {label: 'Classification',getValue: row => row.TypeDesc,type: 'string',align: 'left',totalLabel: 'TOTALS:'},
-            {label: 'Quantity',getValue: row => +row.Quantity,total: rows => rows.reduce((sum, r) => sum + (+r.Quantity || 0), 0),
-            align: 'right',type: 'integer',cellFormat: '#,##0'},
-            {label: 'Gross',getValue: row => +row.ItemPrce,total: rows => rows.reduce((sum, r) => sum + (+r.ItemPrce || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Discount',getValue: row => +(row.ItemPrce - row.Amount__),total: rows => rows.reduce((sum, r) => sum + (+(r.ItemPrce - r.Amount__) || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Net',getValue: row => +row.Amount__,total: rows => rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Cost',getValue: row => +row.LandCost,total: rows => rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'Gross Profit',getValue: row => +(row.Amount__ - row.LandCost),total: rows => rows.reduce((sum, r) => sum + (+(r.Amount__ - r.LandCost) || 0), 0),
-            align: 'right',cellFormat: '#,##0.00'},
-            {label: 'GP %',getValue: row => row.Amount__ ? ((row.Amount__ - row.LandCost) / row.Amount__) * 100 : 0,
-            total: rows => {
-                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                const totalCost = rows.reduce((sum, r) => sum + (+r.LandCost || 0), 0);
-                return totalAmount ? ((totalAmount - totalCost) / totalAmount) * 100 : 0;
-            },align: 'right',cellFormat: 'percent'},
-            {label: 'CTS %',getValue: (row, rows) => {
-                const totalAmount = rows.reduce((sum, r) => sum + (+r.Amount__ || 0), 0);
-                return totalAmount ? (row.Amount__ / totalAmount) * 100 : 0;
-            }, align: 'right',totalLabel: '100%',cellFormat: 'percent'}
-        ];
-          
-          const titleRows = generateTitleRows(columnConfig, titleRowsContent, 0);
-
-          printReportExcel(data, columnConfig, colWidths, titleRows, 'Sales Ranking By Classification');
-    })
-
-}
+//     console.log(filterIdCon)
+//     aFilters.forEach(text => {
+//         const span = document.createElement("span");
+//         span.textContent = text;
+//         document.getElementById(filterIdCon).appendChild(span)
+//     });
+//     return
+// }
 
 
 // SALES CHARTS SECTION HERE ==================================
-async function rankTypeSales(data, dateRange) {
-   
-    let myChart6 = window.myChart6 || null;
-
-    try {
-        const dataData = data;
-        const dataMap = {};
-        
-        // Build dataMap without filling background colors yet
-        dataData.forEach(item => {
-            if (!dataMap[item.TypeDesc]) {
-                dataMap[item.TypeDesc] = { Amount__: 0};
-            }
-            dataMap[item.TypeDesc].Amount__ += Math.round(item.Amount__);
-        });
-
-        // Sort the dataMap by amount
-        let sortedData = Object.entries(dataMap)
-            .map(([TypeDesc, values]) => ({ TypeDesc, ...values }))
-            .slice(0, 30);
-
-
-        // const backgroundColors = 'rgba(54, 162, 235, 0.6)' 
-        // const backgroundColors = 'var(--second-bg-color)' 
-
-        const generateRandomColor = () => {
-            const r = Math.floor(Math.random() * 255);
-            const g = Math.floor(Math.random() * 255);
-            const b = Math.floor(Math.random() * 255);
-            return `rgba(${r}, ${g}, ${b}, 0.6)`;
-        };
-
-        const labels = sortedData.map(item => item.TypeDesc.substring(0, 15).trim());
-        const curreamtData = sortedData.map(item => item.Amount__);
-
-        const backgroundColors = labels.map(() => generateRandomColor());
-        const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
-
-
-        // // Function to round up to the nearest multiple of step
-        // const getMagnitudeStep = (value) => {
-        //     const magnitude = Math.floor(Math.log10(value));
-        //     return Math.pow(10, magnitude); // Returns the nearest power of 10
-        // };
-
-        // // Function to round up to the nearest appropriate step
-        // const roundUpToDynamicStep = (value) => {
-        //     const step = getMagnitudeStep(value);
-        //     return Math.ceil(value / step) * step;
-        // };
-
-        // // Calculate the maximum value for the x-axis
-        // const maxCurreamt = Math.max(...curreamtData);
-        // // Round up maxValue to the nearest appropriate step
-        // const roundedMaxValue = roundUpToDynamicStep(maxCurreamt);
-
-        if (myChart6) myChart6.destroy();
-
-        const getChartOptions = () => ({
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    // max: roundedMaxValue, // Use the dynamically rounded max value
-                    ticks: {
-                        font: { family: 'Arial Narrow', size: 12 },
-                        color: 'black',  
-                        padding: 5, 
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: { display: false },
-                    ticks: {
-                        autoSkip: false,
-                        font: { family: 'Arial Narrow', size: 12 }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: dateRange,  // Your desired title text here
-                    font: {
-                        family: 'Arial',
-                        size: 16
-                    },
-                    color: 'black',  // Title text color
-                    padding: {
-                        top: 20,  // Space between title and chart
-                        bottom: 10
-                    }
-                }
-                }
-
-        });
-
-        const ctx3 = document.getElementById('typeChart1').getContext('2d');
-        myChart6 = new Chart(ctx3, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: dateRange,
-                    data: curreamtData,
-                    backgroundColor: backgroundColors, 
-                    // borderColor: 'rgba(54, 162, 235, 1)',
-                    borderColor: borderColors,
-                    borderWidth: 1
-                }]
-            },
-            options: getChartOptions(),
-        });
-
-        window.myChart6 = myChart6;
-
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        displayErrorMsg(error,'Error processing chart data')
-    }
-}
-
-
 function setDailyChart(data, cLocaName) {
     let myChart5 = window.myChart5 || null;
     
@@ -2321,6 +2002,7 @@ function setDailyChart(data, cLocaName) {
     }
 }
 
+// ===================================================
 async function rankStockSales(data, dateRange) {
    
     let myChart4 = window.myChart4 || null;
@@ -2437,6 +2119,7 @@ async function rankStockSales(data, dateRange) {
     }
 }
 
+// ===================================================
 async function setStoreChart(chartData, dateRange) {
 
     try {
@@ -2652,85 +2335,6 @@ async function setStoreChart(chartData, dateRange) {
         }
     });        
 
-            // // Prepare data for the doughnut chart (Contribution to Total Sales by store group)
-            // const storeGroupTotals = chartData.reduce((acc, entry) => {
-            //     const totalAmount = parseFloat(entry.Amount__) || 0;
-            //     const storeGroup = entry.StoreGrp.trim(); // Ensure group name is trimmed
-            //     acc[storeGroup] = (acc[storeGroup] || 0) + totalAmount;
-            //     return acc;
-            // }, {});
-
-            // // Sort store groups by total amount in descending order
-            // const sortedStoreGroups = Object.entries(storeGroupTotals).sort((a, b) => b[1] - a[1]);
-
-            // const storeGroupLabels = sortedStoreGroups.map(entry => entry[0]);
-            // const storeGroupValues = sortedStoreGroups.map(entry => entry[1]);
-
-            // const totalSales = Object.values(storeGroupTotals).reduce((acc, value) => acc + value, 0); // Calculate total sales
-            // const storeGroupPercentages = storeGroupValues.map(value => (value / totalSales * 100).toFixed(2)); // Calculate percentages
-
-            // const generateRandomColor = () => {
-            //     const r = Math.floor(Math.random() * 255);
-            //     const g = Math.floor(Math.random() * 255);
-            //     const b = Math.floor(Math.random() * 255);
-            //     return `rgba(${r}, ${g}, ${b}, 0.6)`;
-            // };
-
-            // const backgroundColors = storeGroupLabels.map(() => generateRandomColor());
-            // const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
-
-            // // Create the doughnut chart (myChart2)
-            // const ctx2 = storeChart2Element.getContext('2d');
-            // myChart2 = new Chart(ctx2, {
-            //     type: 'doughnut',
-            //     data: {
-            //         labels: storeGroupLabels,
-            //         datasets: [{
-            //             label: 'Contribution to Total Sales',
-            //             data: storeGroupValues,
-            //             backgroundColor: backgroundColors,
-            //             borderColor: borderColors,
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         responsive: true,
-            //         maintainAspectRatio: false,
-            //         plugins: {
-            //             legend: {
-            //                 position: 'top',
-            //                 labels: {
-            //                     font: {
-            //                         family: 'Arial Narrow',
-            //                         size: 10
-            //                     }
-            //                 }
-            //             },
-            //             tooltip: {
-            //                 callbacks: {
-            //                     label: function(context) {
-            //                         const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding label
-            //                         const value = context.raw || 0;
-            //                         return `${percentage}%`; 
-            //                     }
-            //                 }
-            //             },
-            //             datalabels: {
-            //                 anchor: 'end',
-            //                 align: 'end',
-            //                 formatter: (value, context) => {
-            //                     const percentage = storeGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
-            //                     return `${percentage}%`;
-            //                 },
-            //                 color: '#fff',
-            //                 font: {
-            //                     weight: 'bold',
-            //                     size: '10'
-            //                 }
-            //             }
-            //         }
-            //     }
-            // });
 
         // Store the chart instances globally if needed (optional)
         window.myChart1 = myChart1;
@@ -2743,173 +2347,7 @@ async function setStoreChart(chartData, dateRange) {
 }
 
 
-async function SalesChart(data) {
-    try {
-        // Define a mapping of showData to canvas IDs
-        const dataCanvasMapping = {
-            'Current' : 'brandChart1',
-            'Previous': 'brandChart2'
-        };
-
-        // Get the canvas ID based on showData
-        const dataCanvass = dataCanvasMapping[showData];
-
-        if (!dataCanvass) {
-            console.error(`Unknown data type: ${showData}`);
-            return;
-        }
-
-        const reportChartElement = document.getElementById(dataCanvass);
-
-        // Declare variables for chart instances
-        let myChart = window.myCharts && window.myCharts[dataCanvass] || null;
-
-        // Destroy existing charts if they exist
-        if (myChart) {
-            console.log('Destroying existing chart for', dataCanvass);
-            myChart.destroy();
-        }
-
-        // Clear the canvas context manually (important when reusing canvas elements)
-        reportChartElement.getContext('2d').clearRect(0, 0, reportChartElement.width, reportChartElement.height);
-
-        let chartData = data;
-
-        const dataFieldMapping = {
-            'Current' : 'Amount__',
-            'Previous': 'PrvMoAmt'
-        };
-
-        const dataField = dataFieldMapping[showData];
-        // Check if the mapping is valid
-        if (!dataField) {
-            console.error(`Unknown showData type: ${showData}`);
-            return;
-        }
-
-        // Prepare data for the chart
-        const groupTotals = chartData.reduce((acc, entry) => {
-            const totalAmount = parseFloat(entry[dataField]) || 0;
-            // Dynamically access the property based on `showData`
-            const dataGroup = entry.BrandNme?.trim() || '';
-            acc[dataGroup] = (acc[dataGroup] || 0) + totalAmount;
-
-            return acc;
-        }, {});
-
-
-        // Convert the groupTotals object into an array of [label, value] pairs
-        let groupTotalsArray = Object.entries(groupTotals);
-
-        // Sort data groups by total amount in descending order
-        groupTotalsArray.sort((a, b) => b[1] - a[1]);
-
-        // Slice to get the top 20 items
-        const top20Groups = groupTotalsArray.slice(0, 20);
-
-        // Sum the rest of the items for 'OTHERS'
-        const otherGroups = groupTotalsArray.slice(20);
-        const othersTotal = otherGroups.reduce((sum, group) => sum + group[1], 0);
-
-        // Add 'OTHERS' to the labels and values
-        const dataGroupLabels = top20Groups.map(entry => entry[0]);
-        const dataGroupValues = top20Groups.map(entry => entry[1]);
-
-        if (othersTotal > 0) {
-            dataGroupLabels.push('OTHERS');
-            dataGroupValues.push(othersTotal);
-        }
-
-
-        const totalValues = dataGroupValues.reduce((acc, value) => acc + value, 0); // Calculate total values
-        const dataGroupPercentages = dataGroupValues.map(value => (value / totalValues * 100).toFixed(2)); // Calculate percentages
-
-        // const generateRandomColor = () => {
-        //     const r = Math.floor(Math.random() * 255);
-        //     const g = Math.floor(Math.random() * 255);
-        //     const b = Math.floor(Math.random() * 255);
-        //     return `rgba(${r}, ${g}, ${b}, 0.6)`;
-        // };
-
-        // const backgroundColors = dataGroupLabels.map(() => generateRandomColor());
-        // const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
-        const backgroundColors = {
-            'Current' : 'rgba(54, 162, 235, 0.6)',
-            'Previous': 'rgba(54, 162, 235, 1)'
-        };
-
-
-        // Create the chart 
-        const ctx = reportChartElement.getContext('2d');
-        myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: dataGroupLabels,
-                datasets: [{
-                    label: '',
-                    data: dataGroupValues,
-                    backgroundColor: backgroundColors[showData],
-                    // borderColor: borderColors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                indexAxis: 'y',         // labels at left side
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false 
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const percentage = dataGroupPercentages[context.dataIndex];
-                                const value = context.raw || 0;
-                                return `${value} (${percentage}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'end',
-                        formatter: (value, context) => {
-                            const percentage = dataGroupPercentages[context.dataIndex];
-                            return `${percentage}%`;
-                        },
-                        color: '#000',
-                        font: {
-                            weight: 'bold',
-                            size: 10
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 0
-                        }
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-
-        });
-
-        // Store the chart instances globally if needed (optional)
-        window.myCharts = window.myCharts || {};
-        window.myCharts[dataCanvass] = myChart;
-
-    } catch (error) {
-        console.error('Error processing chart data:', error);
-        displayErrorMsg(error, "'Error processing chart data'");
-    }
-}
-
-
+// ===================================================
 async function SalesCompChart(data, showData) {
     try {
         let current_Chart = null;
@@ -3116,4 +2554,53 @@ async function SalesCompChart(data, showData) {
         console.error('Error processing chart data:', error);
         displayErrorMsg(error, "'Error processing chart data'");
     }
+}
+
+// ================================================
+async function getFilters(filterData, filterIdCon){
+    const aFilters = []
+    for (let i = 0; i < filterData.length; i++) {
+
+        if (i===0 && filterData[0] && filterData[1]) {
+            aFilters.push(`Date From: ${formatDate(filterData[0],'MM/DD/YYYY')}  To: ${formatDate(filterData[1],'MM/DD/YYYY')} `) 
+        }
+
+        if (i===2 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Location: ${data[0].LocaName}    `) 
+        }
+        if (i===3 && filterData[i]) {
+            aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
+        }
+        if (i===4 && filterData[i]) {
+            aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
+        }
+        if (i===5 && filterData[i]) {
+            aFilters.push(`Description: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+        if (i===6 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Brand: ${data[0].BrandNme}   `) 
+        }
+        if (i===12 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Store Group: ${data[0].StoreGrp} `) 
+        }
+
+    }
+
+    document.querySelectorAll('.showFilterScope').forEach( e => e.style.display = 'flex')
+    document.getElementById(filterIdCon).innerText = ''
+
+    aFilters.forEach(text => {
+        const span = document.createElement("span");
+        span.textContent = text;
+        document.getElementById(filterIdCon).appendChild(span)
+    });
 }

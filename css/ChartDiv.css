@@ -1,5 +1,3 @@
-
-
 .chartContainer {
     display: flex;
     height: 800px;
@@ -13,10 +11,11 @@ canvas {
 }
 
 /* Chart Container Divs */
-#storeRankChart,#brandCompChart,#classCompChart, #stockRankChart, #stockPurchChart, 
+#storeRankChart,#brandCompChart,#classCompChart,#stockChart1,
+#stockRankChart, #stockPurchChart, 
 #typePurchSumChart, #suppPurchSumChart, #brndPurchSumChart, 
 #transDetailsChart, #transClassChart, #transSKUChart,
-#stockEndLocaChart, #stockEndBrandChart, #dailySalesChart, .seeFilters {
+#stockEndLocaChart, #stockEndBrandChart, #dailySalesChart {
     display: none;
     justify-content: center;
     background-color: whitesmoke;
@@ -29,17 +28,20 @@ canvas {
     height: 100%;
     padding: 10px;
     background-color: whitesmoke;
+    flex-wrap: wrap;
 }
 #locaEndBarChart {
     width: 100%;
     padding: 10px;
     background-color: whitesmoke;
+    flex-wrap: wrap;
 }
 .divPieChart{
     height: 700px;
     width: 100%;
     overflow: hidden;
     padding: 20px;
+    flex-wrap: wrap;
 }
 .pieContainer {
     display: flex;
@@ -55,6 +57,7 @@ canvas {
     width: 70%;
     padding: 10px;
     box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 /* The second chart occupying 30% of the parent width */
@@ -63,11 +66,13 @@ canvas {
     height: 100%;
     padding: 10px;
     background-color: whitesmoke;
+    flex-wrap: wrap;
 }
 #storeChart2 {
     width: 30%;
     padding: 10px;
     box-sizing: border-box;
+    flex-wrap: wrap;
 }
 
 
@@ -77,9 +82,11 @@ canvas {
     overflow: hidden;
 }
 .divBrand1, .divBrand2  {
+    display: flex;
     width: 50%;
     height: 100%;
     padding: 10px;
+    flex-wrap: wrap;
 }
 .divBrand1  {
     background-color: whitesmoke;
@@ -93,10 +100,6 @@ canvas {
     padding-bottom: 40px;
 }
 
-/* #brandChart2 {
-    width: 100% !important;
-    height: 100% !important;
-}  */
 
 /* StocRepo.js */
 #transChart {
@@ -122,28 +125,35 @@ canvas {
     width: 100% !important;
     height: 100% !important;
     padding-bottom: 40px;
+    flex-wrap: wrap;
 }
 #topClass canvas {
     background-image: linear-gradient(to right, #ffff, lightgrey  ); 
 }
 
 /* getFilters */
-.seeFilters {
+.showFilterScope {
     padding: 0px 10px 0px 10px;
-    /* color: rgba(0, 0, 0, 0.6); */
-    color:rgba(128, 128, 128);
+    color: whitesmoke;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: small;
     cursor: pointer;
+
     display: flex;
-    justify-content: space-around;
-    background-color: aqua;
+    flex-direction: column;
+    background-color: var(--second-bg-color);
 }
-.seeFilters p {
-    justify-self: center;
-    width: 70%;
+.filterLists {
+    display: flex;
+    justify-content: center;
+}
+.showFilterScope summary {
     text-align: center;
+    font-size: medium;
 }
 .filterLists:hover {
     cursor: initial;
+}
+.filterLists span {
+    padding: 0px 10px 0px 10px;
 }

@@ -29,6 +29,10 @@ const divListStock =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pPurcStoc" class='filterLists'></div>
+            </details>
 
             <div id="stockPurchChart" class="chartContainer">
                 <div class="divChart70">
@@ -72,6 +76,10 @@ const divPurchSumType =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pPurchSumType" class='filterLists'></div>
+            </details>
 
             <div id="typePurchSumChart" class="chartContainer">
                 <div id="sumClassification">
@@ -110,6 +118,10 @@ const divPurchSumSupp =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pPurchSumSupp" class='filterLists'></div>
+            </details>
 
             <div id="suppPurchSumChart" class="chartContainer">
                 <div id="sumSupplier">
@@ -149,6 +161,10 @@ const divPurchSumBrnd =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pPurchSumBrnd" class='filterLists'></div>
+            </details>
 
             <div id="brndPurchSumChart" class="chartContainer">
                 <div id="sumSupplier">
@@ -368,7 +384,7 @@ async function PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 document.getElementById('purchStock').addEventListener('click', () => {
     try {
-        FiltrRec('PurcStoc').then(() => {
+        FiltrRec('PurchRepoStock').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             const dDateFrom = filterData[0];
@@ -385,6 +401,8 @@ document.getElementById('purchStock').addEventListener('click', () => {
             
             PurchRepoStock(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+
+            getFilters(filterData, 'pPurcStoc')
     
         });
     } catch (error) {
@@ -486,7 +504,7 @@ async function stockPurchChart(data, dateRange) {
                                 family: 'Arial Narrow',
                                 size: 12
                             },
-                            color: 'white',  // x-axis tick labels color
+                            color: 'black',  // x-axis tick labels color
                             padding: 5,  // Adjust padding between x-axis labels and canvas
                         },
                         grid: {
@@ -598,7 +616,7 @@ async function stockPurchChart(data, dateRange) {
                             const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
                             return `${percentage}%`;
                         },
-                        color: '#fff',
+                        color: 'black',
                         font: {
                             weight: 'bold',
                             size: '10'
@@ -776,7 +794,7 @@ async function PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 document.getElementById('purchType').addEventListener('click', () => {
     try {
-        FiltrRec('PurcType').then(() => {
+        FiltrRec('PurchSumType').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             const dDateFrom = filterData[0];
@@ -793,6 +811,8 @@ document.getElementById('purchType').addEventListener('click', () => {
             
             PurchSumType(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+            
+            getFilters(filterData,'pPurchSumType')
     
         });
     } catch (error) {
@@ -977,7 +997,7 @@ async function PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 document.getElementById('purchSupp').addEventListener('click', () => {
     try {
-        FiltrRec('PurcSupp').then(() => {
+        FiltrRec('PurchSumSupp').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             const dDateFrom = filterData[0];
@@ -994,6 +1014,8 @@ document.getElementById('purchSupp').addEventListener('click', () => {
             
             PurchSumSupp(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+            
+            getFilters(filterData,'pPurchSumSupp')
     
         });
     } catch (error) {
@@ -1176,7 +1198,7 @@ async function PurchSumBrnd(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
 document.getElementById('purchBrnd').addEventListener('click', () => {
     try {
-        FiltrRec('PurcBrnd').then(() => {
+        FiltrRec('PurchSumBrnd').then(() => {
             const filterData = JSON.parse(localStorage.getItem("filterData"));
     
             const dDateFrom = filterData[0];
@@ -1193,6 +1215,8 @@ document.getElementById('purchBrnd').addEventListener('click', () => {
             
             PurchSumBrnd(cBrandNum, cUsersCde, cOtherCde, cCategNum, cItemDept, 
                 cItemType, cLocation, dDateFrom, dDate__To, cSuppName);
+
+            getFilters(filterData,'pPurchSumBrnd')
     
         });
     } catch (error) {
@@ -1357,7 +1381,8 @@ async function PurchChart(data, showData) {
                             const percentage = dataGroupPercentages[context.dataIndex]; // Get the percentage for the corresponding value
                             return `${percentage}%`;
                         },
-                        color: '#fff',
+                        // color: '#fff',
+                        color: 'black',
                         font: {
                             weight: 'bold',
                             size: '10'
@@ -1376,4 +1401,57 @@ async function PurchChart(data, showData) {
         console.error('Error processing chart data:', error);
         displayErrorMsg(error,"'Error processing chart data'")
     }
+}
+
+// ================================================
+async function getFilters(filterData, filterIdCon){
+    const aFilters = []
+    for (let i = 0; i < filterData.length; i++) {
+
+        if (i===0 && filterData[0] && filterData[1]) {
+            aFilters.push(`Date From: ${formatDate(filterData[0],'MM/DD/YYYY')}  To: ${formatDate(filterData[1],'MM/DD/YYYY')} `) 
+        }
+
+        if (i===2 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/location?Location=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Location: ${data[0].LocaName}    `) 
+        }
+        if (i===3 && filterData[i]) {
+            aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
+        }
+        if (i===4 && filterData[i]) {
+            aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
+        }
+        if (i===5 && filterData[i]) {
+            aFilters.push(`Description: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+        if (i===6 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Brand: ${data[0].BrandNme}   `) 
+        }
+        if (i===12 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/lookup/storegrp?StoreGrp=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Store Group: ${data[0].StoreGrp} `) 
+        }
+
+        if (i===16 && filterData[i]) {
+            aFilters.push(`Supplier: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+
+    }
+
+    document.querySelectorAll('.showFilterScope').forEach( e => e.style.display = 'flex')
+    document.getElementById(filterIdCon).innerText = ''
+
+    aFilters.forEach(text => {
+        const span = document.createElement("span");
+        span.textContent = text;
+        document.getElementById(filterIdCon).appendChild(span)
+    });
 }

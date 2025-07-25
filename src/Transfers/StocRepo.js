@@ -37,6 +37,10 @@ const divStockDetails =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pStockDetails" class='filterLists'></div>
+            </details>
 
             <div id="transDetailsChart" class="chartContainer">
                 <div id="topBrand">
@@ -83,6 +87,10 @@ const divStockClass =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pStockClass" class='filterLists'></div>
+            </details>
 
             <div id="transClassChart" class="chartContainer">
                 <div id="topClass">
@@ -129,6 +137,10 @@ const divStockSKU =`
                     </thead>
                 </table>            
             </div>
+            <details class="showFilterScope" style="display: none">
+                <summary>Filter Scope</summary>
+                <div id="pStockSKU" class='filterLists'></div>
+            </details>
 
             <div id="transSKUChart" class="chartContainer">
                 <div id="topBrand">
@@ -508,6 +520,8 @@ document.getElementById('transBtn1').addEventListener('click', async () => {
 
             StockTraDetails(dDateFrom,dDate__To,cReferDoc,cLocaFrom,cLocaTo__,
                 cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) 
+
+            getFilters(filterData,'pStockDetails')
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -690,7 +704,10 @@ document.getElementById('transBtn2').addEventListener('click', async () => {
             const cLocaTo__ = filterData[18];
 
             StockTraClass(dDateFrom,dDate__To,cReferDoc,cLocaFrom,cLocaTo__,
-                cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) 
+                cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) ;
+
+            getFilters(filterData,'pStockClass')
+            
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -884,6 +901,9 @@ document.getElementById('transBtn3').addEventListener('click', async () => {
 
             StockTraSKU(dDateFrom,dDate__To,cReferDoc,cLocaFrom,cLocaTo__,
                 cUsersCde, cOtherCde, cDescript, cBrandNum, cCategNum, cItemType, cItemDept ) 
+
+            getFilters(filterData,'pStockSKU')
+
         });
     } catch (error) {
         console.error("Error processing the filter:", error);
@@ -1081,3 +1101,46 @@ async function StockChart(data, showData) {
 }
 
 
+// ================================================
+async function getFilters(filterData, filterIdCon){
+    const aFilters = []
+    for (let i = 0; i < filterData.length; i++) {
+
+        if (i===0 && filterData[0] && filterData[1]) {
+            aFilters.push(`Date From: ${formatDate(filterData[0],'MM/DD/YYYY')}  To: ${formatDate(filterData[1],'MM/DD/YYYY')} `) 
+        }
+
+        if (i===3 && filterData[i]) {
+            aFilters.push(`Stock No: ${filterData[i].trim()}   `) 
+        }
+        if (i===4 && filterData[i]) {
+            aFilters.push(`Bar Code: ${filterData[i].trim()}   `) 
+        }
+        if (i===5 && filterData[i]) {
+            aFilters.push(`Description: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+        if (i===6 && filterData[i]) {
+            const url = new URL(`http://localhost:3000/product/brands?BrandNum=${filterData[i].trim()}`);
+            const res = await fetch(url);
+            const data = await res.json()
+            aFilters.push(`Brand: ${data[0].BrandNme}   `) 
+        }
+
+        if (i===17 && filterData[i]) {
+            aFilters.push(`Stock Out -From: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+        if (i===18 && filterData[i]) {
+            aFilters.push(`Stock In -To: ${filterData[i].trim().toUpperCase()}   `) 
+        }
+
+    }
+
+    document.querySelectorAll('.showFilterScope').forEach( e => e.style.display = 'flex')
+    document.getElementById(filterIdCon).innerText = ''
+
+    aFilters.forEach(text => {
+        const span = document.createElement("span");
+        span.textContent = text;
+        document.getElementById(filterIdCon).appendChild(span)
+    });
+}

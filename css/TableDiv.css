@@ -68,7 +68,10 @@
     height: auto;
     width: 100%;
     overflow-y: auto;
-    display: block; /* Remove flex to avoid centering */
+
+    display: block; 
+    /* display: flex;  */
+    /* flex-wrap: wrap; */
 }
 
 .DetailsForm {

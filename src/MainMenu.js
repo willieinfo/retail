@@ -3,14 +3,14 @@ import { formatDate, disableMultipleLis, disableNoMenuRefLis } from "./FunctLib.
 import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
-// window.onload = function() {
-//     // Check if the user is logged in
-//     if (sessionStorage.getItem('loggedIn') !== 'true') {
-//         window.location.href = "./LogIn.html"; 
-//     } else {
-//         document.body.style.visibility = 'visible';
-//     }
-// };
+window.onload = function() {
+    // Check if the user is logged in
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = "./LogIn.html"; 
+    } else {
+        document.body.style.visibility = 'visible';
+    }
+};
 
 // Background Image
 const img = document.getElementById('background-image');
@@ -39,7 +39,7 @@ const menuItems= `
         <li menu-ref="A06" class="salesRankingByStock">Sales By SKU</li>
         <hr class="menuLine">
         <li menu-ref="A07" class="dailySalesSum">Daily Sales Summary</li>
-        <li class="monthlySalesSum">Monthly Sales Summary</li>
+        <li >Monthly Sales Summary</li>
     </ul>
 </li>
 <li class="purchases"><i class="fa fa-cart-arrow-down"></i> Purchases
@@ -124,6 +124,33 @@ if (!localStorage.getItem('menuItems') || localStorage.getItem('menuItems') !== 
 document.getElementById("menuNavBar").innerHTML = menuItems;
 document.getElementById('menuSideBar').innerHTML=`<div class="close-sidebar"><span id="closeSidebar">✖</span></div>`+menuItems
 
+// const menuNavBarItems = document.querySelectorAll('.menu li');
+
+// menuNavBarItems.forEach(item => {
+//   const dropdown = item.querySelector('.dropdown');
+  
+//   // Only add the click event if there's a dropdown
+//   if (dropdown) {
+//     item.addEventListener('click', (event) => {
+//       // Toggle the dropdown visibility on click
+//       dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+      
+//       // Prevent event from bubbling up to other elements
+//       event.stopPropagation();
+//     });
+//   }
+// });
+
+// // Close the dropdown if clicked anywhere else on the screen
+// document.addEventListener('click', (event) => {
+//   menuNavBarItems.forEach(item => {
+//     const dropdown = item.querySelector('.dropdown');
+//     if (dropdown && dropdown.style.display === 'block' && !item.contains(event.target)) {
+//       dropdown.style.display = 'none';
+//     }
+//   });
+// });
+
 const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
 const closeSidebar = document.querySelector('.close-sidebar');
@@ -158,8 +185,6 @@ const cDateToday=formatDate(todaysDate)
 const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
 spanToday.innerText=cDateToday+' '+dayName
 
-Chart.register(ChartDataLabels)
-
 // Log Out
 document.querySelectorAll('.LogOut').forEach( el =>{
     el.addEventListener('click', () => {
@@ -178,6 +203,10 @@ liOSKey.forEach(element => {
 })
 
 // INIT App preparation ================================
+
+// Register Chart Labels (required)
+Chart.register(ChartDataLabels)
+
 // Apply user color preferences
 window.CompName = 'REGENT TRAVEL RETAIL GROUP'
 document.addEventListener('DOMContentLoaded', () => {

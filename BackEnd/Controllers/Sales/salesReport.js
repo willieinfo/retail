@@ -510,7 +510,7 @@ const DailySalesSum = async (req, res) => {
 
   // Additional filters based on query parameters
   if (cDescript) {
-    sqlQuery += " AND ITEMLIST.Descript LIKE @cDescript";
+    cSql += " AND ITEMLIST.Descript LIKE @cDescript";
     params.cDescript = `%${cDescript}%`;
   }
   if (cBrandNum) {

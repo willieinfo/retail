@@ -128,7 +128,7 @@ export async function FiltrRec(cModules_) {
                 </div>
             </div>
         `;
-
+        
         // Create the overlay background for the modal
         const overlay = document.createElement('div');
         overlay.id = 'modal-overlay';
@@ -256,40 +256,42 @@ export async function FiltrRec(cModules_) {
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputLocation').style.display = 'none';
             document.getElementById('inputTransfer').style.display = 'flex';
+
         } else if (cModules_ === 'PurchLst') {
-            document.getElementById('PurchLst').appendChild(filterForm);
-            document.getElementById('PurchLst').appendChild(overlay);
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('inputDetails').style.display = 'none';
             document.getElementById('inputSuppName').style.display = 'block';
             await populateLocation('', '', 'PurcArea','FiltrRec_Location','0');
-        } else if (cModules_ === 'PurcStoc') {
-            document.getElementById('PurchRepoStock').appendChild(filterForm);
-            document.getElementById('PurchRepoStock').appendChild(overlay);
+        } else if (cModules_ === 'PurchRepoStock') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputSuppName').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location','0');
-        } else if (cModules_ === 'PurcType') {
-            document.getElementById('PurchSumType').appendChild(filterForm);
-            document.getElementById('PurchSumType').appendChild(overlay);
+        } else if (cModules_ === 'PurchSumType') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputSuppName').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location','0');
-        } else if (cModules_ === 'PurcSupp') {
-            document.getElementById('PurchSumSupp').appendChild(filterForm);
-            document.getElementById('PurchSumSupp').appendChild(overlay);
+        } else if (cModules_ === 'PurchSumSupp') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputSuppName').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location','0');
-        } else if (cModules_ === 'PurcBrnd') {
-            document.getElementById('PurchSumBrnd').appendChild(filterForm);
-            document.getElementById('PurchSumBrnd').appendChild(overlay);
+        } else if (cModules_ === 'PurchSumBrnd') {
+            document.getElementById(cModules_).appendChild(filterForm);
+            document.getElementById(cModules_).appendChild(overlay);
             document.getElementById('inputDescript').style.display = 'none';
             document.getElementById('txtReferDoc').style.display = 'none';
             document.getElementById('inputSuppName').style.display = 'block';
             await populateLocation('', '', '','FiltrRec_Location','0');
+
         } else if (cModules_ === 'StocEnd1') {
             document.getElementById('StockEndLocation').appendChild(filterForm);
             document.getElementById('StockEndLocation').appendChild(overlay);
@@ -500,4 +502,3 @@ export async function displayErrorMsg(error,otherMsg = '') {
         errorMessageDiv.style.display = 'none';
     };
 }
-

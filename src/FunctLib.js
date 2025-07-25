@@ -1236,3 +1236,4 @@ export function startTimer() {
 
     return { timerInterval, elapsedTime };
 }
+
