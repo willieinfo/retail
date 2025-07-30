@@ -348,7 +348,7 @@ const addAppUsers = async (req, res) => {
           SET UserCode = @UserCode
           WHERE AutIncId = @AutIncId;
 
-          -- Return the full record of the inserted location
+          -- Return the full record of the inserted data
           SELECT
             APPUSERS.UserCode,
             APPUSERS.UserName,

@@ -227,7 +227,7 @@ async function UserForm(index, editMode) {
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Position">Position</label>
-                    <input type="text" class="lookUpperCase" id="AppUsers_Position" spellcheck="false" >
+                    <input type="text" id="AppUsers_Position" spellcheck="false" >
                 </div>
                 <div class="subTextDiv">
                     <label for="AppUsers_Password">Password</label>
@@ -238,11 +238,11 @@ async function UserForm(index, editMode) {
                 <div class="textDiv">
                     <div class="subTextDiv">
                         <label for="AppUsers_NickName">Nick Name</label>
-                        <input type="text" class="lookUpperCase" id="AppUsers_NickName" spellcheck="false" required>
+                        <input type="text" id="AppUsers_NickName" spellcheck="false" required>
                     </div>
                     <div class="subTextDiv">
                         <label for="AppUsers_SuffixId">Data Suffix</label>
-                        <input type="text" id="AppUsers_SuffixId" spellcheck="false" required autocapitalize="on">
+                        <input type="text" class="lookUpperCase" id="AppUsers_SuffixId" spellcheck="false" required autocapitalize="on">
                     </div>
                 </div>
 
@@ -343,7 +343,7 @@ async function UserForm(index, editMode) {
     document.addEventListener('click', (e) => {
         const menuOptDiv = document.getElementById('menuOptDiv')
         if (!menuOptDiv.contains(e.target)) {
-            menuOptDiv.style.display = 'none';  // Hide if clicked outside
+            // menuOptDiv.style.display = 'none';  // Hide if clicked outside
         }
     });
 
@@ -401,7 +401,7 @@ async function UserForm(index, editMode) {
         // Remove form and modal overlay
         document.getElementById('user-form').remove(); 
         document.getElementById('modal-overlay').remove(); 
-        document.getElementById('menuOptDiv').style.display = 'none';
+        // document.getElementById('menuOptDiv').style.display = 'none';
     });
 
 }
@@ -457,6 +457,7 @@ async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
         cSuffixId = cSuffixId.toUpperCase()
+        cUserName = cUserName.tuUpperCase()
 
         const response = await fetch('http://localhost:3000/lookup/addAppUsers', {
             method: 'POST',  // Use PUT method
@@ -484,6 +485,7 @@ async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword
 
         const updatedItem = await response.json();
         if (updatedItem) {
+            console.log(updatedItem)
             showNotification('App User record added successful!')
             globalData.push(updatedItem);
             updateTable();            
@@ -665,7 +667,6 @@ function MenuOpts(index) {
     menuOptDiv.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
     menuOptDiv.style.backgroundImage = 'linear-gradient(to right, #ffff, var(--main-bg-color))'; 
 
-
     const titleBar = document.getElementById("menuSelect");
     titleBar.innerHTML = ''
     titleBar.style.display = 'flex';
@@ -822,6 +823,7 @@ function MenuOpts(index) {
             
             categoryElement.appendChild(submenu);
             menuSelectDiv.appendChild(categoryElement);
+
         });
     }
 
@@ -879,8 +881,8 @@ function MenuOpts(index) {
     menu = parseMenuItems(menuItems); // Parse the menu structure
     initializeMenu(menuOpts);  // Initialize the menu with the selected options
 
-    document.getElementById('cancelMenuOptsBtn').addEventListener('click', () => {
-        document.getElementById('menuOptDiv').style.display = 'none';
-    })
+    // document.getElementById('cancelMenuOptsBtn').addEventListener('click', () => {
+    //     document.getElementById('menuOptDiv').style.display = 'none';
+    // })
 
 }

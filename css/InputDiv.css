@@ -128,7 +128,7 @@ label {
     height: 16px; /* Optional: adjust checkbox size */
     
 }
-.lookUpperCase input[type="text"] {
+.lookUpperCase {
   text-transform: uppercase;
 }
 

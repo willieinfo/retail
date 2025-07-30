@@ -11,11 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const imageSrc = document.getElementById('background-image');
 const savedWallPaper = localStorage.getItem('WallPaper');
-if (savedWallPaper) {
-    imageSrc.src = savedWallPaper;
-} else {
-    imageSrc.src = wallpaper[2]; // Default
-}
 
 const wallpaper = [
     "./images/RetailShop1.JPG",
@@ -32,6 +27,11 @@ const wallpaper = [
     "./images/HardwareTools2.JPG"
 
 ];
+if (savedWallPaper) {
+    imageSrc.src = savedWallPaper;
+} else {
+    imageSrc.src = wallpaper[2]; // Default
+}
 
 function changeWallPaper() {
     const selectWallPaper = document.createElement('div');

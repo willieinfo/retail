@@ -423,14 +423,17 @@ const editItemList = async (req, res) => {
         Outright=@nOutright,
         Disabled=@lDisabled,
         Services=@lServices
-    WHERE ItemCode=@cItemCode`;
+    WHERE ItemCode=@cItemCode
+    
+    SELECT * FROM ITEMLIST WHERE ItemCode=@cItemCode
+    
+    `;
 
   const params = { cItemCode,cUsersCde,cOtherCde,cDescript,
     cBrandNum,cItemType,cItemDept,cCategNum,cSuppNum_,
     nItemPrce,nItemCost,nLandCost,
     nOutright,lDisabled,lServices };
 
-// console.log(params)
   try {
     const result = await queryDatabase(cSql, params);
     res.json(result);  
@@ -466,12 +469,12 @@ const params = { cItemCode };
 try {
   const result = await queryDatabase(cSql, params);
 
-  // If any row is found, ItemCode cannot be deleted
-  if (result && result.length > 0) {
-    return res.status(400).json({
-      message: 'Delete cannot be performed. The ItemCode is referenced in transactions.'
-    });
-  }
+    // If any row is found, ItemCode cannot be deleted
+    if (result && result.length > 0) {
+      return res.status(400).json({
+        message: 'Delete cannot be performed. The ItemCode is referenced in transactions.'
+      });
+    }
 
     cSql = `DELETE FROM ITEMLIST WHERE ItemCode=@cItemCode`;
   

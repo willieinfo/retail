@@ -343,7 +343,10 @@ export async function FiltrRec(cModules_) {
 
             localStorage.setItem("filterData", JSON.stringify([formattedDateFrom, formattedDateTo, formattedDateAsOf]));
 
-            filterData = [formattedDateFrom, formattedDateTo, formattedDateAsOf];
+            filterData = [formattedDateFrom, formattedDateTo,'','','',
+                 '','','','','',
+                 '',formattedDateAsOf,'','','0',
+                 '0','','',''];
         }
 
         document.getElementById('FiltrRec_DateFrom').value = filterData[0];

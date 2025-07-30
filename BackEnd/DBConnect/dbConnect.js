@@ -50,7 +50,12 @@ async function queryDatabase(query, params = {}) {
     if (query.trim().toUpperCase().startsWith("SELECT")) {
       return result.recordset;
     } else {
-      // For INSERT/UPDATE/DELETE, return rows affected
+
+      if (query.toUpperCase().includes('SCOPE_IDENTITY')) {
+        // Return the auto-generated ID (from SCOPE_IDENTITY)
+        return result.recordset[0];
+      }
+
       return result.rowsAffected;
     }
   } catch (err) {
