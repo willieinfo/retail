@@ -17,6 +17,7 @@ https://github.com/willieinfo/rtrg
 https://github.com/willieinfo/iamnice
 https://github.com/willieinfo/targets
 https://github.com/willieinfo/retail
+https://github.com/willieinfo/chatapp.git
 
 These are common Git commands used in various situations:
 
