@@ -119,11 +119,11 @@ const listLoca = async (req, res) => {
           SET @AutIncId = SCOPE_IDENTITY();
 
           -- Dynamically pad AutIncId to a length of 3 digits and append cSuffixId
-          DECLARE @Location VARCHAR(4);  -- Changed from CHAR(3) to VARCHAR(4) to allow suffix addition
+          DECLARE @Location VARCHAR(5);  -- Changed from CHAR(3) to VARCHAR(5) to allow suffix addition
 
           -- Ensure zero-padding for numbers less than 100
-          -- SET @Location = RIGHT('000' + CAST(@AutIncId AS VARCHAR(3)), 3) + RTRIM(@cSuffixId);
-          SET @Location = RIGHT('0000' + CAST(@AutIncId AS VARCHAR(4)), 4)
+          -- SET @Location = RIGHT('000' + CAST(@AutIncId AS VARCHAR(3)), 3) 
+          SET @Location = RIGHT('00000' + CAST(@AutIncId AS VARCHAR(5)), 5)
 
           -- Update the Location field
           UPDATE LOCATION

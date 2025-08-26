@@ -18,6 +18,7 @@ https://github.com/willieinfo/iamnice
 https://github.com/willieinfo/targets
 https://github.com/willieinfo/retail
 https://github.com/willieinfo/chatapp.git
+https://github.com/willieinfo/winchat.git
 
 These are common Git commands used in various situations:
 

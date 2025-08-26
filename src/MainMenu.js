@@ -194,6 +194,19 @@ document.querySelectorAll('.LogOut').forEach( el =>{
     })
 })
 
+
+let chatWindow = null;
+document.querySelector(".chatIcon").addEventListener('click', () => {
+    if (!chatWindow || chatWindow.closed) {
+        chatWindow = window.open(
+            "http://127.0.0.1:5500/public/index.html",
+            "_blank"
+        );
+    } else {
+        chatWindow.focus(); // bring the existing window to front
+    }
+});
+
 // Keyboard
 const liOSKey=document.querySelectorAll('.OSKey')
 liOSKey.forEach(element => {
@@ -224,14 +237,18 @@ if (cUserData) {
     if (cUserData[0].UserName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
 } else {
     disableNoMenuRefLis()
-    spanToday.innerText = 'Willie Estrada - '+spanToday.innerText
+    spanToday.innerText = 'Willie Estrada '+spanToday.innerText
 }
 
 // Check if tables exist, create if none
-function createTables() {
-    fetch('http://localhost:3000/lookup/createTables', {
+async function createTables() {
+    const res = await fetch('http://localhost:3000/lookup/createTables', {
         method: 'POST'
     })
+    if (!res.ok) {
+        throw new Error('Database connection error');
+    }
+
 }
 createTables(); // Call once at startup
 

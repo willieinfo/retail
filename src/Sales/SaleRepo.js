@@ -1193,6 +1193,7 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         document.getElementById('printStoreRankXLS').disabled = false
         setStoreChart(data, dateRange)
+        // SalesCompChart(data,'LocaName')
 
         
     } catch (error) {
