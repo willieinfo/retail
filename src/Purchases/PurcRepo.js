@@ -30,7 +30,7 @@ const divListStock =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pPurcStoc" class='filterLists'></div>
             </details>
 
@@ -77,7 +77,7 @@ const divPurchSumType =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pPurchSumType" class='filterLists'></div>
             </details>
 
@@ -119,7 +119,7 @@ const divPurchSumSupp =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pPurchSumSupp" class='filterLists'></div>
             </details>
 
@@ -162,7 +162,7 @@ const divPurchSumBrnd =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pPurchSumBrnd" class='filterLists'></div>
             </details>
 

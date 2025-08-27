@@ -38,7 +38,7 @@ const divStockDetails =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pStockDetails" class='filterLists'></div>
             </details>
 
@@ -88,7 +88,7 @@ const divStockClass =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pStockClass" class='filterLists'></div>
             </details>
 
@@ -138,7 +138,7 @@ const divStockSKU =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pStockSKU" class='filterLists'></div>
             </details>
 

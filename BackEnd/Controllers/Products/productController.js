@@ -52,6 +52,7 @@ const listItem = async (req, res) => {
   let offset = 0;
   const page = parseInt(req.query.page) || 0;
   offset = page * limit;
+console.log(offset,limit,page)
 
   sqlCount = `
     SELECT COUNT(*) AS totalCount 
@@ -94,7 +95,7 @@ const listItem = async (req, res) => {
     ${sqlQuery}
     `;
 
-  cSql += ` ORDER BY ITEMLIST.Descript  
+  cSql += ` ORDER BY ITEMLIST.UsersCde  
     OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY `;
 
   // console.log(cSql)

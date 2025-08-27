@@ -4,14 +4,17 @@
 // npm install cors
 // npm install mssql
 // npm install dotenv
+// npm install socket.io
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+// const socketIo = require('socket.io');
 
 const app = express();
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
+
 
 const productRouter = require('./Routers/productRouter');  
 const lookupRouter = require('./Routers/lookupRouter');      
@@ -20,19 +23,34 @@ const stockRouter = require('./Routers/stockRouter');
 const purchRouter = require('./Routers/purchRouter');      
 const invenRouter = require('./Routers/invenRouter');      
 
+// Chat Server
+const { initializeChatServer } = require('./Controllers/WinChat/ChatServer'); 
+
+app.use(express.json());
+
+// Retail App Routers with CORS enabled per router
+app.use('/product', cors(), productRouter);
+app.use('/lookup', cors(), lookupRouter);
+app.use('/sales', cors(), salesRouter);
+app.use('/transfers', cors(), stockRouter);
+app.use('/purchases', cors(), purchRouter);
+app.use('/inventory', cors(), invenRouter);
+
 // Use the different routers
-app.use('/product', productRouter);
-app.use('/lookup', lookupRouter);
-app.use('/sales', salesRouter);  
-app.use('/transfers', stockRouter);  
-app.use('/purchases', purchRouter);  
-app.use('/inventory', invenRouter);  
+// app.use('/product', productRouter);
+// app.use('/lookup', lookupRouter);
+// app.use('/sales', salesRouter);  
+// app.use('/transfers', stockRouter);  
+// app.use('/purchases', purchRouter);  
+// app.use('/inventory', invenRouter);  
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+// Initialize WinChat server
+initializeChatServer(server);
 
 // Gracefully handle SIGINT (Ctrl + C) and shutdown the DB connection pool
 process.on('SIGINT', async () => {
@@ -51,3 +69,4 @@ process.on('SIGINT', async () => {
     });
   }
 })
+

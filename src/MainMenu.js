@@ -199,7 +199,7 @@ let chatWindow = null;
 document.querySelector(".chatIcon").addEventListener('click', () => {
     if (!chatWindow || chatWindow.closed) {
         chatWindow = window.open(
-            "http://127.0.0.1:5500/public/index.html",
+            "http://127.0.0.1:5501/WinChat.html",
             "_blank"
         );
     } else {

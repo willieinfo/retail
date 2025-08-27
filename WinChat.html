@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="./css/WinChat.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"
+        integrity="sha512-Xm9qbB6Pu06k3PUwPj785dyTl6oHxgsv9nHp7ej7nCpAqGZT3OZpsELuCYX05DdonFpTlBpXMOxjavIAIUwr0w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div class="userList">
+        <div class="chatLogo">
+            <img src="./InfoPlus.png" alt="" id="winChatImg">
+            <span>WinChat</span>
+        </div>
+        <div class="usersList">
+            <ul class="user-name"></ul> 
+        </div>
+    </div>
+    <main>
+        <form class="form-join">
+            <input type="text" id="name" maxlength="20" placeholder="Your name" size="20" required>
+            <button id="join" type="submit" title="Enter Chat"><i class="fa-solid fa-user-plus"></i></button>
+        </form>
+        <span class="currentUserName" style="display: none"></span>
+        <div class="utilityDiv chatAppIcons">
+            <!-- phone-slash for hung up fone -->
+            <span id="chatVoiceCall" class="icon-bubble"><i class="fas fa-phone-flip" title="Make a voice call"></i></span>
+            <span id="chatEraser" class="icon-bubble"><i class="fas fa-eraser" title="Erase Chat messages"></i></span>
+        </div>
+        <ul class="chat-display"></ul>
+        <p class="activity"></p>
+        <div id="callStatus" class="call-status"></div>
+
+        <form class="form-msg">
+            <div class="msg-row">
+                <div class="chatAppIcons">
+                    <span id="chat-images" class="icon-bubble">
+                        <i class="fas fa-images" title="Attach image"></i>
+                    </span>
+                    <span id="chat-paperclip" class="icon-bubble">
+                        <i class="fas fa-paperclip" title="Attach file"></i>
+                    </span>
+                </div>
+
+                <div class="textarea-wrapper chatAppIcons">
+                    <span id="chat-smile" class="icon-bubble">
+                        <i class="fas fa-smile" title="Add emoji"></i>
+                    </span>
+                    <textarea id="message" placeholder="Your message" required autofocus></textarea>
+                    <span id="voiceToText" class="icon-bubble">
+                        <i class="fas fa-microphone" title="Say your message"></i>
+                    </span>
+                </div>
+                <button type="submit" title="Send Message" id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <div id="chkAllUsers" class="chatAppIcons">
+                    <input type="checkbox" id="sendAllUsers">
+                    <label for="sendAllUsers">
+                        <i class="fa-solid fa-users" title="Send to all users"></i>
+                    </label>
+                </div>
+            </div>
+        </form>
+
+    </main>
+
+    <script type="module" defer src="./src/WinChat/WinChat.js"></script>
+    <script type="module" defer src="./src/WinChat/voiceToText.js"></script>
+    <!-- <script defer src="/public/app.js"></script> -->
+
+</body>
+</html>

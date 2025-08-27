@@ -60,7 +60,7 @@ const divCompStore = `
             </div>
 
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pCompStore" class='filterLists'></div>
             </details>
 
@@ -136,7 +136,7 @@ const divCompBrand = `
             </div>
 
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pCompBrand" class='filterLists'></div>
             </details>
 
@@ -210,7 +210,7 @@ const divCompClass = `
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pCompClass" class='filterLists'></div>
             </details>
 
@@ -264,7 +264,7 @@ const divRankStock =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pRankStock" class='filterLists'></div>
             </details>
 
@@ -311,7 +311,7 @@ const divDailySales =`
                 </table>            
             </div>
             <details class="showFilterScope" style="display: none">
-                <summary>Filter Scope</summary>
+                <summary>Report Scope</summary>
                 <div id="pDailySales" class='filterLists'></div>
             </details>
 
