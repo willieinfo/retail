@@ -3,14 +3,14 @@ import { formatDate, disableMultipleLis, disableNoMenuRefLis } from "./FunctLib.
 import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
-// window.onload = function() {
-//     // Check if the user is logged in
-//     if (sessionStorage.getItem('loggedIn') !== 'true') {
-//         window.location.href = "./LogIn.html"; 
-//     } else {
-//         document.body.style.visibility = 'visible';
-//     }
-// };
+window.onload = function() {
+    // Check if the user is logged in
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = "./LogIn.html"; 
+    } else {
+        document.body.style.visibility = 'visible';
+    }
+};
 
 // Background Image
 const img = document.getElementById('background-image');

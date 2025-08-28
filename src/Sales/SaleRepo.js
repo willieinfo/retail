@@ -1029,8 +1029,8 @@ async function SalesCompStore(cBrandNum, cUsersCde, cOtherCde, cCategNum,
         if (cDescript) params.append('Descript', cDescript); 
 
         // Send request with query parameters
-        // const response = await fetch(`${url}?${params.toString()}`);
-        const response = await fetch('./data/DB_COMPSTORE.json');
+        const response = await fetch(`${url}?${params.toString()}`);
+        // const response = await fetch('./data/DB_COMPSTORE.json');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

@@ -1,4 +1,4 @@
-import { showReport, showNotification, highlightRow, makeDraggable } from "../FunctLib.js";
+import { showReport, showNotification, highlightRow, makeDraggable, encrypt, decrypt } from "../FunctLib.js";
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 import {printReportExcel, generateTitleRows} from '../PrintRep.js'
 
@@ -302,7 +302,7 @@ async function UserForm(index, editMode) {
         document.getElementById('AppUsers_EmailAdd').value = itemData.EmailAdd;
         document.getElementById('AppUsers_Position').value = itemData.Position;
         document.getElementById('AppUsers_Tel_Num_').value = itemData.Tel_Num_;
-        document.getElementById('AppUsers_Password').value = itemData.Password;
+        document.getElementById('AppUsers_Password').value = decrypt(itemData.Password,'WPE');
         document.getElementById('AppUsers_NickName').value = itemData.NickName;
         document.getElementById('AppUsers_SuffixId').value = itemData.SuffixId;
         document.getElementById('AppUsers_Remarks_').value = itemData.Remarks_;
@@ -356,7 +356,7 @@ async function UserForm(index, editMode) {
         const cEmailAdd = document.getElementById('AppUsers_EmailAdd').value.trim();
         const cPosition = document.getElementById('AppUsers_Position').value.trim();
         const cTel_Num_ = document.getElementById('AppUsers_Tel_Num_').value.trim();
-        const cPassword = document.getElementById('AppUsers_Password').value.trim();
+        const cPassword = encrypt(document.getElementById('AppUsers_Password').value.trim(),'WPE');
         const cNickName = document.getElementById('AppUsers_NickName').value.trim();
         const cSuffixId = document.getElementById('AppUsers_SuffixId').value.trim();
         const cRemarks_ = document.getElementById('AppUsers_Remarks_').value.trim();

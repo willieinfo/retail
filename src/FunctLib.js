@@ -511,125 +511,6 @@ export function highlightRow(targetRow, tableSelector) {
     targetRow.style.fontWeight = 'bold';
 }
 
-// export function pickList(dataItemList, inputElement) {
-//     return new Promise((resolve) => {
-//         if (!inputElement) return;
-
-//         // Disable autocomplete to prevent suggestions
-//         inputElement.setAttribute('autocomplete', 'off');
-
-//         // Create the pickListDiv and dropdownList dynamically
-//         const pickListDiv = document.createElement('div');
-//         pickListDiv.id = 'pickListDiv';
-//         const dropdownList = document.createElement('ul');
-//         dropdownList.id = 'dropdownList';
-//         const pickListTitle = document.createElement('span');
-//         pickListTitle.innerText = "Click to select item from list";
-//         pickListDiv.appendChild(pickListTitle);
-
-//         // Append the dropdown list to the pick list div
-//         pickListDiv.appendChild(dropdownList);
-//         document.body.appendChild(pickListDiv);  // Add it to the body
-
-//         // Show the pickListDiv and dropdownList
-//         pickListDiv.style.display = 'flex';  // Show the pickListDiv
-//         dropdownList.style.display = 'block';  // Show the dropdown
-
-//         dropdownList.innerHTML = ''; // Clear previous items
-
-//         // Loop through dataItemList and create <li> elements
-//         dataItemList.forEach(item => {
-//             const li = document.createElement('li');
-//             li.textContent = `${item.UsersCde} - ${item.Descript.substring(0, 24)} - P ${formatter.format(item.ItemPrce)}`;
-
-//             // Add click event to each <li> for selection
-//             li.addEventListener('click', () => {
-//                 // Fill the input with the selected item’s information
-//                 inputElement.value = item.UsersCde;  // or any value you want to fill
-
-//                 // Close the dropdown and pick list after selection
-//                 dropdownList.style.display = 'none';
-//                 pickListDiv.style.display = 'none';
-
-//                 // Resolve the promise with the selected item
-//                 resolve(item); // Return the selected item when clicked
-//             });
-
-//             // Append the <li> item to the dropdown list
-//             dropdownList.appendChild(li);
-//         });
-
-//         // Variables to track the highlighted index and the highlighted item
-//         let highlightedIndex = -1;
-//         let highlightedItem = null;  // Store the item being highlighted
-//         const items = dropdownList.querySelectorAll('li');
-
-//         // Function to highlight an item
-//         function highlightItem(index) {
-//             // Remove highlight from all items
-//             items.forEach(item => item.classList.remove('highlight'));
-
-//             // Only highlight if the index is valid
-//             if (index >= 0 && index < items.length) {
-//                 items[index].classList.add('highlight');  // Add highlight to the current item
-//                 highlightedItem = dataItemList[index];  // Update highlighted item
-
-//                 // Auto-scroll if the highlighted item is out of view
-//                 const item = items[index];
-//                 const itemTop = item.offsetTop;
-//                 const itemBottom = itemTop + item.offsetHeight;
-//                 const listTop = dropdownList.scrollTop;
-//                 const listBottom = listTop + dropdownList.offsetHeight;
-
-//                 // Scroll the picklist to make the highlighted item fully visible
-//                 if (itemTop < listTop) {
-//                     // If the item is above the visible area, scroll up
-//                     dropdownList.scrollTop = itemTop;
-//                 } else if (itemBottom > listBottom) {
-//                     // If the item is below the visible area, scroll down
-//                     dropdownList.scrollTop = itemBottom - dropdownList.offsetHeight;
-//                 }
-//             }
-//         }
-
-//         // Handle keydown events for ArrowDown, ArrowUp, and Enter
-//         inputElement.addEventListener('keydown', (e) => {
-//             if (e.key === 'ArrowDown') {
-//                 // Move down in the list
-//                 if (highlightedIndex < items.length - 1) {
-//                     highlightedIndex++;
-//                 }
-//                 highlightItem(highlightedIndex);
-//             } else if (e.key === 'ArrowUp') {
-//                 // Move up in the list
-//                 if (highlightedIndex > 0) {
-//                     highlightedIndex--;
-//                 }
-//                 highlightItem(highlightedIndex);
-//             } else if (e.key === 'Enter') {
-//                 // Select the highlighted item
-//                 if (highlightedItem) {
-//                     inputElement.value = highlightedItem.UsersCde;
-
-//                     // Close the dropdown and pick list after selection
-//                     dropdownList.style.display = 'none';
-//                     pickListDiv.style.display = 'none';
-
-//                     // Resolve the promise with the highlighted item (the single item)
-//                     resolve(highlightedItem); // Only return the highlighted item when Enter is pressed
-//                 }
-//             }
-//         });
-
-//         // Close the dropdown if the user clicks outside of the input, dropdown, or pickListDiv
-//         document.addEventListener('click', (e) => {
-//             if (!pickListDiv.contains(e.target)) {
-//                 dropdownList.style.display = 'none';  // Hide dropdown if clicked outside
-//                 pickListDiv.style.display = 'none';  // Hide pickListDiv if clicked outside
-//             }
-//         });
-//     });
-// }
 
 
 // imageLoader.js
@@ -1237,3 +1118,61 @@ export function startTimer() {
     return { timerInterval, elapsedTime };
 }
 
+export function encrypt(cString, cPWrd) {
+    // Check if password is valid (not longer than 3 characters or empty)
+    if (cPWrd.length > 3 || !cPWrd) return '';
+
+    let cnCript = '';
+    cString = cString.trim();  // Remove extra spaces
+
+    const nLenStr = cString.length;
+    
+    // Loop through each character of the string
+    for (let ctr = 0; ctr < nLenStr; ctr++) {
+        // Get the ASCII value of the character, add 7, and convert back to a character
+        cnCript += String.fromCharCode(cString.charCodeAt(ctr) + 7);
+        // cnCript=cnCript+Chr(Asc(SubStr(cString,ctr,1))+7)
+    }
+
+    // Return password + encrypted string
+    return cPWrd + cnCript;
+}
+
+export function decrypt(cnCript, cPWrd) {
+    // Check if the password is correct (first 3 characters of cnCript should match cPWrd)
+    if (cPWrd !== cnCript.substring(0, 3)) {
+        // console.log(String.fromCharCode(7));  // Debugging or logging equivalent to VFP's ?? Chr(7)
+        return cnCript;  // If password does not match, return the input string
+    }
+
+    cnCript = cnCript.trim();  // Remove extra spaces
+    let cString = '';
+    const nLencnCript = cnCript.length - cPWrd.length;  // Length of the encrypted part
+
+    // Loop through each character in the encrypted string and subtract 7 from the ASCII value
+    for (let ctr = 0; ctr < nLencnCript; ctr++) {
+        cString += String.fromCharCode(cnCript.charCodeAt(cPWrd.length + ctr) - 7);
+    }
+
+    return cString;
+}
+
+// * ----------------------
+// FUNCTION decrypt(cnCript,cPWrd)
+// * ----------------------
+// LOCAL ctr,nLencnCript
+// LOCAL cString
+
+// 	IF cPWrd != SubStr(cnCript,1,3)
+// 		?? Chr(7)
+// 		RETURN cnCript
+// 	ENDIF
+
+// 	cnCript=AllTrim(cnCript)
+// 	cString=""
+// 	nLencnCript=Len(SubStr(cnCript,Len(cPWrd)+1))
+// 	FOR ctr=1 TO nLencnCript
+// 		cString=cString+Chr(Asc(SubStr(cnCript,ctr+3,1))-7)
+// 	NEXT
+
+// RETURN cString

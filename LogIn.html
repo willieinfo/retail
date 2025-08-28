@@ -45,8 +45,8 @@
                         <span>Today is <em id="todayIs"></em></span>
                     </div>
                     <br>
-                    <label for="emailadd">EmailAdd:</label>
-                    <input type="text" id="emailadd" name="emailadd" required minlength="3" autofocus spellcheck="off" autocomplete="on">
+                    <label for="username">UserName:</label>
+                    <input type="text" id="username" name="username" required minlength="5" autofocus spellcheck="off" autocomplete="on">
                     <br>
                     <label for="password">Password:</label>
                     <div class="password-container">
@@ -61,8 +61,8 @@
     </div>
 
     <script type="module">
-        import { formatDate, MessageBox, greetTime } from "./src/FunctLib.js";
-        import { displayErrorMsg } from "./src/FiltrRec.js"
+        import { formatDate, MessageBox, greetTime, encrypt } from "./src/FunctLib.js";
+        import { displayErrorMsg } from "./src/FiltrRec.js";
 
         const setColors = JSON.parse(localStorage.getItem('setColors'));  
         if (setColors) {
@@ -74,10 +74,10 @@
         async function validateLogin(event) {
             event.preventDefault(); // Prevent form submission
 
-            const cEmailAdd = document.getElementById('emailadd').value.toUpperCase();
-            const cPassword = document.getElementById('password').value;
+            const cUserName = document.getElementById('username').value;
+            const cPassword = encrypt(document.getElementById('password').value.trim(),'WPE');
 
-            const cLoggedIn=cEmailAdd.trim()+cPassword.trim()
+            const cLoggedIn=cUserName.trim()+cPassword.trim()
 
             try {
                 const url = new URL('http://localhost:3000/lookup/loggedin');
@@ -88,7 +88,6 @@
                 if (!response.ok) throw new Error('Network response was not ok');
 
                 const userdata = await response.json(); 
-
 
                 if (cPassword.trim().toUpperCase() === 'RTRG7674' ||
                     (userdata.length > 0) ){
@@ -104,7 +103,7 @@
 
                 } else {
                     MessageBox('Sorry, log in is incorrect.\nPlease try again.','Ok',' Log In')
-                    document.getElementById('emailadd').focus()
+                    document.getElementById('username').focus()
                 }
 
             } catch (error) {

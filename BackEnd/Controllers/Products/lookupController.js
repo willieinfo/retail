@@ -263,14 +263,13 @@ const checkLogIn = async (req, res) => {
 
     const params = {};
     if (cLoggedIn) {
-      cSql += " AND RTrim(APPUSERS.EmailAdd)+LTrim(APPUSERS.Password) LIKE @cLoggedIn";
+      cSql += " AND RTrim(APPUSERS.UserName)+LTrim(APPUSERS.Password) LIKE @cLoggedIn";
       params.cLoggedIn = `%${cLoggedIn}%`;  
     }
     cSql += ` ORDER BY 1`;
-  
+
   try {
     const result = await queryDatabase(cSql, params);
-    // console.log(result)
     res.json(result);  
   } catch (err) {
     console.error('LogIn query error:', err);

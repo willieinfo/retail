@@ -60,6 +60,16 @@ const SalesCompBrand = async (req, res) => {
     params.cStoreGrp = `%${cStoreGrp}%`;
   }
 
+  // Add current period date range parameters to params
+  if (dDateFrom) {params.dDateFrom = dDateFrom};
+  if (dDateTo__) {params.dDateTo__ = dDateTo__};
+  // Add previous year date range parameters to params
+  if (dYearFrom) {params.dYearFrom = dYearFrom};
+  if (dYearTo__) {params.dYearTo__ = dYearTo__};
+  // Add previous month date range parameters to params
+  if (dMontFrom) {params.dMontFrom = dMontFrom};
+  if (dMontTo__) {params.dMontTo__ = dMontTo__};
+
   try {
     // ** cSql1 - Current period date range (dDateFrom to dDateTo__) **
     let cSql1 = `
@@ -81,14 +91,6 @@ const SalesCompBrand = async (req, res) => {
       ${sqlQuery}
       GROUP BY BRAND___.BrandNum, BRAND___.BrandNme
     `;
-
-    // Add current period date range parameters to params
-    if (dDateFrom) {
-      params.dDateFrom = dDateFrom;
-    }
-    if (dDateTo__) {
-      params.dDateTo__ = dDateTo__;
-    }
 
     const result1 = await queryDatabase(cSql1, params);
 
@@ -112,14 +114,6 @@ const SalesCompBrand = async (req, res) => {
       GROUP BY BRAND___.BrandNum
     `;
 
-    // Add previous year date range parameters to params
-    if (dYearFrom) {
-      params.dYearFrom = dYearFrom;
-    }
-    if (dYearTo__) {
-      params.dYearTo__ = dYearTo__;
-    }
-
     const result2 = await queryDatabase(cSql2, params);
 
     // ** cSql3 - Previous month date range (dMontFrom to dMontTo__) **
@@ -142,15 +136,36 @@ const SalesCompBrand = async (req, res) => {
       GROUP BY BRAND___.BrandNum
     `;
 
-    // Add previous month date range parameters to params
-    if (dMontFrom) {
-      params.dMontFrom = dMontFrom;
-    }
-    if (dMontTo__) {
-      params.dMontTo__ = dMontTo__;
-    }
-
     const result3 = await queryDatabase(cSql3, params);
+
+  // let finalResults = `
+  //   SELECT
+  //     CURRYEAR.BrandNum,
+  //     CURRYEAR.BrandNme,
+  //     CURRYEAR.Quantity,
+  //     CURRYEAR.LandCost,
+  //     CURRYEAR.ItemPrce,
+  //     CURRYEAR.Amount__,
+  //     PREVYEAR.PrvYrQty,
+  //     PREVYEAR.PrvYrLan,
+  //     PREVYEAR.PrvYrPrc,
+  //     PREVYEAR.PrvYrAmt,
+  //     PREVMONT.PrvMoQty,
+  //     PREVMONT.PrvMoLan,
+  //     PREVMONT.PrvMoPrc,
+  //     PREVMONT.PrvMoAmt
+  //   FROM
+  //     (${cSql1}) AS CURRYEAR
+  //   LEFT JOIN
+  //     (${cSql2}) AS PREVYEAR ON CURRYEAR.BrandNum = PREVYEAR.BrandNum
+  //   LEFT JOIN
+  //     (${cSql3}) AS PREVMONT ON CURRYEAR.BrandNum = PREVMONT.BrandNum
+  //   ORDER BY
+  //     CURRYEAR.Amount__ DESC;
+  // `;
+
+    // const result = await queryDatabase(finalResults, params);
+    // res.json(result);
 
     // Now, join the results from the three queries using BrandNum as the key
     const finalResults = result1.map(item1 => {
@@ -171,8 +186,8 @@ const SalesCompBrand = async (req, res) => {
 
     // Sort the finalResults by Amount__ in descending order
     finalResults.sort((a, b) => b.Amount__ - a.Amount__);
-
     res.json(finalResults);
+
   } catch (err) {
     console.error('Database query error:', err.message);
     res.status(500).send('Error fetching sales data');

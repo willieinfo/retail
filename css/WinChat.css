@@ -115,9 +115,11 @@ body {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 1px solid;
+    border: none;
     margin-right: 10px;  /* Add space between icon and name */
     position: relative;
+    color: white;
+    
 }
 
 

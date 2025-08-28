@@ -1,5 +1,4 @@
 import { initVoiceCallFeatures } from './voiceCall.js';
-// import { setUserColor } from "../Settings/Settings.js";
 
 const msgInput = document.querySelector('#message');
 const nameInput = document.querySelector('#name');
@@ -23,9 +22,10 @@ const socket = io('http://localhost:3000');
 
 // const socket = io(
 //     window.location.hostname === 'localhost'
-//         ? 'http://localhost:3500'
+//         ? 'http://localhost:3000'
 //         : 'https://winchat.onrender.com'
 // );
+
 
 
 let selectedUser = null;
@@ -88,13 +88,13 @@ socket.on('activity', (name) => {
 const style = document.createElement('style');
 style.textContent = `
     .typing:after {
-        content: '...';
+        content: ' ...';
         animation: dots 1s steps(5, end) infinite;
     }
     @keyframes dots {
-        0%, 20% { content: '.'; }
-        40% { content: '..'; }
-        60% { content: '...'; }
+        0%, 20% { content: ' .'; }
+        40% { content: ' ..'; }
+        60% { content: ' ...'; }
         80%, 100% { content: ''; }
     }
 `;
@@ -275,7 +275,8 @@ function sendMessage(e) {
 }
 
 function enterApp(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
+
     if (nameInput.value) {
         socket.emit('enterApp', {
             name: nameInput.value
@@ -283,13 +284,60 @@ function enterApp(e) {
         document.querySelector('.form-join').style.display = 'none';
         document.querySelector('.form-msg').style.display = 'flex';
 
-        const currentUserName = document.querySelector('.currentUserName')
-        currentUserName.style.display = 'block';
-        currentUserName.textContent = `${nameInput.value.trim()}, you are now logged In`
+        const initials = getUserInitials(nameInput.value.trim());
+        const userIcon = document.createElement('div');
+        userIcon.className = 'userIcon';
+        userIcon.innerHTML = initials;
+        userIcon.style.backgroundColor = getUserColor(nameInput.value.trim());
+        userIcon.style.color = 'white';
+        userIcon.style.fontStyle = 'normal';
+
+        const currentUserName = document.querySelector('.currentUserName');
+        currentUserName.style.display = 'flex';
+        currentUserName.style.alignItems = 'center';
+        // currentUserName.style.gap = '10px';
+
+        // Append the userIcon first
+        currentUserName.appendChild(userIcon);
+        // Then, set the text content for currentUserName (but keep the icon)
+        currentUserName.appendChild(document.createTextNode(`${nameInput.value.trim()}, you are now logged in WinChat`));
+
         // Load global chat messages (room: null)
         loadMessages(null);
     }
 }
+
+// function enterApp(e) {
+//      if (e) e.preventDefault();
+
+//     if (nameInput.value) {
+//         socket.emit('enterApp', {
+//             name: nameInput.value
+//         });
+//         document.querySelector('.form-join').style.display = 'none';
+//         document.querySelector('.form-msg').style.display = 'flex';
+
+//         const initials = getUserInitials(nameInput.value.trim());
+//         const userIcon = document.createElement('div');
+//         userIcon.className = 'userIcon';
+//         userIcon.innerHTML = initials;
+//         userIcon.style.backgroundColor = getUserColor(nameInput.value.trim());
+
+//         const currentUserName = document.querySelector('.currentUserName')
+//         currentUserName.style.display = 'flex';
+//         currentUserName.style.alignItems = 'center';
+//         currentUserName.style.gap = '10px';
+
+//         currentUserName.textContent = ''; // Clear any previous text content
+//         currentUserName.textContent = `${nameInput.value.trim()}, you are now logged in WinChat`;
+//         // Append icon first
+//         currentUserName.appendChild(userIcon);
+
+
+//         // Load global chat messages (room: null)
+//         loadMessages(null);
+//     }
+// }
 
 function getPrivateRoomId(user1, user2) {
     // Create a consistent room ID by sorting names
@@ -565,10 +613,6 @@ initVoiceCallFeatures({
     selectedUserGetter: () => selectedUser
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    setUserColor();
-});
-
 function setUserColor() {
     const setColors = JSON.parse(localStorage.getItem('setColors'));  
     if (setColors) {
@@ -587,3 +631,19 @@ function setUserColor() {
         document.documentElement.style.setProperty('--darker-bg-color', colorData.darkerBgColor.trim());
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    setUserColor();
+
+    // Check for Logged In User from Retail App
+    const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
+    nameInput.value = (cUserData) ? cUserData[0].UserName.trim() : '';
+    nameInput.focus()
+
+    // Ensure socket connection is ready before auto-joining
+    socket.on('connect', () => {
+        setTimeout(() => {
+            if (nameInput.value) enterApp();
+        }, 10);
+    });
+});
