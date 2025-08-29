@@ -5,6 +5,7 @@ const nameInput = document.querySelector('#name');
 const activity = document.querySelector('.activity');
 const userName = document.querySelector('.user-name');
 const chatDisplay = document.querySelector('.chat-display');
+const userCount = document.querySelector('.userCount');
 
 const chatEraser = document.querySelector('#chatEraser');
 const chatSmile = document.querySelector('#chat-smile');
@@ -122,8 +123,18 @@ function showUsers(users, pendingMessages) {
         }
     });
 
+
+    let countUsers = 0
     users.forEach((user) => {
         if (user.name === nameInput.value) return; // skip self
+        countUsers++
+        if (countUsers > 0) {
+            userCount.style.display = 'flex';
+            userCount.innerHTML = `User Count: ${countUsers}`;
+            userCount.style.textAlign = 'center';
+        } else {
+            userCount.style.display = 'none';
+        }
 
         let userItem = userName.querySelector(`.userItem[data-username="${user.name}"]`);
         if (!userItem) {
@@ -248,7 +259,7 @@ function sendMessage(e) {
 
     // Check if all are empty or invalid
     if (!name || !message || (!sendAllUsers && !hasSelectedUser)) {
-        alert('Fill in all fields and select a user or check All Users.');
+        alert('Select a user from list or check All Users');
         msgInput.focus();
         return;
     }
@@ -295,49 +306,17 @@ function enterApp(e) {
         const currentUserName = document.querySelector('.currentUserName');
         currentUserName.style.display = 'flex';
         currentUserName.style.alignItems = 'center';
-        // currentUserName.style.gap = '10px';
 
         // Append the userIcon first
         currentUserName.appendChild(userIcon);
         // Then, set the text content for currentUserName (but keep the icon)
-        currentUserName.appendChild(document.createTextNode(`${nameInput.value.trim()}, you are now logged in WinChat`));
+        currentUserName.appendChild(document.createTextNode(`${nameInput.value.trim()}, you are now in WinChat`));
 
         // Load global chat messages (room: null)
         loadMessages(null);
     }
 }
 
-// function enterApp(e) {
-//      if (e) e.preventDefault();
-
-//     if (nameInput.value) {
-//         socket.emit('enterApp', {
-//             name: nameInput.value
-//         });
-//         document.querySelector('.form-join').style.display = 'none';
-//         document.querySelector('.form-msg').style.display = 'flex';
-
-//         const initials = getUserInitials(nameInput.value.trim());
-//         const userIcon = document.createElement('div');
-//         userIcon.className = 'userIcon';
-//         userIcon.innerHTML = initials;
-//         userIcon.style.backgroundColor = getUserColor(nameInput.value.trim());
-
-//         const currentUserName = document.querySelector('.currentUserName')
-//         currentUserName.style.display = 'flex';
-//         currentUserName.style.alignItems = 'center';
-//         currentUserName.style.gap = '10px';
-
-//         currentUserName.textContent = ''; // Clear any previous text content
-//         currentUserName.textContent = `${nameInput.value.trim()}, you are now logged in WinChat`;
-//         // Append icon first
-//         currentUserName.appendChild(userIcon);
-
-
-//         // Load global chat messages (room: null)
-//         loadMessages(null);
-//     }
-// }
 
 function getPrivateRoomId(user1, user2) {
     // Create a consistent room ID by sorting names
@@ -504,7 +483,7 @@ function sendImage() {
 
     // Check if all are empty or invalid
     if (!name || (!sendAllUsers && !hasSelectedUser)) {
-        alert('Fill in all fields and select a user or check All Users.');
+        alert('Select a user from list or check All Users');
         msgInput.focus();
         return;
     }
@@ -554,7 +533,7 @@ function send_a_File() {
 
     // Check if all are empty or invalid
     if (!name || (!sendAllUsers && !hasSelectedUser)) {
-        alert('Fill in all fields and select a user or check All Users.');
+        alert('Select a user from list or check All Users');
         msgInput.focus();
         return;
     }

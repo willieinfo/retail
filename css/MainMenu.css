@@ -50,8 +50,8 @@ html {
 }
 .chatIcon {
     padding-left: 10px;
-    padding-right: 10px;
-    font-size: x-large;
+    padding-right: 14px;
+    /* font-size: x-large; */
 }
 .chatIcon:hover {
     background-color: black;

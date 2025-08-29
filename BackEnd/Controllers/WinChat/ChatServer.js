@@ -94,7 +94,7 @@ initializeChatServer = (server) => {
                 users: getAllUsers(),
                 pendingMessages: getPendingMessagesForAllUsers()
             });
-            socket.emit('message', buildMsg(SYSTEM, `You have joined WinChat`));
+            // socket.emit('message', buildMsg(SYSTEM, `You have joined WinChat`));
             socket.broadcast.emit('message', buildMsg(SYSTEM, `${user.name} has joined WinChat`));
         });
 
