@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: backend-service
+    env: node
+    plan: free
+    branch: main  # or whatever your default GitHub branch is
+    rootDir: BackEnd
+    buildCommand: npm install
+    startCommand: npm start
