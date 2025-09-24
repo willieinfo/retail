@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "BackEnd/mainApp.js",
   "scripts": {
-    "start": "node BackEnd/mainApp.js",
-    "dev": "nodemon BackEnd/mainApp.js",
+    "start": "node mainApp.js",
+    "dev": "nodemon mainApp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Willie Estrada",
