@@ -17,9 +17,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  const filePath = path.join(__dirname, 'src', 'RetailApp.html');
-  console.log('Serving file from:', filePath);  // For debugging purposes
-  res.sendFile(filePath);
+    res.sendFile(path.join(__dirname, '..', 'RetailApp.html'));
 });
 
 const productRouter = require('./Routers/productRouter');  
