@@ -15,6 +15,11 @@ const app = express();
 // app.use(cors());
 app.use(express.json());
 
+const path = require('path');
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/src/RetailApp.html'));
+});
 
 const productRouter = require('./Routers/productRouter');  
 const lookupRouter = require('./Routers/lookupRouter');      
