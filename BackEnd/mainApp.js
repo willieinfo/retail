@@ -9,16 +9,17 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 // const socketIo = require('socket.io');
 
 const app = express();
 // app.use(cors());
 app.use(express.json());
 
-const path = require('path');
-
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/src/RetailApp.html'));
+  const filePath = path.join(__dirname, 'src', 'RetailApp.html');
+  console.log('Serving file from:', filePath);  // For debugging purposes
+  res.sendFile(filePath);
 });
 
 const productRouter = require('./Routers/productRouter');  
