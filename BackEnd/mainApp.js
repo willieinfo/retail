@@ -13,12 +13,14 @@ const path = require('path');
 // const socketIo = require('socket.io');
 
 const app = express();
-// app.use(cors());
 app.use(express.json());
 
 app.use(cors());
 app.use('/src', express.static(path.join(__dirname, '..', 'src')));
 app.use('/css', express.static(path.join(__dirname, '..', 'css')));
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+app.use('/graphics', express.static(path.join(__dirname, '..', 'graphics')));
+app.use('/data', express.static(path.join(__dirname, '..', 'data')));
 
 // Serve RetailApp.html
 app.get('/', (req, res) => {
