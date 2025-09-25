@@ -16,6 +16,11 @@ const app = express();
 // app.use(cors());
 app.use(express.json());
 
+app.use(cors());
+app.use('/src', express.static(path.join(__dirname, '..', 'src')));
+app.use('/css', express.static(path.join(__dirname, '..', 'css')));
+
+// Serve RetailApp.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'RetailApp.html'));
 });
