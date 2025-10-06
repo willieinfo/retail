@@ -19,14 +19,14 @@ chatImages.addEventListener('click', sendImage);
 document.querySelector('.form-msg').addEventListener('submit', sendMessage);
 document.querySelector('.form-join').addEventListener('submit', enterApp);
 
-const socket = io('http://localhost:3000');
-
 // const socket = io(
 //     window.location.hostname === 'localhost'
 //         ? 'http://localhost:3000'
 //         : 'https://winchat.onrender.com'
 // );
 
+const socket = io("http://localhost:3000");
+// const socket = io(); // auto-connects to same origin
 
 
 let selectedUser = null;
@@ -618,6 +618,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
     nameInput.value = (cUserData) ? cUserData[0].UserName.trim() : '';
     nameInput.focus()
+    // const joinChat = document.querySelector('#join');
+    // if (cUserData) joinChat.click() 
 
     // Ensure socket connection is ready before auto-joining
     socket.on('connect', () => {

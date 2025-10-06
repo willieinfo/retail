@@ -52,7 +52,8 @@ async function ListUser(cUserName) {
     cUserName = !cUserName ? '%' : cUserName
 
     try {
-        const url = new URL('http://localhost:3000/lookup/appusers');
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/lookup/appusers`);
         const params = new URLSearchParams();
         // if (cUserName) params.append('UserName', cUserName?.trim() || '');
         if (cUserName) params.append('UserName', cUserName);
@@ -139,44 +140,43 @@ document.addEventListener('DOMContentLoaded', () => {
 async function updateTableRow(index , cUserName) {
     
     cUserName = !cUserName ? '%' : cUserName
-    
-    const url = new URL('http://localhost:3000/lookup/appusers');
+    const API_BASE = 'localhost'
+    const url = new URL(`http://${API_BASE}:3000/lookup/appusers`);
     const params = new URLSearchParams();
     params.append('UserName', cUserName);
 
     try {
         const response = await fetch(`${url}?${params.toString()}`);
         const updatedItem = await response.json();
-
         // If updatedItem is an array, access the first element (assuming only one result is returned)
-        const item = Array.isArray(updatedItem) ? updatedItem[index] : updatedItem;
+        // const item = Array.isArray(updatedItem) ? updatedItem[index] : updatedItem;
+        const item = Array.isArray(updatedItem) && updatedItem.length > 0 ? updatedItem[0] : updatedItem;
         if (!item) {
-            console.error('No valid app user returned.');
-        return;
-    }
-
-
-    // Find the row in the table to update using the index
-    const row = document.querySelector(`#ListUserTable tbody tr[data-index="${index}"]`);
-    if (row) {
-
-        // Update the row's content with the new item data
-        row.querySelector('td:nth-child(1)').textContent = item.UserCode || 'N/A';  
-        row.querySelector('td:nth-child(2)').textContent = item.UserName || 'N/A';  
-        row.querySelector('td:nth-child(3)').textContent = item.NickName || 'N/A';  
-        row.querySelector('td:nth-child(4)').textContent = item.SuffixId || 'N/A';  
-        row.querySelector('td:nth-child(5)').textContent = item.EmailAdd || 'N/A';  
-        row.querySelector('td:nth-child(6)').textContent = item.Position || 'N/A';  
-        row.querySelector('td:nth-child(7)').textContent = item.Tel_Num_ || 'N/A';  
-        row.querySelector('td:nth-child(8)').textContent = item.Remarks_ || 'N/A';  
-
-        if (item.Disabled) {
-            row.style.color = 'darkgrey'; // Set background color to dark grey if Disabled is true
-        } else {
-            row.style.color = ''; // Reset background color if Disabled is false
+            console.error('No valid app user returned.') ;
+            return;   
         }
-    }
-    globalData[index] = item;
+
+        // Find the row in the table to update using the index
+        const row = document.querySelector(`#ListUserTable tbody tr[data-index="${index}"]`);
+        if (row) {
+
+            // Update the row's content with the new item data
+            row.querySelector('td:nth-child(1)').textContent = item.UserCode || 'N/A';  
+            row.querySelector('td:nth-child(2)').textContent = item.UserName || 'N/A';  
+            row.querySelector('td:nth-child(3)').textContent = item.NickName || 'N/A';  
+            row.querySelector('td:nth-child(4)').textContent = item.SuffixId || 'N/A';  
+            row.querySelector('td:nth-child(5)').textContent = item.EmailAdd || 'N/A';  
+            row.querySelector('td:nth-child(6)').textContent = item.Position || 'N/A';  
+            row.querySelector('td:nth-child(7)').textContent = item.Tel_Num_ || 'N/A';  
+            row.querySelector('td:nth-child(8)').textContent = item.Remarks_ || 'N/A';  
+
+            if (item.Disabled) {
+                row.style.color = 'darkgrey'; // Set background color to dark grey if Disabled is true
+            } else {
+                row.style.color = ''; // Reset background color if Disabled is false
+            }
+        }
+        globalData[index] = item;
 
     } catch (error) {
         console.error('Error during fetch:', error);
@@ -411,8 +411,8 @@ async function editAppUsers(index, cUserCode, cUserName, cEmailAdd, cPosition, c
 
         lDisabled = document.getElementById("AppUsers_Disabled").checked ? '1' : '0';
         cSuffixId = cSuffixId.toUpperCase()
-
-        const response = await fetch('http://localhost:3000/lookup/editAppUsers', {
+        const API_BASE = 'localhost'
+        const response = await fetch(`http://${API_BASE}:3000/lookup/editAppUsers`, {
             method: 'PUT',  // Use PUT method
             headers: {
                 'Content-Type': 'application/json'  // Specify JSON format
@@ -485,7 +485,7 @@ async function addAppUsers(cUserName, cEmailAdd, cPosition, cTel_Num_, cPassword
 
         const updatedItem = await response.json();
         if (updatedItem) {
-            console.log(updatedItem)
+            // console.log(updatedItem)
             showNotification('App User record added successful!')
             globalData.push(updatedItem);
             updateTable();            
@@ -607,15 +607,18 @@ document.getElementById('filterUser').addEventListener('click', async () => {
             // const cReferDoc = filterData[10];
             // const dAsOfDate = filterData[11];
             // const cStoreGrp = filterData[12];
-            const cUserName = filterData[13];
+            const cUserName = !filterData[13] ? '' : filterData[13];
 
             ListUser(cUserName)
         });
+
     } catch (error) {
         console.error("Error processing the filter:", error);
         displayErrorMsg(error,"Error processing the filter")
 
     }
+            // ListUser('')
+
 });
 
 document.getElementById('printUserXLS').addEventListener('click', () => {

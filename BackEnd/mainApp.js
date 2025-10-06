@@ -10,7 +10,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// const socketIo = require('socket.io');
 
 const app = express();
 app.use(express.json());
@@ -22,22 +21,12 @@ app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 app.use('/graphics', express.static(path.join(__dirname, '..', 'graphics')));
 app.use('/data', express.static(path.join(__dirname, '..', 'data')));
 
-// Serve RetailApp.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'RetailApp.html'));
-});
-
 const productRouter = require('./Routers/productRouter');  
 const lookupRouter = require('./Routers/lookupRouter');      
 const salesRouter = require('./Routers/salesRouter');      
 const stockRouter = require('./Routers/stockRouter');      
 const purchRouter = require('./Routers/purchRouter');      
 const invenRouter = require('./Routers/invenRouter');      
-
-// Chat Server
-const { initializeChatServer } = require('./Controllers/WinChat/ChatServer'); 
-
-app.use(express.json());
 
 // Retail App Routers with CORS enabled per router
 app.use('/product', cors(), productRouter);
@@ -47,20 +36,26 @@ app.use('/transfers', cors(), stockRouter);
 app.use('/purchases', cors(), purchRouter);
 app.use('/inventory', cors(), invenRouter);
 
-// Use the different routers
-// app.use('/product', productRouter);
-// app.use('/lookup', lookupRouter);
-// app.use('/sales', salesRouter);  
-// app.use('/transfers', stockRouter);  
-// app.use('/purchases', purchRouter);  
-// app.use('/inventory', invenRouter);  
-
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.get('/', (req, res) => {
+  // redirect root → /retail
+  res.redirect('/retail');
 });
 
-// Initialize WinChat server
+app.get('/retail', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'RetailApp.html'));
+});
+
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'WinChat.html'));
+});
+
+// 🔹 Start server
+const server = app.listen(3000, '0.0.0.0', () => {
+  console.log('API Server is running on port 3000');
+});
+
+// 🔹 Initialize Chat Server (backend Socket.IO logic)
+const { initializeChatServer } = require('./Controllers/WinChat/ChatServer');
 initializeChatServer(server);
 
 // Gracefully handle SIGINT (Ctrl + C) and shutdown the DB connection pool

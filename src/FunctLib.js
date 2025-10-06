@@ -172,7 +172,9 @@ export async function populateBrandNum(cBrandNum, cBrandNme, cModule='FiltrRec')
     brandSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/product/brands');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/product/brands`);
         const params = new URLSearchParams();
         if (cBrandNum) params.append('BrandNum', cBrandNum);
         if (cBrandNme) params.append('BrandNme', cBrandNme);
@@ -207,7 +209,9 @@ export async function populateCategNum(cCategNum, cCategNme, cModule='FiltrRec')
     categnumSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/product/categnum');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/product/categnum`);
         const params = new URLSearchParams();
         if (cCategNum) params.append('CategNum', cCategNum);
         if (cCategNme) params.append('CategNme', cCategNme);
@@ -243,7 +247,9 @@ export async function populateItemDept(cItemDept, cDescript, cModule='FiltrRec')
     itemdeptSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/product/itemdept');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/product/itemdept`);
         const params = new URLSearchParams();
         if (cItemDept) params.append('ItemDept', cItemDept);
         if (cDescript) params.append('Descript', cDescript);
@@ -278,7 +284,9 @@ export async function populateItemType(cItemType, cDescript, cModule='FiltrRec')
     itemtypeSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/product/itemtype');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/product/itemtype`);
         const params = new URLSearchParams();
         if (cItemType) params.append('ItemType', cItemType);
         if (cDescript) params.append('Descript', cDescript);
@@ -313,7 +321,9 @@ export async function populateStoreGrp(cStoreGrp, cModule='FiltrRec') {
     storegrpSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/lookup/storegrp');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/lookup/storegrp`);
         const params = new URLSearchParams();
         if (cStoreGrp) params.append('StoreGrp', cStoreGrp);
 
@@ -348,7 +358,9 @@ export async function populateLocation(cLocation, cLocaName, cSellArea='', cLoca
     locationSelect.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/lookup/location');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/lookup/location`);
         const params = new URLSearchParams();
         if (cLocation) params.append('Location', cLocation);
         if (cLocaName) params.append('LocaName', cLocaName);
@@ -388,7 +400,9 @@ export async function populateSuppNum_(cSuppNum_, cSuppName, cModule='ItemList')
     suppnum_Select.appendChild(emptyOption);
     try {
         // Build query parameters
-        const url = new URL('http://localhost:3000/lookup/supplier');
+        // const API_BASE = window.location.hostname
+        const API_BASE = 'localhost'
+        const url = new URL(`http://${API_BASE}:3000/lookup/supplier`);
         const params = new URLSearchParams();
         if (cSuppNum_) params.append('SuppNum_', cSuppNum_);
         if (cSuppName) params.append('SuppName', cSuppName);
@@ -518,7 +532,7 @@ window.base64Image = null;
 
 export function loadImageToBase64() {
     const img = new Image();
-    img.src = '/images/complogo.png';  // Path to your logo image
+    img.src = './images/complogo.png';  // Path to your logo image
 
     img.onload = function() {
         const canvas = document.createElement('canvas');

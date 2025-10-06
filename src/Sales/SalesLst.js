@@ -604,10 +604,10 @@ let nTotalDsc = 0;
 let nTotalAmt = 0;
 
 function updateItemTable(refreshOnly=false) {
-    // let nTotalQty = 0;
-    // let nTotalPrc = 0;
-    // let nTotalDsc = 0;
-    // let nTotalAmt = 0;
+    let nTotalQty = 0;
+    let nTotalPrc = 0;
+    let nTotalDsc = 0;
+    let nTotalAmt = 0;
 
     const ListSaleItem=document.getElementById('ListSaleItem')
     // Map through itemsDtl and build rows while accumulating totals

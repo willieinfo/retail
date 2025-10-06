@@ -195,30 +195,30 @@ async function updateTableRow(index , cItemCode) {
         const response = await fetch(`${url}?${params.toString()}`);
         const updatedItem = await response.json();
 
-    // If updatedItem is an array, access the first element (assuming only one result is returned)
-    const item = Array.isArray(updatedItem) ? updatedItem[0] : updatedItem;
+        // If updatedItem is an array, access the first element (assuming only one result is returned)
+        const item = Array.isArray(updatedItem) && updatedItem.length > 0 ? updatedItem[0] : updatedItem;
     
-    if (!item) {
-        console.error('No valid item returned.');
-        return;
-    }
+        if (!item) {
+            console.error('No valid item returned.');
+            return;
+        }
 
-    // Find the row in the table to update using the index
-    const row = document.querySelector(`#ListItemTable tbody tr[data-index="${index}"]`);
-    if (row) {
-        // Update the row's content with the new item data
-        row.querySelector('td:nth-child(1)').textContent = item.ItemCode || 'N/A';  // ItemCode
-        row.querySelector('td:nth-child(2)').textContent = item.Descript.trim().substring(0, 50) || 'N/A';  // Description
-        row.querySelector('td:nth-child(3)').textContent = item.UsersCde || 'N/A';  // Stock No
-        row.querySelector('td:nth-child(4)').textContent = item.BrandNme || 'N/A';  // Brand
-        row.querySelector('td:nth-child(5)').textContent = item.DeptName.trim() || 'N/A';  // Category
-        row.querySelector('td:nth-child(6)').textContent = formatter.format(item.ItemPrce) || 'N/A';  // Item Price
-        row.querySelector('td:nth-child(7)').textContent = formatter.format(item.LandCost) || 'N/A';  // Cost
-        row.querySelector('td:nth-child(8)').textContent = item.Encoder_ || 'N/A';  
-        row.querySelector('td:nth-child(9)').textContent = item.DateCost || 'N/A';  
+        // Find the row in the table to update using the index
+        const row = document.querySelector(`#ListItemTable tbody tr[data-index="${index}"]`);
+        if (row) {
+            // Update the row's content with the new item data
+            row.querySelector('td:nth-child(1)').textContent = item.ItemCode || 'N/A';  // ItemCode
+            row.querySelector('td:nth-child(2)').textContent = item.Descript.trim().substring(0, 50) || 'N/A';  // Description
+            row.querySelector('td:nth-child(3)').textContent = item.UsersCde || 'N/A';  // Stock No
+            row.querySelector('td:nth-child(4)').textContent = item.BrandNme || 'N/A';  // Brand
+            row.querySelector('td:nth-child(5)').textContent = item.DeptName.trim() || 'N/A';  // Category
+            row.querySelector('td:nth-child(6)').textContent = formatter.format(item.ItemPrce) || 'N/A';  // Item Price
+            row.querySelector('td:nth-child(7)').textContent = formatter.format(item.LandCost) || 'N/A';  // Cost
+            row.querySelector('td:nth-child(8)').textContent = item.Encoder_ || 'N/A';  
+            row.querySelector('td:nth-child(9)').textContent = item.DateCost || 'N/A';  
 
-    }
-    globalData[index] = item;
+        }
+        globalData[index] = item;
 
     } catch (error) {
         console.error('Error during fetch:', error);

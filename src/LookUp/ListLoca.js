@@ -147,32 +147,32 @@ async function updateTableRow(index , cLocation) {
         const response = await fetch(`${url}?${params.toString()}`);
         const updatedItem = await response.json();
 
-    // If updatedItem is an array, access the first element (assuming only one result is returned)
-    const item = Array.isArray(updatedItem) ? updatedItem[0] : updatedItem;
+        // If updatedItem is an array, access the first element (assuming only one result is returned)
+        const item = Array.isArray(updatedItem) && updatedItem.length > 0 ? updatedItem[0] : updatedItem;
     
-    if (!item) {
-        console.error('No valid item returned.');
-        return;
-    }
-
-
-    // Find the row in the table to update using the index
-    const row = document.querySelector(`#ListLocaTable tbody tr[data-index="${index}"]`);
-    if (row) {
-        // Update the row's content with the new item data
-        row.querySelector('td:nth-child(1)').textContent = item.Location || 'N/A';  
-        row.querySelector('td:nth-child(2)').textContent = item.LocaCode || 'N/A';  
-        row.querySelector('td:nth-child(3)').textContent = item.LocaName || 'N/A';  
-        row.querySelector('td:nth-child(4)').textContent = item.StoreGrp || 'N/A';  
-        row.querySelector('td:nth-child(5)').textContent = item.SellArea ? 'Selling Area' : 'Warehouse' || 'N/A';  
-
-        if (item.Disabled) {
-            row.style.color = 'darkgrey'; // Set background color to dark grey if Disabled is true
-        } else {
-            row.style.color = ''; // Reset background color if Disabled is false
+        if (!item) {
+            console.error('No valid item returned.');
+            return;
         }
-    }
-    globalData[index] = item;
+
+
+        // Find the row in the table to update using the index
+        const row = document.querySelector(`#ListLocaTable tbody tr[data-index="${index}"]`);
+        if (row) {
+            // Update the row's content with the new item data
+            row.querySelector('td:nth-child(1)').textContent = item.Location || 'N/A';  
+            row.querySelector('td:nth-child(2)').textContent = item.LocaCode || 'N/A';  
+            row.querySelector('td:nth-child(3)').textContent = item.LocaName || 'N/A';  
+            row.querySelector('td:nth-child(4)').textContent = item.StoreGrp || 'N/A';  
+            row.querySelector('td:nth-child(5)').textContent = item.SellArea ? 'Selling Area' : 'Warehouse' || 'N/A';  
+
+            if (item.Disabled) {
+                row.style.color = 'darkgrey'; // Set background color to dark grey if Disabled is true
+            } else {
+                row.style.color = ''; // Reset background color if Disabled is false
+            }
+        }
+        globalData[index] = item;
 
     } catch (error) {
         console.error('Error during fetch:', error);

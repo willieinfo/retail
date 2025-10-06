@@ -3,14 +3,14 @@ import { formatDate, disableMultipleLis, disableNoMenuRefLis } from "./FunctLib.
 import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
-// window.onload = function() {
-//     // Check if the user is logged in
-//     if (sessionStorage.getItem('loggedIn') !== 'true') {
-//         window.location.href = "./LogIn.html"; 
-//     } else {
-//         document.body.style.visibility = 'visible';
-//     }
-// };
+window.onload = function() {
+    // Check if the user is logged in
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+        window.location.href = "./LogIn.html"; 
+    } else {
+        document.body.style.visibility = 'visible';
+    }
+};
 
 // Background Image
 const img = document.getElementById('background-image');
@@ -182,7 +182,7 @@ sidebarItems.forEach(item => {
 
 const todaysDate = new Date();
 const cDateToday=formatDate(todaysDate)
-const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
+const dayName = todaysDate.toLocaleString('en-US', { weekday: 'short' });
 spanToday.innerText=cDateToday+' '+dayName
 
 // Log Out
@@ -194,18 +194,56 @@ document.querySelectorAll('.LogOut').forEach( el =>{
     })
 })
 
+const urls = {
+  browser: "http://127.0.0.1:5501/WinChat.html",
+  electron: "./WinChat.html",
+  webHost: "https://your-web-host.com/WinChat.html"
+};
 
 let chatWindow = null;
 document.querySelector(".chatIcon").addEventListener('click', () => {
-    if (!chatWindow || chatWindow.closed) {
-        chatWindow = window.open(
-            "http://127.0.0.1:5501/WinChat.html",
-            "_blank"
-        );
-    } else {
-        chatWindow.focus(); // bring the existing window to front
-    }
+  if (!chatWindow || chatWindow.closed) {
+    const urlToOpen = getEnvironmentUrl();
+    chatWindow = window.open(urlToOpen, "_blank");
+
+    // Ensure session storage is accessible by setting same origin
+    chatWindow.onload = function () {
+      chatWindow.resizeTo(window.screen.availWidth, window.screen.availHeight);
+      chatWindow.moveTo(0, 0);
+      chatWindow.sessionStorage.setItem(
+        'sharedData',
+        window.sessionStorage.getItem('sharedData') || '{}'
+      );
+    };
+  } else {
+    chatWindow.focus();
+  }
 });
+
+/* 🔎 Refactored environment checks */
+function isElectron() {
+  return typeof navigator === 'object' &&
+         typeof navigator.userAgent === 'string' &&
+         navigator.userAgent.toLowerCase().includes('electron');
+}
+function isBrowser() {
+  return typeof window !== 'undefined' &&
+         typeof window.document !== 'undefined' &&
+         window.location.protocol.startsWith('http') &&
+         !isElectron(); // avoid overlap
+}
+function isWebHost() {
+  return typeof window !== 'undefined' &&
+         window.location.hostname === 'your-web-host.com';
+}
+
+/* 🔑 Helper to decide URL cleanly */
+function getEnvironmentUrl() {
+  if (isElectron()) return urls.electron;
+  if (isWebHost()) return urls.webHost;
+  if (isBrowser()) return urls.browser;
+  return urls.browser; // fallback
+}
 
 // Keyboard
 const liOSKey=document.querySelectorAll('.OSKey')
@@ -216,7 +254,6 @@ liOSKey.forEach(element => {
 })
 
 // INIT App preparation ================================
-
 // Register Chart Labels (required)
 Chart.register(ChartDataLabels)
 
@@ -234,7 +271,7 @@ async function applyColorsAndShowContent() {
 const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
 if (cUserData) {
     disableMultipleLis(cUserData[0].MenuOpts.trim());
-    if (cUserData[0].UserName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+spanToday.innerText
+    if (cUserData[0].UserName) spanToday.innerText = cUserData[0].UserName.trim()+' - '+cDateToday+' '+dayName
 } else {
     disableNoMenuRefLis()
     spanToday.innerText = 'Willie Estrada '+spanToday.innerText
@@ -242,7 +279,9 @@ if (cUserData) {
 
 // Check if tables exist, create if none
 async function createTables() {
-    const res = await fetch('http://localhost:3000/lookup/createTables', {
+    // const API_BASE = window.location.hostname
+    const API_BASE = 'localhost'
+    const res = await fetch(`http://${API_BASE}:3000/lookup/createTables`, {
         method: 'POST'
     })
     if (!res.ok) {
@@ -291,4 +330,3 @@ createTables(); // Call once at startup
 //         subDropdown.classList.toggle('show'); // Toggle the display of the submenu
 //     });
 // });
-

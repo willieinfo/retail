@@ -712,6 +712,7 @@ async function SalesCompBrand(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
         // Send request with query parameters
         const response = await fetch(`${url}?${params.toString()}`);
+        // const response = await fetch('./data/DB_COMPBRAND.json');
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -1954,7 +1955,11 @@ function setDailyChart(data, cLocaName) {
             backgroundColor: backgroundColors,
             borderColor: borderColor,
             borderWidth: borderWidth,
-            type: 'bar'
+            type: 'bar',
+            datalabels: {
+                display: false // Disable data labels
+            }
+
         };
 
         const oDataSetLine = {

@@ -1,13 +1,21 @@
 // WinChat Server
 const socketIo = require('socket.io');
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors());
 
 const SYSTEM = "Admin";
 const allowedOrigins = [
-    "http://localhost:3000",
-    "http://localhost:5501",
-    "http://127.0.0.1:5501",
-    process.env.RENDER_URL
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://localhost:5501',
+  'http://127.0.0.1:5501',
+  'http://127.0.0.1:5500',
+  "file://*"   
 ];
+
 
 const UsersState = {
     users: [],
@@ -42,20 +50,33 @@ const PendingMessages = {
 // ===========================
 
 initializeChatServer = (server) => {
+    // const io = socketIo(server, {
+    //     cors: {
+    //         origin: (origin, callback) => {
+    //             // console.log('Received origin:', origin);
+    //             if (!origin || allowedOrigins.includes(origin)) {
+    //                 callback(null, true);
+    //             } else {
+    //                 callback(new Error("Not allowed by CORS"));
+    //             }
+    //         },
+    //         methods: ["GET", "POST"]
+    //     },
+    //     allowEIO3: true,   // ✅ support Electron clients using older Engine.IO
+    //     maxHttpBufferSize: 10e6
+    // });
+
     const io = socketIo(server, {
         cors: {
-            origin: (origin, callback) => {
-                // console.log('Received origin:', origin);
-                if (!origin || allowedOrigins.includes(origin)) {
-                    callback(null, true);
-                } else {
-                    callback(new Error("Not allowed by CORS"));
-                }
+            origin: "*",   // ✅ allow all origins
+            methods: ["GET", "POST"],
+            credentials: true
             },
-            methods: ["GET", "POST"]
-        },
-        maxHttpBufferSize: 10e6
-    });
+            allowEIO3: true,   // ✅ support Electron clients using older Engine.IO
+            maxHttpBufferSize: 10e6
+        });
+
+
 
     // io Connection
     io.on('connection', async socket => {
