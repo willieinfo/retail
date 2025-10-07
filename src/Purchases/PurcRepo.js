@@ -2,7 +2,10 @@ import { showReport, showNotification, formatter, formatDate, startTimer} from '
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
 
-const cCompName = 'REGENT TRAVEL RETAIL GROUP'
+let cCompName = ''
+window.addEventListener('CompNameLoaded', () => {
+    cCompName = window.CompName;
+});
 
 const divListStock =`
     <div id="PurchRepoStock" class="report-section containerDiv">

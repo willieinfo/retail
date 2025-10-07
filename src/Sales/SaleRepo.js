@@ -6,7 +6,10 @@ const dDateFrom = new Date(), dDateTo__ = new Date(),
     dMontFrom = goMonth(new Date(), -1), dMontTo__ = goMonth(new Date(), -1),
     dYearFrom = goMonth(new Date(), -12), dYearTo__ = goMonth(new Date(), -12)
 
-const cCompName = window.CompName
+let cCompName = ''
+window.addEventListener('CompNameLoaded', () => {
+    cCompName = window.CompName;
+});
 
 const divCompStore = `
     <div id="SalesRankStore" class="report-section containerDiv">
@@ -568,7 +571,6 @@ async function SalesCompClass(cBrandNum, cUsersCde, cOtherCde, cCategNum,
 
     // Print report to Excel
     document.getElementById('printCompClassXLS').addEventListener('click', () => {
-
         const dateRange = `From: ${formatDate(dDateFrom,'MM/DD/YYYY')} To: ${formatDate(dDateTo__,'MM/DD/YYYY')}`
         const titleRowsContent = [
             { text: cCompName, style: { fontWeight: 'bold', fontSize: 14 } },

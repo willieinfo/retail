@@ -211,16 +211,17 @@ document.querySelector(".chatIcon").addEventListener('click', () => {
       chatWindow.resizeTo(window.screen.availWidth, window.screen.availHeight);
       chatWindow.moveTo(0, 0);
       chatWindow.sessionStorage.setItem(
-        'sharedData',
-        window.sessionStorage.getItem('sharedData') || '{}'
+        'userdata',
+        window.sessionStorage.getItem('userdata') || '{}'
       );
     };
+
   } else {
     chatWindow.focus();
   }
 });
 
-/* 🔎 Refactored environment checks */
+/* 🔎 Environment checks */
 function isElectron() {
   return typeof navigator === 'object' &&
          typeof navigator.userAgent === 'string' &&
@@ -257,15 +258,25 @@ liOSKey.forEach(element => {
 // Register Chart Labels (required)
 Chart.register(ChartDataLabels)
 
-// Apply user color preferences
-window.CompName = 'REGENT TRAVEL RETAIL GROUP'
-document.addEventListener('DOMContentLoaded', () => {
-    applyColorsAndShowContent();
-    document.getElementById('spanCompName').innerText = window.CompName
-});
-async function applyColorsAndShowContent() {
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Apply user color preferences
+    // applyColorsAndShowContent();
     setUserColor();
-}
+
+    // Get Company Name
+    const url = new URL(`http://localhost:3000/lookup/compname?CompName=""`);
+    const res = await fetch(url);
+    const data = await res.json()
+    window.CompName = data[0].CompName.trim()
+    window.Address_ = data[0].Address_.trim()
+
+    document.getElementById('spanCompName').innerText = window.CompName
+
+    // Dispatch custom event after setting CompName
+    const event = new CustomEvent('CompNameLoaded');
+    window.dispatchEvent(event);
+});
 
 // Configure available menus for current user
 const cUserData = JSON.parse(sessionStorage.getItem('userdata'));
@@ -276,21 +287,6 @@ if (cUserData) {
     disableNoMenuRefLis()
     spanToday.innerText = 'Willie Estrada '+spanToday.innerText
 }
-
-// Check if tables exist, create if none
-async function createTables() {
-    // const API_BASE = window.location.hostname
-    const API_BASE = 'localhost'
-    const res = await fetch(`http://${API_BASE}:3000/lookup/createTables`, {
-        method: 'POST'
-    })
-    if (!res.ok) {
-        throw new Error('Database connection error');
-    }
-
-}
-createTables(); // Call once at startup
-
 
 // Sample Code with dropdown
 // <li menu-ref="A07" class="monthlySalesSum">Monthly Sales Summary <i class="fa-solid fa-chevron-right"></i>

@@ -1,5 +1,20 @@
 const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
 
+const getCompName = async (req, res) => {
+    const cCompName = req.query.CompName;  
+    let cSql = `SELECT 
+      MAINCOMP.CompName,
+      MAINCOMP.Address_,
+      MAINCOMP.Tel_Num_
+      FROM MAINCOMP
+      WHERE 1=1 `;
+
+    const params = {};
+    const result = await queryDatabase(cSql, params);
+    params.cCompName = `%${cCompName}%`;
+    res.json(result);  
+}
+
 const listGrup = async (req, res) => {
     const cStoreGrp = req.query.StoreGrp;  
    
@@ -450,7 +465,7 @@ const deleteAppUsers = async (req, res) => {
   }
 };
 
-const createTables = async (req, res) => {
+const create_Tables = async (req, res) => {
 
   try {
     const cSql = `
@@ -514,12 +529,120 @@ const createTables = async (req, res) => {
 
     await queryDatabase(cSql2);  
 
+    const cSql3 = `
+      IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'maincomp')
+        BEGIN
+          CREATE TABLE maincomp (
+            CompName Char(100) DEFAULT 'Main Company Name',
+            Address_ Char(100) DEFAULT '',
+            Tel_Num_ Char(40) DEFAULT '',
+            Remarks_ Char(50) DEFAULT '',
+            EmailAdd Char(50) DEFAULT '',
+            Disabled bit DEFAULT 0,
+            AutIncId Int IDENTITY(1,1)
+          )
+          
+          INSERT INTO MAINCOMP 
+            (CompName)
+          VALUES
+            ('Main Company Name');
+        END
+    `;
+    await queryDatabase(cSql3);  
+
     res.json({ success: true, message: 'Table check/creation executed' });
   } catch (err) {
     // console.error('Update Tables error:', err);
     res.status(500).json({ error: 'Error Updating Tables' });
   }
 };
+
+const createTables = async (req, res) => {
+  try {
+    const cSql = `
+      BEGIN TRANSACTION;
+
+      IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'appusers')
+        BEGIN
+          CREATE TABLE appusers (
+            UserCode Char(4) PRIMARY KEY,
+            UserName Char(25) DEFAULT '',
+            NickName Char(10) DEFAULT '',
+            Address_ Char(100) DEFAULT '',
+            Tel_Num_ Char(40) DEFAULT '',
+            Password Char(10) DEFAULT '',
+            Position Char(20) DEFAULT '',
+            Remarks_ Char(50) DEFAULT '',
+            EmailAdd Char(50) DEFAULT '',
+            SuffixId Char(2) DEFAULT '',
+            MenuOpts Char(200) DEFAULT '',
+            Disabled bit DEFAULT 0,
+            AutIncId Int IDENTITY(1,1)
+          )
+        END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'SALESREC' 
+        AND COLUMN_NAME = 'CustName') 
+        BEGIN ALTER TABLE SALESREC ADD CustName Char(30) NOT NULL DEFAULT ''; END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'LOCATION' 
+        AND COLUMN_NAME = 'StoreGrp') 
+        BEGIN ALTER TABLE LOCATION ADD StoreGrp Char(30) NOT NULL DEFAULT ''; END
+        
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'ITEMLIST' 
+        AND COLUMN_NAME = 'AutIncId') 
+        BEGIN ALTER TABLE ITEMLIST ADD AutIncId Int IDENTITY(1,1); END
+        
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'SALESREC' 
+        AND COLUMN_NAME = 'AutIncId') 
+        BEGIN ALTER TABLE SALESREC ADD AutIncId Int IDENTITY(1,1); END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'STOCKREC' 
+        AND COLUMN_NAME = 'AutIncId') BEGIN ALTER TABLE STOCKREC ADD AutIncId Int IDENTITY(1,1); END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'PURCHREC' 
+        AND COLUMN_NAME = 'AutIncId') BEGIN ALTER TABLE PURCHREC ADD AutIncId Int IDENTITY(1,1); END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'SALESDTL' 
+        AND (COLUMN_NAME = 'AutIncId' OR COLUMN_NAME = 'RecordId')) 
+        BEGIN ALTER TABLE SALESDTL ADD AutIncId Int IDENTITY(1,1); END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'STOCKDTL'  
+        AND (COLUMN_NAME = 'AutIncId' OR COLUMN_NAME = 'RecordId')) 
+        BEGIN ALTER TABLE STOCKDTL ADD AutIncId Int IDENTITY(1,1); END
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'PURCHDTL'  
+        AND (COLUMN_NAME = 'AutIncId' OR COLUMN_NAME = 'RecordId')) 
+        BEGIN ALTER TABLE PURCHDTL ADD AutIncId Int IDENTITY(1,1); END
+
+
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'maincomp')
+          BEGIN
+            CREATE TABLE maincomp (
+              CompName Char(100) DEFAULT 'Main Company Name',
+              Address_ Char(100) DEFAULT '',
+              Tel_Num_ Char(40) DEFAULT '',
+              Remarks_ Char(50) DEFAULT '',
+              EmailAdd Char(50) DEFAULT '',
+              Disabled bit DEFAULT 0,
+              AutIncId Int IDENTITY(1,1)
+            )
+
+            INSERT INTO MAINCOMP (CompName)
+            VALUES ('Main Company Name');
+          END
+
+      COMMIT;
+     `;
+    
+    await queryDatabase(cSql);  
+    res.json({ success: true, message: 'Table check/creation executed' });
+  } catch (err) {
+    console.error('Update Tables error:', err);
+    res.status(500).json({ error: 'Error Updating Tables' });
+  }
+};
+
 
 module.exports = { 
   listGrup,
@@ -533,5 +656,6 @@ module.exports = {
   addLocation,
   editLocation,
   deleteLocation,
+  getCompName,
   createTables
 };

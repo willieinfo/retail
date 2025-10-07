@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { listGrup, listSupp, createTables,
+const { listGrup, listSupp, createTables, getCompName,
     listUser, addAppUsers, editAppUsers, checkLogIn, deleteAppUsers,
     listLoca, editLocation, addLocation, deleteLocation} = require('../Controllers//Products/lookupController');
 
@@ -13,6 +13,7 @@ router.put('/editAppUsers', editAppUsers);
 router.get('/loggedin', checkLogIn);  
 router.delete('/deleteAppUsers/:id', deleteAppUsers);  
 router.post('/createTables', createTables);
+router.get('/compname', getCompName);  
 
 router.get('/location', listLoca);  
 router.post('/addLocation', addLocation);  

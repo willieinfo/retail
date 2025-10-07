@@ -295,7 +295,7 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, t
     doc.setFont('Courier', "normal");
     doc.text('Prepared By:', pageMargin, pageHeight - 22);
     doc.text('Checked By:', pageMargin + 40, pageHeight - 22);
-    doc.text('Willie', pageMargin, pageHeight - 16);
+    doc.text('', pageMargin, pageHeight - 16);
     doc.text('__________________ ', pageMargin, pageHeight - 14);
     doc.text('__________________ ', pageMargin + 40, pageHeight - 14);
 
@@ -343,8 +343,8 @@ export function printFormPDF(headerData, detailData, itemFields, createTotals, t
     function showDocHeader(firstPage=false) {
 
         doc.setFontSize(10);
-        const cCompName = 'REGENT TRAVEL RETAIL GROUP';
-        const cAddress_ = '35 JME Bldg. 3rd Flr Calbayog St., Mandaloyong City';
+        const cCompName = window.CompName;
+        const cAddress_ = window.Address_;
 
         doc.setFont(reportFont, "bold");
         doc.text(cCompName, (pageWidth - doc.getTextWidth(cCompName)) / 2, currentY);

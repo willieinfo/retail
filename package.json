@@ -1,14 +1,16 @@
 {
   "name": "retailapp",
   "version": "1.0.0",
+  "description": "A retail management application built with Electron and Node.js",
+  "author": "Willie Estrada",
+  "license": "ISC",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "nodemon BackEnd/mainApp.js",
+    "dist": "electron-builder --win nsis",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Willie Estrada",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -18,11 +20,43 @@
   },
   "devDependencies": {
     "electron": "^38.2.0",
+    "electron-builder": "^25.1.8",
     "nodemon": "^3.1.10"
   },
-  "directories": {
-    "doc": "docs"
+  "build": {
+    "appId": "com.willie.retailapp",
+    "productName": "RetailApp",
+    "directories": {
+      "output": "dist"
+    },
+    "asar": true,
+    "files": [
+      "**/*",
+      "!images/*",
+      "!graphics/*",
+      "!.env",
+      "!node_modules/.cache"
+    ],
+    "extraFiles": [
+      { "from": ".env", "to": ".env" },
+      { "from": "images", "to": "images" },
+      { "from": "graphics", "to": "graphics" }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "favicon.ico",
+      "sign": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RetailApp"
+    },
+    "mac": { "target": [] },
+    "linux": { "target": [] }
   },
-  "keywords": [],
-  "description": ""
+  "keywords": []
 }

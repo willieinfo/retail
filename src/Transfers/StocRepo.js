@@ -1,7 +1,11 @@
 import { showReport, showNotification, formatter, formatDate, startTimer, debounce} from '../FunctLib.js';
 import { printFormPDF, printReportExcel, generateTitleRows } from "../PrintRep.js"
 import { FiltrRec, displayErrorMsg } from "../FiltrRec.js"
-const cCompName = window.CompName
+
+let cCompName = ''
+window.addEventListener('CompNameLoaded', () => {
+    cCompName = window.CompName;
+});
 
 const divStockDetails =`
     <div id="StockDetails" class="report-section containerDiv">

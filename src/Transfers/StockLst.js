@@ -4,7 +4,10 @@ import { showReport, formatDate, populateLocation, showNotification, debounce, M
 import { FiltrRec } from "../FiltrRec.js"
 import { printFormPDF,printReportExcel, generateTitleRows } from "../PrintRep.js"
 
-const cCompName = window.CompName //Company Name - MainMenu.js
+let cCompName = ''
+window.addEventListener('CompNameLoaded', () => {
+    cCompName = window.CompName;
+});
 
 const divStockLst = `
     <div id="StockLst" class="report-section containerDiv">

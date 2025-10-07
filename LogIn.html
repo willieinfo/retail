@@ -5,21 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Login</title>
 
     <link rel="stylesheet" href="./css/LoggedIn.css">
+    <link rel="stylesheet" href="./css/GenStyle.css">
+    <script>
+        const animations = [
+            "flipIn 0.5s ease-out forwards",
+            "slideInUp 0.5s ease-out forwards",
+            "slideInDown 0.5s ease-out forwards",
+            "popInCenter 0.5s ease-out forwards"
+        ];
 
+    </script>
 </head>
 <body>
     <div class="container">
         <section class="imageSection">
             <div class="imageCompany">
-                <h3 class="w3-animate-top">Regent Travel Retail Group</h3>
-                <h2 class="w3-animate-zoom"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                <h3 class="w3-animate-top compName">Regent Travel Retail Group</h3>
+                <!-- <h2 class="w3-animate-zoom"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    CHALLENGE</em> Yourself</h2> -->
+                <h2 style="animation:'slideInUp 0.5s ease-out forwards'"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
                     CHALLENGE</em> Yourself</h2>
-                <!-- Add content or image here -->
-                <img class="companyPic w3-grayscale-max w3-opacity" src="./Graphics/LogIn/RTRG_Family1.jpg">
+                <img class="w3-grayscale-max w3-opacity companyPic" src="./Graphics/LogIn/RTRG_Family1.jpg">
             </div>
            
             <div class="imageBrands">
@@ -103,7 +114,7 @@
 
                 } else {
                     MessageBox('Sorry, log in is incorrect.\nPlease try again.','Ok',' Log In')
-                    document.getElementById('username').focus()
+                    // document.getElementById('username').focus()
                 }
 
             } catch (error) {
@@ -112,6 +123,25 @@
             } 
 
         }
+        // Check if tables exist, create if none
+        async function createTables() {
+            // const API_BASE = window.location.hostname
+            const res = await fetch(`http://localhost:3000/lookup/createTables`, {
+                method: 'POST'
+            })
+            if (!res.ok) {
+                throw new Error('CreateTables connection error');
+            }
+
+            // Get Company Name
+            const url = new URL(`http://localhost:3000/lookup/compname?CompName=""`);
+            const response = await fetch(url);
+            const data = await response.json()
+            window.CompName = data[0].CompName.trim()
+            document.querySelector('.compName').innerText = window.CompName
+
+        }
+        createTables(); // Call once at startup
 
         // Attach the validateLogin function to the form submission
         document.getElementById('login-form').addEventListener('submit', validateLogin);
@@ -121,7 +151,7 @@
         const timeIs = todaysDate.getHours();
         
         const greeting = document.getElementById('greeting');
-        greeting.innerText = greetTime(timeIs)+' RTRG!';
+        greeting.innerText = greetTime(timeIs)+'!';
 
         const todayIs = document.getElementById('todayIs');
         const dayName = todaysDate.toLocaleString('en-US', { weekday: 'long' });
