@@ -23,40 +23,48 @@
     "electron-builder": "^25.1.8",
     "nodemon": "^3.1.10"
   },
-  "build": {
-    "appId": "com.willie.retailapp",
-    "productName": "RetailApp",
-    "directories": {
-      "output": "dist"
-    },
-    "asar": true,
-    "files": [
-      "**/*",
-      "!images/*",
-      "!graphics/*",
-      "!.env",
-      "!node_modules/.cache"
-    ],
-    "extraFiles": [
-      { "from": ".env", "to": ".env" },
-      { "from": "images", "to": "images" },
-      { "from": "graphics", "to": "graphics" }
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "favicon.ico",
-      "sign": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "RetailApp"
-    },
-    "mac": { "target": [] },
-    "linux": { "target": [] }
+ "build": {
+  "appId": "com.willie.retailapp",
+  "productName": "RetailApp",
+  "directories": {
+    "output": "dist"
   },
+  "asar": true,
+  "files": [
+    "**/*",
+    "!graphics{,/**}",
+    "!.env",
+    "!node_modules/.cache"
+  ],
+  "extraFiles": [
+    {
+      "from": ".env",
+      "to": ".env"
+    },
+    {
+      "from": "graphics",
+      "to": "."
+    }
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "favicon.ico",
+    "sign": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "RetailApp"
+  },
+  "mac": {
+    "target": []
+  },
+  "linux": {
+    "target": []
+  }
+},
   "keywords": []
 }
