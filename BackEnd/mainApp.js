@@ -49,6 +49,9 @@ app.get('/chat', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'WinChat.html'));
 });
 
+app.use('/graphics', express.static(path.join(__dirname, 'graphics')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'LogIn.html')))
+
 // 🔹 Start server
 const server = app.listen(3000, '0.0.0.0', () => {
   console.log('API Server is running on port 3000');

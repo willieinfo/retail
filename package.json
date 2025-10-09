@@ -1,7 +1,7 @@
 {
   "name": "retailapp",
   "version": "1.0.0",
-  "description": "A retail management application built with Electron and Node.js",
+  "description": "InfoPlus retail management application built with Electron",
   "author": "Willie Estrada",
   "license": "ISC",
   "main": "main.js",
@@ -37,14 +37,8 @@
     "!node_modules/.cache"
   ],
   "extraFiles": [
-    {
-      "from": ".env",
-      "to": ".env"
-    },
-    {
-      "from": "graphics",
-      "to": "."
-    }
+    { "from": ".env", "to": ".env" },
+    { "from": "graphics", "to": "graphics", "filter": ["**/*"] }
   ],
   "win": {
     "target": "nsis",
@@ -54,6 +48,8 @@
   "nsis": {
     "oneClick": false,
     "perMachine": false,
+    "installerIcon": "favicon.ico",
+    "uninstallerIcon": "favicon.ico",
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,

@@ -11,30 +11,37 @@
 
     <link rel="stylesheet" href="./css/LoggedIn.css">
     <link rel="stylesheet" href="./css/GenStyle.css">
-    <script>
-        const animations = [
-            "flipIn 0.5s ease-out forwards",
-            "slideInUp 0.5s ease-out forwards",
-            "slideInDown 0.5s ease-out forwards",
-            "popInCenter 0.5s ease-out forwards"
-        ];
-
-    </script>
 </head>
 <body>
     <div class="container">
         <section class="imageSection">
             <div class="imageCompany">
-                <h3 class="w3-animate-top compName">Regent Travel Retail Group</h3>
-                <!-- <h2 class="w3-animate-zoom"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                    CHALLENGE</em> Yourself</h2> -->
-                <h2 style="animation:'slideInUp 0.5s ease-out forwards'"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
-                    CHALLENGE</em> Yourself</h2>
-                <img class="w3-grayscale-max w3-opacity companyPic" src="./Graphics/LogIn/main_pic.jpg">
+                <h3 class="compName">Regent Travel Retail Group</h3>
+                <!-- <h2 class="compSlogan"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    Challenge Yourself</h2> -->
+                <h2 style="animation:'slideInUp 0.5s ease-out forwards'"><em class="compSlogan" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    CHALLENGE</em></h2>
+                <img class="companyPic" data-src="main_pic.jpg">
             </div>
            
             <div class="imageBrands">
-                <!-- Add image or content here -->
+                <img class="brandLogo" data-src="itemPic1.jpg">
+                <img class="brandLogo" data-src="itemPic2.jpg">
+                <img class="brandLogo" data-src="itemPic3.jpg">
+                <img class="brandLogo" data-src="itemPic4.jpg">
+                <img class="brandLogo" data-src="itemPic5.JPG">
+                <img class="brandLogo" data-src="itemPic6.jpg">
+                <img class="brandLogo" data-src="itemPic7.png">
+                <img class="brandLogo" data-src="itemPic8.jpg">    
+            </div>
+            <!-- <div class="imageCompany">
+                <h3 class="w3-animate-top compName">Regent Travel Retail Group</h3>
+                <h2 style="animation:'slideInUp 0.5s ease-out forwards'"><em style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    CHALLENGE</em> Yourself</h2>
+                <img class="w3-grayscale-max w3-opacity companyPic" src="./Graphics/LogIn/main_pic.jpg">
+            </div> -->
+           
+            <!-- <div class="imageBrands">
                 <img class="brandLogo" src="./graphics/LogIn/itemPic1.jpg">
                 <img class="brandLogo" src="./graphics/LogIn/itemPic2.jpg">
                 <img class="brandLogo" src="./graphics/LogIn/itemPic3.jpg">
@@ -44,7 +51,7 @@
                 <img class="brandLogo" src="./graphics/LogIn/itemPic6.jpg">
                 <img class="brandLogo" src="./graphics/LogIn/itemPic7.png">
                 <img class="brandLogo" src="./graphics/LogIn/itemPic8.jpg">
-            </div>
+            </div> -->
         </section>
 
         <section class="loginSection">
@@ -172,6 +179,57 @@
             passwordInput.setAttribute('type', type);
             this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
         });
+
+        // Load LogIn graphics based on url
+        if (isElectron()) {
+            // Use IPC for Electron
+            window.electronAPI.getGraphicsPath().then((graphicsPath) => {
+            document.querySelectorAll('.brandLogo').forEach((img) => {
+                const fileName = img.getAttribute('data-src');
+                img.src = `${graphicsPath}/LogIn/${fileName}`;
+            });
+            document.querySelector('.companyPic').src = `${graphicsPath}/LogIn/main_pic.jpg`
+            });
+        } else {
+            // Use relative path for web browser
+            const basePath = '/graphics/LogIn/';
+            document.querySelectorAll('.brandLogo').forEach((img) => {
+            const fileName = img.getAttribute('data-src');
+            img.src = `${basePath}${fileName}`;
+            });
+            document.querySelector('.companyPic').src = `${basePath}main_pic.jpg`
+        }
+        function isElectron() {
+            return typeof navigator === 'object' &&
+                    typeof navigator.userAgent === 'string' &&
+                    navigator.userAgent.toLowerCase().includes('electron');
+        }
+
+        let lastIndex = -1;
+        const fashionSlogan = [
+            "Elegance in Every Thread",
+            "Challenge Yourself",
+            "Express your inner goodness",
+            "Feel good with us",
+            "Fashion is a style of life",
+            "Where style meets comfort",
+            "Dress how you want to be Addressed",
+            "Style that speaks for itself"
+        ];
+        // Pick a random slogan
+        const sloganName = getNonRepeatingRandom(fashionSlogan)
+        document.querySelector('.compSlogan').innerText = sloganName
+
+        // Load Helper function for Slogan
+        function getNonRepeatingRandom(arr) {
+            let index;
+            do {
+                index = Math.floor(Math.random() * arr.length);
+            } while (index === lastIndex);
+            lastIndex = index;
+            return arr[index];
+        }
+
     </script>
 
 </body>
