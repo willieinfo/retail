@@ -65,22 +65,39 @@ const loadMessages = async (req, res) => {
         }
   }
 
+async function insertChatMessage({ name, text, date, time, room, type, fileName }) {
+    const cSql = `
+        INSERT INTO CHATMSGS (name, text, date, time, room, type, fileName)
+        VALUES (@name, @text, @date, @time, @room, @type, @fileName)
+    `;
+    const params = { name, text, date, time, room, type, fileName };
+    return await queryDatabase(cSql, params);
+}  
 const saveMessages = async (req, res) => {
-        const { name, text, date, time, room, type, fileName } = req.body;
+    try {
+        const result = await insertChatMessage(req.body);
+        res.json(result);
+    } catch (err) {
+        console.error('Insert Chat Messages error:', err);
+        res.status(500).json({ error: 'Error inserting CHATMSGS' });
+    }
+};
+// const saveMessages = async (req, res) => {
+//         const { name, text, date, time, room, type, fileName } = req.body;
         
-        const cSql = `
-                INSERT INTO CHATMSGS (name, text, date, time, room, type, fileName)
-                VALUES (@name, @text, @date, @time, @room, @type, @fileName)
-        `
-        const params = { name, text, date, time, room, type, fileName };
-        try {
-                const result = await queryDatabase(cSql, params);
-                res.json(result);  
-        } catch (err) {
-                console.error('Insert Chat Messages error:', err);
-                res.status(500).json({ error: 'Error inserting CHATMSGS' });
-        }
-}
+//         const cSql = `
+//                 INSERT INTO CHATMSGS (name, text, date, time, room, type, fileName)
+//                 VALUES (@name, @text, @date, @time, @room, @type, @fileName)
+//         `
+//         const params = { name, text, date, time, room, type, fileName };
+//         try {
+//                 const result = await queryDatabase(cSql, params);
+//                 res.json(result);  
+//         } catch (err) {
+//                 console.error('Insert Chat Messages error:', err);
+//                 res.status(500).json({ error: 'Error inserting CHATMSGS' });
+//         }
+// }
 
 const deleteMessages = async (req, res) => {
     const room = req.params.room;  // 🟡 now coming from URL param
@@ -251,8 +268,15 @@ initializeChatServer = (server) => {
             }
         });
 
-        socket.on('message', ({ name, text, room, type, fileName }) => {
+        socket.on('message', async ({ name, text, room, type, fileName }) => {
             const message = buildMsg(name, text, room, type, fileName);
+
+            try {
+                await insertChatMessage(message);
+            } catch (err) {
+                console.error('❌ Error inserting chat message:', err);
+            }            
+
             if (room) {
                 // Find the target user (other user in the private room)
                 const usersInRoom = room.split('_');

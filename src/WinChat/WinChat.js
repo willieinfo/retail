@@ -31,7 +31,7 @@ const socket = io("http://localhost:3000");
 
 let selectedUser = null;
 socket.on("message", (data) => {
-    const { name, text, time, room, type, fileName } = data;
+    const { name, text, date, time, room, type, fileName } = data;
     if (
         (selectedUser && room === getPrivateRoomId(nameInput.value, selectedUser.name)) ||
         room === null
@@ -39,6 +39,8 @@ socket.on("message", (data) => {
         let fromUser = name === nameInput.value;
         const li = document.createElement('li');
         li.className = fromUser ? 'post post--right' : 'post post--left';
+        li.title = `Sent on: ${date}`
+
         if (name === 'Admin') {
             li.innerHTML = `<div class="post__admin">${text}</div>`;
             li.className = "post__admin";
@@ -73,7 +75,7 @@ socket.on("message", (data) => {
     }
 
     // saveMessages(data, room);
-    saveMessagesDB(data, room);
+    // saveMessagesDB(data, room);
 });
 
 socket.on('activity', (name) => {
@@ -366,32 +368,33 @@ function getDate_Now() {
 // ===========================
 // 🟡 Save message to MSSQL via API
 // ===========================
-async function saveMessagesDB(data) {
-    if (data.name.trim() === 'Admin') return
-    try {
-        const response = await fetch('http://localhost:3000/chatmsgs/saveMessages', {
-            method: 'POST',  
-            headers: {
-                'Content-Type': 'application/json'  // Specify JSON format
-            },
-            body: JSON.stringify({
-                name: data.name,
-                text: data.text,
-                date: data.date || '',
-                time: data.time || '',
-                room: data.room ?? '',
-                type: data.type ?? 'text',
-                fileName: data.fileName ?? ''            })
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+// async function saveMessagesDB(data) {
+//     if (data.name.trim() === 'Admin') return
+//     try {
+//         console.log(data.text.trim())
+//         const response = await fetch('http://localhost:3000/chatmsgs/saveMessages', {
+//             method: 'POST',  
+//             headers: {
+//                 'Content-Type': 'application/json'  // Specify JSON format
+//             },
+//             body: JSON.stringify({
+//                 name: data.name,
+//                 text: data.text,
+//                 date: data.date || '',
+//                 time: data.time || '',
+//                 room: data.room ?? '',
+//                 type: data.type ?? 'text',
+//                 fileName: data.fileName ?? ''            })
+//         });
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
 
-        const savedMsg = await response.json();
-    } catch (err) {
-        console.error('❌ Error saving message to DB:', err);
-    }
-}
+//         const savedMsg = await response.json();
+//     } catch (err) {
+//         console.error('❌ Error saving message to DB:', err);
+//     }
+// }
 
 // function loadMessages(room) {
 //     const messages = JSON.parse(localStorage.getItem(`chatMessages_${room}`) || '[]');
@@ -407,10 +410,11 @@ async function saveMessagesDB(data) {
 //         )
 //     );
 //     uniqueMessages.forEach(data => {
-//         const { name, text, time, room: messageRoom, type, fileName } = data;
+//         const { name, text, date, time, room: messageRoom, type, fileName } = data;
 //         const fromUser = name === nameInput.value;
 //         const li = document.createElement('li');
-        
+        // li.title = `Sent on: ${date}`
+
 //         if (text.includes('Welcome') || text.includes('joined')) return;
         
 //         li.className = fromUser ? 'post post--right' : 'post post--left';
@@ -471,9 +475,10 @@ async function loadMessagesDB(room) {
             )
         );
         uniqueMessages.forEach(data => {
-            const { name, text, time, room: messageRoom, type, fileName } = data;
+            const { name, text, date, time, room: messageRoom, type, fileName } = data;
             const fromUser = name.trim() === nameInput.value.trim();
             const li = document.createElement('li');
+            li.title = `Sent on: ${date}`
             
             if (text.includes('Welcome') || text.includes('joined')) return;
             
@@ -643,7 +648,7 @@ function sendImage() {
                 };
                 socket.emit('message', chatMessage);
                 // saveMessages(chatMessage, room);
-                saveMessagesDB(chatMessage, room);
+                // saveMessagesDB(chatMessage, room);
             };
             reader.readAsDataURL(file);
         }
@@ -694,7 +699,7 @@ function send_a_File() {
                 };
                 socket.emit('message', chatMessage);
                 // saveMessages(chatMessage, room);
-                saveMessagesDB(chatMessage, room);
+                // saveMessagesDB(chatMessage, room);
             };
             reader.readAsDataURL(file);
         }
