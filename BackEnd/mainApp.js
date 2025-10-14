@@ -27,6 +27,7 @@ const salesRouter = require('./Routers/salesRouter');
 const stockRouter = require('./Routers/stockRouter');      
 const purchRouter = require('./Routers/purchRouter');      
 const invenRouter = require('./Routers/invenRouter');      
+const chatRouter = require('./Routers/chatRouter');      
 
 // Retail App Routers with CORS enabled per router
 app.use('/product', cors(), productRouter);
@@ -35,6 +36,7 @@ app.use('/sales', cors(), salesRouter);
 app.use('/transfers', cors(), stockRouter);
 app.use('/purchases', cors(), purchRouter);
 app.use('/inventory', cors(), invenRouter);
+app.use('/chatmsgs', cors(), chatRouter);
 
 app.get('/', (req, res) => {
   // redirect root → /retail

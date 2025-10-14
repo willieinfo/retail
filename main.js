@@ -39,7 +39,7 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'LogIn.html'));
   win.maximize();
 
-  // if (process.platform !== 'darwin') win.setMenu(null);
+  if (process.platform !== 'darwin') win.setMenu(null);
   
   // Optional: Open DevTools automatically
   if (process.env.NODE_ENV === 'development') win.webContents.openDevTools();

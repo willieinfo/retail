@@ -225,7 +225,6 @@ const addStockHeader = async (req, res) => {
     dLog_Date, nNoOfItem, cPrepared, cReceived, cSuffixId };
   try {
     const result = await queryDatabase(cSql, params);
-    console.log(params)
 
     if (!result || result.length === 0) {
       res.status(404).json({ error: 'No records found' });

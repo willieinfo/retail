@@ -632,6 +632,20 @@ const createTables = async (req, res) => {
             VALUES ('Main Company Name');
           END
 
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'chatmsgs')
+          BEGIN
+            CREATE TABLE chatmsgs (
+                AutIncId Int IDENTITY(1,1) PRIMARY KEY,
+                name VarChar(70) DEFAULT '',
+                text NVarChar(MAX) DEFAULT '',
+                date VarChar(20) DEFAULT '',
+                time VarChar(20) DEFAULT '',
+                room VarChar(100) DEFAULT '',
+                type VarChar(50) DEFAULT '',
+                fileName VarChar(255) DEFAULT ''
+            );
+          END
+          
       COMMIT;
      `;
     

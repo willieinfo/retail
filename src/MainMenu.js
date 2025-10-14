@@ -208,8 +208,9 @@ document.querySelector(".chatIcon").addEventListener('click', () => {
 
     // Ensure session storage is accessible by setting same origin
     chatWindow.onload = function () {
-      chatWindow.resizeTo(window.screen.availWidth, window.screen.availHeight);
-      chatWindow.moveTo(0, 0);
+    //   chatWindow.resizeTo(window.screen.availWidth, window.screen.availHeight);
+    //   chatWindow.moveTo(0, 0);
+      chatWindow.resizeTo(1200, 800);
       chatWindow.sessionStorage.setItem(
         'userdata',
         window.sessionStorage.getItem('userdata') || '{}'
@@ -261,7 +262,6 @@ Chart.register(ChartDataLabels)
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Apply user color preferences
-    // applyColorsAndShowContent();
     setUserColor();
 
     // Get Company Name

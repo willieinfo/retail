@@ -17,7 +17,6 @@ https://github.com/willieinfo/rtrg
 https://github.com/willieinfo/iamnice
 https://github.com/willieinfo/targets
 https://github.com/willieinfo/retail
-https://github.com/willieinfo/chatapp.git
 https://github.com/willieinfo/winchat.git
 
 Render
@@ -30,11 +29,19 @@ Start Command = node BackEnd/mainApp.js
 Host the HTML App on a Local Server
 HOST it using http-server:
 npm install -g http-server
-
 http-server . -p 8080 -c-1
 then on another device:
 http://192.168.35.133:8080/RetailApp.html
 http://192.168.35.181:8080/RetailApp.html
+
+Package.json
+npm start
+npm run dev
+
+Electron
+npx electron .
+Electron-builder
+npm run dist
 
 These are common Git commands used in various situations:
 

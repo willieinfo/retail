@@ -1,66 +1,66 @@
 [{
 "StoreGrp": "RESTO",
 "LocaName": "SUBWAY SM CITY BATANGAS",
-"TrxCount":4924.00,
-"LandCost":844038.76,
-"ItemPrce":1846813.34,
-"Amount__":1795827.14,
+"TrxCount":2000.00,
+"LandCost":340064.08,
+"ItemPrce":744231.50,
+"Amount__":723540.59,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":2232342.40
+"PrvMoAmt":708487.27
 },
 {
 "StoreGrp": "RESTO",
 "LocaName": "CHOWKING BATANGAS PORT",
-"TrxCount":4200.00,
-"LandCost":522352.99,
-"ItemPrce":1111389.37,
-"Amount__":1111389.37,
+"TrxCount":1850.00,
+"LandCost":265268.62,
+"ItemPrce":564401.37,
+"Amount__":564401.37,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":1363301.61
+"PrvMoAmt":438130.38
 },
 {
 "StoreGrp": "RESTO",
 "LocaName": "SUBWAY BATANGAS",
-"TrxCount":2164.00,
-"LandCost":238154.94,
-"ItemPrce":737304.43,
-"Amount__":721681.68,
+"TrxCount":1060.00,
+"LandCost":121012.13,
+"ItemPrce":373940.36,
+"Amount__":366703.43,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":749868.47
+"PrvMoAmt":284851.28
 },
 {
 "StoreGrp": "RESTO",
 "LocaName": "SSP - WENDY'S BATANGAS",
-"TrxCount":1793.00,
-"LandCost":288003.25,
-"ItemPrce":612772.85,
-"Amount__":612772.85,
+"TrxCount":768.00,
+"LandCost":128137.73,
+"ItemPrce":272633.45,
+"Amount__":272633.45,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":882393.98
+"PrvMoAmt":247714.38
 },
 {
 "StoreGrp": "RESTO",
 "LocaName": "CAFE EXPRESS- BATANGAS",
-"TrxCount":939.00,
-"LandCost":94153.31,
-"ItemPrce":303603.55,
-"Amount__":285313.05,
+"TrxCount":426.00,
+"LandCost":47518.62,
+"ItemPrce":153802.39,
+"Amount__":143995.74,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":390379.34
+"PrvMoAmt":122264.11
 },
 {
 "StoreGrp": "OUTLETS",
 "LocaName": "TRAVEL HUB BATANGAS",
-"TrxCount":262.00,
-"LandCost":225736.64,
-"ItemPrce":390306.00,
-"Amount__":338204.20,
+"TrxCount":116.00,
+"LandCost":122577.84,
+"ItemPrce":216577.75,
+"Amount__":188698.00,
 "Quantity":1.00,
 "PrvYrAmt":0.00,
-"PrvMoAmt":406990.00
+"PrvMoAmt":121597.20
 }]

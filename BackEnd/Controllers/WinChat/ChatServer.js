@@ -1,20 +1,105 @@
+const { queryDatabase } = require('../../DBConnect/dbConnect'); // Import the database connection
+
+// const sql = require('mssql');
+// const bodyParser = require('body-parser');
+// require('dotenv').config();
+
+// // SQL connection configuration
+// const dbConfig = {
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         server: process.env.DB_SERVER,
+//         database: process.env.DB_DATABASE,
+//         options: {
+//         trustServerCertificate: true,
+//         encrypt: false,
+//         enableArithAbort: true
+//         },
+//         port: 1433,
+//         requestTimeout: 600000    
+// };
+
+// // Connect once at startup
+// sql.connect(dbConfig)
+//    .then(() => console.log('✅ Connected to MSSQL'))
+//    .catch(err => console.error('❌ MSSQL connection error:', err));
+
+
 // WinChat Server
 const socketIo = require('socket.io');
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
 
-app.use(cors());
+// Enable JSON parsing for POST
+// app.use(bodyParser.json());
 
-const SYSTEM = "Admin";
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5500',
-  'http://localhost:5501',
-  'http://127.0.0.1:5501',
-  'http://127.0.0.1:5500',
-  "file://*"   
-];
+app.use(cors());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+// ===========================
+// EXPRESS API ENDPOINTS
+// ===========================
+const loadMessages = async (req, res) => {
+        const room = req.query.room;
+        
+        let cSql = `SELECT name, text, date, time, room, type, fileName
+            FROM CHATMSGS
+            WHERE 1=1
+            `
+        
+        const params = {};
+        if (room) {
+                cSql += " AND CHATMSGS.room = @room";
+                params.room = `${room}`;
+        }
+        cSql += ` ORDER BY CHATMSGS.AutIncId`;
+        
+        try {
+            const result = await queryDatabase(cSql, params);
+            res.json(result);  
+        } catch (err) {
+            console.error('Chat Message loading error:', err);
+            res.status(500).send('Error loading chat message');
+        }
+  }
+
+const saveMessages = async (req, res) => {
+        const { name, text, date, time, room, type, fileName } = req.body;
+        
+        const cSql = `
+                INSERT INTO CHATMSGS (name, text, date, time, room, type, fileName)
+                VALUES (@name, @text, @date, @time, @room, @type, @fileName)
+        `
+        const params = { name, text, date, time, room, type, fileName };
+        try {
+                const result = await queryDatabase(cSql, params);
+                res.json(result);  
+        } catch (err) {
+                console.error('Insert Chat Messages error:', err);
+                res.status(500).json({ error: 'Error inserting CHATMSGS' });
+        }
+}
+
+const deleteMessages = async (req, res) => {
+    const room = req.params.room;  // 🟡 now coming from URL param
+
+    if (!room) {
+        return res.status(400).json({ message: 'Room is required' });
+    }
+
+    const cSql = `DELETE FROM CHATMSGS WHERE CHATMSGS.room = @room`;
+    const params = { room };
+
+    try {
+        const result = await queryDatabase(cSql, params);
+        res.json({ success: true, result });
+    } catch (err) {
+        console.error('Delete Chat Messages error:', err);
+        res.status(500).json({ error: 'Error deleting CHATMSGS' });
+    }
+};
 
 
 const UsersState = {
@@ -48,26 +133,29 @@ const PendingMessages = {
 };
 
 // ===========================
+// SOCKET.IO
+// ===========================
+const SYSTEM = "Admin";
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://localhost:5501',
+  'http://127.0.0.1:5501',
+  'http://127.0.0.1:5500',
+  "file://*"   
+];
 
 initializeChatServer = (server) => {
-    // const io = socketIo(server, {
-    //     cors: {
-    //         origin: (origin, callback) => {
-    //             // console.log('Received origin:', origin);
-    //             if (!origin || allowedOrigins.includes(origin)) {
-    //                 callback(null, true);
-    //             } else {
-    //                 callback(new Error("Not allowed by CORS"));
-    //             }
-    //         },
-    //         methods: ["GET", "POST"]
-    //     },
-    //     allowEIO3: true,   // ✅ support Electron clients using older Engine.IO
-    //     maxHttpBufferSize: 10e6
-    // });
-
     const io = socketIo(server, {
         cors: {
+        //     origin: (origin, callback) => {
+        //         // console.log('Received origin:', origin);
+        //         if (!origin || allowedOrigins.includes(origin)) {
+        //             callback(null, true);
+        //         } else {
+        //             callback(new Error("Not allowed by CORS"));
+        //         }
+        //     },
             origin: "*",   // ✅ allow all origins
             methods: ["GET", "POST"],
             credentials: true
@@ -315,4 +403,4 @@ function getPendingMessagesForAllUsers() {
     return pendingCounts;
 }
 
-module.exports = { initializeChatServer };
+module.exports = { initializeChatServer, loadMessages, saveMessages, deleteMessages };

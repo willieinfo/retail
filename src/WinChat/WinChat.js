@@ -30,7 +30,6 @@ const socket = io("http://localhost:3000");
 
 
 let selectedUser = null;
-
 socket.on("message", (data) => {
     const { name, text, time, room, type, fileName } = data;
     if (
@@ -73,7 +72,8 @@ socket.on("message", (data) => {
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
     }
 
-    saveMessages(data, room);
+    // saveMessages(data, room);
+    saveMessagesDB(data, room);
 });
 
 socket.on('activity', (name) => {
@@ -162,7 +162,8 @@ function showUsers(users, pendingMessages) {
                 activity.textContent = `Chatting with ${user.name}`;
                 const room = getPrivateRoomId(nameInput.value, user.name);
                 socket.emit('joinPrivateRoom', { name: nameInput.value, targetUser: user.name });
-                loadMessages(room);
+                // loadMessages(room);
+                loadMessagesDB(room);
             });
 
             userName.appendChild(userItem);
@@ -214,7 +215,8 @@ function showUsers(users, pendingMessages) {
 
 function clearChatHandler() {
     const room = selectedUser ? getPrivateRoomId(nameInput.value, selectedUser.name) : null;
-    deleteMessages(room);
+    // deleteMessages(room);
+    deleteMessagesDB(room);
     chatDisplay.innerHTML = '';
     updateChatDisplay('Chat history cleared');
 }
@@ -313,7 +315,8 @@ function enterApp(e) {
         currentUserName.appendChild(document.createTextNode(`${nameInput.value.trim()}, you are now in WinChat`));
 
         // Load global chat messages (room: null)
-        loadMessages(null);
+        // loadMessages(null);
+        loadMessagesDB(null);
     }
 }
 
@@ -344,80 +347,204 @@ function getDate_Now() {
 }
 
 // Loading, Saving, Deleting messages to / from localStorage
-function saveMessages(data, room) {
-    let messages = JSON.parse(localStorage.getItem(`chatMessages_${room}`) || '[]');
-    // Check if the message already exists to prevent duplicates
-    const exists = messages.some(
-        msg => 
-            msg.name === data.name &&
-            msg.text === data.text &&
-            msg.time === data.time &&
-            msg.room === data.room
-    );
-    if (!exists) {
-        messages.push(data);
-        localStorage.setItem(`chatMessages_${room}`, JSON.stringify(messages));
+// function saveMessages(data, room) {
+//     let messages = JSON.parse(localStorage.getItem(`chatMessages_${room}`) || '[]');
+//     // Check if the message already exists to prevent duplicates
+//     const exists = messages.some(
+//         msg => 
+//             msg.name === data.name &&
+//             msg.text === data.text &&
+//             msg.time === data.time &&
+//             msg.room === data.room
+//     );
+//     if (!exists) {
+//         messages.push(data);
+//         localStorage.setItem(`chatMessages_${room}`, JSON.stringify(messages));
+//     }
+// }
+
+// ===========================
+// 🟡 Save message to MSSQL via API
+// ===========================
+async function saveMessagesDB(data) {
+    if (data.name.trim() === 'Admin') return
+    try {
+        const response = await fetch('http://localhost:3000/chatmsgs/saveMessages', {
+            method: 'POST',  
+            headers: {
+                'Content-Type': 'application/json'  // Specify JSON format
+            },
+            body: JSON.stringify({
+                name: data.name,
+                text: data.text,
+                date: data.date || '',
+                time: data.time || '',
+                room: data.room ?? '',
+                type: data.type ?? 'text',
+                fileName: data.fileName ?? ''            })
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const savedMsg = await response.json();
+    } catch (err) {
+        console.error('❌ Error saving message to DB:', err);
     }
 }
 
-function loadMessages(room) {
-    const messages = JSON.parse(localStorage.getItem(`chatMessages_${room}`) || '[]');
-    chatDisplay.innerHTML = ''; // Clear current chat display
-    // Optional: Filter duplicates when rendering (in case duplicates exist in localStorage)
-    const uniqueMessages = messages.filter((msg, index, self) =>
-        index === self.findIndex(
-            m => 
-                m.name === msg.name &&
-                m.text === msg.text &&
-                m.time === msg.time &&
-                m.room === msg.room
-        )
-    );
-    uniqueMessages.forEach(data => {
-        const { name, text, time, room: messageRoom, type, fileName } = data;
-        const fromUser = name === nameInput.value;
-        const li = document.createElement('li');
+// function loadMessages(room) {
+//     const messages = JSON.parse(localStorage.getItem(`chatMessages_${room}`) || '[]');
+//     chatDisplay.innerHTML = ''; // Clear current chat display
+//     // Optional: Filter duplicates when rendering (in case duplicates exist in localStorage)
+//     const uniqueMessages = messages.filter((msg, index, self) =>
+//         index === self.findIndex(
+//             m => 
+//                 m.name === msg.name &&
+//                 m.text === msg.text &&
+//                 m.time === msg.time &&
+//                 m.room === msg.room
+//         )
+//     );
+//     uniqueMessages.forEach(data => {
+//         const { name, text, time, room: messageRoom, type, fileName } = data;
+//         const fromUser = name === nameInput.value;
+//         const li = document.createElement('li');
         
-        if (text.includes('Welcome') || text.includes('joined')) return;
+//         if (text.includes('Welcome') || text.includes('joined')) return;
         
-        li.className = fromUser ? 'post post--right' : 'post post--left';
-        if (name === 'Admin') {
-            li.innerHTML = `<div class="post__admin">${text}</div>`;
-            li.className = "post__admin";
-        } else if (type === 'image') {
-            li.innerHTML = `
-                <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
-                    <img src="${text}" alt="${fileName}" style="max-width: 200px; max-height: 200px;" />
-                </div>
-                <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
-                    <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
-                    <span class="post__header--time">${time}</span> 
-                </div>`;
-        } else if (type === 'file') {
-            li.innerHTML = `
-                <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
-                    <a href="${text}" download="${fileName}">${fileName}</a>
-                </div>
-                <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
-                    <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
-                    <span class="post__header--time">${time}</span> 
-                </div>`;
-        } else {
-            li.innerHTML = `
-                <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">${text}</div>
-                <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
-                    <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
-                    <span class="post__header--time">${time}</span> 
-                </div>`;
-        }
-        chatDisplay.appendChild(li);
-    });
-    chatDisplay.scrollTop = chatDisplay.scrollHeight;
+//         li.className = fromUser ? 'post post--right' : 'post post--left';
+//         if (name === 'Admin') {
+//             li.innerHTML = `<div class="post__admin">${text}</div>`;
+//             li.className = "post__admin";
+//         } else if (type === 'image') {
+//             li.innerHTML = `
+//                 <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
+//                     <img src="${text}" alt="${fileName}" style="max-width: 200px; max-height: 200px;" />
+//                 </div>
+//                 <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+//                     <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+//                     <span class="post__header--time">${time}</span> 
+//                 </div>`;
+//         } else if (type === 'file') {
+//             li.innerHTML = `
+//                 <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
+//                     <a href="${text}" download="${fileName}">${fileName}</a>
+//                 </div>
+//                 <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+//                     <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+//                     <span class="post__header--time">${time}</span> 
+//                 </div>`;
+//         } else {
+//             li.innerHTML = `
+//                 <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">${text}</div>
+//                 <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+//                     <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+//                     <span class="post__header--time">${time}</span> 
+//                 </div>`;
+//         }
+//         chatDisplay.appendChild(li);
+//     });
+//     chatDisplay.scrollTop = chatDisplay.scrollHeight;
+// }
+
+// ===========================
+// 🟢 Load messages from MSSQL
+// ===========================
+async function loadMessagesDB(room) {
+    if (!room) return
+    try {
+        chatDisplay.innerHTML = ''; // clear display first
+        const url = new URL('http://localhost:3000/chatmsgs/loadMessages');
+        const params = new URLSearchParams();
+        if (room) params.append('room', room);
+        const res = await fetch(`${url}?${params.toString()}`);
+        const messages = await res.json();
+
+        const uniqueMessages = messages.filter((msg, index, self) =>
+            index === self.findIndex(
+                m => 
+                    m.name === msg.name &&
+                    m.text === msg.text &&
+                    m.time === msg.time &&
+                    m.room === msg.room
+            )
+        );
+        uniqueMessages.forEach(data => {
+            const { name, text, time, room: messageRoom, type, fileName } = data;
+            const fromUser = name.trim() === nameInput.value.trim();
+            const li = document.createElement('li');
+            
+            if (text.includes('Welcome') || text.includes('joined')) return;
+            
+            li.className = fromUser ? 'post post--right' : 'post post--left';
+            if (name.trim() === 'Admin') {
+                li.innerHTML = `<div class="post__admin">${text}</div>`;
+                li.className = "post__admin";
+            } else if (type.trim() === 'image') {
+                li.innerHTML = `
+                    <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
+                        <img src="${text}" alt="${fileName}" style="max-width: 200px; max-height: 200px;" />
+                    </div>
+                    <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+                        <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+                        <span class="post__header--time">${time}</span> 
+                    </div>`;
+            } else if (type.trim() === 'file') {
+                li.innerHTML = `
+                    <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">
+                        <a href="${text}" download="${fileName}">${fileName}</a>
+                    </div>
+                    <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+                        <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+                        <span class="post__header--time">${time}</span> 
+                    </div>`;
+            } else {
+                li.innerHTML = `
+                    <div class="post__text ${fromUser ? 'post__text--user' : 'post__text--reply'}">${text}</div>
+                    <div class="post__header ${fromUser ? 'post__header--user' : 'post__header--reply'}">
+                        <span class="post__header--name">${fromUser ? '' : name}${messageRoom === null ? ' (All)' : ''}</span> 
+                        <span class="post__header--time">${time}</span> 
+                    </div>`;
+            }
+            chatDisplay.appendChild(li);
+        });
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
+    } catch (err) {
+        console.error('❌ Error loading messages from DB:', err);
+    }
 }
 
 
 function deleteMessages(room) {
     localStorage.removeItem(`chatMessages_${room}`);
+}
+// ===========================
+// 🔴 Delete all messages in a room
+// ===========================
+async function deleteMessagesDB(room) {
+    try{
+        const response = await fetch(`http://localhost:3000/chatmsgs/deleteMessages/${encodeURIComponent(room)}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            if (response.status === 400) {
+                alert(`Failed to delete: ${errorResponse.message || 'Invalid data'}`);
+            } else {
+                alert('An unexpected error occurred while deleting.');
+            }            
+            return false;
+        }
+
+        const result = await response.json();
+        return true;
+    } catch (error) {
+        console.error('Delete Chat messages error:', error);
+        return false;
+    }
 }
 
 function sendSmiley() {
@@ -515,7 +642,8 @@ function sendImage() {
                     fileName: file.name
                 };
                 socket.emit('message', chatMessage);
-                saveMessages(chatMessage, room);
+                // saveMessages(chatMessage, room);
+                saveMessagesDB(chatMessage, room);
             };
             reader.readAsDataURL(file);
         }
@@ -565,7 +693,8 @@ function send_a_File() {
                     fileName: file.name
                 };
                 socket.emit('message', chatMessage);
-                saveMessages(chatMessage, room);
+                // saveMessages(chatMessage, room);
+                saveMessagesDB(chatMessage, room);
             };
             reader.readAsDataURL(file);
         }
