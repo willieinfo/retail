@@ -80,7 +80,8 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
 
         const { data: records, totalRecords } = globalData;  
         existingData = [...existingData, ...records]; 
-        remainingData = totalRecords - existingData.length;
+        // Certain mssql servers do not support offset and limit
+        // remainingData = totalRecords - existingData.length;
 
         listCounter.innerHTML = (existingData.length === totalRecords) ? `${existingData.length} Records` 
             : `${existingData.length} of ${totalRecords} Records`;
@@ -104,7 +105,7 @@ async function ListItem(cUsersCde, cOtherCde, cDescript, cBrandNum,
         }
 
 
-        updateTable()   //Render / Display ItemList Table
+        updateTable()   // Display ItemList Table
         document.getElementById('printItemXLS').disabled = false
 
         document.getElementById('ListItemBody').addEventListener('click',async (event) => {

@@ -282,7 +282,7 @@ async function StockTraDetails(dDateFrom, dDateTo__, cReferDoc, cLocaFrom, cLoca
 
         const { data: records, totalRecords } = data;  // Destructure response for clarity
         existingData = [...existingData, ...records]; 
-        remainingData = totalRecords - existingData.length;
+        // remainingData = totalRecords - existingData.length;
 
         // Update the counter with the fetched data length
         const listCounter = document.getElementById('transCounter1');

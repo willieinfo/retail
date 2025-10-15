@@ -644,6 +644,8 @@ const createTables = async (req, res) => {
                 type VarChar(50) DEFAULT '',
                 fileName VarChar(255) DEFAULT ''
             );
+          
+            CREATE INDEX IX_CHATMSGS_room ON CHATMSGS (room)
           END
           
       COMMIT;

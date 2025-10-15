@@ -127,8 +127,9 @@ const StockTransfer = async (req, res) => {
       WHERE STOCKREC.Disabled = 0 
       ${sqlQuery}
       ORDER BY 2
-      OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
     `;
+
+          // OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
 
   } else if (cRepoType === 'TranStoc') {
     
