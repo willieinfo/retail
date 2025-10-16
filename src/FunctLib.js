@@ -1171,6 +1171,11 @@ export function decrypt(cnCript, cPWrd) {
     return cString;
 }
 
+export function isElectron() {
+    return typeof navigator === 'object' &&
+            typeof navigator.userAgent === 'string' &&
+            navigator.userAgent.toLowerCase().includes('electron');
+}
 // * ----------------------
 // FUNCTION decrypt(cnCript,cPWrd)
 // * ----------------------

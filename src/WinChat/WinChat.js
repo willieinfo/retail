@@ -1,3 +1,4 @@
+import { isElectron } from "../FunctLib.js";
 import { initVoiceCallFeatures } from './voiceCall.js';
 
 const msgInput = document.querySelector('#message');
@@ -25,9 +26,23 @@ document.querySelector('.form-join').addEventListener('submit', enterApp);
 //         : 'https://winchat.onrender.com'
 // );
 
-const socket = io("http://localhost:3000");
+// const socket = io("http://localhost:3000");
 // const socket = io(); // auto-connects to same origin
+function getSocketServerURL() {
+    if (isElectron()) {
+        return "http://192.168.35.197:3000";
+    } else {
+        return "http://localhost:3000";
+    }
+}
+console.log(getSocketServerURL())
+const socket = io(getSocketServerURL());
 
+// function isElectron() {
+//   return typeof navigator === 'object' &&
+//          typeof navigator.userAgent === 'string' &&
+//          navigator.userAgent.toLowerCase().includes('electron');
+// }
 
 let selectedUser = null;
 socket.on("message", (data) => {

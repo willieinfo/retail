@@ -1,5 +1,5 @@
 
-import { formatDate, disableMultipleLis, disableNoMenuRefLis } from "./FunctLib.js";
+import { formatDate, disableMultipleLis, disableNoMenuRefLis, isElectron } from "./FunctLib.js";
 import { setUserColor } from "./Settings/Settings.js";
 import { renderKeyboard } from "./Tools/Keyboard.js";
 
@@ -223,11 +223,11 @@ document.querySelector(".chatIcon").addEventListener('click', () => {
 });
 
 /* 🔎 Environment checks */
-function isElectron() {
-  return typeof navigator === 'object' &&
-         typeof navigator.userAgent === 'string' &&
-         navigator.userAgent.toLowerCase().includes('electron');
-}
+// function isElectron() {
+//   return typeof navigator === 'object' &&
+//          typeof navigator.userAgent === 'string' &&
+//          navigator.userAgent.toLowerCase().includes('electron');
+// }
 function isBrowser() {
   return typeof window !== 'undefined' &&
          typeof window.document !== 'undefined' &&

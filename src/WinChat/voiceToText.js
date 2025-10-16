@@ -35,7 +35,7 @@ function initializeSpeechRecognition() {
         };
 
         recognition.onerror = (event) => {
-            console.error('Speech recognition error:', event.error);
+            // console.error('Speech recognition error:', event.error);
             if (event.error === 'no-speech' || event.error === 'aborted' || event.error === 'audio-capture' || event.error === 'not-allowed') {
                 if (event.error === 'not-allowed') {
                     alert("Microphone access denied or not available. Please check your browser or device settings.");

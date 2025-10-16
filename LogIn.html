@@ -58,7 +58,7 @@
     </div>
 
     <script type="module">
-        import { formatDate, MessageBox, greetTime, encrypt } from "./src/FunctLib.js";
+        import { formatDate, MessageBox, greetTime, encrypt, isElectron } from "./src/FunctLib.js";
         import { displayErrorMsg } from "./src/FiltrRec.js";
 
         const setColors = JSON.parse(localStorage.getItem('setColors'));  
@@ -179,11 +179,11 @@
             });
             document.querySelector('.companyPic').src = `${basePath}main_pic.jpg`
         }
-        function isElectron() {
-            return typeof navigator === 'object' &&
-                    typeof navigator.userAgent === 'string' &&
-                    navigator.userAgent.toLowerCase().includes('electron');
-        }
+        // function isElectron() {
+        //     return typeof navigator === 'object' &&
+        //             typeof navigator.userAgent === 'string' &&
+        //             navigator.userAgent.toLowerCase().includes('electron');
+        // }
 
         let lastIndex = -1;
         const fashionSlogan = [

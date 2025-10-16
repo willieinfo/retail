@@ -12,8 +12,10 @@ function createWindow() {
     icon: path.join(__dirname, 'favicon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,   // keep frontend like browser
-      contextIsolation: true,   // safer
+      // nodeIntegration: false,   // keep frontend like browser
+      // contextIsolation: true,   // safer
+      nodeIntegration: true,   
+      contextIsolation: false,   
       sandbox: false,
       nativeWindowOpen: true,
       contextIsolation: true,
@@ -39,7 +41,7 @@ function createWindow() {
   win.loadFile(path.join(__dirname, 'LogIn.html'));
   win.maximize();
 
-  if (process.platform !== 'darwin') win.setMenu(null);
+  // if (process.platform !== 'darwin') win.setMenu(null);
   
   // Optional: Open DevTools automatically
   if (process.env.NODE_ENV === 'development') win.webContents.openDevTools();
@@ -61,7 +63,7 @@ app.on('browser-window-created', (event, newWin) => {
     if (url && url.includes('WinChat.html')) {
       newWin.setIcon(path.join(__dirname, 'favicon.ico'));
       // remove only the menu (keeps title bar and window controls)
-      newWin.setMenu(null);
+      // newWin.setMenu(null);
       // optional: maximize or resize
       newWin.maximize();
     }
